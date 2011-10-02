@@ -6,7 +6,7 @@ development:
   database: remote_wind_development
   pool: 5
   username: root
-  password: 
+  password: streatf8r
   socket: /tmp/mysql.sock
 
 # Warning: The database defined as "test" will be erased and
@@ -18,7 +18,7 @@ test:
   database: remote_wind_test
   pool: 5
   username: root
-  password: 
+  password: streatf8r
   socket: /tmp/mysql.sock
 
 production:
