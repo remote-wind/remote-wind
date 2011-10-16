@@ -7,7 +7,13 @@ class MeasuresController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @measures }
-      format.yaml {render :text => @measures.to_yaml, :content_type => 'text/x-yaml'}
+      format.json  {render :json =>  @measures}
+      format.yaml {render :json =>  @measures.map { |m| {
+             :id   => m.id,
+             :speed => m.speed,
+             :dir => m.direction,
+             :st_id => m.station_id
+      }}, :content_type => 'text/x-yaml'}
     end
   end
 
@@ -19,12 +25,13 @@ class MeasuresController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @measure }
-      format.yaml {render :json => @measure.map { |m| {
-             :id   => m.id,
-             :speed => m.speed,
-             :dir => m.direction,
-             :st_id => m.station_id
-      }}, :content_type => 'text/x-yaml'}
+      format.json  {render :json =>  @measure}
+      format.yaml {render :json =>  {
+             :id   => @measure.id,
+             :speed => @measure.speed,
+             :dir => @measure.direction,
+             :st_id => @measure.station_id
+      }, :content_type => 'text/x-yaml'}
     end
   end
 
