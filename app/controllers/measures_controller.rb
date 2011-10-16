@@ -19,7 +19,12 @@ class MeasuresController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @measure }
-      format.yaml {render :text => @measure.to_yaml, :content_type => 'text/x-yaml'}
+      format.yaml {render :json => @measure.map { |m| {
+             :id   => m.id,
+             :speed => m.speed,
+             :dir => m.direction,
+             :st_id => m.station_id
+      }}, :content_type => 'text/x-yaml'}
     end
   end
 
