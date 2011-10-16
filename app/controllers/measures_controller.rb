@@ -7,6 +7,7 @@ class MeasuresController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @measures }
+      format.yaml {render :text => @measures.to_yaml, :content_type => 'text/x-yaml'}
     end
   end
 
@@ -18,6 +19,7 @@ class MeasuresController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @measure }
+      format.yaml {render :text => @measure.to_yaml, :content_type => 'text/x-yaml'}
     end
   end
 
