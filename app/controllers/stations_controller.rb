@@ -7,6 +7,14 @@ class StationsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @stations }
+      format.json  {render :json =>  @stations}
+      format.yaml {render :json =>  @stations.map { |m| {
+             :id   => m.id,
+             :name => m.name,
+             :hw_id => m.hw_id,
+             :lat => m.lat,
+             :lon => m.lon
+      }}, :content_type => 'text/x-yaml'}
     end
   end
 
@@ -18,9 +26,36 @@ class StationsController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @station }
+      format.json  {render :json =>  @station}
+      format.yaml {render :json =>  {
+                  :id   => @station.id,
+                 :name => @station.name,
+                 :hw_id => @station.hw_id,
+                 :lat => @station.lat,
+                 :lon => @station.lon
+          }, :content_type => 'text/x-yaml'}
     end
   end
 
+  # GET /stations/1
+  # GET /stations/1.xml
+  def find
+    @station = Station.find_by_hw_id(params[:imei])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @station }
+      format.json  { render :json => @station }
+      format.yaml {render :json =>  {
+                  :id   => @station.id,
+                 :name => @station.name,
+                 :hw_id => @station.hw_id,
+                 :lat => @station.lat,
+                 :lon => @station.lon
+          }, :content_type => 'text/x-yaml'}
+    end
+  end
+  
   # GET /stations/new
   # GET /stations/new.xml
   def new
