@@ -56,11 +56,8 @@ class StationsController < ApplicationController
         format.xml  { render :xml => @station }
         format.json  { render :json => @station }
         format.yaml {render :json =>  {
-                :id   => @station.id,
-                :name => @station.name,
-                :hw_id => @station.hw_id,
-                :lat => @station.lat,
-                :lon => @station.lon
+                :id    => @station.id,
+                :hw_id => @station.hw_id
           }, :content_type => 'text/x-yaml'}
         end
       end
