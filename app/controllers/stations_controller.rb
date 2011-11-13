@@ -23,6 +23,7 @@ class StationsController < ApplicationController
   def show
     @station = Station.find(params[:id])
 
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @station }
@@ -42,18 +43,27 @@ class StationsController < ApplicationController
   def find
     @station = Station.find_by_hw_id(params[:imei])
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @station }
-      format.json  { render :json => @station }
-      format.yaml {render :json =>  {
-                  :id   => @station.id,
-                 :name => @station.name,
-                 :hw_id => @station.hw_id,
-                 :lat => @station.lat,
-                 :lon => @station.lon
+    if(@station.nil?)
+      respond_to do |format|
+        format.html { head :not_found }
+        format.xml  { head :not_found }
+        format.json { head :not_found }
+        format.yaml { head :not_found, :content_type => 'text/x-yaml'}
+      end
+    else
+      respond_to do |format|
+        format.html # show.html.erb
+        format.xml  { render :xml => @station }
+        format.json  { render :json => @station }
+        format.yaml {render :json =>  {
+                :id   => @station.id,
+                :name => @station.name,
+                :hw_id => @station.hw_id,
+                :lat => @station.lat,
+                :lon => @station.lon
           }, :content_type => 'text/x-yaml'}
-    end
+        end
+      end
   end
   
   # GET /stations/new
