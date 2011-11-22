@@ -1,25 +1,10 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>Name:</b>
-  <%= @station.name %>
+  <b>Name:</b><%= @station.name %> <b>Lat:</b><%= @station.lat %> <b>Lon:</b><%= @station.lon %>
 </p>
-
-<p>
-  <b>Hw:</b>
-  <%= @station.hw_id %>
-</p>
-
-<p>
-  <b>Lat:</b>
-  <%= @station.lat %>
-</p>
-
-<p>
-  <b>Lon:</b>
-  <%= @station.lon %>
-</p>
-
+<div id='speed'></div><div id='direction'></div>
+<%= render_chart(@speed_chart, 'speed') %><%= render_chart(@dir_chart, 'direction') %>
 
 <%= link_to 'Edit', edit_station_path(@station) %> |
 <%= link_to 'Back', stations_path %>

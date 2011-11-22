@@ -3,7 +3,7 @@ class MeasuresController < ApplicationController
   # GET /measures.xml
   def index
     @measures = Measure.all
-
+    
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @measures }

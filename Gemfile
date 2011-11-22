@@ -17,6 +17,8 @@ gem 'mysql2', '< 0.3'
 # gem 'ruby-debug'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
+gem "google_visualr", "~> 2.1.0"
+
 # Bundle the extra gems:
 # gem 'bj'
 # gem 'nokogiri'
