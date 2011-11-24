@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110828142159) do
+ActiveRecord::Schema.define(:version => 20111124185012) do
 
   create_table "measures", :force => true do |t|
     t.float    "speed"
@@ -19,6 +19,9 @@ ActiveRecord::Schema.define(:version => 20110828142159) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "station_id"
+    t.float    "max_wind_speed"
+    t.float    "min_wind_speed"
+    t.float    "temperature"
   end
 
   create_table "stations", :force => true do |t|

@@ -1,0 +1,15 @@
+<h1>Listing wind stations</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+
+<% @stations.each do |station| %>
+  <tr>
+    <td><%= link_to station.name, station %> <% unless station.current_measure.nil? %> <%= number_with_precision(station.current_measure.speed/10, :precision => 1) %> m/s 
+ <%= number_with_precision(station.current_measure.direction/10, :precision => 1)  %>°<% end %></td>
+  </tr>
+<% end %>
+</table>
+

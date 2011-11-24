@@ -5,13 +5,15 @@
     <th>Speed</th>
     <th>Direction</th>
     <th>When</th>
+		<th>Diff</th>
   </tr>
 
 <% @measures.each do |measure| %>
   <tr>
     <td><%= number_with_precision(measure.speed/10, :precision => 1) unless measure.speed.nil? %>m/s</td>
     <td><%= number_with_precision(measure.direction/10, :precision => 1)unless measure.direction.nil? %>°</td>
-    <td><%= time_ago_in_words(measure.created_at) %></td>
+    <td><%= measure.created_at %></td>
+		<td><%= measure.time_diff %></td>
   </tr>
 <% end %>
 </table>

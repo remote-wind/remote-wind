@@ -5,7 +5,14 @@ class StationsController < ApplicationController
     @stations = Station.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html {
+        @stations.each do |s|
+          unless s.current_measure.nil?
+            logger.debug s.current_measure.id
+            logger.debug s.current_measure.speed
+          end
+        end
+      }
       format.xml  { render :xml => @stations }
       format.json  {render :json =>  @stations}
       format.yaml {render :json =>  @stations.map { |m| {
@@ -60,6 +67,14 @@ class StationsController < ApplicationController
                  :lat => @station.lat,
                  :lon => @station.lon
           }, :content_type => 'text/x-yaml'}
+    end
+  end
+
+  def list
+    @stations = Station.all
+
+    respond_to do |format|
+      format.html # index.html.erb
     end
   end
 

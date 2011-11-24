@@ -1,8 +1,11 @@
 RemoteWind::Application.routes.draw do
   resources :measures
 
+  match 'stations/list' => 'stations#list'
   resources :stations
   match 'stations/find/:imei' => 'stations#find'
+  
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

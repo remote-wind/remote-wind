@@ -6,5 +6,6 @@ class Station < ActiveRecord::Base
                      :lng_column_name => :lon
 
   has_many :measures
+  has_one :current_measure, :class_name => "Measure", :order => 'id desc'
   
 end

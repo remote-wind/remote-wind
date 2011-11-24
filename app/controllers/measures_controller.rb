@@ -5,7 +5,17 @@ class MeasuresController < ApplicationController
     @measures = Measure.all
     
     respond_to do |format|
-      format.html # index.html.erb
+      format.html {
+        previous = nil;
+        @measures.each do |m|
+          if(previous.nil?) then
+            m.time_diff = 0
+          else 
+            m.time_diff = m.created_at-previous.created_at
+          end
+          previous = m
+        end
+      }
       format.xml  { render :xml => @measures }
       format.json  {render :json =>  @measures}
       format.yaml {render :json =>  @measures.map { |m| {

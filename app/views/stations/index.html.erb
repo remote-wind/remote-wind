@@ -1,29 +1,69 @@
-<h1>Listing stations</h1>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Hw</th>
-    <th>Lat</th>
-    <th>Lon</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<h1>Wind stations</h1>
+<%= link_to 'List', '/stations/list', :class => "actionbutton"  %>
+<div id="current">Initializing...</div>
+<div id="map_canvas" style="width:300px; height:350px"></div>
 
-<% @stations.each do |station| %>
-  <tr>
-    <td><%= station.name %></td>
-    <td><%= station.hw_id %></td>
-    <td><%= station.lat %></td>
-    <td><%= station.lon %></td>
-    <td><%= link_to 'Show', station %></td>
-    <td><%= link_to 'Edit', edit_station_path(station) %></td>
-    <td><%= link_to 'Destroy', station, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+<script>
+function initialize_map()
+{
+    var myOptions = {
+	      zoom: 4,
+	      mapTypeControl: true,
+	      mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
+	      navigationControl: true,
+	      navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+	      mapTypeId: google.maps.MapTypeId.ROADMAP      
+	    }	
+	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	
+}
 
-<br />
 
-<%= link_to 'New Station', new_station_path %>
+function initialize()
+{
+	<% last_station = nil %>
+	<% for station in @stations %>
+		<% if station.lat %>
+  		addMarker(new google.maps.LatLng(<%= station.lat %> ,<%= station.lon %>),map, "<%= station.name %>", ' <%= link_to(station.name, url_for(station)) %> <% unless station.current_measure.nil? %> <%= number_with_precision(station.current_measure.speed/10, :precision => 1) %> m/s <%= number_with_precision(station.current_measure.direction/10, :precision => 1)  %>°<% end %>');
+			<% last_station = station %>
+		<% end %>
+	<% end %>
+	<% unless last_station.nil? %>
+		//map.panTo(new google.maps.LatLng(<%= last_station.lat %> ,<%= last_station.lon %>));
+	<% end %>
+		
+	if(geo_position_js.init()) {
+		document.getElementById('current').innerHTML="Receiving...";
+		geo_position_js.getCurrentPosition(show_map_based_on_position, function() {document.getElementById('current').innerHTML="Couldn't get location";},{enableHighAccuracy:true});
+	} else {
+		document.getElementById('current').innerHTML="Your position is not available";
+		show_map_based_on_last_station(<%= last_station.lat %>, <%= last_station.lon %>);
+	}
+}
+
+function addMarker(pos, map, title, text) {
+  var infowindow = new google.maps.InfoWindow({content: text});  
+	var marker = new google.maps.Marker({ position: pos, map: map, title: title });
+
+	google.maps.event.addListener(marker, 'click', function() {
+	  infowindow.open(map,marker);
+	});
+}
+
+function show_map_based_on_last_station(lat, lng) {
+	map.panTo(new google.maps.LatLng(lat, lng));
+}
+
+function show_map_based_on_position(p) {
+	document.getElementById('current').innerHTML="Your position (" +p.coords.latitude.toFixed(2)+ 
+		","+p.coords.longitude.toFixed(2)+")";
+	var pos = new google.maps.LatLng(p.coords.latitude,p.coords.longitude);
+	map.setCenter(pos);
+	map.setZoom(14);	
+}
+
+initialize_map();
+initialize()
+
+</script >
