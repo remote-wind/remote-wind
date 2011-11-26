@@ -48,9 +48,43 @@ class MeasuresController < ApplicationController
 
   # POST /measures
   # POST /measures.xml
+  #s    "speed"
+  #d    "direction"
+  #i "station_id"
+  #max    "max_wind_speed"
+  #min    "min_wind_speed"
+  #t    "temperature"
   def create
-    @measure = Measure.new(params[:measure])
-
+    if(!params[:m].nil?)
+      logger.debug "Short form"
+      # parse out parameters from our short format and rebuild params as it normally look like
+      params[:measure] = HashWithIndifferentAccess.new
+      if(!params[:m][:s].nil?)
+        params[:measure][:speed] = params[:m][:s]
+      end
+      if(!params[:m][:d].nil?)
+        params[:measure][:direction] = params[:m][:d]
+      end
+      if(!params[:m][:i].nil?)
+        params[:measure][:station_id] = params[:m][:i]
+      end
+      if(!params[:m][:max].nil?)
+        params[:measure][:max_wind_speed] = params[:m][:max]
+      end
+      if(!params[:m][:min].nil?)
+        params[:measure][:min_wind_speed] = params[:m][:min]
+      end
+      if(!params[:m][:t].nil?)
+        params[:measure][:temperature] = params[:m][:t]
+      end
+      params.delete :m
+      @measure = Measure.new(params[:measure])
+    elsif(!params[:measure].nil?)
+      logger.debug "Long form"
+      @measure = Measure.new(params[:measure])
+    else
+      render :status => 500, :nothing => true and return
+    end
     respond_to do |format|
       if @measure.save
         render :status => 200, :nothing => true and return
