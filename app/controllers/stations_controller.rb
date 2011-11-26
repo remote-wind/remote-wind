@@ -45,7 +45,7 @@ class StationsController < ApplicationController
         measures = @station.measures.find(:all, :limit => 144, :order => "id desc").reverse
         
         measures.each do |m| 
-          wind_speed.add_row( [ m.created_at, m.speed/10] )
+          wind_speed.add_row( [ m.created_at, m.speed/100] )
           wind_dir.add_row( [ m.created_at, m.direction/10] )
         end
 
@@ -69,6 +69,30 @@ class StationsController < ApplicationController
           }, :content_type => 'text/x-yaml'}
     end
   end
+
+  # GET /stations/1/measures
+  # GET /stations/1/measures.xml
+  def measures
+    @station = Station.find(params[:id])
+    @measures = @station.measures.find(:all, :order => "id desc")
+    respond_to do |format|
+      format.html {
+        previous = nil;
+        @measures.each do |m|
+          if(previous.nil?) then
+            m.time_diff = 0
+          else 
+            m.time_diff = previous.created_at-m.created_at
+          end
+          previous = m
+        end
+      }
+      format.xml  { render :xml => @measures }
+      format.json  {render :json =>  @measures}
+    end
+  end
+
+
 
   def list
     @stations = Station.all

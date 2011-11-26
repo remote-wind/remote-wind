@@ -5,3 +5,6 @@
 #
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Daley', :city => cities.first)
+
+stations= Station.create([{:name => 'Tegefjäll', :hw_id =>'', :lat =>'', :lon =>''},
+                          {:name => 'Mullfjället', :hw_id =>'', :lat =>'', :lon =>''}])
