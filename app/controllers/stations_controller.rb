@@ -29,8 +29,10 @@ class StationsController < ApplicationController
   # GET /stations/1.xml
   def show
     @station = Station.find(params[:id])
-
-    Time.zone = ActiveSupport::TimeZone.create(@station.timezone)
+    logger.debug @station.timezone
+    
+    zone = ActiveSupport::TimeZone.create(@station.timezone)
+    Time.zone = zone unless zone.nil?
         
     respond_to do |format|
       format.html {
