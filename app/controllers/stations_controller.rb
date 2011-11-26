@@ -173,7 +173,7 @@ class StationsController < ApplicationController
     @station = Station.find(params[:id])
     places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
     @station.timezone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
-    logger.debug @station.timezone
+    logger.info @station.timezone
     
     respond_to do |format|
       if @station.update_attributes(params[:station])
