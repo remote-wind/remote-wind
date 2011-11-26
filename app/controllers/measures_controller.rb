@@ -78,6 +78,7 @@ class MeasuresController < ApplicationController
         params[:measure][:temperature] = params[:m][:t]
       end
       params.delete :m
+      logger.debug "Parameters " + params[:measure].to_s
       @measure = Measure.new(params[:measure])
     elsif(!params[:measure].nil?)
       logger.debug "Long form"
