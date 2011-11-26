@@ -78,7 +78,8 @@ class StationsController < ApplicationController
   def measures
     @station = Station.find(params[:id])
 
-    Time.zone = ActiveSupport::TimeZone.create(@station.timezone)
+    zone = ActiveSupport::TimeZone.create(@station.timezone)
+    Time.zone = zone unless zone.nil?
 
     @measures = @station.measures.find(:all, :order => "id desc")
     respond_to do |format|
@@ -154,7 +155,8 @@ class StationsController < ApplicationController
   def create
     @station = Station.new(params[:station])
     places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
-    @station.timezone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
+    zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
+    @station.timezone  = zone unless zone.nil?
 
     respond_to do |format|
       if @station.save
@@ -172,8 +174,8 @@ class StationsController < ApplicationController
   def update
     @station = Station.find(params[:id])
     places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
-    @station.timezone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
-    logger.info @station.timezone
+    zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
+    @station.timezone  = zone unless zone.nil?
     
     respond_to do |format|
       if @station.update_attributes(params[:station])
