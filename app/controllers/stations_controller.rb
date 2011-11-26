@@ -30,7 +30,8 @@ class StationsController < ApplicationController
   def show
     @station = Station.find(params[:id])
 
-    
+    Time.zone = ActiveSupport::TimeZone.create(@station.timezone)
+        
     respond_to do |format|
       format.html {
         wind_speed = GoogleVisualr::DataTable.new
@@ -74,6 +75,9 @@ class StationsController < ApplicationController
   # GET /stations/1/measures.xml
   def measures
     @station = Station.find(params[:id])
+
+    Time.zone = ActiveSupport::TimeZone.create(@station.timezone)
+
     @measures = @station.measures.find(:all, :order => "id desc")
     respond_to do |format|
       format.html {
@@ -147,6 +151,8 @@ class StationsController < ApplicationController
   # POST /stations.xml
   def create
     @station = Station.new(params[:station])
+    places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
+    @station.timezone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
 
     respond_to do |format|
       if @station.save
@@ -163,7 +169,10 @@ class StationsController < ApplicationController
   # PUT /stations/1.xml
   def update
     @station = Station.find(params[:id])
-
+    places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
+    @station.timezone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
+    logger.debug @station.timezone
+    
     respond_to do |format|
       if @station.update_attributes(params[:station])
         format.html { redirect_to(@station, :notice => 'Station was successfully updated.') }

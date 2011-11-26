@@ -27,6 +27,7 @@ gem "google_visualr", "~> 2.1.0"
 
 #gem "geokit"
 gem "geokit-rails3", "~> 0.1.3" # use an updated version of geokit
+gem "flickraw", "~> 0.9.4" # used to lookup timezone based on lat/lon
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
