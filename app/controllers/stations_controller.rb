@@ -35,31 +35,8 @@ class StationsController < ApplicationController
     Time.zone = zone unless zone.nil?
         
     respond_to do |format|
-      format.html {
-        wind_speed = GoogleVisualr::DataTable.new
-        wind_dir = GoogleVisualr::DataTable.new
-        # Add Column Headers 
-        wind_speed.new_column('datetime', 'Time')
-        wind_dir.new_column('datetime', 'Time')
-        wind_speed.new_column('number', 'Speed' )
-        wind_dir.new_column('number', 'Direction' ) 
-        
-        
-        measures = @station.measures.find(:all, :limit => 144, :order => "id desc").reverse
-        
-        measures.each do |m| 
-          wind_speed.add_row( [ m.created_at, m.speed/100] )
-          wind_dir.add_row( [ m.created_at, m.direction/10] )
-        end
-
-        speed_option = { width: 600, height: 400, 
-          vAxes: [{title: 'Wind', maxValue: 20, minValue: 0 }]
-                }
-        dir_opt = { width: 600, height: 300, color: 'red', series: [{color: 'red'}],
-          vAxes: [{title:'Direction', textStyle:{color: 'red'}, maxValue: 300, minValue: 0 } ]
-        }
-        @speed_chart = GoogleVisualr::Interactive::LineChart.new(wind_speed, speed_option)
-        @dir_chart = GoogleVisualr::Interactive::LineChart.new(wind_dir, dir_opt)
+      format.html {        
+        @measures = @station.measures.find(:all, :limit => 144, :order => "id desc").reverse
       }
       format.xml  { render :xml => @station }
       format.json  {render :json =>  @station}
