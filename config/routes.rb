@@ -1,10 +1,12 @@
 RemoteWind::Application.routes.draw do
   resources :measures
 
-  match 'stations/list' => 'stations#list'
+  match 'stations/list' => 'stations#list' # must come before the resource def or list will be interpreted as a station id
   resources :stations
   match 'stations/find/:imei' => 'stations#find'
   match 'stations/:id/measures' => 'stations#measures', :as => :measures
+  
+  root :to => "root#index"
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
