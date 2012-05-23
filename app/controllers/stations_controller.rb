@@ -132,11 +132,11 @@ class StationsController < ApplicationController
   def create
     @station = Station.new(params[:station])
     # set station timezone if station lat and lon given
-    if(!@station.lat.nil? && !@station.lon.nil?) {
+    if(!@station.lat.nil? && !@station.lon.nil?)
       places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
       zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
       @station.timezone  = zone unless zone.nil?
-    }
+    end
 
     respond_to do |format|
       if @station.save
@@ -154,11 +154,11 @@ class StationsController < ApplicationController
   def update
     @station = Station.find(params[:id])
     # set station timezone if station lat and lon given
-    if(!@station.lat.nil? && !@station.lon.nil?) {
+    if(!@station.lat.nil? && !@station.lon.nil?)
       places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
       zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
       @station.timezone  = zone unless zone.nil?
-    }
+    end
     
     respond_to do |format|
       if @station.update_attributes(params[:station])
