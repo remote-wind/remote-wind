@@ -131,9 +131,12 @@ class StationsController < ApplicationController
   # POST /stations.xml
   def create
     @station = Station.new(params[:station])
-    places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
-    zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
-    @station.timezone  = zone unless zone.nil?
+    # set station timezone if station lat and lon given
+    if(!@station.lat.nil? && !@station.lon.nil?) {
+      places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
+      zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
+      @station.timezone  = zone unless zone.nil?
+    }
 
     respond_to do |format|
       if @station.save
@@ -150,9 +153,12 @@ class StationsController < ApplicationController
   # PUT /stations/1.xml
   def update
     @station = Station.find(params[:id])
-    places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
-    zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
-    @station.timezone  = zone unless zone.nil?
+    # set station timezone if station lat and lon given
+    if(!@station.lat.nil? && !@station.lon.nil?) {
+      places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
+      zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
+      @station.timezone  = zone unless zone.nil?
+    }
     
     respond_to do |format|
       if @station.update_attributes(params[:station])
