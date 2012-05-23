@@ -7,7 +7,8 @@ class Station < ActiveRecord::Base
   has_many :measures
   has_one :current_measure, :class_name => "Measure", :order => 'id desc'
   
-  validates :name, :hw_id, :presence => true # must have a name and hw_id
+  # arduino client has not memory enough to post the station name so it cannot be required!
+  validates :hw_id, :presence => true # must have a name and hw_id
   validates :hw_id, :uniqueness => true # and the hw_id must be unique
   
 end

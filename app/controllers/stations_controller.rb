@@ -142,9 +142,11 @@ class StationsController < ApplicationController
       if @station.save
         format.html { redirect_to(@station, :notice => 'Station was successfully created.') }
         format.xml  { render :xml => @station, :status => :created, :location => @station }
+        format.yaml { render :status => :ok, :nothing => true }
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @station.errors, :status => :unprocessable_entity }
+        format.yaml { render :status => :unprocessable_entity, :nothing => true }
       end
     end
   end
