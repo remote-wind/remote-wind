@@ -131,12 +131,17 @@ class StationsController < ApplicationController
   # POST /stations.xml
   def create
     @station = Station.new(params[:station])
+    logger.debug("@station " + @station.inspect)
     # set station timezone if station lat and lon given
     if(!@station.lat.nil? && !@station.lon.nil?)
+      logger.debug("Lat: " + @station.lat.to_s + " Lon: " + @station.lon.to_s)
       places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
+      logger.debug("Places: " + places.inspect)
       zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
+      logger.debug("Zone: " + zone.inspect)
       @station.timezone  = zone unless zone.nil?
     else
+      logger.debug("Lat/Lon not set")
       @station.timezone = nil
     end
 
@@ -157,12 +162,17 @@ class StationsController < ApplicationController
   # PUT /stations/1.xml
   def update
     @station = Station.find(params[:id])
+    logger.debug("@station " + @station.inspect)
     # set station timezone if station lat and lon given
     if(!@station.lat.nil? && !@station.lon.nil?)
+      logger.debug("Lat: " + @station.lat.to_s + " Lon: " + @station.lon.to_s)
       places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
+      logger.debug("Places: " + places.inspect)
       zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
+      logger.debug("Zone: " + zone.inspect)
       @station.timezone  = zone unless zone.nil?
     else
+      logger.debug("Lat/Lon not set")
       @station.timezone = nil
     end
     
