@@ -136,6 +136,8 @@ class StationsController < ApplicationController
       places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
       zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
       @station.timezone  = zone unless zone.nil?
+    else
+      @station.timezone = nil
     end
 
     respond_to do |format|
@@ -160,6 +162,8 @@ class StationsController < ApplicationController
       places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
       zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
       @station.timezone  = zone unless zone.nil?
+    else
+      @station.timezone = nil
     end
     
     respond_to do |format|
