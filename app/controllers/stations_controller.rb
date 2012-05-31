@@ -180,9 +180,11 @@ class StationsController < ApplicationController
       if @station.update_attributes(params[:station])
         format.html { redirect_to(@station, :notice => 'Station was successfully updated.') }
         format.xml  { head :ok }
+        format.yaml { render :status => :ok, :nothing => true }
       else
         format.html { render :action => "edit" }
         format.xml  { render :xml => @station.errors, :status => :unprocessable_entity }
+        format.yaml { render :status => :unprocessable_entity, :nothing => true }
       end
     end
   end

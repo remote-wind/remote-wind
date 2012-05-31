@@ -1,10 +1,22 @@
 <h1>Listing wind stations</h1>
 
 <table>
+	<tr>
+		<th>Name</th><th colspan="2">Last measure</th><th>Position</th><th>IMEI</th><th>Balance</th><th></th>
+	</tr>
 <% @stations.each do |station| %>
   <tr>
-    <td><%= link_to station.name, station %> <% unless station.current_measure.nil? %> <%= number_with_precision(station.current_measure.speed/100, :precision => 1) %> m/s 
- <%= number_with_precision(station.current_measure.direction/10, :precision => 1)  %>°<% end %> (<%= station.lat %>,<%= station.lon %>) IMEI: <%= station.hw_id %> <%= link_to "all measures", measures_url(:id => station.id)  %></td>
+    <td><%= link_to station.name, station %></td>
+		<% unless station.current_measure.nil? %>
+			<td><%= number_with_precision(station.current_measure.speed/100, :precision => 1) %> m/s</td><td>
+ <%= number_with_precision(station.current_measure.direction/10, :precision => 1)  %>°</td>
+		<% else%>
+			<td></td><td></td>
+		<% end %>
+		<td><% unless station.lat.nil? && station.lon.nil? %><%= station.lat %>, <%= station.lon %><%end%></td>
+		<td><%= station.hw_id %></td>
+		<td><% unless station.balance.nil? %><%= station.balance/100%> kr<%end%></td>
+		<td><%= link_to "all measures", measures_url(:id => station.id)  %></td>
   </tr>
 <% end %>
 </table>
