@@ -6,6 +6,14 @@ body, p, ol, ul, td {
   line-height: 18px;
 }
 
+.green {
+	background-color:#dfd; 
+}
+
+.red {
+	background-color:#fdd; 
+}
+
 pre {
   background-color: #eee;
   padding: 10px;
