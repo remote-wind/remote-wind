@@ -3,7 +3,7 @@
 <%= link_to 'List', '/stations/list', :class => "actionbutton"  %>
 <div id="current">Initializing...</div>
 <div id="map_canvas" style="width:300px; height:350px"></div>
-
+<%= link_to_if(can?(:create, Station), 'Register new', new_station_path) %>
 <script>
 function initialize_map()
 {

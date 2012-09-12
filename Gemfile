@@ -29,7 +29,9 @@ gem 'mysql2', '> 0.3'
 gem "geokit-rails3" # use an updated version of geokit
 gem "flickraw" # used to lookup timezone based on lat/lon
 
-#gem 'devise' # used for user authentication
+gem 'devise' # used for user authentication
+gem 'devise_invitable', '~> 1.0.0'
+gem "cancan" # roles management
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators

@@ -1,0 +1,53 @@
+2012-08-20
+Created branch issue5
+Updated to rails 3.0.17 and then to 3.1.8 - http://railscasts.com/episodes/282-upgrading-to-rails-3-1?view=asciicast
+
+removed 
+# JavaScript files you want as :defaults (application.js is always included).
+config.action_view.javascript_expansions[:defaults] = %w(jquery.min rails geo jquery.flot.min jquery.flot.fillbetween)
+from application.rb in config
+
+2012-08-21
+Added devise, model user - simple can sign up, logout etc.
+No verification of e-mail yet
+
+2012-08-26
+Added CanCan. Added Roles and an SuperAdmin in the dev db.
+
+2012-09-09
+Added missing controller for session management now with cancan active.
+Also added two new users, karl-petter@yelloworb.com and kalle@yelloworb.com
+Also made the first SuperAdmin.
+- rails c
+- kp = User.find_by_email('karl-petter@yelloworb.com')
+- kp.roles << Role.find_by_name(:superadmin)
+- kp.save!
+
+Designing sign up/registration process:
+- admin creates user based on e-mail(no mail is sent out) if user does not exist
+- admin registers a new station assigned to the user, email is sent out
+OR
+- user creates an account or has a previous account
+- buys a station and admin register station, email is sent out
+
+created a gmail account to send out mail from yelloworbwebapp@gmail.com, same password as webapp@yelloworb.com
+Tried to add invitations https://github.com/scambra/devise_invitable but it crashes when creating a new station without setting owner from dropdown
+
+Verify the the invitation Gem works
+Add will_paginate Gem
+Add a calendar to select a date to delete data older than that date
+
+Add check of IMEI http://en.wikipedia.org/wiki/International_Mobile_Equipment_Identity
+
+
+start working on issue 5:
+A user can edit position and name of his/her stations
+ - add to user has_many stations
+Add an admin role
+An admin can edit any station
+An admin can add new stations, IMEI only, defaults to noname and no-position, not poistioned flag?
+
+Add testing - guard and spork
+
+- change so stations are identified by stationnames rather than id number
+

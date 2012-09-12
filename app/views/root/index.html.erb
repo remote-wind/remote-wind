@@ -3,3 +3,12 @@
  stations or just see on a <%= link_to "map", stations_path %> where they are.</p>
 <p>Enjoy! Feedback is most welcome, send a <script language="Javascript">n="info";a="@";d="yelloworb";document.write("<a href='mailto:"+n+a+d+".com'>mail to us</a>");
 </script>!</p>
+
+<p>If you have bought your own wind station you can administer it through a personal account.<br />
+<% if user_signed_in? %>
+  <%= link_to('Edit profile', edit_user_registration_path) %> | <%= link_to('Logout', destroy_user_session_path, :method => :delete) %> 
+<% else %>
+  <%= link_to 'Sign up', new_user_registration_path %> | <%= link_to('Login', new_user_session_path)  %>  
+<% end %>
+</p>
+

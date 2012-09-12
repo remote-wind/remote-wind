@@ -1,4 +1,7 @@
 class MeasuresController < ApplicationController
+  
+  skip_authorization_check
+  
   # GET /measures
   # GET /measures.xml
   def index

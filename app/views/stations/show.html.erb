@@ -34,6 +34,8 @@
 </p>
 <div id="placeholder" style="width:600px;height:300px"></div>
 </br>
-<%= link_to "All measures", measures_url(:id => @station.id)  %></br>
-<%= link_to 'Edit', edit_station_path(@station) %> |
+<%= link_to "All measures", measures_url(:id => @station.id)  %> | 
+<% if can? :update, @station %>
+  <%= link_to 'Edit', edit_station_path(@station) %> |
+<% end %>
 <%= link_to 'Back', stations_path %>

@@ -1,4 +1,5 @@
 class StationsController < ApplicationController
+  load_and_authorize_resource
   # GET /stations
   # GET /stations.xml
   def index
@@ -76,8 +77,6 @@ class StationsController < ApplicationController
     end
   end
 
-
-
   def list
     @stations = Station.all
 
@@ -115,6 +114,10 @@ class StationsController < ApplicationController
   # GET /stations/new.xml
   def new
     @station = Station.new
+    
+    @users = User.all
+    @users.delete current_user
+    @users.collect! {|p| [ p.email, p.id ] }
 
     respond_to do |format|
       format.html # new.html.erb
@@ -130,6 +133,20 @@ class StationsController < ApplicationController
   # POST /stations
   # POST /stations.xml
   def create
+    if !params[:user].nil? && !params[:user][:email].nil?
+      user = User.find_by_email(params[:user][:email])
+      if !user.nil?
+        params[:station][:user_id] = user.id
+        params.delete :user
+      else
+        invitation_email = params[:user][:email]
+        params.delete :user
+      end
+    end
+    logger.debug("Parameters #{params}")
+    if params[:station][:user_id].empty?
+      params[:station].delete :user_id
+    end
     @station = Station.new(params[:station])
     logger.debug("@station " + @station.inspect)
     # set station timezone if station lat and lon given
@@ -147,6 +164,15 @@ class StationsController < ApplicationController
 
     respond_to do |format|
       if @station.save
+        if !invitation_email.nil?
+          logger.debug("Invite #{invitation_email}")
+            #User.invite!(:email => invitation_email)
+            AdminMailer.notify_about_new_station_and_invitation(invitation_email, @station).deliver
+        elsif @station.user.nil?
+          AdminMailer.notify_about_new_station_without_owner(@station).deliver
+        else
+          UserMailer.notify_about_new_station(@station.user, @station).deliver
+        end
         format.html { redirect_to(@station, :notice => 'Station was successfully created.') }
         format.xml  { render :xml => @station, :status => :created, :location => @station }
         format.yaml { render :status => :ok, :nothing => true }
@@ -196,7 +222,7 @@ class StationsController < ApplicationController
     @station.destroy
 
     respond_to do |format|
-      format.html { redirect_to(stations_url) }
+      format.html { redirect_to(list_stations_url) }
       format.xml  { head :ok }
     end
   end

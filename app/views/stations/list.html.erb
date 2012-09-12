@@ -2,7 +2,7 @@
 
 <table>
 	<tr>
-		<th>Name</th><th colspan="2">Last measure</th><th>Position</th><th>IMEI</th><th>Balance</th><th></th>
+		<th>Name</th><th colspan="2">Last measure</th><th>No measures</th><th>Position</th><th>IMEI</th><th>Balance</th><th></th><% if !current_user.nil?&&current_user.role?(:superadmin) %><th></th><th>Owner</th><%end%>
 	</tr>
 <% @stations.each do |station| %>
   <tr>
@@ -10,13 +10,17 @@
 		<% unless station.current_measure.nil? %>
 			<td><%= number_with_precision(station.current_measure.speed/100, :precision => 1) %> m/s</td><td>
  <%= number_with_precision(station.current_measure.direction/10, :precision => 1)  %>°</td>
-		<% else%>
+		<% else %>
 			<td></td><td></td>
 		<% end %>
+		<td><%= station.measures.count%></td>
 		<td><% unless station.lat.nil? && station.lon.nil? %><%= station.lat %>, <%= station.lon %><%end%></td>
 		<td><%= station.hw_id %></td>
 		<td><% unless station.balance.nil? %><%= station.balance/100%> kr<%end%></td>
 		<td><%= link_to "all measures", measures_url(:id => station.id)  %></td>
+		<td><%= link_to_if(can?(:edit, Station), 'Edit', edit_station_path(station)) %></td>
+		<td><%= link_to_if(can?(:delete, Station), 'Delete', station_path(station), :confirm => 'Are you sure?', :method => :delete ) %></td>
+		<% if !current_user.nil?&&current_user.role?(:superadmin) %><% if station.user.nil? %><td>None</td><%else%><td><%= station.user.email %></td><%end%><%end%>
   </tr>
 <% end %>
 </table>
