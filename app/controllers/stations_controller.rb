@@ -1,5 +1,4 @@
 class StationsController < ApplicationController
-  skip_authorization_check :only => [:find]
   load_and_authorize_resource
   # GET /stations
   # GET /stations.xml

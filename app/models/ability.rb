@@ -12,7 +12,7 @@ class Ability
     else
       can :read, User
       can :manage, User, :id => user.id # can manage only him/herself
-      can [:read, :list], Station
+      can [:read, :list, :find], Station
     end
 
     # Define abilities for the passed in user here. For example:
