@@ -1,3 +1,3 @@
 class ConfirmationsController < Devise::ConfirmationsController
-  skip_authorization_check :only => [:show, :create]
+  skip_authorization_check :only => [:show, :create, :new]
 end
