@@ -118,6 +118,8 @@ class StationsController < ApplicationController
     @users = User.all
     @users.delete current_user
     @users.collect! {|p| [ p.email, p.id ] }
+    @users.sort!
+    @users.insert(0, ['me', current_user.id] )
 
     respond_to do |format|
       format.html # new.html.erb
@@ -136,6 +138,10 @@ class StationsController < ApplicationController
     if !params[:user].nil? && !params[:user][:email].nil?
       user = User.find_by_email(params[:user][:email])
       if !user.nil?
+        if params[:station][:user_id]!=''
+          # user also selected a user from the dropdown, ignore that and use the entered email
+          params[:station].delete :user_id
+        end
         params[:station][:user_id] = user.id
         params.delete :user
       else
@@ -144,7 +150,7 @@ class StationsController < ApplicationController
       end
     end
     logger.debug("Parameters #{params}")
-    if params[:station][:user_id].empty?
+    if params[:station][:user_id]==''
       params[:station].delete :user_id
     end
     @station = Station.new(params[:station])
@@ -162,12 +168,19 @@ class StationsController < ApplicationController
       @station.timezone = nil
     end
 
+    # create users list if the station cannot be created
+    @users = User.all
+    @users.delete current_user
+    @users.collect! {|p| [ p.email, p.id ] }
+    @users.sort!
+    @users.insert(0, ['me', current_user.id] )
+    
     respond_to do |format|
       if @station.save
         if !invitation_email.nil?
           logger.debug("Invite #{invitation_email}")
-            #User.invite!(:email => invitation_email)
-            AdminMailer.notify_about_new_station_and_invitation(invitation_email, @station).deliver
+          User.invite!(:email => invitation_email, :stations => @station)
+          AdminMailer.notify_about_new_station_and_invitation(invitation_email, @station).deliver
         elsif @station.user.nil?
           AdminMailer.notify_about_new_station_without_owner(@station).deliver
         else

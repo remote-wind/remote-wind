@@ -8,11 +8,11 @@ class Ability
       can :manage, :all
       can :invite, User
     elsif user.role? :user
-      can [:update], Station, :user_id => user.id
-    else
-      can :read, User
+      can :manage, Station, :user_id => user.id # user can only mange his/her stations
       can :manage, User, :id => user.id # can manage only him/herself
-      can [:read, :list, :find], Station
+    else
+      can :read, User # anyone can read a user
+      can [:read, :list, :find], Station # anyone can read, list and find stations
     end
 
     # Define abilities for the passed in user here. For example:

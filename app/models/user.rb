@@ -15,4 +15,10 @@ class User < ActiveRecord::Base
   def role?(role)
       return !!self.roles.find_by_name(role.to_s.camelize)
   end
+  
+  # block invited to to change password without accepting invitation
+  # https://github.com/scambra/devise_invitable/wiki/Disabling-devise-recoverable,-if-invitation-was-not-accepted
+  def send_reset_password_instructions
+    super if invitation_token.nil?
+  end
 end
