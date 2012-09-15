@@ -23,10 +23,7 @@
 					] } ]
 			} );
 	});
-</script>    
-
-<p id="notice"><%= notice %></p>
-
+</script>
 <p>
   <b>Name:</b><%= @station.name %> <b>Lat:</b><%= @station.lat %> <b>Lon:</b><%= @station.lon %></br>
 	<% unless @measures.empty? %><b>Last measure:</b><%= number_with_precision(@measures.last.speed/100, :precision => 1) %> m/s <b>Max:</b><%= number_with_precision(@measures.last.max_wind_speed/100, :precision => 1) %> m/s <b>Min:</b><%= number_with_precision(@measures.last.min_wind_speed/100, :precision => 1) %> m/s at <%= @measures.last.created_at.to_s(:myDateTimeFormat) %><%end%></br>
