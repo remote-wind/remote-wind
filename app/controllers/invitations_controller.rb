@@ -1,5 +1,4 @@
 class InvitationsController < Devise::InvitationsController
-  load_and_authorize_resource :user, :parent => false
   skip_authorization_check :only => [:accept]
   def new
     if cannot?( :invite, User )
