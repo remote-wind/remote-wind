@@ -6,4 +6,6 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.flot.min
+//= require jquery.flot.fillbetween
 //= require_tree .
