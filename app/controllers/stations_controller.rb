@@ -228,15 +228,92 @@ class StationsController < ApplicationController
     end
   end
 
+  # PUT /stations/remove/1
+  def remove
+    @station = Station.find(params[:id])
+    @station.user = nil
+    @station.save
+  
+    respond_to do |format|
+      format.html { redirect_to(list_stations_url) }
+      format.xml  { head :ok }
+    end
+  end
+
   # DELETE /stations/1
   # DELETE /stations/1.xml
   def destroy
     @station = Station.find(params[:id])
     @station.destroy
-
+    
     respond_to do |format|
       format.html { redirect_to(list_stations_url) }
       format.xml  { head :ok }
+    end
+  end
+  
+  def clear_measures
+    @station = Station.find(params[:id])
+    zone = ActiveSupport::TimeZone.create(@station.timezone)
+    Time.zone = zone unless zone.nil?
+    measures = @station.measures.find(:all, :order => :created_at)
+    
+    respond_to do |format|
+      if measures.count != 0
+        @start = measures.first.created_at - 1.minute
+        @end = measures.last.created_at + 1.minute
+        format.html
+      else
+        response = "No measures to delete for that station!"
+        format.html { redirect_to(list_stations_path, :alert => response) }
+      end
+    end
+  end
+  
+  def clear
+    logger.debug("Parameters #{params}")
+    @station = Station.find(params[:id])
+    start_date = Time.new(params[:start_date][:year], params[:start_date][:month], params[:start_date][:day], params[:start_date][:hour], params[:start_date][:minute])
+
+  end_date =   Time.new(params[:end_date][:year], params[:end_date][:month], params[:end_date][:day], params[:end_date][:hour], params[:end_date][:minute])
+  
+    measures = @station.measures.find(:all, :conditions => [" created_at between ? AND ?", start_date , end_date])
+    logger.debug("Found #{measures.count} to clear")
+    count = measures.count
+    if count != 0
+      measures.map { |x| x.destroy }
+    end
+    respond_to do |format|
+      if count != 0
+        response = "Deleted #{count} measures."
+        format.html { redirect_to(list_stations_path, :notice => response ) }
+      else
+        response = "No measures within that time span, no deleted!"
+         format.html { redirect_to(clear_measures_path, :alert => response) }
+      end
+    end
+  end
+  
+  # GET 
+  def assign
+    # pass assigned stations as a hidden parameter and selected user
+    @stations = Station.all
+    @users = User.all
+
+    respond_to do |format|
+      format.html
+    end
+  end
+  
+  # POST
+  def make_assignment
+  end
+  
+  def list_current_users
+    @stations = current_user.stations
+
+    respond_to do |format|
+      format.html { render :action => "list" }
     end
   end
 end

@@ -1,12 +1,19 @@
 RemoteWind::Application.routes.draw do
   devise_for :users, :controllers => { :registrations => "registrations", :confirmations => "confirmations", :sessions => "sessions", :passwords => "passwords", :invitations => "invitations" }
 
+  as :user do
+    get 'users/stations' => 'stations#list_current_users', :as => :user_stations
+  end
   resources :measures
 
-  match 'stations/list' => 'stations#list', :as => :list_stations # must come before the resource def or list will be interpreted as a station id
+  get 'stations/assign' => 'stations#assign', :as => :assign_stations # must come before the resource def or list will be interpreted as a station id
+  
+  get 'stations/list' => 'stations#list', :as => :list_stations # must come before the resource def or list will be interpreted as a station id
   resources :stations
-  match 'stations/find/:imei' => 'stations#find'
-  match 'stations/:id/measures' => 'stations#measures', :as => :measures
+  get 'stations/find/:imei' => 'stations#find'
+  get 'stations/:id/measures' => 'stations#measures', :as => :measures
+  get 'stations/:id/measures/clear' => 'stations#clear_measures', :as => :clear_measures
+  post 'stations/:id/measures/clear' => 'stations#clear'
   
   root :to => "root#index"
   

@@ -12,4 +12,7 @@ class Station < ActiveRecord::Base
   validates :hw_id, :presence => true # must have a hw_id
   validates :hw_id, :uniqueness => true # and the hw_id must be unique
   
+  def owned_by?(owner)
+    user==owner
+  end
 end

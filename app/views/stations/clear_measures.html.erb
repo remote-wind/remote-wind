@@ -1,0 +1,7 @@
+<h1>Clear measures</h1>
+Select dates between which all measures will be deleted!
+<%= form_tag :method => :clear do %>
+From <%= select_datetime(@start, :prefix => 'start_date') %> to
+<%= select_datetime(@end, :prefix => 'end_date') %><br />
+<%= submit_tag "Clear" %>
+<%end%>

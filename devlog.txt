@@ -209,14 +209,14 @@ Tried to add invitations https://github.com/scambra/devise_invitable but it cras
 The invitation system works. Only SuperAdmin can invite new users.
 At the moment this is only accessible through new station-registrations. Admin selects an existing user or enters a new e-mail. If user does not exist an invitation is sent out. Otherwise the station is just added to the user. It is also possible to just invite a user using the path users/invitation/new without creating a station.
 
+2012-09-16
+Fixed an issue with Flot and the order of javascript files in application.js
+Started to work on admin functions such as assign an existing user to an existing station, last thing done was to try to make a delete from the user just remove the station as his/her and only allow admin to actually delete
 
+2012-09-18
+Added function to clear measures from a station - can be improved..
 
 TODO:
-Add will_paginate Gem
-Add a calendar to select a date to delete data older than that date
-
-Add check of IMEI http://en.wikipedia.org/wiki/International_Mobile_Equipment_Identity
-
 
 start working on issue 5:
 A user can edit position and name of his/her stations
@@ -224,6 +224,11 @@ A user can edit position and name of his/her stations
 
 An admin can edit any station
 Add a not positioned flag? or will lat/lon be nil?
+
+Add will_paginate Gem
+Add a calendar to select a date to delete data older than that date
+
+Add check of IMEI http://en.wikipedia.org/wiki/International_Mobile_Equipment_Identity
 
 Add testing - guard and spork
 
