@@ -3,7 +3,11 @@
  stations or just see on a <%= link_to "map", stations_path %> where they are or just find one in the <%= link_to 'list', '/stations/list' %>.</p>
 <p>Enjoy! Feedback is most welcome, send a <script language="Javascript">n="info";a="@";d="yelloworb";document.write("<a href='mailto:"+n+a+d+".com'>mail to us</a>");
 </script>!</p>
-
+<% if user_signed_in? %><p>
+	<% if can?(:manage, Station) %><%= link_to "Manage", user_stations_path %> your wind stations.<br /><%end%>
+	<% if can?(:create, Station) %><%= link_to "Register", new_station_path %> a new stations.<br /><%end%>
+	<% if current_user.role?(:super_admin) %><%= link_to "Assign", assign_stations_path %> station to user.<br /><%end%>
+</p><%end%>
 <p>If you have bought your own wind station you can administer it through a personal account.<br />
 <% if user_signed_in? %>
   <%= link_to('Edit profile', edit_user_registration_path) %> | <%= link_to('Logout', destroy_user_session_path, :method => :delete) %> 
