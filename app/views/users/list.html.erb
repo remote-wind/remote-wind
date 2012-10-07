@@ -1,0 +1,13 @@
+<h1>Listing all users</h1>
+
+<table>
+	<tr>
+		<th>E-mail</th><th>Created</th>
+	</tr>
+<% @users.each do |user| %>
+  <tr>
+    <td><%= user.email %></td>
+		<td><%= user.created_at %></td>
+  </tr>
+<% end %>
+</table>

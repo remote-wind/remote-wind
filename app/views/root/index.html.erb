@@ -6,7 +6,10 @@
 <% if user_signed_in? %><p>
 	<% if can?(:manage, Station) %><%= link_to "Manage", user_stations_path %> your wind stations.<br /><%end%>
 	<% if can?(:create, Station) %><%= link_to "Register", new_station_path %> a new stations.<br /><%end%>
-	<% if current_user.role?(:super_admin) %><%= link_to "Assign", assign_stations_path %> station to user.<br /><%end%>
+	<% if current_user.role?(:super_admin) %>
+		<%= link_to "Assign", assign_stations_path %> station to user.<br />
+		<%= link_to "List", list_users_path %> all users.<br />
+		<%end%>
 </p><%end%>
 <p>If you have bought your own wind station you can administer it through a personal account.<br />
 <% if user_signed_in? %>

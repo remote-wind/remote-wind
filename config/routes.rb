@@ -3,6 +3,7 @@ RemoteWind::Application.routes.draw do
 
   as :user do
     get 'users/stations' => 'stations#list_current_users', :as => :user_stations
+    get 'users/list' => 'users#list', :as => :list_users
   end
   resources :measures
 
