@@ -228,6 +228,47 @@ class StationsController < ApplicationController
     end
   end
 
+  def update_balance
+    @station = Station.find(params[:id])
+    logger.debug("@station " + @station.inspect)
+    # set station timezone if station lat and lon given
+    if(!@station.lat.nil? && !@station.lon.nil?)
+      logger.debug("Lat: " + @station.lat.to_s + " Lon: " + @station.lon.to_s)
+      places = flickr.places.findByLatLon(:lat => @station.lat, :lon => @station.lon)
+      logger.debug("Places: " + places.inspect)
+      zone = ActiveSupport::TimeZone::MAPPING.invert[places.first.timezone]
+      logger.debug("Zone: " + zone.inspect)
+      @station.timezone  = zone unless zone.nil?
+    else
+      logger.debug("Lat/Lon not set")
+      @station.timezone = nil
+    end
+    if(!params[:s].nil?)
+      logger.debug "Short form"
+      params[:station] = HashWithIndifferentAccess.new
+      if(!params[:s][:b].nil?)
+        logger.debug "Setting station balance to #{params[:s][:b]}"
+        params[:station][:balance] = params[:s][:b]
+      end
+      params.delete :s
+      logger.debug "Parameters " + params[:station].to_s
+    elsif(!params[:station].nil?)
+      logger.debug "Long form"
+    else
+      render :status => 500, :nothing => true and return
+    end
+    
+    respond_to do |format|
+      if @station.update_attributes(params[:station])
+        format.xml  { head :ok }
+        format.yaml { render :status => :ok, :nothing => true }
+      else
+        format.xml  { render :xml => @station.errors, :status => :unprocessable_entity }
+        format.yaml { render :status => :unprocessable_entity, :nothing => true }
+      end
+    end
+  end
+  
   # PUT /stations/remove/1
   def remove
     @station = Station.find(params[:id])

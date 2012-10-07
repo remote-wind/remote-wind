@@ -216,7 +216,12 @@ Started to work on admin functions such as assign an existing user to an existin
 2012-09-18
 Added function to clear measures from a station - can be improved..
 
+2012-10-07
+Fixed an empty assign stations view to not crash there. Also fixed an issue with accepting invitations and that setting the users password somehow required a timezone to be set. need to investigate.
+Also fixed an SPI for posting station balance, should be somehow authenticated.
+
 TODO:
+Allow a user to position his/her stations
 
 start working on issue 5:
 A user can edit position and name of his/her stations
@@ -233,4 +238,9 @@ Add check of IMEI http://en.wikipedia.org/wiki/International_Mobile_Equipment_Id
 Add testing - guard and spork
 
 - change so stations are identified by stationnames or IMEI rather than id number
+
+Experiment with different visualizations - bars, compass, wind direction, textual information
+
+Add features to judge wind quality and trends, rising, falling, turning, gusty, stable etc
+
 

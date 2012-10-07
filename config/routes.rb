@@ -10,6 +10,7 @@ RemoteWind::Application.routes.draw do
   get 'stations/assign' => 'stations#assign', :as => :assign_stations # must come before the resource def or list will be interpreted as a station id
   
   get 'stations/list' => 'stations#list', :as => :list_stations # must come before the resource def or list will be interpreted as a station id
+  put 's/:id' => 'stations#update_balance' # api for updating station balance
   resources :stations
   get 'stations/find/:imei' => 'stations#find'
   get 'stations/:id/measures' => 'stations#measures', :as => :measures
