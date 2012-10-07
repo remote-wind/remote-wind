@@ -32,7 +32,7 @@ RemoteWind::Application.configure do
   # config.force_ssl = true
 
   # Enable logging on Heroku
-  config.logger = Logger.new(STDOUT)
+  # config.logger = Logger.new(STDOUT)
 
   # See everything in the log (default is :info)
   config.log_level = :debug
@@ -52,7 +52,7 @@ RemoteWind::Application.configure do
   # Disable delivery errors, bad email addresses will be ignored
   config.action_mailer.raise_delivery_errors = false
   # ActionMailer Config
-  config.action_mailer.default_url_options = { :host => 'www.blast.nu' }
+  config.action_mailer.default_url_options = { :host => 'blast.nu' }
   
   # Enable threaded mode
   # config.threadsafe!
@@ -65,5 +65,7 @@ RemoteWind::Application.configure do
   config.active_support.deprecation = :notify
   
   # Devise
+  # must disable initialize on precompile for rake assets:precompile to work. Though not mentiond in https://devcenter.heroku.com/articles/rails31_heroku_cedar
+  # might be an issue with devise
   config.assets.initialize_on_precompile = false
 end
