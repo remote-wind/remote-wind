@@ -32,10 +32,10 @@ RemoteWind::Application.configure do
   # config.force_ssl = true
 
   # Enable logging on Heroku
-  # config.logger = Logger.new(STDOUT)
+  config.logger = Logger.new(STDOUT)
 
   # See everything in the log (default is :info)
-  # config.log_level = :debug
+  config.log_level = :debug
 
   # Use a different logger for distributed setups
   # config.logger = SyslogLogger.new
