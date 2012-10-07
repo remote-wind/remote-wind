@@ -2,7 +2,7 @@
 
 <table>
 	<tr>
-		<th>Name</th><th colspan="2">Last measure</th><th>No measures</th><th>Position</th><th>IMEI</th><th>Balance</th><th><!-- all measures--></th><% if can?(:edit, Station) %><th><!-- edit --></th><%end%><% if can?(:edit, Station) %><th><!-- remove/delete --></th><%end%><% if !current_user.nil?&&current_user.role?(:superadmin) %><th>Owner</th><%end%>
+		<th>Name</th><th colspan="2">Last measure</th><th>No measures</th><th>Position</th><th>IMEI</th><th>Balance</th><th><!-- all measures--></th><% if can?(:edit, Station) %><th><!-- edit --></th><%end%><% if can?(:edit, Station) %><th><!-- remove/delete --></th><%end%><% if !current_user.nil?&&current_user.role?(:super_admin) %><th>Owner</th><%end%>
 	</tr>
 <% @stations.each do |station| %>
   <tr>
@@ -19,9 +19,9 @@
 		<td><% unless station.balance.nil? %><%= station.balance/100%> kr<%end%></td>
 		<td><%= link_to "all measures", measures_url(:id => station.id)  %></td>
 		<% if can?(:edit, station) %><td><%= link_to 'edit', edit_station_path(station)%></td><%end%>
-		<% if !current_user.nil?&&(station.owned_by?(current_user)||current_user.role?(:superadmin))%><td><%= link_to('delete', station_path(station), :confirm => 'Are you sure?', :method => :delete ) %></td><%end%>
-		<% if !current_user.nil?&&current_user.role?(:superadmin) %><% if station.user.nil? %><td>None</td><%else%><td><%= station.user.email %></td><%end%><%end%>
+		<% if !current_user.nil?&&(station.owned_by?(current_user)||current_user.role?(:super_admin))%><td><%= link_to('delete', station_path(station), :confirm => 'Are you sure?', :method => :delete ) %></td><%end%>
+		<% if !current_user.nil?&&current_user.role?(:super_admin) %><% if station.user.nil? %><td>None</td><%else%><td><%= station.user.email %></td><%end%><%end%>
   </tr>
 <% end %>
 </table>
-<% if !current_user.nil?&&current_user.role?(:superadmin) %><%= link_to 'Register new', new_station_path %><% end %>
+<% if !current_user.nil?&&current_user.role?(:super_admin) %><%= link_to 'Register new', new_station_path %><% end %>
