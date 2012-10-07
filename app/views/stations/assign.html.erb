@@ -1,21 +1,16 @@
-<%= form_for @user, :url => assign_badge_to_user_path(:username => @user.username) do |f| %>
-<section>
-	<div class="entry">
-		<% (0..((@badges.length-1)/5)).each do |i| %>
-			<div class="column grid-3">
-				<ul class="badges">
-					<% @badges[(5*i)..(@badges.length<(5*i+4) ? @badges.length : (5*i+4))].each do |badge| %>
-						<li><%= check_box_tag "user[badge_ids][]", 
+<h1>Not implemented yet!</h1>
+<!-- <%= form_for @user, :url => assign_badge_to_user_path(:username => @user.username) do |f| %>
+	<% (0..((@badges.length-1)/5)).each do |i| %>
+		<ul class="badges">
+			<% @badges[(5*i)..(@badges.length<(5*i+4) ? @badges.length : (5*i+4))].each do |badge| %>
+				<li><%= check_box_tag "user[badge_ids][]", 
 																	badge.id, 
 																 	@user.badges.include?(badge), {:id => badge.name } %>
 				      	<%= image_tag badge.image.url %><%= f.label badge.name %></li>
-				  <% end %>
-				</ul>
-			</div> <!-- END column grid-3 -->
+				<% end %>
+		</ul>
+
 		<% end %>
-	</div>
-</section>
-<section>			
-	<div class="column grid-4">
-		<%= f.submit 'Assign' %>
-	</div>
+<%= f.submit 'Assign' %>
+<% end %>
+-->
