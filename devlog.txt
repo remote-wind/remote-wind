@@ -237,7 +237,7 @@ Add check of IMEI http://en.wikipedia.org/wiki/International_Mobile_Equipment_Id
 
 Add testing - guard and spork
 
-- change so stations are identified by stationnames or IMEI rather than id number
+- change so stations are identified by stationnames or IMEI rather than id number(NOT IMEI, that is our security atm)
 
 Experiment with different visualizations - bars, compass, wind direction, textual information
 
