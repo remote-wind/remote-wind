@@ -12,9 +12,9 @@
 
 <% @measures.each do |measure| %>
   <tr>
-    <td><%= number_with_precision(measure.speed/100, :precision => 1) unless measure.speed.nil? %> m/s</td>
- 		<td><%= number_with_precision(measure.max_wind_speed/100, :precision => 1) unless measure.max_wind_speed.nil? %> m/s</td>
- 		<td><%= number_with_precision(measure.min_wind_speed/100, :precision => 1) unless measure.min_wind_speed.nil? %> m/s</td>
+    <td><%= number_with_precision(measure.speed/300, :precision => 1) unless measure.speed.nil? %> m/s</td>
+ 		<td><%= number_with_precision(measure.max_wind_speed/300, :precision => 1) unless measure.max_wind_speed.nil? %> m/s</td>
+ 		<td><%= number_with_precision(measure.min_wind_speed/300, :precision => 1) unless measure.min_wind_speed.nil? %> m/s</td>
     <td><%= number_with_precision(measure.direction/10, :precision => 1)unless measure.direction.nil? %>°</td>
     <td><%= measure.created_at.to_s(:myDateTimeFormat) %></td>
 		<td class="<%= measure.time_diff > 350 ? :red : :green %>"><%= number_with_precision(measure.time_diff, :precision => 0) %></td>

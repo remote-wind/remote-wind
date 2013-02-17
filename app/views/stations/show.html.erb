@@ -1,9 +1,9 @@
 <script type="text/javascript" charset="utf-8">
 	$(function () {
 		var dataset = 	[ 
-		{ yaxis: 1, data: <%= @measures.map { |m| [ (m.created_at.to_i+Time.zone.utc_offset) * 1000, m.max_wind_speed/100]}.to_json %>,  id: "max", lines: { show: true, lineWidth: 0, fill: false} },
-		{ yaxis: 1, data: <%= @measures.map { |m| [ (m.created_at.to_i+Time.zone.utc_offset) * 1000, m.min_wind_speed/100]}.to_json %>,  fillBetween: "max", lines: { show: true, lineWidth: 0, fill: 0.5}, color: "rgb(80,80,255)"},
-		{ yaxis: 1, label: "Windspeed", color: "rgb(0,0,255)", shadowSize: 0, data: <%= @measures.map { |m| [ (m.created_at.in_time_zone.to_i+Time.zone.utc_offset) * 1000, m.speed/100]}.to_json %>},
+		{ yaxis: 1, data: <%= @measures.map { |m| [ (m.created_at.to_i+Time.zone.utc_offset) * 1000, m.max_wind_speed/300]}.to_json %>,  id: "max", lines: { show: true, lineWidth: 0, fill: false} },
+		{ yaxis: 1, data: <%= @measures.map { |m| [ (m.created_at.to_i+Time.zone.utc_offset) * 1000, m.min_wind_speed/300]}.to_json %>,  fillBetween: "max", lines: { show: true, lineWidth: 0, fill: 0.5}, color: "rgb(80,80,255)"},
+		{ yaxis: 1, label: "Windspeed", color: "rgb(0,0,255)", shadowSize: 0, data: <%= @measures.map { |m| [ (m.created_at.in_time_zone.to_i+Time.zone.utc_offset) * 1000, m.speed/300]}.to_json %>},
 		{ yaxis: 2, color: "rgb(255,0,0)", data: <%= @measures.map { |m| [ (m.created_at.in_time_zone.to_i+Time.zone.utc_offset) * 1000, m.direction/10]}.inspect %>, label: "Direction" },
 		];
 		function speedUnitAdder(v, axis) {
@@ -26,7 +26,7 @@
 </script>
 <p>
   <b>Name:</b><%= @station.name %> <b>Lat:</b><%= @station.lat %> <b>Lon:</b><%= @station.lon %></br>
-	<% unless @measures.empty? %><b>Last measure:</b><%= number_with_precision(@measures.last.speed/100, :precision => 1) %> m/s <b>Max:</b><%= number_with_precision(@measures.last.max_wind_speed/100, :precision => 1) %> m/s <b>Min:</b><%= number_with_precision(@measures.last.min_wind_speed/100, :precision => 1) %> m/s at <%= @measures.last.created_at.to_s(:myDateTimeFormat) %><%end%></br>
+	<% unless @measures.empty? %><b>Last measure:</b><%= number_with_precision(@measures.last.speed/300, :precision => 1) %> m/s <b>Max:</b><%= number_with_precision(@measures.last.max_wind_speed/300, :precision => 1) %> m/s <b>Min:</b><%= number_with_precision(@measures.last.min_wind_speed/300, :precision => 1) %> m/s at <%= @measures.last.created_at.to_s(:myDateTimeFormat) %><%end%></br>
 	<% if !@station.balance.nil? %> <b>Balance:</b><%= @station.balance/100 %> kr<% end %></br>
 </p>
 <div id="placeholder" style="width:600px;height:300px"></div>

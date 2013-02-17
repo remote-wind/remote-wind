@@ -25,7 +25,7 @@ function initialize()
 	<% last_station = nil %>
 	<% for station in @stations %>
 		<% if station.lat %>
-  		addMarker(new google.maps.LatLng(<%= station.lat %> ,<%= station.lon %>),map, "<%= station.name %>", ' <%= link_to(station.name, url_for(station)) %> <% unless station.current_measure.nil? %> <%= number_with_precision(station.current_measure.speed/100, :precision => 1) %> m/s <%= number_with_precision(station.current_measure.direction/10, :precision => 1)  %>°<% end %>');
+  		addMarker(new google.maps.LatLng(<%= station.lat %> ,<%= station.lon %>),map, "<%= station.name %>", ' <%= link_to(station.name, url_for(station)) %> <% unless station.current_measure.nil? %> <%= number_with_precision(station.current_measure.speed/300, :precision => 1) %> m/s <%= number_with_precision(station.current_measure.direction/10, :precision => 1)  %>°<% end %>');
 			<% last_station = station %>
 		<% end %>
 	<% end %>
