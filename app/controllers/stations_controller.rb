@@ -39,10 +39,31 @@ class StationsController < ApplicationController
       format.html {        
         @measures = @station.measures.find(:all, 
           :conditions => ["created_at > ?", 12.hours.ago], :order => "id desc").reverse
+        @measures.map! { |m| 
+          m.speed /= 300
+          m.min_wind_speed /= 300
+          m.max_wind_speed /= 300
+          m.direction /= 10
+          m
+          }
         @measures_last_three_hours = @station.measures.find(:all, 
           :conditions => ["created_at > ?", 3.hours.ago])
+        @measures_last_three_hours.map! { |m| 
+            m.speed /= 300
+            m.min_wind_speed /= 300
+            m.max_wind_speed /= 300
+            m.direction /= 10
+            m
+            }
         @measures_last_hour = @station.measures.find(:all, 
           :conditions => ["created_at > ?", 1.hour.ago])
+        @measures_last_hour.map! { |m| 
+              m.speed /= 300
+              m.min_wind_speed /= 300
+              m.max_wind_speed /= 300
+              m.direction /= 10
+              m
+              }
       }
       format.xml  { render :xml => @station }
       format.json  {render :json =>  @station}

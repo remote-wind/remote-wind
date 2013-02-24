@@ -3,20 +3,19 @@
 	<% if @measures.empty? %>
 		No data for last 12 hours
 	<% else %>
-		<%= direction_in_words(@measures.last.direction/10) %> 
-		<%= number_with_precision(@measures.last.speed/300, :precision => 1) %> (<%= number_with_precision(@measures.last.min_wind_speed/300, :precision => 1) %> - 
-		<%= number_with_precision(@measures.last.max_wind_speed/300, :precision => 1) %>) m/s
+		<%= direction_in_words(@measures.last.direction) %> 
+		<%= number_with_precision(@measures.last.speed, :precision => 1) %> (<%= number_with_precision(@measures.last.min_wind_speed, :precision => 1) %> - 
+		<%= number_with_precision(@measures.last.max_wind_speed, :precision => 1) %>) m/s
 		<%= time_ago_in_words(@measures.last.created_at) %> ago(<%= @measures.last.created_at.to_s(:hourMinutesSeconds) %>).<br />
 		<% if !@measures_last_hour.empty? %>
 			<br />
 			1 hour trend<br />
-			<%= @measures_last_hour.count %>
-			<%= number_with_precision(slope(@measures_last_hour.map {|v| (v.created_at - @measures_last_hour.first.created_at).to_i }, @measures_last_hour.map {|v| v.speed/300 })*60, :precision => 1)%> m/s change per minute. <%= number_with_precision(slope(@measures_last_hour.map {|v| (v.created_at - @measures_last_hour.first.created_at).to_i }, @measures_last_hour.map {|v| v.direction/10 })*60, :precision => 1)%>° change per minute.<br />
+			<%= number_with_precision(slope(@measures_last_hour.map {|v| (v.created_at - @measures_last_hour.first.created_at).to_i }, @measures_last_hour.map {|v| v.speed })*60, :precision => 1)%> m/s change per minute. <%= number_with_precision(slope(@measures_last_hour.map {|v| (v.created_at - @measures_last_hour.first.created_at).to_i }, @measures_last_hour.map {|v| v.direction })*60, :precision => 1)%>° change per minute.<br />
 		<%end%>
 		<% if !@measures_last_three_hours.empty? %>
 			<br />
 			3 hours trend<br />
-			<%= number_with_precision(slope(@measures_last_three_hours.map {|v| (v.created_at - @measures_last_three_hours.first.created_at).to_i }, @measures_last_three_hours.map {|v| v.speed/300 })*60, :precision => 1)%> m/s change per minute. <%= number_with_precision(slope(@measures_last_three_hours.map {|v| (v.created_at - @measures_last_three_hours.first.created_at).to_i }, @measures_last_three_hours.map {|v| v.direction/10 })*60, :precision => 1)%>° change per minute.<br />
+			<%= number_with_precision(slope(@measures_last_three_hours.map {|v| (v.created_at - @measures_last_three_hours.first.created_at).to_i }, @measures_last_three_hours.map {|v| v.speed })*60, :precision => 1)%> m/s change per minute. <%= number_with_precision(slope(@measures_last_three_hours.map {|v| (v.created_at - @measures_last_three_hours.first.created_at).to_i }, @measures_last_three_hours.map {|v| v.direction })*60, :precision => 1)%>° change per minute.<br />
 		<%end%>
 	<%end%>
 	<% if can? :update, @station %>
