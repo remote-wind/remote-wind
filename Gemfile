@@ -34,6 +34,8 @@ gem 'devise' # used for user authentication
 gem 'devise_invitable', '~> 1.0.0'
 gem "cancan" # roles management
 
+gem "linefit", :git => 'https://github.com/escline/linefit.git'
+
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:

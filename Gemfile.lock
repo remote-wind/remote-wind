@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/escline/linefit.git
+  revision: 2512b0fe3b114adf17a394415d7a7596ef79c85a
+  specs:
+    linefit (0.3.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -69,7 +75,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.21)
-    multi_json (1.6.0)
+    multi_json (1.6.1)
     mysql2 (0.3.11)
     orm_adapter (0.4.0)
     pg (0.14.1)
@@ -99,7 +105,7 @@ GEM
     rake (10.0.3)
     rdoc (3.12.1)
       json (~> 1.4)
-    sass (3.2.5)
+    sass (3.2.6)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -132,6 +138,7 @@ DEPENDENCIES
   flickraw
   geokit-rails3
   jquery-rails
+  linefit!
   mysql2 (> 0.3)
   pg
   rails (= 3.2.12)

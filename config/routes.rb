@@ -14,6 +14,7 @@ RemoteWind::Application.routes.draw do
   resources :stations
   get 'stations/find/:imei' => 'stations#find'
   get 'stations/:id/measures' => 'stations#measures', :as => :measures
+  get 'stations/:id/chart' => 'stations#show_chart'
   get 'stations/:id/measures/clear' => 'stations#clear_measures', :as => :clear_measures
   post 'stations/:id/measures/clear' => 'stations#clear'
   

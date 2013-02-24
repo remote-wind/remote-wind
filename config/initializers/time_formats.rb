@@ -1,5 +1,5 @@
 Time::DATE_FORMATS[:myDateTimeFormat] = "%Y-%m-%d %H:%M:%S"
-
+Time::DATE_FORMATS[:hourMinutesSeconds] = "%H:%M:%S"
 # datetime.to_formatted_s(:db)            # => "2007-12-04 00:00:00"
 # datetime.to_s(:db)                      # => "2007-12-04 00:00:00"
 # datetime.to_s(:number)                  # => "20071204000000"

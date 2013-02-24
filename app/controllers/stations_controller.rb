@@ -37,7 +37,12 @@ class StationsController < ApplicationController
         
     respond_to do |format|
       format.html {        
-        @measures = @station.measures.find(:all, :limit => 144, :order => "id desc").reverse
+        @measures = @station.measures.find(:all, 
+          :conditions => ["created_at > ?", 12.hours.ago], :order => "id desc").reverse
+        @measures_last_three_hours = @station.measures.find(:all, 
+          :conditions => ["created_at > ?", 3.hours.ago])
+        @measures_last_hour = @station.measures.find(:all, 
+          :conditions => ["created_at > ?", 1.hour.ago])
       }
       format.xml  { render :xml => @station }
       format.json  {render :json =>  @station}
@@ -51,6 +56,20 @@ class StationsController < ApplicationController
     end
   end
 
+  def show_chart
+    @station = Station.find(params[:id])
+    
+    zone = ActiveSupport::TimeZone.create(@station.timezone)
+    Time.zone = zone unless zone.nil?
+        
+    respond_to do |format|
+      format.html {        
+        @measures = @station.measures.find(:all, 
+          :conditions => ["created_at > ?", 12.hours.ago], :order => "id desc").reverse
+      }
+    end
+  end
+  
   # GET /stations/1/measures
   # GET /stations/1/measures.xml
   def measures
@@ -59,7 +78,8 @@ class StationsController < ApplicationController
     zone = ActiveSupport::TimeZone.create(@station.timezone)
     Time.zone = zone unless zone.nil?
 
-    @measures = @station.measures.find(:all, :order => "id desc")
+    @measures = @station.measures.find(:all, 
+      :conditions => ["created_at > ?", 12.hours.ago], :order => "id desc")
     respond_to do |format|
       format.html {
         previous = nil;
