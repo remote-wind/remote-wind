@@ -83,6 +83,11 @@ class MeasuresController < ApplicationController
       params.delete :m
       logger.debug "Parameters " + params[:measure].to_s
       @measure = Measure.new(params[:measure])
+      station = Station.find(params[:measure][:station_id])
+      if !station.nil?
+        station.down = false
+        station.save
+      end
     elsif(!params[:measure].nil?)
       logger.debug "Long form"
       @measure = Measure.new(params[:measure])

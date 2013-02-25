@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120909194800) do
+ActiveRecord::Schema.define(:version => 20130225213745) do
 
   create_table "measures", :force => true do |t|
     t.float    "speed"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(:version => 20120909194800) do
     t.string   "timezone"
     t.float    "balance"
     t.integer  "user_id"
+    t.boolean  "down"
   end
 
   create_table "users", :force => true do |t|

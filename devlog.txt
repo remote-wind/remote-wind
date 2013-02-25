@@ -220,6 +220,13 @@ Added function to clear measures from a station - can be improved..
 Fixed an empty assign stations view to not crash there. Also fixed an issue with accepting invitations and that setting the users password somehow required a timezone to be set. need to investigate.
 Also fixed an SPI for posting station balance, should be somehow authenticated.
 
+2013-02-24
+Added a simple trend analysis
+Simplified the default view
+
+2013-02-25
+Added mail alerts if a station has not got new data for 15 minutes
+
 TODO:
 Allow a user to position his/her stations
 

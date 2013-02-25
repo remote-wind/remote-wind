@@ -15,4 +15,20 @@ class Station < ActiveRecord::Base
   def owned_by?(owner)
     user==owner
   end
+  
+  def self.send_down_alerts
+    stations = Station.find(:all)
+    stations.each do |station|
+      logger.info "Checking station #{station.name}"
+      logger.info "Last measure at #{station.current_measure.created_at}"
+      if station.current_measure.created_at < 15.minutes.ago && !station.down
+        station.down = true
+        station.save
+        if !station.user.nil?
+          logger.info "Send reminder to owner #{station.user}"
+          UserMailer.notify_about_station_down(station.user, station).deliver
+        end
+      end
+    end
+  end
 end
