@@ -7,6 +7,13 @@ class UserMailer < Devise::Mailer
     end
   end
   
+  def notify_about_low_balance(owner, station)
+    @station  = station
+    mail :to => owner.email, :subject => "Low balance for your station #{station.name}" do |format|
+      format.html
+    end
+  end
+  
   def notify_about_station_down(owner, station)
     @station  = station
     mail :to => owner.email, :subject => "Your station #{station.name} has not responded for 15 minutes." do |format|

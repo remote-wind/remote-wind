@@ -8,7 +8,7 @@
   <tr>
     <td><%= link_to station.name, station %><% if station.down %> - <font color="red">down</font><%end%></td>
 		<% unless station.current_measure.nil? %>
-			<td><%= number_with_precision(station.current_measure.speed/300, :precision => 1) %> m/s</td><td>
+			<td><%= number_with_precision(station.calibrate_speed(station.current_measure.speed), :precision => 1) %> m/s</td><td>
  <%= number_with_precision(station.current_measure.direction/10, :precision => 1)  %>°</td>
 		<% else %>
 			<td></td><td></td>

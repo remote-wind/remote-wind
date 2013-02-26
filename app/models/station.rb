@@ -16,6 +16,24 @@ class Station < ActiveRecord::Base
     user==owner
   end
   
+  def calibrate_speed(speed)
+    speed/250
+  end
+  
+  def self.send_low_balance_alerts
+    stations = Station.find(:all)
+    stations.each do |station|
+      logger.info "Checking station #{station.name}"
+      logger.info "Last measure at #{station.current_measure.created_at}"
+      if station.balance/100 < 15 && !station.down
+        if !station.user.nil?
+          logger.info "Send reminder to owner #{station.user}"
+          UserMailer.notify_about_low_balance(station.user, station).deliver
+        end
+      end
+    end
+  end
+  
   def self.send_down_alerts
     stations = Station.find(:all)
     stations.each do |station|
