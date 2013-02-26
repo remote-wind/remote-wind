@@ -46,18 +46,18 @@ class StationsController < ApplicationController
           m.direction /= 10
           m
         }
-        @measures_last_three_hours = @station.measures.find(:all, 
-          :conditions => ["created_at > ?", 3.hours.ago])
-        @measures_last_three_hours.map! { |m| 
+        @measures_short_time = @station.measures.find(:all, 
+          :conditions => ["created_at > ?", 20.minutes.ago])
+        @measures_short_time.map! { |m| 
           m.speed = @station.calibrate_speed(m.speed)
           m.min_wind_speed = @station.calibrate_speed(m.min_wind_speed)
           m.max_wind_speed = @station.calibrate_speed(m.max_wind_speed)
           m.direction /= 10
           m
         }
-        @measures_last_hour = @station.measures.find(:all, 
+        @measures_longer_time = @station.measures.find(:all, 
           :conditions => ["created_at > ?", 1.hour.ago])
-        @measures_last_hour.map! { |m| 
+        @measures_longer_time.map! { |m| 
           m.speed = @station.calibrate_speed(m.speed)
           m.min_wind_speed = @station.calibrate_speed(m.min_wind_speed)
           m.max_wind_speed = @station.calibrate_speed(m.max_wind_speed)
