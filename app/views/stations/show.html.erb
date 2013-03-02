@@ -21,6 +21,7 @@
 </p>
 <%= link_to "Measures", measures_url(:id => @station.id)  %> | 
 <%= link_to 'Chart', :action => "show_chart", :id => @station %> |
+<%= link_to 'Ruben chart', :action => "ruben_chart", :id => @station %> |
 <% if can? :update, @station %>
   <%= link_to 'Edit', edit_station_path(@station) %> |
 <% end %>

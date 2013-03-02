@@ -91,6 +91,23 @@ class StationsController < ApplicationController
     end
   end
   
+  def ruben_chart
+    @station = Station.find(params[:id])
+    
+    zone = ActiveSupport::TimeZone.create(@station.timezone)
+    Time.zone = zone unless zone.nil?
+    
+    @measures = @station.measures.find(:all, 
+      :conditions => ["created_at > ?", 12.hours.ago], :order => "id desc").reverse
+    @chart_min = 20
+    @chart_max = 40
+        
+    respond_to do |format|
+      format.html {        
+        render
+      }
+    end
+  end
   # GET /stations/1/measures
   # GET /stations/1/measures.xml
   def measures
