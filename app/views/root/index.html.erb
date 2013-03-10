@@ -7,7 +7,7 @@
 	<% if can?(:manage, Station) %><%= link_to "Manage", user_stations_path %> your wind stations.<br /><%end%>
 	<% if can?(:create, Station) %><%= link_to "Register", new_station_path %> a new stations.<br /><%end%>
 	<% if current_user.role?(:super_admin) %>
-		<%= link_to "Assign", assign_stations_path %> station to user.<br />
+		<!-- #link_to "Assign", assign_stations_path %>--> Assign station to user.<br />
 		<%= link_to "List", list_users_path %> all users.<br />
 		<%end%>
 </p><%end%>

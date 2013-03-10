@@ -23,7 +23,13 @@
     <%= f.label :lon %><br />
     <%= f.text_field :lon %>
   </div>
+	<%if !current_user.nil?&&(current_user.role?(:super_admin))%>
+		<div class="fields">
+		  	<%= f.label :owner %><br />
+		  	<%= f.select :user_id, @users, {:include_blank => 'None'} %>
+		</div>
+	<%end%>
   <div class="actions">
     <%= f.submit %>
-  </div>
+  </div>	
 <% end %>

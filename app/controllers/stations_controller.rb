@@ -188,6 +188,11 @@ class StationsController < ApplicationController
   # GET /stations/1/edit
   def edit
     @station = Station.find(params[:id])
+    @users = User.all
+    @users.delete current_user
+    @users.collect! {|p| [ p.email, p.id ] }
+    @users.sort!
+    @users.insert(0, ['me', current_user.id] )
   end
 
   # POST /stations
@@ -398,6 +403,7 @@ class StationsController < ApplicationController
     # pass assigned stations as a hidden parameter and selected user
     @stations = Station.all
     @users = User.all
+    @user = current_user
 
     respond_to do |format|
       format.html
