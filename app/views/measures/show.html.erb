@@ -1,15 +1,31 @@
-<p id="notice"><%= notice %></p>
+<%- model_class = Measure -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human %></h1>
+</div>
 
-<p>
-  <b>Speed:</b>
-  <%= @measure.speed %>
-</p>
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:speed) %>:</strong></dt>
+  <dd><%= @measure.speed %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:direction) %>:</strong></dt>
+  <dd><%= @measure.direction %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:station_id) %>:</strong></dt>
+  <dd><%= @measure.station_id %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:max_wind_speed) %>:</strong></dt>
+  <dd><%= @measure.max_wind_speed %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:min_wind_speed) %>:</strong></dt>
+  <dd><%= @measure.min_wind_speed %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:temperature) %>:</strong></dt>
+  <dd><%= @measure.temperature %></dd>
+</dl>
 
-<p>
-  <b>Direction:</b>
-  <%= @measure.direction %>
-</p>
-
-
-<%= link_to 'Edit', edit_measure_path(@measure) %> |
-<%= link_to 'Back', measures_path %>
+<div class="form-actions">
+  <%= link_to t('.back', :default => t("helpers.links.back")),
+              measures_path, :class => 'btn'  %>
+  <%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_measure_path(@measure), :class => 'btn' %>
+  <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              measure_path(@measure),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>
+</div>

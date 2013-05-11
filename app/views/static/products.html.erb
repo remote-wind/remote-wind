@@ -1,0 +1,18 @@
+<h1>Wind Stations</h1>
+<p>Our wind stations are available in three different models.</p>
+<div class="row">
+<div class="span3">
+<%= link_to image_tag('vindstation-001-200px.jpg', :class => "img-polaroid"), asset_path("vindstation-001.jpg"), :class => "gallery" %><br />
+Just the electronics</div>
+<div class="span3">
+<%= link_to image_tag('vindstation-002-200px.jpg', :class => "img-polaroid"), asset_path("vindstation-002.jpg"), :class => "gallery" %><br />
+Electronics mounted in a weather proof case and with a battery monitor</div>
+<div class="span3">
+	<%= link_to image_tag('vindstation-003-200px.jpg', :class => "img-polaroid"), asset_path("vindstation-003.jpg"), :class => "gallery" %><br />
+Electronics mounted in a weather proof case with battery and solar cell</div>
+</div>
+<script>
+$(document).ready(function() {
+    jQuery('a.gallery').colorbox({ rel: "gallery", transition: "fade", width: "75%", height: "75%" });
+});
+</script>

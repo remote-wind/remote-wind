@@ -1,25 +1,44 @@
-<%= form_for(@measure) do |f| %>
-  <% if @measure.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@measure.errors.count, "error") %> prohibited this measure from being saved:</h2>
-
-      <ul>
-      <% @measure.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+<%= form_for @measure, :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="control-group">
+    <%= f.label :speed, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :speed, :class => 'text_field' %>
     </div>
-  <% end %>
+  </div>
+  <div class="control-group">
+    <%= f.label :direction, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :direction, :class => 'text_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :station_id, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.number_field :station_id, :class => 'number_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :max_wind_speed, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :max_wind_speed, :class => 'text_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :min_wind_speed, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :min_wind_speed, :class => 'text_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :temperature, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :temperature, :class => 'text_field' %>
+    </div>
+  </div>
 
-  <div class="field">
-    <%= f.label :speed %><br />
-    <%= f.text_field :speed %>
-  </div>
-  <div class="field">
-    <%= f.label :direction %><br />
-    <%= f.text_field :direction %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                measures_path, :class => 'btn' %>
   </div>
 <% end %>

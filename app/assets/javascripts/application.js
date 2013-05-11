@@ -6,6 +6,8 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require twitter/bootstrap
+//= require jquery.colorbox-min
 //= require jquery.flot.min
 //= require jquery.flot.fillbetween
 //= require_tree .

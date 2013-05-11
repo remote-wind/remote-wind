@@ -19,6 +19,8 @@ RemoteWind::Application.routes.draw do
   get 'stations/:id/measures/clear' => 'stations#clear_measures', :as => :clear_measures
   post 'stations/:id/measures/clear' => 'stations#clear'
   
+  get ':action' => 'static#:action'
+
   root :to => "root#index"
   
   # The priority is based upon order of creation:
