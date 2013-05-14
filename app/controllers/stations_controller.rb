@@ -36,34 +36,17 @@ class StationsController < ApplicationController
     Time.zone = zone unless zone.nil?
         
     respond_to do |format|
-      format.html {        
-        @measures = @station.measures.find(:all, 
-          :conditions => ["created_at > ?", 12.hours.ago], :order => "id desc").reverse
-        @measures.map! { |m| 
-          m.speed = @station.calibrate_speed(m.speed)
-          m.min_wind_speed = @station.calibrate_speed(m.min_wind_speed)
-          m.max_wind_speed = @station.calibrate_speed(m.max_wind_speed)
-          m.direction /= 10
-          m
-        }
-        @measures_short_time = @station.measures.find(:all, 
-          :conditions => ["created_at > ?", 20.minutes.ago])
-        @measures_short_time.map! { |m| 
-          m.speed = @station.calibrate_speed(m.speed)
-          m.min_wind_speed = @station.calibrate_speed(m.min_wind_speed)
-          m.max_wind_speed = @station.calibrate_speed(m.max_wind_speed)
-          m.direction /= 10
-          m
-        }
-        @measures_longer_time = @station.measures.find(:all, 
-          :conditions => ["created_at > ?", 1.hour.ago])
-        @measures_longer_time.map! { |m| 
-          m.speed = @station.calibrate_speed(m.speed)
-          m.min_wind_speed = @station.calibrate_speed(m.min_wind_speed)
-          m.max_wind_speed = @station.calibrate_speed(m.max_wind_speed)
-          m.direction /= 10
-          m
-        }
+      format.html {
+        @measure = @station.measures.last
+        @measure.speed = @station.calibrate_speed(@measure.speed)
+        @measure.min_wind_speed = @station.calibrate_speed(@measure.min_wind_speed)
+        @measure.max_wind_speed = @station.calibrate_speed(@measure.max_wind_speed)
+        @measure.direction /= 10
+        if((@measure.created_at < 12.hours.ago) && (!params[:latest_measure]))
+          @measure = nil
+        end
+        @measures_short_time = get_calibrated_measures(@station, 20.minutes.ago)
+        @measures_longer_time = get_calibrated_measures(@station, 1.hour.ago)
       }
       format.xml  { render :xml => @station }
       format.json  {render :json =>  @station}
@@ -77,16 +60,71 @@ class StationsController < ApplicationController
     end
   end
 
+  def show_embed
+    @station = Station.find(params[:id])
+    logger.debug @station.timezone
+    
+    zone = ActiveSupport::TimeZone.create(@station.timezone)
+    Time.zone = zone unless zone.nil?
+    
+    @measure = @station.measures.last
+    @measure.speed = @station.calibrate_speed(@measure.speed)
+    @measure.min_wind_speed = @station.calibrate_speed(@measure.min_wind_speed)
+    @measure.max_wind_speed = @station.calibrate_speed(@measure.max_wind_speed)
+    @measure.direction /= 10
+    if((@measure.created_at < 12.hours.ago) && (!params[:latest_measure]))
+      @measure = nil
+    end
+    @measures_short_time = get_calibrated_measures(@station, 20.minutes.ago)
+    @measures_longer_time = get_calibrated_measures(@station, 1.hour.ago)
+    
+    respond_to do |format|
+      format.html {
+        render :layout => "embed"
+      }
+    end
+  end
+
+
   def show_chart
     @station = Station.find(params[:id])
     
     zone = ActiveSupport::TimeZone.create(@station.timezone)
     Time.zone = zone unless zone.nil?
-        
+    
+    if(params[:latest_measures])
+      @measures = get_calibrated_measures(@station, nil)
+    else
+      @measures = get_calibrated_measures(@station, 12.hours.ago)
+    end
+    
+    @chart_min = 0
+    @chart_max = 20
+           
+    respond_to do |format|
+      format.html {
+      }
+    end
+  end
+  
+  def show_embed_chart
+    @station = Station.find(params[:id])
+    
+    zone = ActiveSupport::TimeZone.create(@station.timezone)
+    Time.zone = zone unless zone.nil?
+    
+    if(params[:latest_measures])
+      @measures = get_calibrated_measures(@station, nil)
+    else
+      @measures = get_calibrated_measures(@station, 12.hours.ago)
+    end
+
+    @chart_min = 0
+    @chart_max = 20
+    
     respond_to do |format|
       format.html {        
-        @measures = @station.measures.find(:all, 
-          :conditions => ["created_at > ?", 12.hours.ago], :order => "id desc").reverse
+        render :layout => "embed"
       }
     end
   end
@@ -420,5 +458,24 @@ class StationsController < ApplicationController
     respond_to do |format|
       format.html { render :action => "list" }
     end
+  end
+  
+  protected
+  def get_calibrated_measures(station, time_ago)
+   if(nil == time_ago)
+      measures = station.measures.find(:all, :limit => 144, :order => "id desc").reverse
+    else
+      measures = station.measures.find(:all, 
+        :conditions => ["created_at > ?", time_ago], :order => "id desc").reverse
+    end
+
+    measures.map! { |m| 
+      m.speed = station.calibrate_speed(m.speed)
+      m.min_wind_speed = station.calibrate_speed(m.min_wind_speed)
+      m.max_wind_speed = station.calibrate_speed(m.max_wind_speed)
+      m.direction /= 10
+      m
+    }
+    return measures
   end
 end

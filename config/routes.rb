@@ -15,6 +15,8 @@ RemoteWind::Application.routes.draw do
   get 'stations/find/:imei' => 'stations#find'
   get 'stations/:id/measures' => 'stations#measures', :as => :measures
   get 'stations/:id/chart' => 'stations#show_chart'
+  get 'stations/:id/embed/chart/' => 'stations#show_embed_chart', :as => :show_embed_chart_station
+  get 'stations/:id/embed' => 'stations#show_embed', :as => :show_embed_station
   get 'stations/:id/ruben' => 'stations#ruben_chart'
   get 'stations/:id/measures/clear' => 'stations#clear_measures', :as => :clear_measures
   post 'stations/:id/measures/clear' => 'stations#clear'

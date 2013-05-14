@@ -12,7 +12,8 @@ class Ability
       can :manage, User, :id => user.id # can manage only him/herself
     else
       can :read, User # anyone can read a user
-      can [:read, :list, :find, :measures, :update_balance, :show_chart, :ruben_chart], Station # anyone can read, list and find stations
+      can [:read, :list, :find, :measures, :update_balance, :show_chart, 
+        :ruben_chart, :show_embed, :show_embed_chart], Station # anyone can read, list and find stations
     end
 
     # Define abilities for the passed in user here. For example:
