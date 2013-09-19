@@ -32,21 +32,25 @@ class StationsController < ApplicationController
     @station = Station.find(params[:id])
     logger.debug @station.timezone
     
-    zone = ActiveSupport::TimeZone.create(@station.timezone)
-    Time.zone = zone unless zone.nil?
+    if(nil!= @station.timezone)
+      zone = ActiveSupport::TimeZone.create(@station.timezone)
+      Time.zone = zone unless zone.nil?
+    end
         
     respond_to do |format|
       format.html {
         @measure = @station.measures.last
-        @measure.speed = @station.calibrate_speed(@measure.speed)
-        @measure.min_wind_speed = @station.calibrate_speed(@measure.min_wind_speed)
-        @measure.max_wind_speed = @station.calibrate_speed(@measure.max_wind_speed)
-        @measure.direction /= 10
-        if((@measure.created_at < 12.hours.ago) && (!params[:latest_measure]))
-          @measure = nil
+        unless @measure.nil?
+          @measure.speed = @station.calibrate_speed(@measure.speed)
+          @measure.min_wind_speed = @station.calibrate_speed(@measure.min_wind_speed)
+          @measure.max_wind_speed = @station.calibrate_speed(@measure.max_wind_speed)
+          @measure.direction /= 10
+          if((@measure.created_at < 12.hours.ago) && (!params[:latest_measure]))
+            @measure = nil
+          end
+          @measures_short_time = get_calibrated_measures(@station, 20.minutes.ago)
+          @measures_longer_time = get_calibrated_measures(@station, 1.hour.ago)
         end
-        @measures_short_time = get_calibrated_measures(@station, 20.minutes.ago)
-        @measures_longer_time = get_calibrated_measures(@station, 1.hour.ago)
       }
       format.xml  { render :xml => @station }
       format.json  {render :json =>  @station}
@@ -64,8 +68,10 @@ class StationsController < ApplicationController
     @station = Station.find(params[:id])
     logger.debug @station.timezone
     
-    zone = ActiveSupport::TimeZone.create(@station.timezone)
-    Time.zone = zone unless zone.nil?
+    if(nil!= @station.timezone)
+      zone = ActiveSupport::TimeZone.create(@station.timezone)
+      Time.zone = zone unless zone.nil?
+    end
     
     @measure = @station.measures.last
     @measure.speed = @station.calibrate_speed(@measure.speed)
@@ -89,8 +95,10 @@ class StationsController < ApplicationController
   def show_chart
     @station = Station.find(params[:id])
     
-    zone = ActiveSupport::TimeZone.create(@station.timezone)
-    Time.zone = zone unless zone.nil?
+    if(nil!= @station.timezone)
+      zone = ActiveSupport::TimeZone.create(@station.timezone)
+      Time.zone = zone unless zone.nil?
+    end
     
     if(params[:latest_measures])
       @measures = get_calibrated_measures(@station, nil)
@@ -110,8 +118,10 @@ class StationsController < ApplicationController
   def show_embed_chart
     @station = Station.find(params[:id])
     
-    zone = ActiveSupport::TimeZone.create(@station.timezone)
-    Time.zone = zone unless zone.nil?
+    if(nil!= @station.timezone)
+      zone = ActiveSupport::TimeZone.create(@station.timezone)
+      Time.zone = zone unless zone.nil?
+    end
     
     if(params[:latest_measures])
       @measures = get_calibrated_measures(@station, nil)
@@ -132,8 +142,10 @@ class StationsController < ApplicationController
   def ruben_chart
     @station = Station.find(params[:id])
     
-    zone = ActiveSupport::TimeZone.create(@station.timezone)
-    Time.zone = zone unless zone.nil?
+    if(nil!= @station.timezone)
+      zone = ActiveSupport::TimeZone.create(@station.timezone)
+      Time.zone = zone unless zone.nil?
+    end
     
     @measures = @station.measures.find(:all, 
       :conditions => ["created_at > ?", 12.hours.ago], :order => "id desc").reverse
@@ -151,8 +163,10 @@ class StationsController < ApplicationController
   def measures
     @station = Station.find(params[:id])
 
-    zone = ActiveSupport::TimeZone.create(@station.timezone)
-    Time.zone = zone unless zone.nil?
+    if(nil!= @station.timezone)
+      zone = ActiveSupport::TimeZone.create(@station.timezone)
+      Time.zone = zone unless zone.nil?
+    end
 
     @measures = @station.measures.find(:all, 
       :conditions => ["created_at > ?", 12.hours.ago], :order => "id desc")
@@ -278,7 +292,7 @@ class StationsController < ApplicationController
     
     respond_to do |format|
       if @station.save
-        if !invitation_email.nil?
+        if !invitation_email.nil? && !invitation_email.empty?
           logger.debug("Invite #{invitation_email}")
           User.invite!(:email => invitation_email, :stations => @station)
           AdminMailer.notify_about_new_station_and_invitation(invitation_email, @station).deliver
@@ -396,8 +410,10 @@ class StationsController < ApplicationController
   
   def clear_measures
     @station = Station.find(params[:id])
-    zone = ActiveSupport::TimeZone.create(@station.timezone)
-    Time.zone = zone unless zone.nil?
+    if(nil!= @station.timezone)
+      zone = ActiveSupport::TimeZone.create(@station.timezone)
+      Time.zone = zone unless zone.nil?
+    end
     measures = @station.measures.find(:all, :order => :created_at)
     
     respond_to do |format|
