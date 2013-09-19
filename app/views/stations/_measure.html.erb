@@ -5,7 +5,7 @@
 	<%= direction_in_words(@measure.direction) %> 
 	<%= number_with_precision(@measure.speed, :precision => 1) %> (<%= number_with_precision(@measure.min_wind_speed, :precision => 1) %> - 
 	<%= number_with_precision(@measure.max_wind_speed, :precision => 1) %>) m/s
-	<%= time_ago_in_words(@measure.created_at) %> ago(<%= (Time.now - @measure.created_at > 24.hours) ? @measure.created_at.to_s(:myDateTimeFormat) : @measure.created_at.to_s(:hourMinutesSeconds) %>).<br />
+	<%= time_ago_in_words(@measure.created_at) %> ago(<%= (Time.now - @measure.created_at > 24.hours) ? @measure.created_at.to_s(:myDateTimeFormat) : @measure.created_at.to_s(:hourMinutesSeconds) %>).<% if @station.timezone.nil? %><span class="warning"> Warning! Unknown position for station. Time might be for wrong timezone!</span><%end%><br />
 	<br />
 	<% if !@measures_short_time.empty? %>
 		Short trend: <%= number_with_precision(slope(@measures_short_time.map {|v| (v.created_at - @measures_short_time.first.created_at).to_i }, @measures_short_time.map {|v| v.speed })*20*60, :precision => 1)%> m/s <%= number_with_precision(slope(@measures_short_time.map {|v| (v.created_at - @measures_short_time.first.created_at).to_i }, @measures_short_time.map {|v| v.direction })*20*60, :precision => 1)%>°<br />
