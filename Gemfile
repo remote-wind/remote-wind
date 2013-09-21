@@ -2,8 +2,6 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.2.12'
 
-gem 'mysql2', '> 0.3'
-
 gem 'pg'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -30,8 +28,8 @@ gem 'pg'
 gem "geokit-rails3" # use an updated version of geokit
 gem "flickraw" # used to lookup timezone based on lat/lon
 
-gem 'devise' # used for user authentication
-gem 'devise_invitable', '~> 1.0.0'
+gem 'devise', '>= 3.1' # used for user authentication
+gem 'devise_invitable', '>= 1.2', :git => 'https://github.com/scambra/devise_invitable'
 gem "cancan" # roles management
 
 gem "linefit", :git => 'https://github.com/escline/linefit.git'

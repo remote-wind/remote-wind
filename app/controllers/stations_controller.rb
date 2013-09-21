@@ -294,11 +294,15 @@ class StationsController < ApplicationController
       if @station.save
         if !invitation_email.nil? && !invitation_email.empty?
           logger.debug("Invite #{invitation_email}")
-          User.invite!(:email => invitation_email, :stations => @station)
+          user = User.invite!(:email => invitation_email)
+          user.stations << @station
+          user.save
+          logger.debug("Invited user #{user.email}")
           AdminMailer.notify_about_new_station_and_invitation(invitation_email, @station).deliver
         elsif @station.user.nil?
           AdminMailer.notify_about_new_station_without_owner(@station).deliver
         else
+          AdminMailer.notify_about_new_station(@station.user, @station).deliver
           UserMailer.notify_about_new_station(@station.user, @station).deliver
         end
         format.html { redirect_to(@station, :notice => 'Station was successfully created.') }
