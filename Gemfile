@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
+ruby '1.9.2'
 
 gem 'rails', '3.2.12'
-
 gem 'pg'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -23,6 +23,8 @@ gem 'pg'
 # gem 'nokogiri'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'aws-s3', :require => 'aws/s3'
+
+gem 'rails_12factor', group: 'production'
 
 #gem "geokit"
 gem "geokit-rails3" # use an updated version of geokit
