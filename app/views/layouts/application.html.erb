@@ -79,7 +79,7 @@
             <div class="well sidebar-nav">
               Latest updated stations<br />
 							<% @last_five_updated_stations.each do |station| %>
-								- <% if station.name.empty? %><%= link_to "No name", station %><br /><% else %>
+								- <% if station.name.nil? || station.name.empty? %><%= link_to "No name", station %><br /><% else %>
 								<%= link_to station.name, station %><br /><% end %>
 							<% end %>
             </div><!--/.well -->
