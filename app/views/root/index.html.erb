@@ -3,12 +3,9 @@
 	
 	<div id="current">Loading map...</div>
 	<div id="map_canvas" style="width:300px; height:350px"></div>
-	
-	<%= link_to_if(can?(:create, Station), 'Register new', new_station_path) %>
-
+	<br />
 	Here you can <%= link_to "view data", :controller => :measures, :action => :index %> from our wind
  stations or just see on a <%= link_to "map", stations_path %> where they are or just find one in the <%= link_to 'list', '/stations/list' %>.</p>
-
 <% if user_signed_in? %><p>
 	<% if can?(:manage, Station) %><%= link_to "Manage", user_stations_path %> your wind stations.<br /><%end%>
 	<% if can?(:create, Station) %><%= link_to "Register", new_station_path %> a new stations.<br /><%end%>
@@ -37,7 +34,11 @@ function initialize()
 	<% last_station = nil %>
 	<% for station in @stations %>
 		<% if station.lat %>
-  		addMarker(new google.maps.LatLng(<%= station.lat %> ,<%= station.lon %>),map, "<%= station.name %>", ' <%= link_to(station.name, url_for(station)) %> <% unless station.current_measure.nil? %> <%= number_with_precision(station.current_measure.speed/300, :precision => 1) %> m/s <%= number_with_precision(station.current_measure.direction/10, :precision => 1)  %>°<% end %>');
+		<% if(nil!= station.timezone) %>
+      <% zone = ActiveSupport::TimeZone.create(station.timezone) %>
+      <% Time.zone = zone unless zone.nil? %>
+    <% end %>
+  		addMarker(new google.maps.LatLng(<%= station.lat %> ,<%= station.lon %>),map, "<%= station.name %>", ' <%= link_to(station.name, url_for(station)) %> <% unless station.current_measure.nil? %><br /><%= direction_in_words(station.current_measure.direction/10) %> <%= number_with_precision(station.calibrate_speed(station.current_measure.speed), :precision => 1) %> m/s (<%= number_with_precision(station.calibrate_speed(station.current_measure.min_wind_speed), :precision => 1) %> - <%= number_with_precision(station.calibrate_speed(station.current_measure.max_wind_speed), :precision => 1) %>) m/s<br /><%= time_ago_in_words(station.current_measure.created_at) %> ago(<%= (Time.now - station.current_measure.created_at > 24.hours) ? station.current_measure.created_at.to_s(:myDateTimeFormat) : station.current_measure.created_at.to_s(:hourMinutesSeconds) %>)<% end %>');
 			<% last_station = station %>
 		<% end %>
 	<% end %>
