@@ -39,6 +39,7 @@ group :development, :test do
   gem 'spork-rails', :github => 'sporkrb/spork-rails'
   gem 'terminal-notifier-guard', require: false # OS-X notifications
   gem "fuubar", "~> 1.2.1"
+  gem 'shoulda-matchers'
 end
 
 # These are for deployment on Heroku

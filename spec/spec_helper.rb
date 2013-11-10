@@ -34,7 +34,14 @@ Spork.prefork do
       DatabaseCleaner.clean
     end
 
-    config.include FactoryGirl::Syntax::Methods
+    include FactoryGirl::Syntax::Methods
+    include Devise::TestHelpers
+    include Warden::Test::Helpers
+
+    Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+    include Features::SessionHelpers
+
+    Warden.test_mode!
 
   end
 
