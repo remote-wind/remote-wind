@@ -14,7 +14,7 @@ gem 'zurb-foundation'  #https://github.com/zurb/foundation-rails
 
 #= Authentication ======================
 gem "devise", ">= 2.2.3"
-gem 'cancan', "1.6.9"
+gem 'cancan'
 gem 'rolify', :github => 'EppO/rolify'
 
 #= Misc =================================

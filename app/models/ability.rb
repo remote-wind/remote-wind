@@ -10,6 +10,9 @@ class Ability
       can :show, User do |u|
         u.id == user.id
       end
+      can :read, Station do
+
+      end
     end
   end
 end
