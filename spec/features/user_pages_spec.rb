@@ -1,6 +1,11 @@
 feature 'user pages' do
 
   let!(:user) { create(:user) }
+  let!(:admin) do
+    admin = create(:admin)
+    sign_in_as admin.email, admin.password
+    admin
+  end
 
   scenario 'when visiting index' do
     visit users_path

@@ -2,7 +2,13 @@ require 'spec_helper'
 
 describe UsersController do
 
-  let(:user) { FactoryGirl.create(:user) }
+
+  let!(:user) do
+    user = FactoryGirl.create(:user)
+    sign_in user
+    user
+  end
+
 
   describe "GET 'show'" do
 
@@ -18,15 +24,29 @@ describe UsersController do
   end
 
   describe "GET 'index'" do
-    it "returns http success" do
-      get 'index'
-      response.should be_success
+
+    context "when not authorized" do
+      it "should be denied" do
+        expect { get 'index' }.to raise_error(CanCan::AccessDenied)
+      end
     end
 
-    it "should assign users" do
-      get 'index'
-      expect(assigns(:users)) == [user]
+    context "when authorized" do
+
+      before do
+        sign_in create(:admin)
+      end
+
+      it "should not be denied" do
+        expect { get 'index' }.to_not raise_error(CanCan::AccessDenied)
+      end
+
+      it "should be successful" do
+        get 'index'
+        expect(response).to be_success
+      end
+
     end
+
   end
-
 end

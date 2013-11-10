@@ -3,10 +3,11 @@ class Ability
 
   def initialize(user)
     user ||= User.new
-    if user.has_role? :super_admin
+    if user.has_role? :admin
       can :manage, :all
     else
-      can :manage, User do |u|
+      # user can see own profile
+      can :show, User do |u|
         u.id == user.id
       end
     end

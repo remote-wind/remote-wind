@@ -15,14 +15,15 @@
       <li><%= link_to 'Log in', new_user_session_path %></li>
       <% else %>
       <li class="logged-in has-dropdown">
-        <a href="#">
+        <a href="<%= url_for current_user  %>">
           <div class="avatar">
             <img src="http://placehold.it/25x25">
             <%= current_user.email %>
           </div>
         </a>
         <ul class="dropdown">
-          <li class="signout"><%= link_to "Edit profile", edit_user_registration_path %></li>
+          <li class="show"><%= link_to "View profile", current_user %></li>
+          <li class="edit"><%= link_to "Edit profile", edit_user_registration_path %></li>
           <li class="signout"><%= link_to "Log out", destroy_user_session_path, :method => :delete %></li>
         </ul>
       </li>
