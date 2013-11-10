@@ -37,10 +37,6 @@ describe UsersController do
         sign_in create(:admin)
       end
 
-      it "should not be denied" do
-        expect { get 'index' }.to_not raise_error(CanCan::AccessDenied)
-      end
-
       it "should be successful" do
         get 'index'
         expect(response).to be_success

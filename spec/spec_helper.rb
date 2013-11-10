@@ -2,16 +2,20 @@ require 'rubygems'
 require 'spork'
 #uncomment the following line to use spork with the debugger
 #require 'spork/ext/ruby-debug'
+
+
+# Loading more in this block will cause your tests to run faster. However,
+# if you change any configuration or code from libraries loaded here, you'll
+# need to restart spork for it take effect.
+# See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 Spork.prefork do
 
   ENV["RAILS_ENV"] ||= 'test'
   require File.expand_path("../../config/environment", __FILE__)
   require 'rspec/rails'
   require 'rspec/autorun'
-  # Loading more in this block will cause your tests to run faster. However,
-  # if you change any configuration or code from libraries loaded here, you'll
-  # need to restart spork for it take effect.
-  # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+  Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+
   RSpec.configure do |config|
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true
@@ -37,8 +41,6 @@ Spork.prefork do
     include FactoryGirl::Syntax::Methods
     include Devise::TestHelpers
     include Warden::Test::Helpers
-
-    Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
     include Features::SessionHelpers
 
     Warden.test_mode!

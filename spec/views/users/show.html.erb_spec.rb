@@ -1,5 +1,15 @@
 require 'spec_helper'
 
 describe "users/show.html.erb" do
-  pending "add some examples to (or delete) #{__FILE__}"
+
+  let!(:user) { create :user }
+
+  subject do
+    assign(:user, user)
+    render
+    rendered
+  end
+
+  it { should include user.email }
+  it { should include user.created_at.to_s }
 end
