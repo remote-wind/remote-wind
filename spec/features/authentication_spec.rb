@@ -18,7 +18,6 @@ feature 'authentication' do
       expect(current_path).to eq(root_path)
       expect(page).to have_content 'Welcome! You have signed up successfully.'
     end
-
   end
 
   describe 'login' do
