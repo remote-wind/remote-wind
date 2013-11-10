@@ -8,4 +8,9 @@ class ApplicationController < ActionController::Base
     root_path
   end
 
+  # Setup geonames user name
+  Timezone::Configure.begin do |c|
+    c.username = ENV['REMOTE_WIND_GEONAMES']
+  end
+
 end

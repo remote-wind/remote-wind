@@ -18,8 +18,9 @@ gem 'cancan', "1.6.9"
 gem 'rolify', :github => 'EppO/rolify'
 
 #= Misc =================================
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 1.2'
+gem 'jbuilder', '~> 1.2' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem "geocoder" # https://github.com/alexreisner/geocoder
+gem 'timezone' # Timezone lookup via lat / lon
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

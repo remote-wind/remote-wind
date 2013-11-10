@@ -45,13 +45,18 @@ Spork.prefork do
 
     Warden.test_mode!
 
+
+
+
   end
 
 end
-
+# This code will be run each time you run your specs.
 Spork.each_run do
-  # This code will be run each time you run your specs.
-
+  # Setup geonames user name
+  Timezone::Configure.begin do |c|
+    c.username = ENV['REMOTE_WIND_GEONAMES']
+  end
 end
 
 
