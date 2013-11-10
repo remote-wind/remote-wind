@@ -1,9 +1,20 @@
 <h1>Users</h1>
 
 <% unless @users.empty? %>
-   <ul>
+   <table>
+    <tr>
+      <th>Email</th>
+      <th>Actions</th>
+    </tr>
     <% @users.each do |user| %>
-        <li><%= link_to user.email, user %></li>
+        <tr>
+          <td><%= link_to user.email, user %></td>
+          <% if signed_in? and can? :manage, User  %>
+          <td>
+            <%= link_to user, :data => { :confirm =>  "Are you sure you want to delete #{user.email}?"  }, :class =>"tiny button", :method => :delete %>
+          </td>
+          <% end %>
+        </tr>
     <% end %>
-    </ul>
+    </table>
 <% end %>
