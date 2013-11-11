@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131110180414) do
+ActiveRecord::Schema.define(version: 20131111184731) do
+
+  create_table "measures", force: true do |t|
+    t.integer  "station_id"
+    t.float    "speed"
+    t.float    "direction"
+    t.float    "max_wind_speed"
+    t.float    "min_wind_speed"
+    t.float    "temperature"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "measures", ["station_id"], name: "index_measures_on_station_id"
 
   create_table "roles", force: true do |t|
     t.string   "name"
