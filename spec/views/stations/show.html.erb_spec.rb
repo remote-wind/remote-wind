@@ -2,11 +2,31 @@ require 'spec_helper'
 
 describe "stations/show" do
   before(:each) do
-    @station = assign(:station, stub_model(Station))
+    stub_user_for_view_test
+    @station = assign(:station, create(:station))
   end
 
-  it "renders attributes in <p>" do
-    render
-    # Run the generator again with the --webrat flag if you want to use webrat matchers
+
+  context "when not an admin" do
+    subject {
+      render
+      rendered
+    }
+
+    it { should have_selector('h1', :text => @station.name )}
+    it { should have_link 'Back' }
+    it { should_not have_link 'Delete' }
   end
+
+  context "when an admin" do
+
+    subject {
+      @ability.can :manage, Station
+      render
+      rendered
+    }
+
+    it { should have_link 'Edit' }
+  end
+
 end

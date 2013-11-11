@@ -1,25 +1,29 @@
 <h1>Listing stations</h1>
-
 <table>
   <thead>
     <tr>
-      <th></th>
-      <th></th>
-      <th></th>
+      <th>Name</th>
+      <% if can? :manage, Station %>
+      <th>Actions</th>
+      <% end %>
     </tr>
   </thead>
-
-  <tbody>
+  <tbody class="stations">
     <% @stations.each do |station| %>
-      <tr>
-        <td><%= link_to 'Show', station %></td>
-        <td><%= link_to 'Edit', edit_station_path(station) %></td>
-        <td><%= link_to 'Destroy', station, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      <tr class="station">
+        <td><%= link_to station.name, station %></td>
+        <% if can? :manage, Station %>
+        <td class="admin-only">
+          <a href="#" data-dropdown="drop" class="tiny button dropdown">Actions</a><br>
+          <ul id="drop" data-dropdown-content class="f-dropdown">
+            <li><a href="#"><%= link_to 'Edit', edit_station_path(station) %></a></li>
+            <li><a href="#"><%= link_to 'Delete', station, method: :delete, data: { confirm: 'Are you sure?' } %></a></li>
+          </ul>
+        </td>
       </tr>
+      <% end %>
     <% end %>
   </tbody>
 </table>
+<p><%= link_to 'New Station', new_station_path %></p>
 
-<br>
-
-<%= link_to 'New Station', new_station_path %>

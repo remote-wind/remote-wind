@@ -1,4 +1,7 @@
-<p id="notice"><%= notice %></p>
+<h1><%= @station.name %></h1>
 
+<% if can? :manage, Station %>
 <%= link_to 'Edit', edit_station_path(@station) %> |
+<% end %>
+
 <%= link_to 'Back', stations_path %>

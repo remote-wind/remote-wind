@@ -1,15 +1,25 @@
 <%= form_for(@station) do |f| %>
-  <% if @station.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@station.errors.count, "error") %> prohibited this station from being saved:</h2>
 
-      <ul>
-      <% @station.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+<%=
+    f.div_field_with_label(:name) do |key|
+      f.email_field(key)
+    end
+%>
+<%=
+    f.div_field_with_label(:hw_id, 'Hardware ID') do |key|
+      f.text_field(key)
+    end
+%>
+<%=
+    f.div_field_with_label(:latitude) do |key|
+      f.text_field(key)
+    end
+%>
+<%=
+    f.div_field_with_label(:longitude) do |key|
+      f.text_field(key)
+    end
+%>
 
   <div class="actions">
     <%= f.submit %>

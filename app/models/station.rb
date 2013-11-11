@@ -1,6 +1,7 @@
 class Station < ActiveRecord::Base
   belongs_to :user
   validates_uniqueness_of :hw_id
+  validates_presence_of :hw_id
   before_create :set_timezone!
   geocoded_by :name
 
