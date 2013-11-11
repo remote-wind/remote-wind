@@ -25,6 +25,7 @@ describe "stations/new" do
     it { should have_field "Latitude" }
     it { should have_field "Longitude" }
     it { should have_field "Hardware ID" }
+    it { should have_select "Owner" }
 
   end
 end

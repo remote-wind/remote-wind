@@ -1,4 +1,4 @@
-<h1>Listing stations</h1>
+<h1>Wind stations</h1>
 <table>
   <thead>
     <tr>
@@ -6,6 +6,7 @@
       <% if can? :manage, Station %>
       <th>Actions</th>
       <% end %>
+      <th>Status</th>
     </tr>
   </thead>
   <tbody class="stations">
@@ -14,11 +15,17 @@
         <td><%= link_to station.name, station %></td>
         <% if can? :manage, Station %>
         <td class="admin-only">
-          <a href="#" data-dropdown="drop" class="tiny button dropdown">Actions</a><br>
-          <ul id="drop" data-dropdown-content class="f-dropdown">
-            <li><a href="#"><%= link_to 'Edit', edit_station_path(station) %></a></li>
-            <li><a href="#"><%= link_to 'Delete', station, method: :delete, data: { confirm: 'Are you sure?' } %></a></li>
+          <ul class="actions button-group tiny">
+            <li><%= link_to 'Edit', edit_station_path(station), class: 'button tiny' %></li>
+            <li><%= link_to 'Delete', station, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button alert tiny' %></li>
           </ul>
+        </td>
+        <td>
+            <% if station.down? %>
+            <span class="label success">OK</span>
+            <% else %>
+            <span class="label alert">DOWN</span>
+            <% end %>
         </td>
       </tr>
       <% end %>

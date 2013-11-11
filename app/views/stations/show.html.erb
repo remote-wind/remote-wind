@@ -1,5 +1,8 @@
 <h1><%= @station.name %></h1>
 
+<% unless @station.user.nil? %>
+<p>Owned by <%= @station.user.email %></p>
+<% end %>
 <% if can? :manage, Station %>
 <%= link_to 'Edit', edit_station_path(@station) %> |
 <% end %>
