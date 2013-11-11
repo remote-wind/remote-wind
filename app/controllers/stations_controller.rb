@@ -1,6 +1,7 @@
 class StationsController < ApplicationController
   before_filter :authenticate_user!, :except => [:show, :index]
-  load_and_authorize_resource :except => [:create,:show, :index]
+  load_and_authorize_resource :except => [:show, :index]
+  skip_load_resource :only => [:create]
   before_action :set_station, only: [:show, :edit, :update, :destroy]
 
   before_filter do
@@ -33,10 +34,6 @@ class StationsController < ApplicationController
   # POST /stations
   # POST /stations.json
   def create
-    unless can?(:create, Station)
-      raise CanCan::AccessDenied
-    end
-
     @station = Station.new(station_params)
 
     respond_to do |format|
