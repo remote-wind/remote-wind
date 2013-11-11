@@ -45,9 +45,6 @@ Spork.prefork do
 
     Warden.test_mode!
 
-
-
-
   end
 
 end
@@ -58,6 +55,3 @@ Spork.each_run do
     c.username = ENV['REMOTE_WIND_GEONAMES']
   end
 end
-
-
-

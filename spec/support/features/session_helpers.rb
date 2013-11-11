@@ -20,5 +20,15 @@ module Features
     def login (user = FactoryGirl.create(:user))
       login_as(user, :scope => :user)
     end
+
+    def stub_user_for_view_test
+      ## http://stackoverflow.com/questions/5018344/testing-views-that-use-cancan-and-devise-with-rspec
+      assign(:user,mock_model(User))
+      @ability = Object.new
+      @ability.extend(CanCan::Ability)
+      controller.stub(:current_ability) { @ability }
+      assign(:ability,@ability)
+    end
+
   end
 end
