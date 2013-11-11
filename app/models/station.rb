@@ -4,6 +4,7 @@ class Station < ActiveRecord::Base
   validates_presence_of :hw_id
   before_create :set_timezone!
   geocoded_by :name
+  has_many :measures
 
   def lat
     read_attribute(:latitude)
