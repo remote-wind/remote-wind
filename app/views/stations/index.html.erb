@@ -12,7 +12,7 @@
   <tbody class="stations">
     <% @stations.each do |station| %>
       <tr class="station">
-        <td><%= link_to station.name, station %></td>
+        <td class="name"><%= link_to station.name, station %></td>
         <% if can? :manage, Station %>
         <td class="admin-only">
           <ul class="actions button-group tiny">

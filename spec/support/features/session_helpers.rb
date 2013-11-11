@@ -17,6 +17,11 @@ module Features
       click_button 'Sign in'
     end
 
+    def sign_in!(user)
+      sign_in_as(user.email, user.password)
+      return user
+    end
+
     def login (user = FactoryGirl.create(:user))
       login_as(user, :scope => :user)
     end
