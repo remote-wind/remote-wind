@@ -39,15 +39,13 @@ class MeasuresController < ApplicationController
   private
   # Never trust parameters from the scary internet, only allow the white list through.
   def measure_params
+    ## Handle short form params
+    if params[:m]
+      sanitized = params.require(:m).permit(:i,:s,:s,:d,:s,:min,:max,:t)
+      return Measure.params_to_long_form(sanitized.to_hash)
+    end
     params.require(:measure).permit(
-        :id,
-        :speed,
-        :station_id,
-        :direction,
-        :speed,
-        :min_wind_speed,
-        :min_wind_speed,
-        :temperature
+        :m, :id, :speed, :station_id, :direction, :speed, :min_wind_speed, :max_wind_speed, :temperature
     )
   end
 
