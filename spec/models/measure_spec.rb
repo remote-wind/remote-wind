@@ -13,6 +13,11 @@ describe Measure do
 
   describe "validations" do
     it { should validate_presence_of :station }
+    it { should validate_numericality_of :speed }
+    it { should validate_numericality_of :direction }
+    it { should validate_numericality_of :max_wind_speed }
+    it { should validate_numericality_of :min_wind_speed }
+    it { should validate_numericality_of :temperature }
   end
 
 end
