@@ -19,7 +19,7 @@ module FormHelper
       classes << key.to_s
       if @object.errors[key].size != 0
         classes << 'warning'
-        msg = @object.errors.full_message(key, @object.errors[key].join(', '))
+        msg = @object.errors.full_message(txt||key, @object.errors[key].join(', '))
         content << @template.content_tag(:p, msg, :class => "error-message warning alert" )
       end
 
