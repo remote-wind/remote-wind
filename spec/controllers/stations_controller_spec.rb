@@ -10,6 +10,10 @@ describe StationsController do
   let(:invalid_attributes) { { :name => 'foo' } }
   let(:station) { FactoryGirl.create(:station) }
 
+  before :each do
+    Station.stub(:find_timezone).and_return('London')
+  end
+
   describe "GET index" do
     it "assigns all stations as @stations" do
       #sign_in create(:user)
@@ -158,4 +162,23 @@ describe StationsController do
       end
     end
   end
+
+  describe "get MEASURES" do
+
+
+    let!(:station) {
+      station = FactoryGirl.create(:station)
+      station.measures.create attributes_for(:measure)
+
+    }
+
+    subject {
+      get "/station/#{station.to_param}/measures"
+    }
+
+    it { should be_successfull }
+
+  end
+
+
 end
