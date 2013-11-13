@@ -19,7 +19,7 @@ class MeasuresController < ApplicationController
     respond_to do |format|
       if @measure.save
         format.html { redirect_to @measure, notice: 'Measure was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @measure }
+        format.json { render action: 'show', status: :created, location: station_measure_path(@measure.station, @measure) }
       else
         format.html { return }
         format.json { render json: @measure.errors, status: :unprocessable_entity }
@@ -31,7 +31,7 @@ class MeasuresController < ApplicationController
   def destroy
     @measure.destroy
     respond_to do |format|
-      format.html { redirect_to measures_url }
+      format.html { redirect_to measures_path }
       format.json { head :no_content }
     end
   end

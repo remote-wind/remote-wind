@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MeasuresController do
 
-  let(:measure) { create(:measure, :station => build_stubbed(:station) ) }
+  let(:measure) { create(:measure, :station => create(:station) ) }
   let(:valid_attributes) {
     create(:station)
     attributes_for(:measure, :station_id => 1 )
@@ -15,7 +15,7 @@ describe MeasuresController do
 
     it "returns http success" do
       get 'show', { id: 1 }
-      response.should be_success
+      expect(response).to be_success
     end
   end
 
@@ -24,7 +24,7 @@ describe MeasuresController do
 
     it "returns http success" do
       get 'index'
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "assigns measures" do
@@ -67,7 +67,7 @@ describe MeasuresController do
       before { sign_in create(:user) }
       it "should not allow measures to be destoyed without authorization" do
         expect do
-          delete :destroy, {:id => measure.to_param}
+          delete :destroy, {:id => measure.to_param, :station_id =>  measure.station.to_param}
         end.to raise_error CanCan::AccessDenied
       end
     end
@@ -77,13 +77,13 @@ describe MeasuresController do
 
       it "destroys the requested measure" do
         expect {
-          delete :destroy, {:id => measure.to_param}
+          delete :destroy, {:id => measure.to_param, :station_id =>  measure.station.to_param}
         }.to change(Measure, :count).by(-1)
       end
 
       it "redirects to the measure list" do
-        delete :destroy, {:id => measure.to_param}
-        response.should redirect_to(measures_url)
+        delete :destroy, {:id => measure.to_param, :station_id =>  measure.station.to_param}
+        expect(response).to redirect_to(measures_url)
       end
     end
   end
