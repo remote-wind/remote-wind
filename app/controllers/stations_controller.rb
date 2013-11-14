@@ -75,6 +75,11 @@ class StationsController < ApplicationController
   def measures
     @station = Station.find(params[:station_id])
     @measures = @station.measures
+
+    respond_to do |format|
+      format.html
+      format.json { render :json, @station }
+    end
   end
 
   private
