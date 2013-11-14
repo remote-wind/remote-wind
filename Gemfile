@@ -17,10 +17,12 @@ gem "devise", ">= 2.2.3"
 gem 'cancan'
 gem 'rolify', :github => 'EppO/rolify'
 
-#= Misc =================================
-gem 'jbuilder', '~> 1.2' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+#= Geolocation =========================
 gem "geocoder" # https://github.com/alexreisner/geocoder
 gem 'timezone' # Timezone lookup via lat / lon
+
+#= Misc =================================
+gem 'jbuilder', '~> 1.2' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
