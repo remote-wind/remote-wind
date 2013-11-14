@@ -183,5 +183,39 @@ describe StationsController do
 
   end
 
+  describe "DELETE clear" do
+
+    before :each do
+      3.times do
+        station.measures.create attributes_for(:measure)
+      end
+    end
+
+
+    context "as unpriveleged user" do
+      before { sign_in create(:user) }
+      it "should not allow stations to be destoyed without authorization" do
+        expect do
+          delete :destroy_measures, {:station_id => station.to_param}
+        end.to raise_error CanCan::AccessDenied
+      end
+    end
+
+    context "as admin" do
+      before { sign_in create(:admin) }
+
+      it "destroys the related measures" do
+        delete :destroy_measures, {:station_id => station.to_param}
+        expect(Measure.count(:conditions => "station_id = #{station.id}")).to eq 0
+      end
+
+      it "redirects to the station" do
+        delete :destroy_measures, {:station_id => station.to_param}
+        response.should redirect_to(station_url(station.to_param))
+      end
+    end
+
+  end
+
 
 end

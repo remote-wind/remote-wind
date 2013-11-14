@@ -16,6 +16,7 @@ describe "stations/show" do
     it { should have_selector('h1', :text => @station.name )}
     it { should have_link 'Back' }
     it { should_not have_link 'Delete' }
+    it { should_not have_link 'Clear all measures for this station' }
   end
 
   context "when an admin" do
@@ -27,6 +28,7 @@ describe "stations/show" do
     }
 
     it { should have_link 'Edit' }
+    it { should have_link 'Clear all measures for this station' }
   end
 
 end

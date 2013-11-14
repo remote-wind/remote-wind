@@ -82,6 +82,16 @@ class StationsController < ApplicationController
     end
   end
 
+  # DELETE /stations/:staton_id/measures
+  def destroy_measures
+    @station = Station.find(params[:station_id])
+    Measure.delete_all("station_id = #{@station.id}")
+    respond_to do |format|
+      format.html { redirect_to station_url(@station) }
+      format.json { head :no_content }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_station

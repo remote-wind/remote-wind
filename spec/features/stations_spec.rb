@@ -70,13 +70,23 @@ feature "Stations", %{
     expect(current_path).to eq station_path(1)
   end
 
-  scenario "when I delete a station" do
-    admin_session
-    visit stations_path
-    expect {
-      first('.station').click_link('Delete')
-    }.to change(Station, :count).by(-1)
-    expect(current_path).to eq stations_path
+  context "given a station with measures" do
+
+    let!(:station) do
+      station = create(:station)
+      3.times do
+        station.measures.create attributes_for(:measure)
+      end
+      station
+    end
+
+    scenario "when i clear messures" do
+      admin_session
+      visit station_path station
+      click_link "Clear all measures for this station"
+      expect(Measure.count(:conditions => "station_id = #{station.id}")).to eq 0
+    end
+
   end
 
 end
