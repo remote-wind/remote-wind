@@ -165,18 +165,21 @@ describe StationsController do
 
   describe "GET measures" do
 
+    before :each do
+      3.times do
+        station.measures.create attributes_for(:measure)
+      end
+    end
 
-    let!(:station) {
-      station = FactoryGirl.create(:station)
-      station.measures.create attributes_for(:measure)
-
-    }
-
-    subject {
+    it "assigns station" do
       get :measures, :station_id => station.to_param
-    }
+      expect(assigns(:station)).to be_a(Station)
+    end
 
-    it { should be_successfull }
+    it "assigns measures" do
+      get :measures, :station_id => station.to_param
+      expect(assigns(:measures).count).to eq 3
+    end
 
   end
 

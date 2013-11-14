@@ -10,15 +10,7 @@
   </thead>
   <tbody>
   <% @measures.each do |measure| %>
-    <tr class="measure">
-      <td class="created_at"><%= measure.created_at.to_s %></td>
-      <td class="station"><%= measure.station.name %></td>
-      <td class="speed"><%= measure.speed %></td>
-      <td class="direction"><%= measure.direction %></td>
-      <td class="min_wind_speed"><%= measure.min_wind_speed %></td>
-      <td class="max_wind_speed"><%= measure.max_wind_speed %></td>
-      <td class="temperature"><%= measure.temperature %></td>
-    </tr>
+    <%= render :partial => 'measures/measure', object: measure %>
   <% end %>
   </tbody>
 </table>

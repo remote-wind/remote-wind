@@ -71,12 +71,11 @@ class StationsController < ApplicationController
     end
   end
 
-
   # GET /stations/:staton_id/measures
   def measures
-
+    @station = Station.find(params[:station_id])
+    @measures = @station.measures
   end
-
 
   private
     # Use callbacks to share common setup or constraints between actions.
