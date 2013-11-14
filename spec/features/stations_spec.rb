@@ -3,11 +3,6 @@ feature "Stations", %{
   and  editable by admins
 } do
 
-  # @todo replace with dependency injection
-  before :each do
-    Station.stub(:find_timezone).and_return('London')
-  end
-
   let!(:stations) {
     stations = []
     3.times do |i|
@@ -51,23 +46,22 @@ feature "Stations", %{
     expect {
       click_button "Create Station"
     }.to change(Station, :count).by(+1)
-    expect(current_path).to eq station_path(Station.last.id)
+    expect(current_path).to eq station_path(Station.last)
   end
 
   scenario "when I click edit on a station" do
     admin_session
     visit stations_path
     first('.station').click_link('Edit')
-    expect(current_path).to include edit_station_path(1)
+    expect(current_path).to include edit_station_path(stations[0])
   end
 
   scenario "when I edit a page" do
     admin_session
-    visit edit_station_path(1)
-    fill_in 'Name', with: 'Test Station'
+    visit edit_station_path(stations[0])
+    fill_in 'Latitude', with: 999
     click_button 'Update'
-    expect(page).to have_content 'Test Station'
-    expect(current_path).to eq station_path(1)
+    expect(current_path).to eq station_path(stations[0])
   end
 
   context "given a station with measures" do
@@ -86,7 +80,6 @@ feature "Stations", %{
       click_link "Clear all measures for this station"
       expect(Measure.where("station_id = #{station.id}").count).to eq 0
     end
-
   end
 
 end

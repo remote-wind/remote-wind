@@ -1,10 +1,12 @@
 class Station < ActiveRecord::Base
+  extend FriendlyId
   belongs_to :user
   has_many  :measures
   validates_uniqueness_of :hw_id
   validates_presence_of :hw_id
   class_attribute :zone_class
   self.zone_class ||= Timezone::Zone
+  friendly_id :name, :use => [:slugged, :history]
 
   before_save :set_timezone!
 
@@ -37,6 +39,10 @@ class Station < ActiveRecord::Base
         logger.warn e.message
       end
     end
+  end
+
+  def should_generate_new_friendly_id?
+    name_changed?
   end
 
   def current_measure

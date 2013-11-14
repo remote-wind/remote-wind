@@ -23,6 +23,7 @@ gem 'timezone' # Timezone lookup via lat / lon
 
 #= Misc =================================
 gem 'jbuilder', '~> 1.2' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem "friendly_id" # Slugging
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

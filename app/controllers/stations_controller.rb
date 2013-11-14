@@ -1,15 +1,7 @@
 class StationsController < ApplicationController
   before_filter :authenticate_user!, :except => [:show, :index, :measures]
-  load_and_authorize_resource :except => [:show, :index, :measures]
-  skip_load_resource :only => [:create]
+  authorize_resource :except => [:show, :index, :measures]
   before_action :set_station, only: [:show, :edit, :update, :destroy]
-  decorates_assigned :station
-
-  before_filter do
-    resource = controller_path.singularize.gsub('/', '_').to_sym # => 'blog/posts' => 'blog/post' => 'blog_post' => :blog_post
-    method = "#{resource}_params" # => 'blog_post_params'
-    params[resource] &&= send(method) if respond_to?(method, true) # => params[:blog_post]
-  end
 
 
   # GET /stations
@@ -51,6 +43,7 @@ class StationsController < ApplicationController
   # PATCH/PUT /stations/1
   # PATCH/PUT /stations/1.json
   def update
+
     respond_to do |format|
       if @station.update(station_params)
         format.html { redirect_to @station, notice: 'Station was successfully updated.' }
@@ -74,7 +67,7 @@ class StationsController < ApplicationController
 
   # GET /stations/:staton_id/measures
   def measures
-    @station = Station.find(params[:station_id])
+    @station = Station.friendly.find(params[:station_id])
     @measures = @station.measures
 
     respond_to do |format|
@@ -85,7 +78,7 @@ class StationsController < ApplicationController
 
   # DELETE /stations/:staton_id/measures
   def destroy_measures
-    @station = Station.find(params[:station_id])
+    @station = Station.friendly.find(params[:station_id])
     Measure.delete_all("station_id = #{@station.id}")
     respond_to do |format|
       format.html { redirect_to station_url(@station) }
@@ -96,7 +89,7 @@ class StationsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_station
-      @station = Station.find(params[:id])
+      @station = Station.friendly.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

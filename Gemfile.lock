@@ -88,6 +88,8 @@ GEM
       railties (>= 3.0.0)
     ffi (1.9.3)
     formatador (0.2.4)
+    friendly_id (5.0.1)
+      activerecord (~> 4.0.0)
     fuubar (1.2.1)
       rspec (~> 2.0)
       rspec-instafail (~> 0.2.0)
@@ -246,6 +248,7 @@ DEPENDENCIES
   debugger
   devise (>= 2.2.3)
   factory_girl_rails
+  friendly_id
   fuubar (~> 1.2.1)
   geocoder
   guard-rspec (>= 2.5.0)

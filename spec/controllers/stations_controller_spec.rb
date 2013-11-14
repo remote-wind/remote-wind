@@ -8,7 +8,7 @@ describe StationsController do
 
   let(:valid_attributes) { FactoryGirl.attributes_for(:station) }
   let(:invalid_attributes) { { :name => 'foo' } }
-  let(:station) { FactoryGirl.create(:station) }
+  let(:station) { FactoryGirl.create(:station, slug: 'xxx') }
 
   before :each do
     Station.stub(:find_timezone).and_return('London')
@@ -23,14 +23,14 @@ describe StationsController do
     end
   end
 
+
   describe "GET show" do
     it "assigns the requested station as @station" do
-      #sign_in create(:user)
-      station = create(:station)
-      get :show, {:id => station.id }
+      get :show, {:id => station.to_param }
       expect(assigns(:station)).to eq(station)
     end
   end
+
 
   describe "POST create" do
     context "as unpriveleged user" do
@@ -86,7 +86,10 @@ describe StationsController do
 
     context "as unpriveleged user" do
       before { sign_in create(:user) }
-      it "should not allow stations to be updated without authorization" do
+      it "should not allow stations to be updated" do
+
+        station = Station.create(attributes_for(:station))
+
         expect do
           put :update, {:id => station.to_param, :station => { "name" => "foo" }}
         end.to raise_error CanCan::AccessDenied
@@ -103,13 +106,18 @@ describe StationsController do
         end
 
         it "assigns the requested station as @station" do
-          put :update, {:id => station.to_param, :station => valid_attributes}
+          put :update, {:id => station.to_param, :station => { latitude: 999 }}
           assigns(:station).should eq(station)
         end
 
         it "redirects to the station" do
-          put :update, {:id => station.to_param, :station => valid_attributes}
+          put :update, {:id => station.to_param, :station => { latitude: 999 }}
           response.should redirect_to(station)
+        end
+
+        it "updates the assigned station" do
+          put :update, {:id => station.to_param, :station => { latitude: 999 }}
+          expect(assigns(:station).lat).to eq 999
         end
       end
 
@@ -137,7 +145,7 @@ describe StationsController do
 
     context "as unpriveleged user" do
       before { sign_in create(:user) }
-      it "should not allow stations to be destoyed without authorization" do
+      it "should not allow stations to be destoyed" do
         station = Station.create! valid_attributes
         expect do
           delete :destroy, {:id => station.to_param}
@@ -194,10 +202,10 @@ describe StationsController do
 
     context "as unpriveleged user" do
       before { sign_in create(:user) }
-      it "should not allow stations to be destoyed without authorization" do
+      it "should not allow stations to be destoyed" do
         expect do
           delete :destroy_measures, {:station_id => station.to_param}
-        end.to raise_error CanCan::AccessDenied
+        end.to raise_error CanCan::AccessDenieds
       end
     end
 
@@ -216,6 +224,4 @@ describe StationsController do
     end
 
   end
-
-
 end
