@@ -28,7 +28,7 @@
 
         <td class="direction">
           <% unless station.measures.empty? %>
-              <%=  station.current_measure.direction %>
+              <%=  station.current_measure.direction %> (<%=  station.current_measure.compass_point %>)
           <% end %>
         </td>
 
@@ -51,5 +51,8 @@
     <% end %>
   </tbody>
 </table>
+
+<% if can? :create, Station && params[:controller] == 'stations' %>
 <p><%= link_to 'New Station', new_station_path %></p>
+<% end %>
 

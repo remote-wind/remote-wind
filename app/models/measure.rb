@@ -14,6 +14,10 @@ class Measure < ActiveRecord::Base
       :temperature => :t
   }
 
+  def compass_point
+    Geocoder::Calculations.compass_point(self.direction)
+  end
+
   def self.params_to_long_form params
     mappings = @@dict.invert.with_indifferent_access
     Hash[params.map {|k, v| [mappings[k] || k, v] }]

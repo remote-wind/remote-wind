@@ -2,6 +2,7 @@ class MeasuresController < ApplicationController
   before_filter :authenticate_user!, :only => [:destroy]
   load_and_authorize_resource :only => [:destroy]
   before_action :set_measure, only: [:show, :destroy]
+  decorates_assigned :measure
 
   # GET /measures/:id
   def show

@@ -3,6 +3,7 @@ class StationsController < ApplicationController
   load_and_authorize_resource :except => [:show, :index, :measures]
   skip_load_resource :only => [:create]
   before_action :set_station, only: [:show, :edit, :update, :destroy]
+  decorates_assigned :station
 
   before_filter do
     resource = controller_path.singularize.gsub('/', '_').to_sym # => 'blog/posts' => 'blog/post' => 'blog_post' => :blog_post
