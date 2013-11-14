@@ -31,15 +31,15 @@ group :development, :test do
   gem 'sqlite3'
   gem 'debugger'
   gem 'thin'  # use Thin as web server in stead of webbrick
-  gem "rspec-rails", ">= 2.12.2"
-  gem "database_cleaner", ">= 0.9.1"
-  gem "factory_girl_rails", ">= 4.2.0"
-  gem "capybara", ">= 2.0.2"
+  gem "rspec-rails"
+  gem "database_cleaner"
+  gem "factory_girl_rails"
+  gem "capybara"
   gem 'guard-rspec', '>=2.5.0', require: false
-  gem 'guard-spork'
+  gem 'guard-spork', require: false
   gem 'spork-rails', :github => 'sporkrb/spork-rails'
   gem 'terminal-notifier-guard', require: false # OS-X notifications
-  gem "fuubar", "~> 1.2.1"
+  gem "fuubar", "~> 1.2.1", require: false
   gem 'shoulda-matchers'
 end
 

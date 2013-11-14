@@ -3,6 +3,11 @@ feature "Stations", %{
   and  editable by admins
 } do
 
+  # @todo replace with dependency injection
+  before :each do
+    Station.stub(:find_timezone).and_return('London')
+  end
+
   let!(:stations) {
     stations = []
     3.times do |i|
@@ -10,7 +15,14 @@ feature "Stations", %{
     end
     stations
   }
-  let(:admin) { sign_in! create(:admin) }
+
+  let(:admin) {
+    create :admin
+  }
+
+  let(:admin_session) {
+    sign_in! admin
+  }
 
   scenario "when I view the index page" do
     visit root_path
@@ -31,7 +43,7 @@ feature "Stations", %{
   end
 
   scenario "when I create a new station with valid input" do
-    admin
+    admin_session
     visit stations_path
     click_link "New Station"
     fill_in "Name", with: "Sample Station"
@@ -43,14 +55,14 @@ feature "Stations", %{
   end
 
   scenario "when I click edit on a station" do
-    admin
+    admin_session
     visit stations_path
     first('.station').click_link('Edit')
     expect(current_path).to include edit_station_path(1)
   end
 
   scenario "when I edit a page" do
-    admin
+    admin_session
     visit edit_station_path(1)
     fill_in 'Name', with: 'Test Station'
     click_button 'Update'
@@ -59,7 +71,7 @@ feature "Stations", %{
   end
 
   scenario "when I delete a station" do
-    admin
+    admin_session
     visit stations_path
     expect {
       first('.station').click_link('Delete')

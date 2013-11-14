@@ -23,9 +23,7 @@ describe MeasuresController do
       get("/measures").should route_to("measures#index")
     end
 
-    it "routes to measures#station_index" do
-      get("/stations/1/measures").should route_to("measures#station_index", :station_id => "1")
-    end
+
 
   end
 end

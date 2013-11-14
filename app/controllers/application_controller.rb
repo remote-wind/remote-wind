@@ -17,4 +17,8 @@ class ApplicationController < ActionController::Base
     html_tag.html_safe
   end
 
+  if Rails.env != "test"
+    Station::zone_class = Timezone::Zone
+  end
+
 end

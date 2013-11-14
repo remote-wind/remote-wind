@@ -163,7 +163,7 @@ describe StationsController do
     end
   end
 
-  describe "get MEASURES" do
+  describe "GET measures" do
 
 
     let!(:station) {
@@ -173,7 +173,7 @@ describe StationsController do
     }
 
     subject {
-      get "/station/#{station.to_param}/measures"
+      get :measures, :station_id => station.to_param
     }
 
     it { should be_successfull }

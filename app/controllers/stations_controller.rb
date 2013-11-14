@@ -1,6 +1,6 @@
 class StationsController < ApplicationController
-  before_filter :authenticate_user!, :except => [:show, :index]
-  load_and_authorize_resource :except => [:show, :index]
+  before_filter :authenticate_user!, :except => [:show, :index, :measures]
+  load_and_authorize_resource :except => [:show, :index, :measures]
   skip_load_resource :only => [:create]
   before_action :set_station, only: [:show, :edit, :update, :destroy]
 
@@ -70,6 +70,13 @@ class StationsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+
+  # GET /stations/:staton_id/measures
+  def measures
+
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

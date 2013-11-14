@@ -43,6 +43,17 @@ Spork.prefork do
     include Warden::Test::Helpers
     include Features::SessionHelpers
 
+    #@todo extract
+    class ZoneMocker
+      def initialize(latlon)
+      end
+      def active_support_time_zone
+        'London'
+      end
+    end
+
+    Station::zone_class = ZoneMocker
+
     Warden.test_mode!
 
   end

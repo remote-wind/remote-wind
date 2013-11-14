@@ -1,10 +1,12 @@
 class Station < ActiveRecord::Base
   belongs_to :user
+  has_many  :measures
   validates_uniqueness_of :hw_id
   validates_presence_of :hw_id
-  before_create :set_timezone!
-  geocoded_by :name
-  has_many :measures
+  class_attribute :zone_class
+  self.zone_class ||= Timezone::Zone
+
+  before_save :set_timezone!
 
   def lat
     read_attribute(:latitude)
@@ -23,7 +25,7 @@ class Station < ActiveRecord::Base
   end
 
   def find_timezone
-    timezone = Timezone::Zone.new :latlon => [self.lat, self.lon]
+    timezone = self.zone_class.new(:latlon => [self.lat, self.lon])
     timezone.active_support_time_zone
   end
 
@@ -36,5 +38,6 @@ class Station < ActiveRecord::Base
       end
     end
   end
+
 
 end

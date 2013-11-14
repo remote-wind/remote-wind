@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+
+
 describe Station do
 
   let(:station) { create(:station) }
@@ -53,16 +55,16 @@ describe Station do
 
   describe "#find_timezone" do
     it "should find the correct timezone" do
-      pending "test should be stubbed?"
       expect(station.find_timezone).to eq "London"
     end
   end
 
   describe "#set_timezone!" do
-    it "should set timezone on object creation given lat and lon" do
-      pending "test should be stubbed?"
-      expect(create(:station, lat: 35.6148800, lon: 139.5813000).timezone).to eq "Tokyo"
-    end
+    #it "should set timezone on object creation given lat and lon" do
+    #  Station::zone_class.stub(:active_support_time_zone).and_return('Tokyo')
+    #  expect(create(:station, lat: 35.6148800, lon: 139.5813000).timezone).to eq "Tokyo"
+    #end
   end
+
 
 end

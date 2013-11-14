@@ -31,5 +31,9 @@ describe StationsController do
       delete("/stations/1").should route_to("stations#destroy", :id => "1")
     end
 
+    it "routes to stations#measures" do
+      get("/stations/1/measures").should route_to("stations#measures", :station_id => "1")
+    end
+
   end
 end
