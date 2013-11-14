@@ -3,6 +3,19 @@ require 'spec_helper'
 describe "stations/index" do
 
 
+  let! :stations do
+    stations = []
+    3.times do
+      stations << create(:station)
+    end
+    stations.each do |s|
+      s.measures.push(create(:measure))
+    end
+
+    assign(:stations, stations)
+    stations
+  end
+  
   before(:each) do
     stub_user_for_view_test
     assign(:stations, [
@@ -17,6 +30,9 @@ describe "stations/index" do
       render
       rendered
     }
+
+    it { should have_selector '.speed' }
+    it { should have_selector '.direction' }
 
     it { should match /[s|S]tations/ }
     it { should have_selector('.station', :minimum => 2) }

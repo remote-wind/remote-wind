@@ -1,8 +1,14 @@
+
+<% if params[:controller] == 'stations' %>
 <h1>Wind stations</h1>
+<% end %>
+
 <table>
   <thead>
     <tr>
       <th>Name</th>
+      <th>Wind speed</th>
+      <th>Direction</th>
       <% if can? :manage, Station %>
       <th>Actions</th>
       <% end %>
@@ -13,6 +19,19 @@
     <% @stations.each do |station| %>
       <tr class="station">
         <td class="name"><%= link_to station.name, station %></td>
+
+        <td class="speed">
+          <% unless station.measures.empty? %>
+            <%= station.current_measure.speed %>
+          <% end %>
+        </td>
+
+        <td class="direction">
+          <% unless station.measures.empty? %>
+              <%=  station.current_measure.direction %>
+          <% end %>
+        </td>
+
         <% if can? :manage, Station %>
         <td class="admin-only">
           <ul class="actions button-group tiny">
@@ -20,15 +39,15 @@
             <li><%= link_to 'Delete', station, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button alert tiny' %></li>
           </ul>
         </td>
+        <% end %>
         <td>
-            <% if station.down? %>
+            <% unless station.down? %>
             <span class="label success">OK</span>
             <% else %>
             <span class="label alert">DOWN</span>
             <% end %>
         </td>
       </tr>
-      <% end %>
     <% end %>
   </tbody>
 </table>

@@ -84,7 +84,7 @@ feature "Stations", %{
       admin_session
       visit station_path station
       click_link "Clear all measures for this station"
-      expect(Measure.count(:conditions => "station_id = #{station.id}")).to eq 0
+      expect(Measure.where("station_id = #{station.id}").count).to eq 0
     end
 
   end

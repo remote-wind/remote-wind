@@ -39,5 +39,8 @@ class Station < ActiveRecord::Base
     end
   end
 
+  def current_measure
+     self.measures.last
+  end
 
 end

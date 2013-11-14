@@ -35,3 +35,17 @@ stations= Station.create([{:name => 'Tegefjall', :hw_id =>'354476020409714', :la
                           {:name => 'Mullfjallet', :hw_id =>'354476020409715', :lat =>'63.42258', :lon =>'12.95487'},
                           {:name => 'Ulladalen', :hw_id =>'354476020409716', :lat =>'63.4321', :lon =>'13.00011'},
                          ])
+
+stations.each do |station|
+
+  rand(1..15).times do
+
+    station.measures.create(
+        :speed => rand(0..40),
+        :direction => rand(0..360),
+        :max_wind_speed => rand(0..40),
+        :min_wind_speed => rand(0..40)
+    )
+  end
+
+end

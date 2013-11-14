@@ -206,7 +206,7 @@ describe StationsController do
 
       it "destroys the related measures" do
         delete :destroy_measures, {:station_id => station.to_param}
-        expect(Measure.count(:conditions => "station_id = #{station.id}")).to eq 0
+        expect(Measure.where("station_id = #{station.id}").count).to eq 0
       end
 
       it "redirects to the station" do
