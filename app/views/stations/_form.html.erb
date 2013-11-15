@@ -6,6 +6,11 @@
     end
 %>
 <%=
+    f.div_field_with_label(:slug) do |key|
+      f.text_field(key)
+    end
+%>
+<%=
     f.div_field_with_label(:hw_id, 'Hardware ID') do |key|
       f.text_field(key)
     end

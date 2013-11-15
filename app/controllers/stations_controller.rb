@@ -43,9 +43,9 @@ class StationsController < ApplicationController
   # PATCH/PUT /stations/1
   # PATCH/PUT /stations/1.json
   def update
-
     respond_to do |format|
       if @station.update(station_params)
+
         format.html { redirect_to @station, notice: 'Station was successfully updated.' }
         format.json { head :no_content }
       else
@@ -94,6 +94,6 @@ class StationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def station_params
-      params.require(:station).permit(:id, :name, :hw_id, :latitude, :longitude, :user_id)
+      params.require(:station).permit(:id, :name, :hw_id, :latitude, :longitude, :user_id, :slug)
     end
 end

@@ -42,7 +42,7 @@ class Station < ActiveRecord::Base
   end
 
   def should_generate_new_friendly_id?
-    name_changed?
+    name_changed? or slug_changed?
   end
 
   def current_measure

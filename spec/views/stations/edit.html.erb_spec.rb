@@ -20,6 +20,7 @@ describe "stations/edit" do
     end
 
     it { should have_field "Name" }
+    it { should have_field "Slug" }
     it { should have_field "Latitude" }
     it { should have_field "Longitude" }
     it { should have_field "Hardware ID" }
