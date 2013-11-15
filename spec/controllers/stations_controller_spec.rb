@@ -205,7 +205,7 @@ describe StationsController do
       it "should not allow stations to be destoyed" do
         expect do
           delete :destroy_measures, {:station_id => station.to_param}
-        end.to raise_error CanCan::AccessDenieds
+        end.to raise_error CanCan::AccessDenied
       end
     end
 
