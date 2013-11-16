@@ -16,4 +16,40 @@
 //= require turbolinks
 //= require_tree .
 
-$(function(){ $(document).foundation(); });
+// This lets us call console even in crap browsers.
+window.console = window.console||{
+    log : function(){},
+    info: function(){},
+    error: function(){}
+};
+
+$(function(){
+    $(document).foundation();
+    $('body').on('maps-api-loaded', function(){
+
+        console.log('maps-api-loaded');
+
+        var map_canvas = document.getElementById("stations_map") || null;
+        // Load client position
+        var user_loction = (function(){
+            if(navigator.geolocation) {
+
+                return navigator.geolocation.getCurrentPosition(
+                    function(p) {
+                        //get position from p.coords.latitude and p.coords.longitude
+                        console.info(p);
+                        return p.coords;
+                    }
+                );
+            };
+        }());
+
+
+
+
+    });
+});
+
+
+
+

@@ -62,6 +62,13 @@ describe StationsController do
           post :create, {:station => valid_attributes}
           expect(response).to redirect_to(Station.last)
         end
+
+        it "creates a station with a custom slug" do
+          valid_attributes[:slug] = 'custom_slug'
+          post :create, {:station => valid_attributes}
+          get :show, id: 'custom_slug'
+          expect(response).to be_success
+        end
       end
 
       describe "with invalid params" do
@@ -119,6 +126,12 @@ describe StationsController do
           put :update, {:id => station.to_param, :station => { latitude: 999 }}
           expect(assigns(:station).lat).to eq 999
         end
+
+        it "updates the slug" do
+          put :update, {:id => station.to_param, :station => { slug: 'custom_slug' }}
+          get :show, id: 'custom_slug'
+          expect(response).to be_success
+        end
       end
 
       describe "with invalid params" do
@@ -138,6 +151,7 @@ describe StationsController do
           response.should render_template("edit")
         end
       end
+
     end
   end
 
@@ -222,6 +236,5 @@ describe StationsController do
         response.should redirect_to(station_url(station.to_param))
       end
     end
-
   end
 end

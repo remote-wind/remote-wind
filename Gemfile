@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.0.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
@@ -39,11 +40,11 @@ group :development, :test do
   gem "factory_girl_rails"
   gem "capybara"
   gem 'guard-rspec', '>=2.5.0', require: false
-  gem 'guard-spork', require: false
-  gem 'spork-rails', :github => 'sporkrb/spork-rails'
   gem 'terminal-notifier-guard', require: false # OS-X notifications
-  gem "fuubar", "~> 1.2.1", require: false
+  gem "fuubar", "~> 1.2.1"
   gem 'shoulda-matchers'
+  gem 'zeus', require: false
+  gem 'guard-zeus', require: false
 end
 
 # These are for deployment on Heroku

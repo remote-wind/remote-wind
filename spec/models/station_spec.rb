@@ -66,5 +66,17 @@ describe Station do
     #end
   end
 
+  describe "slugging" do
+    it "should slug name in absence of a slug" do
+      station = create(:station, name: 'foo')
+      expect(station.slug).to eq 'foo'
+    end
+
+    it "should use slug if provided" do
+      station = create(:station, name: 'foo', slug: 'bar')
+      expect(station.slug).to eq 'bar'
+    end
+  end
+
 
 end

@@ -7,7 +7,7 @@ class Station < ActiveRecord::Base
   class_attribute :zone_class
   self.zone_class ||= Timezone::Zone
   friendly_id :name, :use => [:slugged, :history]
-
+  before_save :evaluate_slug
   before_save :set_timezone!
 
   def lat
@@ -42,11 +42,19 @@ class Station < ActiveRecord::Base
   end
 
   def should_generate_new_friendly_id?
-    name_changed? or slug_changed?
+    if !slug?
+      name_changed?
+    else
+      false
+    end
   end
 
   def current_measure
      self.measures.last
+  end
+
+  def evaluate_slug
+
   end
 
 end

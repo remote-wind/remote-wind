@@ -1,5 +1,3 @@
-require 'rubygems'
-require 'spork'
 #uncomment the following line to use spork with the debugger
 #require 'spork/ext/ruby-debug'
 
@@ -8,12 +6,11 @@ require 'spork'
 # if you change any configuration or code from libraries loaded here, you'll
 # need to restart spork for it take effect.
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
-Spork.prefork do
+prefork = lambda do
 
   ENV["RAILS_ENV"] ||= 'test'
   require File.expand_path("../../config/environment", __FILE__)
   require 'rspec/rails'
-  require 'rspec/autorun'
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
   RSpec.configure do |config|
@@ -57,12 +54,27 @@ Spork.prefork do
     Warden.test_mode!
 
   end
-
 end
 # This code will be run each time you run your specs.
-Spork.each_run do
-  # Setup geonames user name
-  Timezone::Configure.begin do |c|
-    c.username = ENV['REMOTE_WIND_GEONAMES']
+each_run = lambda do
+
+end
+
+if defined?(Zeus)
+  prefork.call
+  $each_run = each_run
+  class << Zeus.plan
+    def after_fork_with_test
+      after_fork_without_test
+      $each_run.call
+    end
+    alias_method_chain :after_fork, :test
   end
+elsif ENV['spork'] || $0 =~ /\bspork$/
+  require 'spork'
+  Spork.prefork(&prefork)
+  Spork.each_run(&each_run)
+else
+  prefork.call
+  each_run.call
 end

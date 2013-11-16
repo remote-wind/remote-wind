@@ -58,10 +58,11 @@ feature "Stations", %{
 
   scenario "when I edit a page" do
     admin_session
+    stations[0].save!
     visit edit_station_path(stations[0])
     fill_in 'Latitude', with: 999
     click_button 'Update'
-    expect(current_path).to eq station_path(stations[0])
+    expect(current_path).to eq station_path(stations[0].slug)
   end
 
   context "given a station with measures" do

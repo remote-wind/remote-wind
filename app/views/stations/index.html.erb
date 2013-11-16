@@ -2,8 +2,9 @@
 <% if params[:controller] == 'stations' %>
 <h1>Wind stations</h1>
 <% end %>
-
-<table>
+<div class="stations_map" id="stations_map">
+</div>
+<table class="stations">
   <thead>
     <tr>
       <th>Name</th>
@@ -15,7 +16,7 @@
       <th>Status</th>
     </tr>
   </thead>
-  <tbody class="stations">
+  <tbody>
     <% @stations.each do |station| %>
       <tr class="station">
         <td class="name"><%= link_to station.name, station %></td>

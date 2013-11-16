@@ -15,6 +15,8 @@ module FormHelper
       if block_given?
         content << block.call(key)
       end
+
+
       classes = ['field']
       classes << key.to_s
       if @object.errors[key].size != 0
