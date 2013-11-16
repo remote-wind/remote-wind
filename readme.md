@@ -4,6 +4,10 @@ RW2, Remote Wind - improved.
 This a rewrite from scratch of Karl-Petter Åkessons remote-wind. I rewrote it becuase of the difficulties of writing tests
 after vs TDD.
 
+It is not yet feature complete.
+
+@todo Incompatibilites
+----------------
 
 Requirements
 ------------
@@ -18,6 +22,7 @@ Installation
 ============
 set up RVM to use ruby 2.0 and create a gemset named rw2
 clone the repo
+bundle install
 
 Enviromental vars
 ------------
@@ -40,6 +45,9 @@ Note that the variables should not be quoted!
 source /etc/launchd.conf
 ``
 
+Continuus testing with Guard and Zeus
+=====================================
+zeus start
+bundle exec guard (in a new tab)
 
-
-
+(lanching zeus from the guardfile causes zeus to output status on each run and really erratic behavior)
