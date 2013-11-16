@@ -44,9 +44,20 @@ describe FormHelper do
 
       it 'takes a custom label' do
         label = 'Email, (We need your current password)'
-        expect(helper.div_field_with_label :password, label).to include(label)
+        expect(helper.div_field_with_label :password, {label: label}).to include(label)
+      end
+
+      it 'creates a a text input when called with type = text' do
+        expect(helper.div_field_with_label :foo, type: :text).to have_selector "input[type='text']"
+      end
+
+      it 'creates a password input when called with type = password' do
+        expect(helper.div_field_with_label :foo, type: :password).to have_selector "input[type='password']"
       end
 
     end
   end
+
+
+
 end

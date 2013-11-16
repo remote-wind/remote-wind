@@ -2,31 +2,12 @@
 
     <div class="row">
       <div class="small-6 large-8 columns">
-        <%= f.div_field_with_label(:name) do |key|
-          f.text_field(key, :required => true)
-        end
-        %>
-        <%=
-            f.div_field_with_label(:slug, "Slug") do |key|
-              f.text_field(key)
-            end
-        %>
-        <%=
-            f.div_field_with_label(:hw_id, 'Hardware ID') do |key|
-              f.text_field(key, :required => true)
-            end
-        %>
-        <%=
-            f.div_field_with_label(:latitude, "latitude") do |key|
-              f.text_field(key)
-            end
-        %>
-        <%=
-            f.div_field_with_label(:longitude) do |key|
-              f.text_field(key)
-            end
-        %>
-        <%= f.div_field_with_label(:user_id, "Owner") do |key|
+        <%= f.div_field_with_label(:name,  type: :text, class: "has_tip", title: "Used to create friendly urls") %>
+        <%= f.div_field_with_label(:slug, type: :text, class: "has_tip", title: "Used to create friendly urls")  %>
+        <%= f.div_field_with_label(:hw_id, type: :text, label: 'Hardware ID') %>
+        <%= f.div_field_with_label(:latitude, type: :text, class: "has_tip", title: "Degrees decimal please!") %>
+        <%= f.div_field_with_label(:longitude, type: :text, class: "has_tip", title: "Degrees decimal please!") %>
+        <%= f.div_field_with_label(:user_id, label: "Owner") do |key|
           f.select(:user_id, options_from_collection_for_select(User.all, :id, :email), { include_blank: true  })
         end
         %>
