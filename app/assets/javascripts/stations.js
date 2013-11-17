@@ -1,6 +1,56 @@
 $(function () {
 
     /**
+     * Really generic google maps implimention that uses data attributes and good old html
+     * to place markers
+     */
+    (function(){
+        var $map_canvas = $('#map_canvas');
+        var map;
+
+        $('body').on('maps-api-loaded', function(){
+            if ($map_canvas.length){
+                $map_canvas.trigger('map.init');
+            }
+        });
+
+        $map_canvas.on('map.init', function(){
+            var $markers, mapOptions, map;
+            $markers = $map_canvas.find('.marker').clone();
+            $map_canvas.empty();
+
+            mapOptions = {
+                center: new google.maps.LatLng($map_canvas.data('lat'), $map_canvas.data('lon')),
+                zoom: 10,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            map = new google.maps.Map($map_canvas[0],
+                mapOptions);
+
+            map.infoWindow = new google.maps.InfoWindow();
+
+            $markers.each(function(){
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng($(this).data('lat'), $(this).data('lon')),
+                    map: map,
+                    title: $(this).find('.title').text(),
+                    content: $(this).html()
+                });
+
+                google.maps.event.addListener(marker, 'click', function(){
+                    map.infoWindow.close();
+                    map.panTo(marker.position);
+                    map.infoWindow.setPosition(marker.position);
+                    map.infoWindow.setContent(marker.content);
+                    map.infoWindow.open(map, marker);
+                });
+            });
+        });
+    }());
+
+
+    /**
      * Station chart
      */
     (function(){

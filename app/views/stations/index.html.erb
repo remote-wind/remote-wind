@@ -3,8 +3,17 @@
 <% unless is_home? %>
 <h1>Wind stations</h1>
 <% end %>
-<div class="stations_map small-12 large-12 columns" id="stations_map">
+
+<% unless @stations.empty?  %>
+<div class="stations_map small-12 large-12 columns" id="map_canvas" data-lat="<%= @stations.first.lat %>" data-lon="<%= @stations.first.lon %>">
+  <% @stations.each do |station| %>
+  <div class="marker" data-lat="<%= station.lat %>" data-lon="<%= station.lon %>">
+    <h3 class="title"><%= station.name %></h3>
+  </div>
+  <% end %>
 </div>
+<% end %>
+
 <table class="stations large-8 columns">
   <thead>
     <tr>

@@ -3,8 +3,15 @@
 <p>Owned by <%= @station.user.email %></p>
 <% end %>
 
-<% if @measures %>
+<div class="row">
+  <div class="map-canvas small-12 large-12 columns" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
+    <div class="marker" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>">
+      <h3 class="title"><%= @station.name %></h3>
+    </div>
+  </div>
+</div>
 
+<% if @measures %>
 <div class="section-container auto" data-section>
   <section class="active">
     <p class="title" data-section-title><a href="#panel1">Table</a></p>
@@ -33,7 +40,6 @@
     </div>
   </section>
 </div>
-
 <% end %>
 
 <% if can? :manage, Station %>
