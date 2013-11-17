@@ -1,6 +1,7 @@
 Rw2::Application.routes.draw do
 
   root 'pages#home'
+  get '/products', to: "pages#products", as: :products
 
   devise_for :users
   resources :users
