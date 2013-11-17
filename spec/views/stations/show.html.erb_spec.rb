@@ -31,4 +31,25 @@ describe "stations/show" do
     it { should have_link 'Clear all measures for this station' }
   end
 
+  context "when station has no measures" do
+    it { should_not have_selector "table.measures" }
+  end
+
+  context "when station has measures"  do
+
+    before do
+      @measure = create(:measure)
+      assign(:measures, [@measure])
+    end
+
+    subject {
+      render
+      rendered
+    }
+
+    it { should have_selector "table.measures" }
+    it { should have_selector ".speed", text:  @measure.speed }
+    it { should have_selector ".direction", text:  @measure.direction }
+
+  end
 end

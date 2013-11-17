@@ -29,6 +29,11 @@ describe StationsController do
       get :show, {:id => station.to_param }
       expect(assigns(:station)).to eq(station)
     end
+
+    it "assigns measures as @measures" do
+      get :show, {:id => station.to_param }
+      expect(assigns(:measures)).to eq([])
+    end
   end
 
 
@@ -212,7 +217,6 @@ describe StationsController do
         station.measures.create attributes_for(:measure)
       end
     end
-
 
     context "as unpriveleged user" do
       before { sign_in create(:user) }

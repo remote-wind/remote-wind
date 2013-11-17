@@ -1,7 +1,7 @@
 class StationsController < ApplicationController
   before_filter :authenticate_user!, :except => [:show, :index, :measures]
   authorize_resource :except => [:show, :index, :measures]
-  before_action :set_station, only: [:show, :edit, :update, :destroy]
+  before_action :set_station, only: [:edit, :update, :destroy]
 
 
   # GET /stations
@@ -13,6 +13,8 @@ class StationsController < ApplicationController
   # GET /stations/1
   # GET /stations/1.json
   def show
+    @station = Station.friendly.find(params[:id])
+    @measures = @station.measures
   end
 
   # GET /stations/new

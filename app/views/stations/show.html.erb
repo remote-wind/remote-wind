@@ -1,8 +1,26 @@
 <h1><%= @station.name %></h1>
-
 <% unless @station.user.nil? %>
 <p>Owned by <%= @station.user.email %></p>
 <% end %>
+
+<% if @measures %>
+    <table class="measures">
+      <thead>
+          <th>Time</th>
+          <th>Wind Speed</th>
+          <th>Direction</th>
+          <th>Max Wind Speed</th>
+          <th>Min Wind Speed</th>
+          <th>Temperature</th>
+      </thead>
+      <tbody>
+      <% @measures.each do |measure| %>
+          <%= render :partial => 'measures/measure', object: measure %>
+      <% end %>
+      </tbody>
+    </table>
+<% end %>
+
 <% if can? :manage, Station %>
 <div class="admin-only btn-group">
     <%= link_to 'Edit', edit_station_path(@station), class: "button tiny" %>
