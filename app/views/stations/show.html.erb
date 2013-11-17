@@ -4,21 +4,36 @@
 <% end %>
 
 <% if @measures %>
-    <table class="measures">
-      <thead>
-          <th>Time</th>
-          <th>Wind Speed</th>
-          <th>Direction</th>
-          <th>Max Wind Speed</th>
-          <th>Min Wind Speed</th>
-          <th>Temperature</th>
-      </thead>
-      <tbody>
-      <% @measures.each do |measure| %>
-          <%= render :partial => 'measures/measure', object: measure %>
-      <% end %>
-      </tbody>
-    </table>
+
+<div class="section-container auto" data-section>
+  <section class="active">
+    <p class="title" data-section-title><a href="#panel1">Table</a></p>
+    <div class="content" data-section-content>
+      <table class="measures">
+        <thead>
+        <th>Time</th>
+        <th>Wind Speed</th>
+        <th>Direction</th>
+        <th>Max Wind Speed</th>
+        <th>Min Wind Speed</th>
+        <th>Temperature</th>
+        </thead>
+        <tbody>
+        <% @measures.each do |measure| %>
+            <%= render :partial => 'measures/measure', object: measure %>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <p class="title" data-section-title><a href="#panel2">Chart</a></p>
+    <div class="content" data-section-content>
+      <div id="station_measures_chart" data-path="<%= station_measures_path(@station) %>" style="width:600px;height:300px"></div>
+    </div>
+  </section>
+</div>
+
 <% end %>
 
 <% if can? :manage, Station %>
@@ -32,3 +47,4 @@
 <nav class="pagination">
     <%= link_to 'Back', stations_path %>
 </nav>
+

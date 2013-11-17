@@ -27,7 +27,9 @@
     <%= javascript_include_tag "application" %>
     <script type="text/javascript">
         google.load("maps", "3", { other_params: "sensor=false", callback : function(){
-            $('body').trigger('maps-api-loaded');
+            $(function(){
+                $('body').trigger('maps-api-loaded');
+            });
         }});
     </script>
 

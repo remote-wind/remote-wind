@@ -15,6 +15,8 @@ class StationsController < ApplicationController
   def show
     @station = Station.friendly.find(params[:id])
     @measures = @station.measures
+    @chart_min = 0
+    @chart_max = 20
   end
 
   # GET /stations/new
@@ -71,11 +73,6 @@ class StationsController < ApplicationController
   def measures
     @station = Station.friendly.find(params[:station_id])
     @measures = @station.measures
-
-    respond_to do |format|
-      format.html
-      format.json { render :json, @station }
-    end
   end
 
   # DELETE /stations/:staton_id/measures
