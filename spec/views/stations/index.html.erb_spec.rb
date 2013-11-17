@@ -51,4 +51,16 @@ describe "stations/index" do
     it { should have_link 'Edit' }
     it { should have_link 'Delete' }
   end
+
+  describe "breadcumbs" do
+    subject {
+      render
+      rendered
+    }
+
+    it { should have_selector '.breadcrumbs .root', text: 'Home' }
+    it { should have_selector '.breadcrumbs .current', text: 'Stations' }
+
+  end
+
 end

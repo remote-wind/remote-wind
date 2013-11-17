@@ -5,7 +5,7 @@
 
 <div class="row">
   <div class="map-canvas small-12 large-12 columns" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
-    <div class="marker" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>">
+    <div class="marker hidden" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>">
       <h3 class="title"><%= @station.name %></h3>
     </div>
   </div>
@@ -50,7 +50,10 @@
                 :class =>"tiny button alert", :method => :delete %>
 </div>
 <% end %>
-<nav class="pagination">
-    <%= link_to 'Back', stations_path %>
-</nav>
+<ul class="breadcrumbs">
+  <li class="root"><a href="<%= root_path %>">Home</a></li>
+  <li><a href="<%= stations_path %>">Stations</a></li>
+  <li class="current"><a href="<%= station_path(@station) %>"><%= @station.name %></a></li>
+</ul>
+
 

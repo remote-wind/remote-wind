@@ -12,9 +12,7 @@ describe "stations/show" do
       render
       rendered
     }
-
     it { should have_selector('h1', :text => @station.name )}
-    it { should have_link 'Back' }
     it { should_not have_link 'Delete' }
     it { should_not have_link 'Clear all measures for this station' }
   end
@@ -52,4 +50,18 @@ describe "stations/show" do
     it { should have_selector ".direction", text:  @measure.direction }
 
   end
+
+  describe "breadcumbs" do
+    subject {
+      render
+      rendered
+    }
+
+    it { should have_selector '.breadcrumbs .root', text: 'Home' }
+    it { should have_selector '.breadcrumbs a', text: 'Stations' }
+    it { should have_selector '.breadcrumbs .current', text: @station.name }
+
+  end
+
+
 end

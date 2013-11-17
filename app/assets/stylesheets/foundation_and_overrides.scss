@@ -1130,9 +1130,14 @@ $default-float: left;
 // $tooltip-radius: $global-radius;
 // $tooltip-pip-size: 5px;
 
-@import "foundation";
+
 @import 'color';
 @import 'forms';
 @import 'type';
 @import 'navigation';
 @import 'modules';
+@import "foundation";
+
+.hidden {
+  display: none;
+}

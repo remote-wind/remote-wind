@@ -21,7 +21,7 @@ feature "Stations", %{
 
   scenario "when I view the index page" do
     visit root_path
-    click_link "Stations"
+    Capybara.find("header a", :text => "Stations").click
     expect(page).to have_selector '.station', count: 3
     expect(page).to have_content stations[0].name
   end
