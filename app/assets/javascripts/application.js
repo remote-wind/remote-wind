@@ -23,3 +23,7 @@ window.console = window.console||{
     info: function(){},
     error: function(){}
 };
+
+$(function(){
+    $(document).foundation();
+});
