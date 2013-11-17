@@ -8,7 +8,6 @@ gem 'rails', '4.0.0'
 gem 'sass-rails', '~> 4.0.0' # Use SCSS for stylesheets
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'coffee-rails', '~> 4.0.0' # Use CoffeeScript for .js.coffee assets and views
-gem 'therubyracer', platforms: :ruby # V8 Javascript runtime
 gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'zurb-foundation'  #https://github.com/zurb/foundation-rails
 
@@ -31,6 +30,7 @@ group :doc do
 end
 
 group :development, :test do
+  gem 'therubyracer', platforms: :ruby # V8 Javascript runtime
   gem 'sqlite3'
   gem 'debugger'
   gem 'thin'  # use Thin as web server in stead of webbrick
