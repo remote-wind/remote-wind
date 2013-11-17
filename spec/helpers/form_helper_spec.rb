@@ -47,17 +47,20 @@ describe FormHelper do
         expect(helper.div_field_with_label :password, {label: label}).to include(label)
       end
 
-      it 'creates a a text input when called with type = text' do
-        expect(helper.div_field_with_label :foo, type: :text).to have_selector "input[type='text']"
-      end
+      context "when called without a block" do
 
-      it 'creates a password input when called with type = password' do
-        expect(helper.div_field_with_label :foo, type: :password).to have_selector "input[type='password']"
-      end
+        it 'creates a a text input when called with type = text' do
+          expect(helper.div_field_with_label :foo, type: :text).to have_selector "input[type='text']"
+        end
 
+        it 'creates a password input when called with type = password' do
+          expect(helper.div_field_with_label :foo, type: :password).to have_selector "input[type='password']"
+        end
+
+        it 'defaults to creating a text field' do
+          expect(helper.div_field_with_label :foo).to have_selector "input[type='text']"
+        end
+      end
     end
   end
-
-
-
 end

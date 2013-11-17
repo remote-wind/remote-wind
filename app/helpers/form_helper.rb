@@ -6,12 +6,27 @@ module FormHelper
 
   class Rw2FormBuilder < ActionView::Helpers::FormBuilder
 
+    # Creates a field wrapped by a div.
+    # When called without a block it wraps the block contents -
+    # otherwise it defaults to creating an text input for [key] attribute
+    # other types can be had by passing a type params into the options hash
+    #
+    # ex: div_field_with_label(email, type: :email)
+    # See @@type_to_method for available types
+    #
+    # The options hash is passed to the FormHelper method, which means you can
+    # pass attributes as if you where calling ex. form.email_field directly.
+    #
+    # If the field has errors a "warning" class will be added to the <div> wrapper
+    # Additionally the errors will be output in a paragraph after the input
+    #
     # @param [symbol] key
     # @param [hash] options
     # @param [proc] block
     def div_field_with_label(key, options = {}, &block)
 
       options = HashWithIndifferentAccess.new(options)
+      # start building HTML fragment
       @doc = Nokogiri::HTML::DocumentFragment.parse ""
       Nokogiri::HTML::Builder.with(@doc) do |doc|
         doc.div(class: "field #{key}")
@@ -20,10 +35,11 @@ module FormHelper
       div.add_child(Nokogiri::HTML::DocumentFragment.parse(
                         self.label(key, options[:label] ? options[:label].html_safe : nil), @doc)
       )
-
       if block_given?
         div.add_child(Nokogiri::HTML::DocumentFragment.parse block.call(key), @doc)
-      elsif options[:type]
+
+      else
+        options[:type] ||= :text
         method = self.method(@@type_to_method[options[:type]])
         input = method.call(key, options)
         div.add_child(Nokogiri::HTML::DocumentFragment.parse input, @doc)
@@ -44,7 +60,7 @@ module FormHelper
 
     end
 
-    @@type_to_method = {
+    @@type_to_method = HashWithIndifferentAccess.new ({
         check_box: :check_box,
         color: :color_field,
         date: :date_field,
@@ -65,8 +81,7 @@ module FormHelper
         time: :time_field,
         url: :url_field,
         week: :week_field,
-    }
-
+    })
 
   end
 end

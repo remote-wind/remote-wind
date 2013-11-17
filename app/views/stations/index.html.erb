@@ -1,10 +1,11 @@
 
-<% if params[:controller] == 'stations' %>
+
+<% unless is_home? %>
 <h1>Wind stations</h1>
 <% end %>
-<div class="stations_map" id="stations_map">
+<div class="stations_map small-12 large-12 columns" id="stations_map">
 </div>
-<table class="stations">
+<table class="stations large-8 columns">
   <thead>
     <tr>
       <th>Name</th>
@@ -18,15 +19,13 @@
   </thead>
   <tbody>
     <% @stations.each do |station| %>
-      <tr class="station">
+      <tr class="station" id="station-<%= station.id %>">
         <td class="name"><%= link_to station.name, station %></td>
-
         <td class="speed">
           <% unless station.measures.empty? %>
-            <%= station.current_measure.speed %>
+            <%= station.current_measure.speed %> (<%=  station.current_measure.min_wind_speed %> - <%=  station.current_measure.max_wind_speed %>)
           <% end %>
         </td>
-
         <td class="direction">
           <% unless station.measures.empty? %>
               <%=  station.current_measure.direction %> (<%=  station.current_measure.compass_point %>)
@@ -50,10 +49,10 @@
         </td>
       </tr>
     <% end %>
+    <% if can? :create, Station && params[:controller] == 'stations' %>
+      <tr class="station">
+        <td><%= link_to 'New Station', new_station_path %></td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
-
-<% if can? :create, Station && params[:controller] == 'stations' %>
-<p><%= link_to 'New Station', new_station_path %></p>
-<% end %>
-
