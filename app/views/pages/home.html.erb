@@ -2,4 +2,5 @@
   <h1>Remote Wind</h1>
   <p>Wind monitoring for wind geeks</p>
 </section>
-<%= render template: "stations/index", object: @stations %>
+<%= render :partial => 'stations/map', object: @stations %>
+<%= render :partial => 'stations/table', object: @stations %>

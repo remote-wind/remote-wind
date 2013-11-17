@@ -18,6 +18,5 @@ describe "measures/index.html.erb" do
   it { should have_selector '.max_wind_speed', text: @measures[0].max_wind_speed }
   it { should have_selector '.min_wind_speed', text: @measures[0].min_wind_speed }
   it { should have_selector '.created_at',     text: @measures[0].created_at.to_s }
-  it { should have_selector '.temperature',    text: @measures[0].temperature }
 
 end
