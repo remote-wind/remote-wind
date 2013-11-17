@@ -1,10 +1,14 @@
 namespace :demo do
   desc "Seed with a bunch of random measurements"
   task random_measures: :environment do
+
+    puts "Seeding db with random measurements"
     stations = Station.all
-    t = Time.now - 10000
+
     stations.each do |station|
-      Random.new.rand(0..10).times do
+      rnd = Random.new.rand(5..35)
+      t = Time.now - (rnd * 1000)
+      rnd.times do
         speed = Random.new.rand(0..30)
         measure = station.measures.create({
             :station_id => station.id,
@@ -13,7 +17,10 @@ namespace :demo do
             :min_wind_speed => Random.new.rand(0..speed),
             :max_wind_speed => Random.new.rand(speed..speed + 15)
         })
-        measure.created_at = t + 1000
+        t = t + 1000
+        measure.created_at = t
+        measure.save!
+        puts measure.inspect
       end
     end
   end
