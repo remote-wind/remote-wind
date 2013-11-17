@@ -15,7 +15,7 @@ $(function () {
         });
 
         $map_canvas.on('map.init', function(){
-            var $markers, mapOptions, map;
+            var $markers, mapOptions, map, bounds;
             $markers = $map_canvas.find('.marker').clone();
             $map_canvas.empty();
 
@@ -29,8 +29,10 @@ $(function () {
                 mapOptions);
 
             map.infoWindow = new google.maps.InfoWindow();
+            bounds = new google.maps.LatLngBounds();
 
             $markers.each(function(){
+
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng($(this).data('lat'), $(this).data('lon')),
                     map: map,
@@ -38,14 +40,19 @@ $(function () {
                     content: $(this).html()
                 });
 
+                bounds.extend(marker.position);
+
                 google.maps.event.addListener(marker, 'click', function(){
                     map.infoWindow.close();
                     map.panTo(marker.position);
+                    map.setZoom(10);
                     map.infoWindow.setPosition(marker.position);
                     map.infoWindow.setContent(marker.content);
                     map.infoWindow.open(map, marker);
                 });
             });
+
+            map.fitBounds(bounds);
         });
     }());
 
