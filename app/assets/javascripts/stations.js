@@ -15,8 +15,9 @@ $(function () {
         });
 
         $map_canvas.on('map.init', function(){
-            var $markers, mapOptions, map, bounds;
+            var $markers, $controls, mapOptions, map, bounds;
             $markers = $map_canvas.find('.marker').clone();
+            $controls = $map_canvas.find('.controls').clone();
             $map_canvas.empty();
 
             mapOptions = {
@@ -29,7 +30,7 @@ $(function () {
                 mapOptions);
 
             map.infoWindow = new google.maps.InfoWindow();
-            bounds = new google.maps.LatLngBounds();
+            map.all_markers_bounds = new google.maps.LatLngBounds();
 
             $markers.each(function(){
 
@@ -40,7 +41,7 @@ $(function () {
                     content: $(this).html()
                 });
 
-                bounds.extend(marker.position);
+                map.all_markers_bounds.extend(marker.position);
 
                 google.maps.event.addListener(marker, 'click', function(){
                     map.infoWindow.close();
@@ -52,7 +53,16 @@ $(function () {
                 });
             });
 
-            map.fitBounds(bounds);
+            map.fitBounds(map.all_markers_bounds);
+
+            if ($controls.length) {
+                map.controls[google.maps.ControlPosition.LEFT_TOP].push($controls[0]);
+
+                google.maps.event.addDomListener($controls[0], 'click', function(e) {
+                    map.fitBounds(map.all_markers_bounds);
+                    e.preventDefault();
+                });
+            }
         });
     }());
 
