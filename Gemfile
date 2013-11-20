@@ -16,6 +16,8 @@ gem 'zurb-foundation'  #https://github.com/zurb/foundation-rails
 gem "devise", ">= 2.2.3"
 gem 'cancan'
 gem 'rolify', :github => 'EppO/rolify'
+gem 'omniauth'
+gem 'omniauth-facebook'
 
 #= Geolocation =========================
 gem "geocoder" # https://github.com/alexreisner/geocoder
