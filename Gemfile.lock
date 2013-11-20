@@ -248,7 +248,7 @@ DEPENDENCIES
   rails (= 4.0.0)
   rails_12factor (= 0.0.2)
   rolify!
-  rspec-rails
+  rspec-rails (>= 1.14)
   sass-rails (~> 4.0.0)
   sdoc
   shoulda-matchers

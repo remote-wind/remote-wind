@@ -36,7 +36,7 @@ group :development, :test do
   gem 'sqlite3'
   gem 'debugger'
   gem 'thin'  # use Thin as web server in stead of webbrick
-  gem "rspec-rails"
+  gem "rspec-rails", ">=1.14"
   gem "database_cleaner"
   gem "factory_girl_rails"
   gem "capybara"
