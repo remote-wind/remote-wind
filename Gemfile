@@ -18,6 +18,7 @@ gem 'cancan'
 gem 'rolify', :github => 'EppO/rolify'
 gem 'omniauth'
 gem 'omniauth-facebook'
+gem 'domp'
 
 #= Geolocation =========================
 gem "geocoder" # https://github.com/alexreisner/geocoder
@@ -57,3 +58,6 @@ group :production do
 end
 
 
+
+gem "omniauth"
+gem "omniauth-facebook"

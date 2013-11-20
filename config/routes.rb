@@ -3,7 +3,7 @@ Rw2::Application.routes.draw do
   root 'pages#home'
   get '/products', to: "pages#products", as: :products
 
-  devise_for :users
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   resources :users
 
   get "/stations/:station_id/measures", to: "stations#measures", as: :station_measures
