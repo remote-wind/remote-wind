@@ -13,3 +13,23 @@
   min-height: 200px;
 
 }
+
+
+.auth-providers {
+
+  margin-bottom: em-calc(20);
+
+  .auth-provider {
+    background-image: url(image-path('openid-logos.png'));
+    display: block;
+    width: 100px;
+    height: 60px;
+    font-size: 0 !important;
+
+
+    &.facebook {
+      background-position: -1px -456px;
+    }
+  }
+
+}

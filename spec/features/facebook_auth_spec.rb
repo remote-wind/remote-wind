@@ -29,7 +29,7 @@ feature 'Facebook Authentiation' do
   scenario 'I click signup via facebook and approve app permissions' do
     visit new_user_registration_path
     valid_auth_response
-    click_link "Sign up with Facebook"
+    click_link "Sign in with Facebook"
     expect(current_path).to eq root_path
     expect(page).to have_content  "Welcome test@example.com"
   end
@@ -37,7 +37,7 @@ feature 'Facebook Authentiation' do
   scenario 'I click signup via facebook and do not approve app permissions' do
     visit new_user_registration_path
     invalid_auth_response
-    click_link "Sign up with Facebook"
+    click_link "Sign in with Facebook"
     expect(page).to have_content "Could not authenticate you from Facebook"
   end
 
@@ -45,7 +45,7 @@ feature 'Facebook Authentiation' do
     before do
       visit new_user_registration_path
       valid_auth_response
-      click_link "Sign up with Facebook"
+      click_link "Sign in with Facebook"
       sign_out
     end
 

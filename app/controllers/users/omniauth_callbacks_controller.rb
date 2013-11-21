@@ -25,7 +25,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
     def sign_in_with_existing_authentication(authentication)
-      flash[:notice] = "Welcome back #{authentication.user.email}!"
+      flash[:success] = "Welcome back #{authentication.user.email}!"
       sign_in_and_redirect(:user, authentication.user)
     end
 
@@ -37,7 +37,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def create_user_and_authentication_and_sign_in(auth_params, provider)
       user = User.create_from_omniauth(auth_params)
       if user.valid?
-        flash[:notice] = "Welcome #{user.email}"
+        flash[:success] = "Welcome #{user.email}"
         create_authentication_and_sign_in(auth_params, user, provider)
       else
         flash[:error] = user.errors.full_messages.first

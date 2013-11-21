@@ -16,5 +16,5 @@ describe "devise/registrations/new" do
 
   it { should have_field "Email" }
   it { should have_field "Password" }
-  it { should have_link "Sign up with Facebook" }
+  it { should have_link "Sign in with Facebook" }
 end
