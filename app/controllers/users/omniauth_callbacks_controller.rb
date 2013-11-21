@@ -30,8 +30,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
     def create_authentication_and_sign_in(auth_params, user, provider)
-      UserAuthentication.create_from_omniauth(auth_params, user, provider)
-      sign_in_and_redirect(:user, user)
+      @current_user = user
+      UserAuthentication.create_from_omniauth(auth_params, @current_user, provider)
+      sign_in_and_redirect(:user, @current_user)
     end
 
     def create_user_and_authentication_and_sign_in(auth_params, provider)

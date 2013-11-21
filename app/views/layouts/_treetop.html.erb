@@ -19,7 +19,11 @@
       <li class="logged-in has-dropdown">
         <a href="<%= url_for current_user  %>">
           <div class="avatar">
-            <img src="http://placehold.it/25x25">
+            <% if current_user.image? %>
+                <img src="<%= current_user.image %>">
+            <% else %>
+                <img src="http://placehold.it/25x25">
+            <% end %>
             <%= current_user.email %>
           </div>
         </a>

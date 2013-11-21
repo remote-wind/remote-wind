@@ -15,11 +15,11 @@ class User < ActiveRecord::Base
     params = HashWithIndifferentAccess.new(params)
 
     attributes = {
-        email: params['info']['email'],
+        email: params[:info][:email],
+        image: params[:info][:image],
         password: Devise.friendly_token
     }
 
     create(attributes)
   end
-
 end
