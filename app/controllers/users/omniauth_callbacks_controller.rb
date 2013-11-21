@@ -16,6 +16,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       provider = AuthenticationProvider.where(name: auth_params.provider).first
       authentication = provider.user_authentications.where(uid: auth_params.uid).first
       if authentication
+        authentication.user.update_from_omniauth(auth_params)
         sign_in_with_existing_authentication(authentication)
       elsif user_signed_in?
         create_authentication_and_sign_in(auth_params, current_user, provider)
@@ -25,6 +26,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
     def sign_in_with_existing_authentication(authentication)
+
+
       flash[:success] = "Welcome back #{authentication.user.email}!"
       sign_in_and_redirect(:user, authentication.user)
     end
