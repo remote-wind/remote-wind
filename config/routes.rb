@@ -1,6 +1,8 @@
 Rw2::Application.routes.draw do
 
   root 'pages#home'
+
+  get '/honeypot', to: "application#honeypot", as: :honeypot # Always causes an access denied exception
   get '/products', to: "pages#products", as: :products
 
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }

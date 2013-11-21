@@ -40,7 +40,15 @@ describe StationsController do
   describe "POST create" do
     context "as unpriveleged user" do
       before { sign_in create(:user) }
+
+      it "does not create station" do
+        expect do
+          post :create, {:station => valid_attributes}
+        end.to_not change(Station, :count)
+      end
+
       it "should not allow stations to be created without authorization" do
+        bypass_rescue
         expect do
           post :create, {:station => valid_attributes}
         end.to raise_error CanCan::AccessDenied
@@ -98,10 +106,16 @@ describe StationsController do
 
     context "as unpriveleged user" do
       before { sign_in create(:user) }
-      it "should not allow stations to be updated" do
 
+      it "does not change station" do
         station = Station.create(attributes_for(:station))
+        put :update, {:id => station.to_param, :station => { "name" => "foo" }}
+        expect(station.reload.name).to_not eq "foo"
+      end
 
+      it "should not allow stations to be updated" do
+        bypass_rescue
+        station = Station.create(attributes_for(:station))
         expect do
           put :update, {:id => station.to_param, :station => { "name" => "foo" }}
         end.to raise_error CanCan::AccessDenied
@@ -164,7 +178,17 @@ describe StationsController do
 
     context "as unpriveleged user" do
       before { sign_in create(:user) }
+
+
+      it "does not destroy station" do
+        station = Station.create! valid_attributes
+        expect do
+          delete :destroy, {:id => station.to_param}
+        end.to_not change(Station, :count)
+      end
+
       it "should not allow stations to be destoyed" do
+        bypass_rescue
         station = Station.create! valid_attributes
         expect do
           delete :destroy, {:id => station.to_param}
@@ -220,11 +244,20 @@ describe StationsController do
 
     context "as unpriveleged user" do
       before { sign_in create(:user) }
-      it "should not allow stations to be destoyed" do
+      it "does not allow measures to be destoyed" do
         expect do
+          delete :destroy_measures, {:station_id => station.to_param}
+        end.to_not change(Measure, :count)
+        bypass_rescue
+      end
+
+      it "does not allow measures to be destoyed" do
+        expect do
+          bypass_rescue
           delete :destroy_measures, {:station_id => station.to_param}
         end.to raise_error CanCan::AccessDenied
       end
+
     end
 
     context "as admin" do

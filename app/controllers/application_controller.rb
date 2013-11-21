@@ -16,4 +16,20 @@ class ApplicationController < ActionController::Base
   ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
     html_tag.html_safe
   end
+
+  # GET /honeypot
+  def honeypot
+    raise CanCan::AccessDenied and return
+  end
+
+
+  # Handle authentication errors
+  rescue_from CanCan::AccessDenied do |exception|
+    if user_signed_in?
+      redirect_to root_url
+    else
+      redirect_to new_user_session_path
+    end
+  end
+
 end

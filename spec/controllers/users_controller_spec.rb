@@ -27,6 +27,7 @@ describe UsersController do
 
     context "when not authorized" do
       it "should be denied" do
+        bypass_rescue
         expect { get 'index' }.to raise_error(CanCan::AccessDenied)
       end
     end

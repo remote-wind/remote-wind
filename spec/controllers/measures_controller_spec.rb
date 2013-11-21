@@ -68,7 +68,7 @@ describe MeasuresController do
       it "should not allow measures to be destoyed without authorization" do
         expect do
           delete :destroy, {:id => measure.to_param, :station_id =>  measure.station.to_param}
-        end.to raise_error CanCan::AccessDenied
+        end.to_not change(Measure, :count)
       end
     end
 
