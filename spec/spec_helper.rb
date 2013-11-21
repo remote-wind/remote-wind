@@ -49,6 +49,8 @@ prefork = lambda do
       end
     end
 
+    OmniAuth.config.test_mode = true
+
     Station::zone_class = ZoneMocker
 
     Warden.test_mode!

@@ -5,6 +5,7 @@ class UserAuthentication < ActiveRecord::Base
   serialize :params
 
   def self.create_from_omniauth(params, user, provider)
+    params = HashWithIndifferentAccess.new(params)
     create(
       user: user,
       authentication_provider: provider,

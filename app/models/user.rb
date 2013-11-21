@@ -11,6 +11,9 @@ class User < ActiveRecord::Base
   has_many :authentications, class_name: 'UserAuthentication'
 
   def self.create_from_omniauth(params)
+
+    params = HashWithIndifferentAccess.new(params)
+
     attributes = {
         email: params['info']['email'],
         password: Devise.friendly_token

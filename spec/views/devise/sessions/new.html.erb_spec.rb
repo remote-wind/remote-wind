@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "devise/registrations/new" do
+describe "devise/sessions/new" do
 
   before do
     view.stub(:resource).and_return(User.new)
@@ -14,7 +14,6 @@ describe "devise/registrations/new" do
     rendered
   }
 
-  it { should have_field "Email" }
-  it { should have_field "Password" }
-  it { should have_link "Sign up with Facebook" }
+  it { should have_link "Sign in with Facebook" }
+
 end

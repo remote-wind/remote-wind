@@ -2,8 +2,7 @@ module Features
   module SessionHelpers
 
     def sign_up_with hash
-      visit root_path
-      click_link 'Sign up'
+      visit new_user_registration_path
       fill_in 'Email', :with => hash[:email]
       fill_in 'Password', :with => hash[:password]
       fill_in 'Password confirmation', :with => hash[:password_confirmation]
@@ -33,6 +32,11 @@ module Features
       @ability.extend(CanCan::Ability)
       controller.stub(:current_ability) { @ability }
       assign(:ability,@ability)
+    end
+
+    def sign_out
+      visit root_path
+      click_link "Log out"
     end
 
   end
