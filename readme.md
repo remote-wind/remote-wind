@@ -1,31 +1,24 @@
-RW2, Remote Wind - improved.
-============================
+#RW2, Remote Wind - improved.
 
 This a rewrite from scratch of Karl-Petter Åkessons remote-wind. I rewrote it becuase of the difficulties of writing tests
 after vs TDD.
 
 It is not yet feature complete.
 
-@todo Incompatibilites
-----------------
+### Requirements
 
-Requirements
-------------
 ```
 RVM > 1.2
-Ruby 2.0
-GIT
+Ruby >= 2.0.0
 Postgres >9.3
 ```
 
-Installation
-============
+## Installation
 set up RVM to use ruby 2.0 and create a gemset named rw2
 clone the repo
 bundle install
 
-Enviromental vars
-------------
+### Enviromental vars
 The app uses enviromental vars in to avoid checking in passwords and local enviroment config.
 Add the following to your ~/.profile (os-x) or  ~/.bash_profile (linux)
 ```
@@ -49,8 +42,7 @@ Note that the values should not be quoted!
 source /etc/launchd.conf
 ```
 
-Continuus testing with Guard and Zeus
-=====================================
+## Continuus testing with Guard and Zeus
 ```
 zeus start
 bundle exec guard (in a new tab)
