@@ -14,9 +14,9 @@ Postgres >9.3
 ```
 
 ## Installation
-set up RVM to use ruby 2.0 and create a gemset named rw2
-clone the repo
-bundle install
+- set up RVM to use ruby 2.0 and create a gemset named rw2
+- clone the repo
+- bundle install
 
 ### Enviromental vars
 The app uses enviromental vars in to avoid checking in passwords and local enviroment config.
