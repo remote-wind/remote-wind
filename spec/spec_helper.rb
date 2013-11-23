@@ -1,16 +1,24 @@
-#uncomment the following line to use spork with the debugger
-#require 'spork/ext/ruby-debug'
+def zeus_running?
+  File.exists? '.zeus.sock'
+end
 
 
-# Loading more in this block will cause your tests to run faster. However,
-# if you change any configuration or code from libraries loaded here, you'll
-# need to restart spork for it take effect.
-# See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+if !zeus_running?
+  require 'simplecov'
+  SimpleCov.start "rails" do
+    add_filter do |source_file|
+      source_file.lines.count < 5
+    end
+  end
+end
+
+# Code run before forking in spork / zeus
 prefork = lambda do
 
   ENV["RAILS_ENV"] ||= 'test'
   require File.expand_path("../../config/environment", __FILE__)
   require 'rspec/rails'
+  require 'webmock/rspec'
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
   RSpec.configure do |config|
@@ -40,19 +48,14 @@ prefork = lambda do
     include Warden::Test::Helpers
     include Features::SessionHelpers
 
-    #@todo extract
-    class ZoneMocker
-      def initialize(latlon)
-      end
-      def active_support_time_zone
-        'London'
-      end
+    config.before(:each) do
+      stub_request(:any, /api.geonames.org/).to_return(
+          :status => 200,
+          :body => '{"time":"2013-11-23 20:16","countryName":"United Kingdom","sunset":"2013-11-23 16:01","rawOffset":0,"dstOffset":1,"countryCode":"GB","gmtOffset":0,"lng":-0.010635,"sunrise":"2013-11-23 07:30","timezoneId":"Europe/London","lat":51.478885}',
+          :headers => {})
     end
 
     OmniAuth.config.test_mode = true
-
-    Station::zone_class = ZoneMocker
-
     Warden.test_mode!
 
   end

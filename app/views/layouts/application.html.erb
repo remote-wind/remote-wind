@@ -35,7 +35,7 @@
     <%= render 'layouts/flash' %>
 
     <!-- pull in navigation -->
-    <nav class="left-off-canvas-menu">
+    <nav class="left-off-canvas-menu" id="left-off-canvas-menu">
       <% unless @stations.empty? %>
           <ul class="off-canvas-list">
             <li><label><%= link_to "Stations", stations_path %></label></li>

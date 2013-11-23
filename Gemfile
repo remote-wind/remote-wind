@@ -36,6 +36,7 @@ end
 
 group :development, :test do
   gem 'therubyracer', platforms: :ruby # V8 Javascript runtime
+  gem "webmock"
   gem 'sqlite3'
   gem 'debugger'
   gem 'thin'  # use Thin as web server in stead of webbrick
@@ -47,8 +48,9 @@ group :development, :test do
   gem 'terminal-notifier-guard', require: false # OS-X notifications
   gem "fuubar", "~> 1.2.1"
   gem 'shoulda-matchers'
-  gem 'zeus', require: false
+  gem 'zeus', '0.13.4.pre2', require: false
   gem 'guard-zeus', require: false
+  gem 'simplecov', :require => false
 end
 
 # These are for deployment on Heroku
@@ -56,8 +58,6 @@ group :production do
   gem 'pg', '0.15.1' # postgres
   gem 'rails_12factor', '0.0.2'
 end
-
-
 
 gem "omniauth"
 gem "omniauth-facebook"

@@ -10,9 +10,6 @@ describe StationsController do
   let(:invalid_attributes) { { :name => 'foo' } }
   let(:station) { FactoryGirl.create(:station, slug: 'xxx') }
 
-  before :each do
-    Station.stub(:find_timezone).and_return('London')
-  end
 
   describe "GET index" do
     it "assigns all stations as @stations" do

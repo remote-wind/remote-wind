@@ -21,14 +21,14 @@ feature "Stations", %{
 
   scenario "when I view the index page" do
     visit root_path
-    Capybara.find("nav a", :text => "Stations").click
+    Capybara.find("#left-off-canvas-menu a", :text => "Stations").click
     expect(page).to have_selector '.station', count: 3
     expect(page).to have_content stations[0].name
   end
 
   scenario "when I click on a station" do
     visit stations_path
-    click_link stations.first.name
+    Capybara.find("#left-off-canvas-menu a", :text => stations.first.name).click
     expect(current_path).to eq station_path(stations.first)
   end
 

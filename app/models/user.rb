@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
   def update_from_omniauth(params)
 
     params = HashWithIndifferentAccess.new(params)
-    unless params[:info][:image].empty?
+    if params[:info].key?(:image)
       @image = params[:info][:image]
     end
   end

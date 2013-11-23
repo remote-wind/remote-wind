@@ -1,11 +1,22 @@
 require 'zeus/rails'
+ENV.delete('RAILS_ENV')
 
 class CustomPlan < Zeus::Rails
+  def coverage
+    require 'simplecov'
+    SimpleCov.start "rails"  do
 
-  # def my_custom_command
-  #  # see https://github.com/burke/zeus/blob/master/docs/ruby/modifying.md
-  # end
+      add_filter do |source_file|
+        source_file.lines.count < 5
+      end
+    end
 
+    # require all ruby files
+    Dir["#{Rails.root}/app/**/*.rb"].each { |f| load f }
+
+    # run the tests
+    test
+  end
 end
 
 Zeus.plan = CustomPlan.new
