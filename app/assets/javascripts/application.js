@@ -16,6 +16,7 @@
 //= require remotewind
 //= require jquery.flot.min
 //= require jquery.flot.fillbetween
+//= require markerclusterer_compiled
 //= require_tree .
 
 // This lets us call console even in crap browsers.

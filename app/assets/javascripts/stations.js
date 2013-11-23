@@ -88,6 +88,10 @@ $(function () {
             map.infoWindow = new google.maps.InfoWindow();
             map.all_markers_bounds = new google.maps.LatLngBounds();
 
+
+            var markerCluster = new MarkerClusterer(map);
+
+
             $markers.each(function(){
 
                 var direction, speed, marker, beaufort, icon;
@@ -121,7 +125,7 @@ $(function () {
                     zIndex: 50
                 });
 
-                marker.setMap(map);
+                markerCluster.addMarker(marker);
 
                 var label = new Label({
                     map: map,
@@ -131,6 +135,9 @@ $(function () {
                 //label.bindTo('text', marker, 'title');
 
                 map.all_markers_bounds.extend(marker.position);
+
+
+
 
                 google.maps.event.addListener(marker, 'click', function(){
                     map.infoWindow.close();
