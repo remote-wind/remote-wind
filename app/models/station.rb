@@ -7,7 +7,6 @@ class Station < ActiveRecord::Base
   class_attribute :zone_class
   self.zone_class ||= Timezone::Zone
   friendly_id :name, :use => [:slugged, :history]
-  before_save :evaluate_slug
   before_save :set_timezone!
 
   def lat
