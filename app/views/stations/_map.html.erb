@@ -1,11 +1,15 @@
 <% unless @stations.empty?  %>
 <div class="map-canvas small-12 large-12 columns" id="map_canvas" data-lat="<%= @stations.first.lat %>" data-lon="<%= @stations.first.lon %>">
   <% @stations.each do |station| %>
-      <div class="marker hidden" data-lat="<%= station.lat %>" data-lon="<%= station.lon %>" data-ws="<%=  station.current_measure.speed %>">
+
+      <div class="marker hidden" data-lat="<%= station.lat %>" data-lon="<%= station.lon %>">
         <h3 class="title"><%= station.name %></h3>
-
+        <% if station.measures? %>
+            <% current_measure = station.current_measure %>
+        <div class="measure" data-direction="<%= current_measure.direction %>" data-speed="<%= current_measure.speed %>">
+        </div>
+        <% end %>
       </div>
-
   <% end %>
   <div class="controls">
     <button class="tiny" id="show-all-markers">Show all</button>

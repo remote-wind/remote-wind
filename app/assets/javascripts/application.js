@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require foundation
+//= require remotewind
 //= require jquery.flot.min
 //= require jquery.flot.fillbetween
 //= require_tree .
@@ -24,6 +25,12 @@ window.console = window.console||{
     error: function(){}
 };
 
+// Init foundation.js (UI toolkit)
 $(function(){
     $(document).foundation();
 });
+
+// dependencies loaded with Google loader
+google.load("maps", "3", { other_params: "sensor=true", callback : function(){
+    $(document).trigger('google.maps.apiloaded');
+}});

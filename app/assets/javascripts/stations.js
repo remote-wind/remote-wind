@@ -8,7 +8,7 @@ $(function () {
         var $map_canvas = $('#map_canvas');
         var map;
 
-        $('body').on('maps-api-loaded', function(){
+        $(document).on('google.maps.apiloaded', function(){
             if ($map_canvas.length){
                 $map_canvas.trigger('map.init');
             }
@@ -34,19 +34,42 @@ $(function () {
 
             $markers.each(function(){
 
-                var marker = new google.maps.Marker({
+                var direction, speed, marker, beaufort, icon;
+
+                speed = $(this).find('.measure').data('speed');
+                direction = $(this).find('.measure').data('direction');
+                // we use the beaufort scale to color the arrows
+                beaufort = remotewind.util.msToBeaufort(speed);
+
+                var icon = {
+                    size: new google.maps.Size(40, 40),
+                    // The origin for this image is 0,0.
+                    origin: new google.maps.Point(20,20),
+                    // The anchor for this image is the base of the flagpole at 0,32.
+                    anchor: new google.maps.Point(20, 20),
+                    path: remotewind.arrow,
+                    fillColor: beaufort.color,
+                    fillOpacity: 0.8,
+                    strokeColor: 'black',
+                    strokeWeight: 1,
+                    rotation: direction - 180
+                };
+
+                marker = new google.maps.Marker({
                     position: new google.maps.LatLng($(this).data('lat'), $(this).data('lon')),
-                    map: map,
                     title: $(this).find('.title').text(),
-                    content: $(this).html()
+                    content: $(this).html(),
+                    direction: direction,
+                    icon: icon
                 });
+
+                marker.setMap(map);
 
                 map.all_markers_bounds.extend(marker.position);
 
                 google.maps.event.addListener(marker, 'click', function(){
                     map.infoWindow.close();
                     map.panTo(marker.position);
-                    map.setZoom(10);
                     map.infoWindow.setPosition(marker.position);
                     map.infoWindow.setContent(marker.content);
                     map.infoWindow.open(map, marker);
@@ -144,3 +167,4 @@ $(function () {
         });
     }());
 });
+

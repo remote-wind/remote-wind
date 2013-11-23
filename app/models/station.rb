@@ -53,8 +53,8 @@ class Station < ActiveRecord::Base
      self.measures.last
   end
 
-  def evaluate_slug
-
+  def measures?
+    self.measures.present?
   end
 
 end

@@ -10,10 +10,10 @@
     <link href='http://fonts.googleapis.com/css?family=Lato:100,300,700,100italic,300italic,700italic' rel='stylesheet' type='text/css'>
     <%= csrf_meta_tags %>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <%= javascript_include_tag "application" %>
   </head>
 
   <body>
-
     <header id="treetop">
       <%= render 'layouts/treetop' %>
     </header>
@@ -23,15 +23,5 @@
     <footer id="downunder">
       <%= render 'layouts/downunder' %>
     </footer>
-
-    <%= javascript_include_tag "application" %>
-    <script type="text/javascript">
-        google.load("maps", "3", { other_params: "sensor=false", callback : function(){
-            $(function(){
-                $('body').trigger('maps-api-loaded');
-            });
-        }});
-    </script>
-
   </body>
 </html>
