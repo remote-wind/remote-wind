@@ -1,0 +1,9 @@
+<% unless flash.empty? %>
+    <header class="flash-bar" id="flashes">
+      <ul class="flashes">
+        <% flash.each do |key, value| %>
+            <li class="alert-box flash <%= key %>"><%= value %></li>
+        <% end %>
+      </ul>
+    </header>
+<% end %>

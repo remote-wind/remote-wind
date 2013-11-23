@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
     raise CanCan::AccessDenied and return
   end
 
+  @stations = Station.all();
 
   # Handle authentication errors
   rescue_from CanCan::AccessDenied do |exception|

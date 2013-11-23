@@ -9,8 +9,8 @@ gem 'sass-rails', '~> 4.0.0' # Use SCSS for stylesheets
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'coffee-rails', '~> 4.0.0' # Use CoffeeScript for .js.coffee assets and views
 gem 'jquery-rails' # Use jquery as the JavaScript library
-gem 'zurb-foundation'  #https://github.com/zurb/foundation-rails
-
+gem 'foundation-rails', :github => "zurb/foundation-rails"
+gem 'compass'
 
 #= Authentication ======================
 gem "devise", ">= 2.2.3"

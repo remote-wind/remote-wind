@@ -15,6 +15,12 @@ $(function () {
         });
 
         $map_canvas.on('map.init', function(){
+
+
+
+
+            $map_canvas.height($(window).innerHeight() - 45);
+
             var $markers, $controls, mapOptions, map, bounds;
 
             // Define the overlay, derived from google.maps.OverlayView

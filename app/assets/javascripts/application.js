@@ -27,11 +27,14 @@ window.console = window.console||{
 };
 
 // Init foundation.js (UI toolkit)
-$(function(){
-    $(document).foundation();
-});
+
 
 // dependencies loaded with Google loader
 google.load("maps", "3", { other_params: "sensor=true", callback : function(){
     $(document).trigger('google.maps.apiloaded');
 }});
+
+$(document).ready(function(){
+
+  $(document).foundation();
+});

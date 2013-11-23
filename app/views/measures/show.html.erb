@@ -1,6 +1,5 @@
-<h1><%= "Station #{@measure.station.name} at #{@measure.created_at.to_s}" %></h1>
-
-<table class="measure">
+<table class="measure row">
+  <caption><%= "Station #{@measure.station.name} at #{@measure.created_at.to_s}" %></caption>
   <thead>
     <th>Time</th>
     <th>Station</th>
