@@ -16,6 +16,62 @@ $(function () {
 
         $map_canvas.on('map.init', function(){
             var $markers, $controls, mapOptions, map, bounds;
+
+            // Define the overlay, derived from google.maps.OverlayView
+            function Label(opt_options) {
+                // Initialization
+                this.setValues(opt_options);
+
+                // Label specific
+                var span = this.span_ = document.createElement('div');
+                span.style.cssText = 'font-size: 12px; position: relative; top: 18px; left:-50%; padding: 3px; height: 14px; font-weight: bolder; z-index: 999; -webkit-text-stroke: -1px white;';
+                span.style.cssText = span.style.cssText + " text-shadow: 3px 3px 3px rgba(255,255,255, 0.5), -1px -1px 0 rgba(255,255,255, 0.5), 1px -1px 0 rgba(255,255,255, 0.5),-1px 1px 0 rgba(255,255,255, 0.5),1px 1px 0 rgba(255,255,255, 0.5);"
+
+                var div = this.div_ = document.createElement('div');
+                div.appendChild(span);
+                div.style.cssText = 'position: absolute; display: none';
+            };
+            Label.prototype = new google.maps.OverlayView;
+
+            // Implement onAdd
+            Label.prototype.onAdd = function() {
+                var pane = this.getPanes().overlayLayer;
+                pane.appendChild(this.div_);
+
+                // Ensures the label is redrawn if the text or position is changed.
+                var me = this;
+                this.listeners_ = [
+                    google.maps.event.addListener(this, 'position_changed',
+                        function() { me.draw(); }),
+                    google.maps.event.addListener(this, 'text_changed',
+                        function() { me.draw(); })
+                ];
+            };
+
+            // Implement onRemove
+            Label.prototype.onRemove = function() {
+                this.div_.parentNode.removeChild(this.div_);
+
+                // Label is removed from the map, stop updating its position/text.
+                for (var i = 0, I = this.listeners_.length; i < I; ++i) {
+                    google.maps.event.removeListener(this.listeners_[i]);
+                }
+            };
+
+            // Implement draw
+            Label.prototype.draw = function() {
+                var projection = this.getProjection();
+                var position = projection.fromLatLngToDivPixel(this.get('position'));
+
+                var div = this.div_;
+                div.style.left = position.x + 'px';
+                div.style.top = position.y + 'px';
+                div.style.display = 'block';
+
+                this.span_.innerHTML = this.get('text').toString();
+            };
+
+
             $markers = $map_canvas.find('.marker').clone();
             $controls = $map_canvas.find('.controls').clone();
             $map_canvas.empty();
@@ -60,10 +116,19 @@ $(function () {
                     title: $(this).find('.title').text(),
                     content: $(this).html(),
                     direction: direction,
-                    icon: icon
+                    speed: speed,
+                    icon: icon,
+                    zIndex: 50
                 });
 
                 marker.setMap(map);
+
+                var label = new Label({
+                    map: map,
+                    text: marker.title + " (" + marker.speed + "m/s)"
+                });
+                label.bindTo('position', marker, 'position');
+                //label.bindTo('text', marker, 'title');
 
                 map.all_markers_bounds.extend(marker.position);
 
