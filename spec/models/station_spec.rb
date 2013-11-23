@@ -55,7 +55,7 @@ describe Station do
 
   describe "#find_timezone" do
     it "should find the correct timezone" do
-      expect(station.find_timezone).to eq "London"
+      expect(station.lookup_timezone).to eq "London"
     end
   end
 

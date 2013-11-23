@@ -5,13 +5,8 @@ describe "stations/index" do
 
   let! :stations do
     stations = []
-    3.times do
-      stations << create(:station)
-    end
-    stations.each do |s|
-      s.measures.push(create(:measure))
-    end
-
+    stations << create(:station)
+    stations[0].measures.push(create(:measure))
     assign(:stations, stations)
     stations
   end
@@ -28,7 +23,7 @@ describe "stations/index" do
   it { should have_selector '.speed' }
   it { should have_selector '.direction' }
   it { should match /[s|S]tations/ }
-  it { should have_selector('.station', :minimum => 2) }
+  it { should have_selector('.station') }
 
   context "when not an admin" do
     it { should_not have_link 'Edit' }

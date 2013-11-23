@@ -49,10 +49,7 @@ prefork = lambda do
     include Features::SessionHelpers
 
     config.before(:each) do
-      stub_request(:any, /api.geonames.org/).to_return(
-          :status => 200,
-          :body => '{"time":"2013-11-23 20:16","countryName":"United Kingdom","sunset":"2013-11-23 16:01","rawOffset":0,"dstOffset":1,"countryCode":"GB","gmtOffset":0,"lng":-0.010635,"sunrise":"2013-11-23 07:30","timezoneId":"Europe/London","lat":51.478885}',
-          :headers => {})
+      Station.any_instance.stub(:lookup_timezone).and_return("London")
     end
 
     OmniAuth.config.test_mode = true

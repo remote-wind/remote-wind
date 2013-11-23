@@ -25,7 +25,7 @@ class Station < ActiveRecord::Base
     write_attribute(:longitude, lon)
   end
 
-  def find_timezone
+  def lookup_timezone
     timezone = self.zone_class.new(:latlon => [self.lat, self.lon])
     timezone.active_support_time_zone
   end
@@ -33,8 +33,8 @@ class Station < ActiveRecord::Base
   def set_timezone!
     if self.timezone.nil? and !self.latitude.nil? and !self.longitude.nil?
       begin
-        self.timezone = self.find_timezone
-      rescue Timezone::Error::NilZone => e
+        self.timezone = self.lookup_timezone
+      rescue Timezone::Error => e
         logger.warn e.message
       end
     end
