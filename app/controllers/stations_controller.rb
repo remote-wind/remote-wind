@@ -1,6 +1,6 @@
 class StationsController < ApplicationController
-  before_filter :authenticate_user!, :except => [:show, :index, :measures]
-  authorize_resource :except => [:show, :index, :measures]
+  before_filter :authenticate_user!, :except => [:show, :index, :measures, :search]
+  authorize_resource :except => [:show, :index, :measures, :search]
   before_action :set_station, only: [:edit, :update, :destroy]
 
 
@@ -84,6 +84,15 @@ class StationsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  # GET stations/search?lat=x&lon=x&radius
+  def search
+    lat = params[:lat]
+    lon = params[:lon]
+    radius = params[:radius] || 20
+    @stations = Station.near([lat, lon], radius, :units => :km)
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

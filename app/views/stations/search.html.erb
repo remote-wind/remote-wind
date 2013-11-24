@@ -1,0 +1,8 @@
+<%= render :partial => 'stations/map', object: @stations %>
+<%= render :partial => 'stations/table', object: @stations %>
+
+<ul class="breadcrumbs row">
+  <li class="root"><a href="<%= root_path %>">Home</a></li>
+  <li><a href="<%= stations_path %>">Stations</a></li>
+  <li class="current"><a href="<%= stations_path %>">Search</a></li>
+</ul>

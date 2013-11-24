@@ -8,7 +8,25 @@ describe Measure do
     it { should respond_to :direction }
     it { should respond_to :max_wind_speed }
     it { should respond_to :min_wind_speed }
-    it { should respond_to :temperature }
+
+    describe "aliases" do
+      it { should respond_to :i }
+      it { should respond_to :s }
+      it { should respond_to :d }
+      it { should respond_to :max }
+      it { should respond_to :min }
+    end
+
+  end
+
+  describe "ardiuno adapted setters" do
+
+    it "normalizes speed" do
+      m = Measure.new(d: 10)
+      expect(m.direction).to eq 100
+    end
+
+
   end
 
   describe "validations" do

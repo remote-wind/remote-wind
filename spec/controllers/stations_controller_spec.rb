@@ -271,4 +271,27 @@ describe StationsController do
       end
     end
   end
+
+  describe "GET search" do
+
+
+    let!(:machu_pichu){ create(:station, name: "Machu Pichu", :lat => -13.163392, :lon => -72.546368) }
+    let!(:red_square){ create(:station, name: "Red Square", :lat => 55.754144, :lon => 37.620403) }
+
+
+    it "finds Machu Pichu given a position 20km away" do
+      get :search, :lat => -13.10924, :lon => -72.602146
+      expect(assigns(:stations)[0].name).to eq "Machu Pichu"
+    end
+
+    it "takes a radius parameter" do
+      # Minsk, Belarus, ca 700km from Moscow
+      get :search, :lat => 53.884916, :lon => 27.53088, :radius => 1000
+      expect(assigns(:stations)).to_not be_empty
+    end
+
+
+
+  end
+
 end

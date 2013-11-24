@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'timezone/error'
 
 describe Station do
 
@@ -15,39 +16,18 @@ describe Station do
     it { should respond_to :latitude }
     it { should respond_to :longitude }
     it { should respond_to :timezone }
+
+    describe "attribute aliases" do
+      it { should respond_to :lon }
+      it { should respond_to :lng }
+      it { should respond_to :lat }
+      it { should respond_to :owner }
+    end
   end
 
   describe "validations" do
     it { should validate_uniqueness_of :hw_id }
     it { should validate_presence_of :hw_id }
-  end
-
-  describe "#lat" do
-    it { should respond_to :lat }
-    it "should get latitude" do
-      expect(station.lat).to eq station.latitude
-    end
-  end
-
-  describe "#lat=" do
-    it "should set latitude" do
-      station.lat = 10
-      expect(station.latitude).to eq 10
-    end
-  end
-
-  describe "#lon" do
-    it { should respond_to :lon }
-    it "should get longitude" do
-      expect(station.lon).to eq station.longitude
-    end
-  end
-
-  describe "#lon=" do
-    it "should set longitude" do
-      station.lon = 10
-      expect(station.longitude).to eq 10
-    end
   end
 
   describe "#find_timezone" do
@@ -57,6 +37,7 @@ describe Station do
   end
 
   describe "#set_timezone!" do
+
     it "should set timezone on object creation given lat and lon" do
       Station.any_instance.unstub(:lookup_timezone)
       zone = double(Timezone::Zone)
@@ -64,6 +45,11 @@ describe Station do
       Timezone::Zone.should_receive(:new).with(:latlon => [35.6148800, 139.5813000])
       zone.stub(:active_support_time_zone).and_return('Tokyo')
       expect(create(:station, lat: 35.6148800, lon: 139.5813000).timezone).to eq "Tokyo"
+    end
+
+    it "handles exceptions from Timezone" do
+      Station.any_instance.stub(:lookup_timezone).and_raise(Timezone::Error::Base)
+      expect{expect(create(:station, lat: 35.6148800, lon: 139.5813000))}.to_not raise_error
     end
   end
 

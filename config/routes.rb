@@ -15,6 +15,9 @@ Rw2::Application.routes.draw do
     resources :measures, only: [:show, :create, :destroy] do |measure|
     end
   end
+
+  get "/stations/search/:lon/:lat/:radius", to: "stations#search", as: :search_stations
+
   resources :measures,  only: [:index, :create]
 
 end
