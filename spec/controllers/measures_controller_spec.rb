@@ -87,39 +87,4 @@ describe MeasuresController do
       end
     end
   end
-
-  describe "#params_to_long_form" do
-
-    let(:params) {{s: 1, d:  2, i: 3, max: 4, min: 5}}
-
-    subject(:result){  @controller.params_to_long_form(params) }
-
-    it "should map to long form" do
-      expect(result[:speed]).to eq params[:s]
-      expect(result[:station_id]).to eq params[:i]
-      expect(result[:direction]).to eq params[:d]
-      expect(result[:max_wind_speed]).to eq params[:max]
-      expect(result[:min_wind_speed]).to eq params[:min]
-    end
-
-  end
-
-
-  describe "#params_to_short_form" do
-
-    let(:params) {{speed: 1, direction:  2, station_id: 3, max_wind_speed: 4, min_wind_speed: 5}}
-
-    subject(:result){  @controller.params_to_short_form(params) }
-
-    it "should map to long form" do
-      expect(result[:s]).to eq params[:speed]
-      expect(result[:i]).to eq params[:station_id]
-      expect(result[:d]).to eq params[:direction]
-      expect(result[:max]).to eq params[:max_wind_speed]
-      expect(result[:min]).to eq params[:min_wind_speed]
-    end
-
-  end
-
-
 end

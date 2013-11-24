@@ -38,38 +38,12 @@ class MeasuresController < ApplicationController
     end
   end
 
-  @@dict = {
-      :speed => :s,
-      :direction => :d,
-      :station_id => :i,
-      :max_wind_speed => :max,
-      :min_wind_speed => :min
-  }
-
-  def normalize_ardiuno_params params
-    params[:speed] = params[:speed] * 10
-    params[:max_wind_speed] = params[:max_wind_speed] * 10
-    params[:min_wind_speed] = params[:min_wind_speed] * 10
-    params[:direction] = params[:direction]  / 10
-  end
-
-  def params_to_long_form params
-    mappings = @@dict.invert.with_indifferent_access
-    Hash[params.map {|k, v| [mappings[k] || k, v] }]
-  end
-
-  def params_to_short_form params
-    mappings = @@dict.with_indifferent_access
-    Hash[params.map {|k, v| [mappings[k] || k, v] }]
-  end
-
   private
   # Never trust parameters from the scary internet, only allow the white list through.
   def measure_params
     ## Handle short form params
     if params[:m]
-      sanitized = params.require(:m).permit(:i,:s,:d,:min,:max)
-      return params_to_long_form(sanitized.to_hash)
+      return params.require(:m).permit(:i,:s,:d,:min,:max)
     end
     params.require(:measure).permit(
         :id, :station_id, :direction, :speed, :min_wind_speed, :max_wind_speed
