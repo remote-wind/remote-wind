@@ -1,4 +1,4 @@
-Rw2::Application.routes.draw do
+RemoteWind::Application.routes.draw do
 
   root 'pages#home'
 
