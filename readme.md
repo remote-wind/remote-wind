@@ -1,9 +1,12 @@
-#RW2, Remote Wind - improved.
+#Remote Wind
 
-This a rewrite from scratch of Karl-Petter Åkessons remote-wind. I rewrote it becuase of the difficulties of writing tests
-after vs TDD.
+Remote wind is a service that collects live wind data, and makes it available in various ways.
+It is a Rails based REST application.
 
-It is not yet feature complete.
+This open-source project is available under a (GNU GPL v3 license)[http://www.gnu.org/copyleft/gpl.html]
+
+See the [project wiki](https://github.com/remote-wind/remote-wind/wiki) for more detailed information.
+
 
 ### Requirements
 
