@@ -1,0 +1,27 @@
+<div class="row">
+    <h2>Sign in</h2>
+
+    <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+
+        <fieldset>
+          <legend>You can sign in with one of these services</legend>
+          <div class="auth-providers">
+            <%= render "devise/shared/auth_providers" %>
+          </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Or the good old fashioned way</legend>
+            <%= f.div_field_with_label(:email, :autofocus => true ) %>
+            <%= f.div_field_with_label(:password) %>
+        </fieldset>
+
+        <% if devise_mapping.rememberable? -%>
+            <div class="field remember_me"><%= f.label :remember_me %><%= f.check_box :remember_me %> </div>
+        <% end -%>
+
+        <div><%= f.submit "Sign in" %></div>
+    <% end %>
+
+    <%= render "devise/shared/links" %>
+</div>

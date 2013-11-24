@@ -1,0 +1,23 @@
+<table class="measure row">
+  <caption><%= "Station #{@measure.station.name} at #{@measure.created_at.to_s}" %></caption>
+  <thead>
+    <th>Time</th>
+    <th>Station</th>
+    <th>Wind Speed</th>
+    <th>Direction</th>
+    <th>Max Wind Speed</th>
+    <th>Min Wind Speed</th>
+    <th>Temperature</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="created_at"><%= @measure.created_at.to_s %></td>
+      <td class="station"><%= @measure.station.name %></td>
+      <td class="speed"><%= @measure.speed %></td>
+      <td class="direction"><%= degrees_and_cardinal(@measure.direction) %> </td>
+      <td class="min_wind_speed"><%= @measure.min_wind_speed %></td>
+      <td class="max_wind_speed"><%= @measure.max_wind_speed %></td>
+      <td class="temperature"><%= @measure.temperature %></td>
+    </tr>
+  </tbody>
+</table>
