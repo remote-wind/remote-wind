@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Rw2::Application.load_tasks
+RemoteWind::Application.load_tasks
