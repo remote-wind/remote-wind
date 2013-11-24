@@ -1,7 +1,0 @@
-.sass-cache/
-database-design.graffle
-.bundle
-log/*.log
-db/*.sqlite3
-tmp/
-*/.DS_Store
