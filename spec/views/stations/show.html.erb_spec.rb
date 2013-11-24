@@ -44,7 +44,7 @@ describe "stations/show" do
     }
     it { should have_selector "table.measures" }
     it { should have_selector ".speed", text:  @measure.speed }
-    it { should have_selector ".direction", text:  @measure.direction }
+    it { should have_selector ".direction", text:  "E (90°)" }
   end
 
   describe "breadcumbs" do

@@ -9,14 +9,14 @@ Rw2::Application.routes.draw do
   resources :users
 
   get "/stations/:station_id/measures", to: "stations#measures", as: :station_measures
-  delete "/stations/:station_id/measures", to: "stations#destroy_measures", as: :station_measures_destroy
+  delete "/stations/:station_id/measures", to: "stations#destroy_measures", as: :destroy_station_measures
 
   resources :stations, :shallow => true do
     resources :measures, only: [:show, :create, :destroy] do |measure|
     end
   end
 
-  get "/stations/search/:lon/:lat/:radius", to: "stations#search", as: :search_stations
+  get "/stations/search/(:lon)(/:lat)(/:radius)", to: "stations#search", as: :search_stations
 
   resources :measures,  only: [:index, :create]
 
