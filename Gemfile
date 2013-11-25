@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'http://rubygems.org'
 ruby '2.0.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -36,22 +36,25 @@ end
 
 group :development, :test do
   gem 'therubyracer', platforms: :ruby # V8 Javascript runtime
-  gem "webmock"
   gem 'sqlite3'
   gem 'debugger'
-  gem 'thin'  # use Thin as web server in stead of webbrick
+  gem 'thin'  # use Thin as web server instead of webbrick
+  gem 'zeus', '0.13.4.pre2', require: false
+end
+
+group :test do
   gem "rspec-rails", ">=1.14"
   gem "database_cleaner"
   gem "factory_girl_rails"
-  gem "capybara"
-  gem 'guard-rspec', '>=2.5.0', require: false
-  gem 'terminal-notifier-guard', require: false # OS-X notifications
-  gem "fuubar", "~> 1.2.1"
+  gem "fuubar", "~> 1.2.1", require: false
   gem 'shoulda-matchers'
-  gem 'zeus', '0.13.4.pre2', require: false
-  gem 'guard-zeus', require: false
   gem 'simplecov', :require => false
+  gem 'guard-rspec', '>=2.5.0', require: false
+  gem "capybara"
+  gem 'terminal-notifier-guard', require: false # OS-X notifications
+  gem 'guard-zeus', require: false
 end
+
 
 # These are for deployment on Heroku
 group :production do
