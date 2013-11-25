@@ -1,12 +1,15 @@
 RemoteWind::Application.routes.draw do
 
   root 'pages#home'
-
-  get '/honeypot', to: "application#honeypot", as: :honeypot # Always causes an access denied exception
+  get '/honeypot', to: "application#honeypot", as: :honeypot
   get '/products', to: "pages#products", as: :products
 
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
-  resources :users
+  resources :users do
+    resources :roles, only: [:create, :destroy] do
+
+    end
+  end
 
   get "/stations/:station_id/measures", to: "stations#measures", as: :station_measures
   delete "/stations/:station_id/measures", to: "stations#destroy_measures", as: :destroy_station_measures
