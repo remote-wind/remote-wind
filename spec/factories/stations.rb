@@ -10,8 +10,8 @@ FactoryGirl.define do
     hw_id
     latitude 51.478885
     longitude -0.010635
-    balance 1.5
-    down false
+    balance 1
+    down nil
     user nil
   end
 end

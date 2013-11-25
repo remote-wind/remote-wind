@@ -16,6 +16,8 @@ describe Station do
     it { should respond_to :latitude }
     it { should respond_to :longitude }
     it { should respond_to :timezone }
+    it { should respond_to :down }
+    it { should respond_to :balance }
 
     describe "attribute aliases" do
       it { should respond_to :lon }
@@ -65,5 +67,72 @@ describe Station do
     end
   end
 
+  describe ".send_low_balance_alerts" do
+
+    context "when a station has a low balance" do
+
+      let!(:station) {
+        create(:station, :balance => 3, :user => create(:user))
+      }
+
+      it "logs a warning" do
+        Rails.logger.should_receive(:warn).with(/Station low balance alert: Station \d* only has 3.0 kr left! Notifing owner/)
+        Station.send_low_balance_alerts()
+      end
+
+      it "sends an email to user" do
+        StationMailer.should_receive(:notify_about_low_balance)
+        Station.send_low_balance_alerts()
+      end
+    end
+
+    context "when a station does not have a low balance" do
+
+      let!(:station) {
+        create(:station, :balance => 99, :user => create(:user))
+      }
+
+      it "does not send an email" do
+        StationMailer.should_not_receive(:notify_about_low_balance)
+        Station.send_low_balance_alerts()
+      end
+    end
+  end
+
+  describe ".send_down_alerts" do
+
+    context "when a station has not received measures in more than 15 minutes ago" do
+
+      let!(:station) {
+        station = create(:station, :user => create(:user))
+        station.measures.create(attributes_for(:measure, :created_at => Time.new(2001)))
+        station
+      }
+
+      it "logs a warning" do
+        Rails.logger.should_receive(:warn).with(/Station down alert: Station \d* is down/)
+        Station.send_down_alerts()
+      end
+
+      it "sends an email to user" do
+        StationMailer.should_receive(:notify_about_station_down)
+        Station.send_down_alerts()
+      end
+    end
+
+    context "when a station measures in less than 15 minutes ago" do
+
+      let!(:station) {
+        station = create(:station, :user => create(:user))
+        station.measures.create(attributes_for(:measure))
+        station
+      }
+
+      it "does not send an email" do
+        StationMailer.should_not_receive(:notify_about_station_down)
+        Station.send_down_alerts()
+      end
+    end
+  end
 
 end

@@ -3,7 +3,6 @@ class StationsController < ApplicationController
   authorize_resource :except => [:show, :index, :measures, :search]
   before_action :set_station, only: [:edit, :update, :destroy]
 
-
   # GET /stations
   # GET /stations.json
   def index
@@ -92,7 +91,6 @@ class StationsController < ApplicationController
     radius = params[:radius] || 20
     @stations = Station.near([lat, lon], radius, :units => :km)
   end
-
 
   private
     # Use callbacks to share common setup or constraints between actions.
