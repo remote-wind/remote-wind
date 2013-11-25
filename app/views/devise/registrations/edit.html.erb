@@ -9,10 +9,13 @@
 
       <%= f.div_field_with_label(:password,
                                  label: "New password (leave blank if you don't want to change it)",
-                                 autocomplete: "off" )%>
+                                 autocomplete: "off",
+                                 type: :password
 
-      <%= f.div_field_with_label(:password_confirmation, autocomplete: "off" ) %>
-      <%= f.div_field_with_label(:current_password, label: "Current password" ) %>
+          )%>
+
+      <%= f.div_field_with_label(:password_confirmation, autocomplete: "off", type: :password ) %>
+      <%= f.div_field_with_label(:current_password, label: "Current password", type: :password ) %>
       <div><%= f.submit "Update" %></div>
     <% end %>
 
