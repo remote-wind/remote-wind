@@ -30,6 +30,7 @@ export REMOTE_WIND_PASSWORD="password"
 export REMOTE_WIND_GEONAMES="username"
 export REMOTE_WIND_FB_APP_ID="id"
 export REMOTE_WIND_FB_APP_SECRET="secret"
+export REMOTE_WIND_EMAIL_PASSWORD="secret"
 ```
 REMOTE_WIND_GEONAMES is a [geonames.org](http://www.geonames.org) username.
 If you use an IDE on OS-x such as rubymine, you should add the following to /etc/launchd.conf
@@ -39,6 +40,7 @@ set_env REMOTE_WIND_PASSWORD password
 set_env REMOTE_WIND_GEONAMES username
 set_env REMOTE_WIND_FB_APP_ID id
 set_env REMOTE_WIND_FB_APP_SECRET secret
+set_env REMOTE_WIND_EMAIL_PASSWORD secret
 ```
 Note that the values should not be quoted!
 ```
