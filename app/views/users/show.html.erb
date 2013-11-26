@@ -1,2 +1,32 @@
 <h1><%= @user.email %></h1>
 <p>Member since <%= @user.created_at %></p>
+
+<% available_roles =  Role.all.keep_if do |role|
+  !@user.has_role?(role.name.to_sym)
+end %>
+
+<% if can? :manage, @user  %>
+    <%= form_for(@user, :url => user_roles_path(@user), :html => { :method => :post, :class => 'add-role row' }) do |f| %>
+        <fieldset>
+          <legend>Add role to <%= @user.email %></legend>
+        <%= f.div_field_with_label(:roles, label: "Role") do |key|
+          f.select(:roles, options_from_collection_for_select(available_roles, :id, :name))
+        end
+        %>
+          <%= f.submit "Add role" %>
+        </fieldset>
+    <% end %>
+<% end %>
+
+<% if can? :manage, @user and @user.roles.present? %>
+    <%= form_for(@user, :url => destroy_user_role_path(@user), :html => { :method => :delete, :class => 'remove-role row' }) do |f| %>
+        <fieldset>
+          <legend>Remove role from <%= @user.email %></legend>
+          <%= f.div_field_with_label(:roles, label: "Role") do |key|
+            f.select(:roles, options_from_collection_for_select(@user.roles, :id, :name))
+          end
+          %>
+          <%= f.submit "Remove role" %>
+        </fieldset>
+    <% end %>
+<% end %>

@@ -7,16 +7,17 @@ describe RolesController do
     context "when not authorized" do
       let(:user){ create(:user) }
       before { sign_in user }
+      let!(:wizard) { Role.create(:name => :wizard) }
 
       it "does not create role" do
-        post :create, { :user_id =>  user.to_param, :role => { :name => :admin } }
+        post :create, { :user_id =>  user.to_param, :user => { :roles => wizard.id }}
         expect(user.has_role? :admin).to be_false
       end
 
       it "denies access" do
         bypass_rescue
         expect do
-          post :create, { :user_id =>  user.to_param, :role => {name: :admin}}
+          post :create, { :user_id =>  user.to_param, :user => { :roles => wizard.id }}
         end.to raise_error CanCan::AccessDenied
       end
     end
@@ -27,7 +28,7 @@ describe RolesController do
       let!(:admin) { sign_in create(:admin) }
 
       it "adds role to user" do
-        post :create, { :user_id =>  user.to_param, :role => { :name => :wizard }}
+        post :create, { :user_id =>  user.to_param, :user => { :roles => wizard.id }}
         expect(user.has_role? :wizard).to be_true
       end
     end
@@ -37,20 +38,21 @@ describe RolesController do
     context "when not authorized" do
       let(:user){ create(:user) }
       let!(:wizard) { Role.create(:name => :wizard) }
+
       before {
         sign_in user
         user.add_role(:wizard)
       }
 
       it "does not remove role" do
-        delete :destroy, { :user_id =>  user.to_param, :id => wizard.to_param }
+        delete :destroy, { user_id:  user.to_param, id: wizard.to_param }
         expect(user.has_role? :wizard).to be_true
       end
 
       it "denies access" do
         bypass_rescue
         expect do
-          delete :destroy, { :user_id =>  user.to_param, :id => wizard.to_param }
+          delete :destroy, { user_id:  user.to_param, user: { roles: wizard.to_param }}
         end.to raise_error CanCan::AccessDenied
       end
     end
@@ -64,7 +66,7 @@ describe RolesController do
       before { user.add_role(:wizard) }
 
       it "revokes a role" do
-        delete :destroy, { :user_id =>  user.to_param, :id => wizard.to_param }
+        delete :destroy, { user_id:  user.to_param, user: { roles: wizard.to_param }}
         expect(user.has_role? :wizard).to be_false
       end
     end

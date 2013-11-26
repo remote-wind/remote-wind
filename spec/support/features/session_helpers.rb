@@ -25,13 +25,14 @@ module Features
       login_as(user, :scope => :user)
     end
 
-    def stub_user_for_view_test
-      ## http://stackoverflow.com/questions/5018344/testing-views-that-use-cancan-and-devise-with-rspec
-      assign(:user,mock_model(User))
+    # http://stackoverflow.com/questions/5018344
+    def stub_user_for_view_test user = mock_model(User)
+      @user = user
+      assign(:user, @user)
       @ability = Object.new
       @ability.extend(CanCan::Ability)
       controller.stub(:current_ability) { @ability }
-      assign(:ability,@ability)
+      assign(:ability, @ability)
     end
 
     def sign_out

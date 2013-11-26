@@ -4,10 +4,11 @@ RemoteWind::Application.routes.draw do
   get '/honeypot', to: "application#honeypot", as: :honeypot
   get '/products', to: "pages#products", as: :products
 
+  delete '/users/:user_id/roles(/:id)', to: 'roles#destroy', as: :destroy_user_role
+
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   resources :users do
     resources :roles, only: [:create, :destroy] do
-
     end
   end
 
