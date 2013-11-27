@@ -1,7 +1,3 @@
-<% unless defined? @stations
-     @stations = Station.all()
-   end
-%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,10 +32,10 @@
 
     <!-- pull in navigation -->
     <nav class="left-off-canvas-menu" id="left-off-canvas-menu">
-      <% unless @stations.empty? %>
+      <% unless @all_stations.empty? %>
           <ul class="off-canvas-list">
             <li><label><%= link_to "Stations", stations_path %></label></li>
-            <% @stations.each do |station| %>
+            <% @all_stations.each do |station| %>
                 <li><%= link_to station.name, station %></li>
             <% end %>
           </ul>

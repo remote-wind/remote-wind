@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+
+  before_filter :get_all_stations
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -22,8 +24,6 @@ class ApplicationController < ActionController::Base
     raise CanCan::AccessDenied and return
   end
 
-  @stations = Station.all();
-
   # Handle authentication errors
   rescue_from CanCan::AccessDenied do |exception|
     if user_signed_in?
@@ -32,5 +32,10 @@ class ApplicationController < ActionController::Base
       redirect_to new_user_session_path
     end
   end
+  private
 
+  # since the stations are used by all
+  def get_all_stations
+    @all_stations = Station.all
+  end
 end
