@@ -7,6 +7,7 @@ class UserAuthentication < ActiveRecord::Base
   def self.create_from_omniauth(params, user, provider)
     params = HashWithIndifferentAccess.new(params)
     create(
+      provider_name: provider.name.capitalize!,
       user: user,
       authentication_provider: provider,
       uid: params['uid'],
@@ -15,4 +16,8 @@ class UserAuthentication < ActiveRecord::Base
       params: params,
     )
   end
+
+  alias :provider :authentication_provider
+
+
 end

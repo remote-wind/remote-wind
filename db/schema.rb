@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131121101942) do
+ActiveRecord::Schema.define(version: 20131126185706) do
 
   create_table "authentication_providers", force: true do |t|
     t.string   "name"
@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 20131121101942) do
     t.text     "params"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "provider_name"
   end
 
   add_index "user_authentications", ["authentication_provider_id"], name: "index_user_authentications_on_authentication_provider_id"
