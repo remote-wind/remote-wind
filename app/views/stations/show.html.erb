@@ -1,22 +1,35 @@
-<h1><%= @station.name %></h1>
-<% unless @station.user.nil? %>
-<p>Owned by <%= @station.user.email %></p>
-<% end %>
-
 <div class="row">
-  <div class="map-canvas small-12 large-12 columns" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
-    <div class="marker hidden" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>">
-      <h3 class="title"><%= @station.name %></h3>
-    </div>
+  <h1><%= @station.name %></h1>
+  <% unless @station.user.nil? %>
+      <p>Owned by <%= @station.user.email %></p>
+  <% end %>
+</div>
+
+
+<div class="map-canvas small-12 large-12 columns" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
+  <div class="marker hidden" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>">
+    <h3 class="title"><%= @station.name %></h3>
   </div>
 </div>
 
-<% if @measures %>
-<div class="section-container auto" data-section>
-  <section class="active">
-    <p class="title" data-section-title><a href="#panel1">Table</a></p>
-    <div class="content row" data-section-content>
-      <table class="measures small-12 large-12 columns">
+<article class="station row">
+
+
+  <!-- Tabs containing  -->
+  <dl class="tabs" data-tab>
+    <% if @measures %>
+    <dd class="active"><a href="#panel2-1">Chart</a></dd>
+    <dd><a href="#panel2-2">Table</a></dd>
+    <% end %>
+    <dd><a href="#panel3-3">Meta</a></dd>
+  </dl>
+  <div class="tabs-content">
+    <% if @measures %>
+    <section class="content row active small-12 large-12 columns" id="panel2-1">
+      <div class="station-chart" id="station_measures_chart" data-path="<%= station_measures_path(@station) %>"></div>
+    </section>
+    <section class="content small-12 columns" id="panel2-2">
+      <table class="measures small-12 columns">
         <thead>
         <th>Time</th>
         <th>Wind Speed</th>
@@ -30,29 +43,52 @@
         <% end %>
         </tbody>
       </table>
-    </div>
-  </section>
-  <section>
-    <p class="title" data-section-title><a href="#panel2">Chart</a></p>
-    <div class="content" data-section-content>
-      <div id="station_measures_chart" data-path="<%= station_measures_path(@station) %>" style="width:600px;height:300px"></div>
-    </div>
-  </section>
-</div>
-<% end %>
+    </section>
+    <% end %>
+    <section class="content meta small-12 columns" id="panel3-3">
+      <table class="small-12 columns">
+        <tbody>
+            <tr>
+              <td>Created</td>
+              <td><%= @station.created_at %></td>
+            </tr>
+            <% if @station.user.present? %>
+            <tr>
+              <dt>Owner</dt>
+              <dd><%= @station.user.email %></dd>
+            </tr>
+            <% end %>
+            <% if @station.measures? %>
+            <tr>
+              <td>Updated</td>
+              <td><%= @station.current_measure.created_at %></td>
+            </tr>
+            <% end %>
+            <tr>
+              <td>Latitude</td>
+              <td><%= @station.lat %></td>
+            </tr>
+            <tr>
+              <td>Longitude</td>
+              <td><%= @station.lon %></td>
+            </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
 
 <% if can? :manage, Station %>
-<div class="admin-only btn-group">
-    <%= link_to 'Edit', edit_station_path(@station), class: "button tiny" %>
-    <%= link_to "Clear all measures for this station?", station_measures_path(@station),
-                :data => { :confirm =>  "Are you sure you want to delete all measues recorded b this station? This action cannot be undone!"  },
-                :class =>"tiny button alert", :method => :delete %>
-</div>
+    <div class="admin-only btn-group">
+      <%= link_to 'Edit', edit_station_path(@station), class: "button tiny" %>
+      <%= link_to "Clear all measures for this station?", station_measures_path(@station),
+                  :data => { :confirm =>  "Are you sure you want to delete all measues recorded by this station? This action cannot be undone!"  },
+                  :class =>"tiny button alert", :method => :delete %>
+    </div>
 <% end %>
-<ul class="breadcrumbs">
-  <li class="root"><a href="<%= root_path %>">Home</a></li>
-  <li><a href="<%= stations_path %>">Stations</a></li>
-  <li class="current"><a href="<%= station_path(@station) %>"><%= @station.name %></a></li>
-</ul>
+    <ul class="breadcrumbs" role="navigation">
+      <li class="root"><a href="<%= root_path %>">Home</a></li>
+      <li><a href="<%= stations_path %>">Stations</a></li>
+      <li class="current"><a href="<%= station_path(@station) %>"><%= @station.name %></a></li>
+    </ul>
 
-
+</article>

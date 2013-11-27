@@ -16,9 +16,6 @@ $(function () {
 
         $map_canvas.on('map.init', function(){
 
-
-
-
             $map_canvas.height($(window).innerHeight() - 45);
 
             var $markers, $controls, mapOptions, map, bounds;
@@ -173,15 +170,7 @@ $(function () {
      */
     (function(){
         var $chart = $('#station_measures_chart');
-        /**
-         * when user clicks section
-         * load and render chart
-         */
-        $('.section-container').on('opened.fndtn.section', function(e, d){
-            if ($($chart).closest(e.target).length) {
-                $chart.trigger('chart.load-measures', $chart.data('path') );
-            }
-        });
+
         /**
          * load measures via ajax
          */
@@ -243,6 +232,11 @@ $(function () {
                 }
             );
         });
+
+        if ($chart.length) {
+            $chart.trigger('chart.load-measures', $chart.data('path') );
+        }
+
     }());
 });
 

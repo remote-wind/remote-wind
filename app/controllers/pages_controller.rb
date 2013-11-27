@@ -1,7 +1,7 @@
 class PagesController < ApplicationController
 
   def home
-    @stations = Station.all
+    @stations = @all_stations
   end
 
   def products

@@ -48,7 +48,9 @@ unless Station.any?
       {name: 'Ullådalen', hw_id: '354476020409716', lat: '63.4321', lon: '13.00011'},
       {name: 'Frösön', hw_id: '3544760204324716', lat: 63.206557, lon: 14.446625},
       {name: 'Näsbokrok', hw_id: '123123123', lat: 57.336714, lon: 12.067055 },
-      {name: 'Mörbylånga N', hw_id: '12312312322', lat: 56.603728, lon: 16.418273}
+      {name: 'Mörbylånga N', hw_id: '342376487234', lat: 56.603728, lon: 16.418273},
+      {name: 'Åre strand', hw_id: "3459798234982374", latitude: 63.397163, longitude: 13.074973 },
+      {name: 'Gotlands Surfcenter', hw_id: "3482346253486", latitude: 57.483587, longitude: 18.126174}
   ].map! do |s|
     print s[:name]
     puts " "

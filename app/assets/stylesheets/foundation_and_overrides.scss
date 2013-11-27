@@ -1130,6 +1130,30 @@ $default-float: left;
 // $tooltip-radius: $global-radius;
 // $tooltip-pip-size: 5px;
 
+$tabs-navigation-bg-color: #efefef;
+
+
+.tabs  {
+
+  dd:not(:first-child) {
+    #margin-left: -1px;
+  }
+
+  dd {
+    #border: 1px gainsboro solid;
+    &.active {
+      #border-bottom-color: #fff;
+    }
+  }
+}
+.tabs-content {
+
+  #border: 1px gainsboro solid;
+  table {
+    border: none;
+    padding: 0;
+  }
+}
 
 @import 'color';
 @import 'forms';
@@ -1140,5 +1164,16 @@ $default-float: left;
 
 .hidden {
   display: none;
+}
+
+.station-chart {
+  position: relative;
+  width:600px;
+  height:300px;
+
+  @media #{$large-up} {
+    margin-left: 1em;
+    width: em-calc(1000);
+  }
 }
 
