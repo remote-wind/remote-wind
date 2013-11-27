@@ -12,7 +12,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       unless auth_params.is_a?(OmniAuth::AuthHash)
         auth_params = OmniAuth::AuthHash.new(auth_params)
       end
-
       provider = AuthenticationProvider.where(name: auth_params.provider).first
       authentication = provider.user_authentications.where(uid: auth_params.uid).first
       if authentication
@@ -26,8 +25,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
     def sign_in_with_existing_authentication(authentication)
-
-
       flash[:success] = "Welcome back #{authentication.user.email}!"
       sign_in_and_redirect(:user, authentication.user)
     end
@@ -39,7 +36,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
     def create_user_and_authentication_and_sign_in(auth_params, provider)
-      user = User.create_from_omniauth(auth_params)
+      user = User.find_by_email(auth_params[:info][:email]) || User.create_from_omniauth(auth_params)
       if user.valid?
         flash[:success] = "Welcome #{user.email}"
         create_authentication_and_sign_in(auth_params, user, provider)
