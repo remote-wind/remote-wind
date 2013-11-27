@@ -1,11 +1,11 @@
 <%= form_for(@station) do |f| %>
     <div class="row">
       <div class="small-6 large-8 columns">
-        <%= f.div_field_with_label(:name, class: "has_tip", title: "Used to create friendly urls") %>
-        <%= f.div_field_with_label(:slug,  class: "has_tip", title: "Used to create friendly urls")  %>
+        <%= f.div_field_with_label(:name, class: "has-tip", title: "Used to create friendly urls") %>
+        <%= f.div_field_with_label(:slug,  class: "has-tip", title: "Used to create friendly urls")  %>
         <%= f.div_field_with_label(:hw_id, label: 'Hardware ID') %>
-        <%= f.div_field_with_label(:latitude, class: "has_tip", title: "Degrees decimal please!") %>
-        <%= f.div_field_with_label(:longitude,  class: "has_tip", title: "Degrees decimal please!") %>
+        <%= f.div_field_with_label(:latitude, class: "has-tip", title: "Degrees decimal please!") %>
+        <%= f.div_field_with_label(:longitude,  class: "has-tip", title: "Degrees decimal please!") %>
         <%= f.div_field_with_label(:user_id, label: "Owner") do |key|
           f.select(:user_id, options_from_collection_for_select(User.all, :id, :email), { include_blank: true  })
         end
