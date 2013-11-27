@@ -1,6 +1,6 @@
 <h1>Wind stations</h1>
 
-<%= render :partial => 'stations/map', object: @stations %>
+<%= render :partial => 'stations/map', object: @stations, locals: { fullscreen: false } %>
 <%= render :partial => 'stations/table', object: @stations %>
 
 <ul class="breadcrumbs row">

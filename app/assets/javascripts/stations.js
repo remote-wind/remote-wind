@@ -16,7 +16,9 @@ $(function () {
 
         $map_canvas.on('map.init', function(){
 
-            $map_canvas.height($(window).innerHeight() - 45);
+            if ($map_canvas.hasClass("fullscreen")) {
+                $map_canvas.height($(window).innerHeight() - 45);
+            }
 
             var $markers, $controls, mapOptions, map, bounds;
 
@@ -91,8 +93,9 @@ $(function () {
             map.infoWindow = new google.maps.InfoWindow();
             map.all_markers_bounds = new google.maps.LatLngBounds();
 
-
-            var markerCluster = new MarkerClusterer(map);
+            if ($map_canvas.hasClass("cluster")) {
+                var markerCluster = new MarkerClusterer(map);
+            }
 
 
             $markers.each(function(){
@@ -125,10 +128,16 @@ $(function () {
                     direction: direction,
                     speed: speed,
                     icon: icon,
+                    href: $(this).find('a').attr('href'),
                     zIndex: 50
                 });
 
-                markerCluster.addMarker(marker);
+
+                if ($map_canvas.hasClass("cluster")) {
+                    markerCluster.addMarker(marker);
+                } else {
+                    marker.setMap(map);
+                }
 
                 var label = new Label({
                     map: map,
@@ -139,19 +148,23 @@ $(function () {
 
                 map.all_markers_bounds.extend(marker.position);
 
-
-
-
                 google.maps.event.addListener(marker, 'click', function(){
+                   window.location = marker.href;
+
+                   /**
                     map.infoWindow.close();
                     map.panTo(marker.position);
                     map.infoWindow.setPosition(marker.position);
                     map.infoWindow.setContent(marker.content);
                     map.infoWindow.open(map, marker);
+
+                    **/
                 });
             });
 
-            map.fitBounds(map.all_markers_bounds);
+            if ($markers.length > 1) {
+                map.fitBounds(map.all_markers_bounds);
+            }
 
             if ($controls.length) {
                 map.controls[google.maps.ControlPosition.LEFT_TOP].push($controls[0]);

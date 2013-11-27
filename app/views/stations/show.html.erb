@@ -6,14 +6,19 @@
 </div>
 
 
-<div class="map-canvas small-12 large-12 columns" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
+<div class="map-canvas small-12 large-12 columns no-fullscreen" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
   <div class="marker hidden" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>">
     <h3 class="title"><%= @station.name %></h3>
+    <% if @station.measures? %>
+        <% current_measure = @station.current_measure %>
+        <div class="measure" data-direction="<%= current_measure.direction %>" data-speed="<%= current_measure.speed %>">
+          <dl>Wind speed</dl>
+        </div>
+    <% end %>
   </div>
 </div>
 
 <article class="station row">
-
 
   <!-- Tabs containing  -->
   <dl class="tabs" data-tab>
