@@ -149,8 +149,9 @@ $(function () {
                 map.all_markers_bounds.extend(marker.position);
 
                 google.maps.event.addListener(marker, 'click', function(){
-                   window.location = marker.href;
 
+                   if (marker.href) window.location = marker.href;
+                   return false;
                    /**
                     map.infoWindow.close();
                     map.panTo(marker.position);
