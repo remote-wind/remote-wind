@@ -1,10 +1,10 @@
 class Station < ActiveRecord::Base
 
   # relations
-  belongs_to :user
-  has_many  :measures
+  belongs_to :user, inverse_of: :stations
+  has_many  :measures, inverse_of: :station, counter_cache: true
 
-  # constraints
+            # constraints
   validates_uniqueness_of :hw_id
   validates_presence_of :hw_id
 

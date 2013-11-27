@@ -1,5 +1,6 @@
 class Measure < ActiveRecord::Base
-  belongs_to :station, dependent: :destroy
+  belongs_to :station, dependent: :destroy, inverse_of: :measures
+
   # constraints
   validates_presence_of :station
   validates :speed, :direction, :max_wind_speed, :min_wind_speed,

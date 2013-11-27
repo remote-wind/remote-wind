@@ -6,9 +6,9 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
          :omniauth_providers => [:facebook]
 
-
-
   has_many :authentications, class_name: 'UserAuthentication'
+  has_many :stations, inverse_of: :user
+
 
   def self.create_from_omniauth(params)
 
