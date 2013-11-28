@@ -17,20 +17,33 @@ describe MeasuresController do
       get 'show', { id: 1 }
       expect(response).to be_success
     end
+
+    it "renders the correct template" do
+      get 'show', { id: 1 }
+      expect(response).to render_template :show
+    end
+
+    it "assigns the requested measure as @measure" do
+      get :show, {:id => measure.to_param }
+      expect(assigns(:measure)).to eq(measure)
+    end
   end
 
   describe "GET 'index'" do
-
-
     it "returns http success" do
-      get 'index'
+      get :index
       expect(response).to be_success
     end
 
     it "assigns measures" do
       measure
-      get 'index'
+      get :index
       expect(assigns(:measures)).to eq [measure]
+    end
+
+    it "renders the correct template" do
+      get :index
+      expect(response).to render_template :index
     end
   end
 
@@ -47,14 +60,12 @@ describe MeasuresController do
     end
 
     context "with short form attributes" do
-
       it "should create a new measure" do
         expect {
           post :create, {:m => {s: 1, d:  2, i: station.id, max: 4, min: 5}}
         }.to change(Measure, :count).by(1)
       end
     end
-
   end
 
   describe "DELETE 'destroy'" do

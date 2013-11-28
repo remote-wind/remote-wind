@@ -19,7 +19,5 @@ describe ApplicationController do
       @controller.stub(:current_user).and_return(true)
       expect(subject).to redirect_to root_path
     end
-
   end
-
 end

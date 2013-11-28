@@ -38,7 +38,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def create_user_and_authentication_and_sign_in(auth_params, provider)
       user = User.find_by_email(auth_params[:info][:email]) || User.create_from_omniauth(auth_params)
       if user.valid?
-        flash[:success] = "Welcome #{user.email}"
+        flash[:success] = "Welcome #{user.email}!"
         create_authentication_and_sign_in(auth_params, user, provider)
       else
         flash[:error] = user.errors.full_messages.first

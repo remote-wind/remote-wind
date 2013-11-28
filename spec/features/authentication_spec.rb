@@ -5,10 +5,19 @@ feature 'authentication' do
   let (:user) { FactoryGirl.create(:user) }
 
   describe 'signup' do
-
-    scenario 'when signing up with incomplete details' do
+    scenario 'when signing up without a password' do
       sign_up_with :email => 'test@example.com'
       expect(page).to have_content "Password can't be blank"
+    end
+
+    scenario 'when signing up without an email' do
+      sign_up_with :password => 'abc123'
+      expect(page).to have_content "Email can't be blank"
+    end
+
+    scenario 'when signing without password confirmation' do
+      sign_up_with :email => 'test@example.com', :password => 'abc123'
+      expect(page).to have_content "Password confirmation doesn't match Password"
     end
 
     scenario 'when signing up with complete details' do
@@ -101,5 +110,4 @@ feature 'authentication' do
       end
     end
   end
-
 end

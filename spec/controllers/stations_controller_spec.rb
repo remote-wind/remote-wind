@@ -101,7 +101,7 @@ describe StationsController do
 
   describe "PUT update" do
 
-    context "as unpriveleged user" do
+    context "as unpriveleged user, it" do
       before { sign_in create(:user) }
 
       it "does not change station" do
@@ -110,7 +110,7 @@ describe StationsController do
         expect(station.reload.name).to_not eq "foo"
       end
 
-      it "should not allow stations to be updated" do
+      it "does not allow stations to be updated" do
         bypass_rescue
         station = Station.create(attributes_for(:station))
         expect do
@@ -119,10 +119,11 @@ describe StationsController do
       end
     end
 
-    context "as admin" do
+    context "when an admin" do
       before { sign_in create(:admin) }
 
-      describe "with valid params" do
+      describe "with valid params, it" do
+
         it "updates the requested station" do
           Station.any_instance.should_receive(:update).with({ "name" => "foo" })
           put :update, {:id => station.to_param, :station => { "name" => "foo" }}
@@ -150,7 +151,7 @@ describe StationsController do
         end
       end
 
-      describe "with invalid params" do
+      describe "with invalid params, it" do
         it "assigns the station as @station" do
           station = Station.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
@@ -173,7 +174,7 @@ describe StationsController do
 
   describe "DELETE destroy" do
 
-    context "as unpriveleged user" do
+    context "when an unpriveleged user" do
       before { sign_in create(:user) }
 
 
@@ -193,7 +194,7 @@ describe StationsController do
       end
     end
 
-    context "as admin" do
+    context "when an admin" do
       before { sign_in create(:admin) }
 
       it "destroys the requested station" do
@@ -239,7 +240,7 @@ describe StationsController do
       end
     end
 
-    context "as unpriveleged user" do
+    context "when an unpriveleged user" do
       before { sign_in create(:user) }
       it "does not allow measures to be destoyed" do
         expect do
@@ -257,7 +258,7 @@ describe StationsController do
 
     end
 
-    context "as admin" do
+    context "when an admin" do
       before { sign_in create(:admin) }
 
       it "destroys the related measures" do
@@ -273,25 +274,36 @@ describe StationsController do
   end
 
   describe "GET search" do
+    let!(:machu_pichu)  { create(:station, name: 'Machu Pichu',  lat:  -13.163392, lon:  -72.546368) }
+    let!(:red_square)   { create(:station, name: 'Red Square',   lat:  55.754144,  lon:  37.620403) }
+    let!(:chernobyl)    { create(:station, name: 'Chernobyl',    lat:  51.38737,   lon: 30.094887) }
 
-
-    let!(:machu_pichu){ create(:station, name: "Machu Pichu", :lat => -13.163392, :lon => -72.546368) }
-    let!(:red_square){ create(:station, name: "Red Square", :lat => 55.754144, :lon => 37.620403) }
-
-
-    it "finds Machu Pichu given a position 20km away" do
+    it 'finds Machu Pichu given a position 20km away' do
       get :search, :lat => -13.10924, :lon => -72.602146
-      expect(assigns(:stations)[0].name).to eq "Machu Pichu"
+      expect(assigns(:stations)[0].name).to eq 'Machu Pichu'
     end
 
-    it "takes a radius parameter" do
+    it 'takes a radius parameter' do
       # Minsk, Belarus, ca 700km from Moscow
       get :search, :lat => 53.884916, :lon => 27.53088, :radius => 1000
       expect(assigns(:stations)).to_not be_empty
     end
 
+    it 'ranks stations by proximity' do
+      # Minsk, Belarus, ca 700km from Moscow
+      get :search, :lat => 53.884916, :lon => 27.53088, :radius => 1000
+      expect(assigns(:stations)[0].name).to eq 'Chernobyl'
+    end
 
+    it 'finds only stations within the radius' do
+      # Ankor Wat in not whithin 1000 km of Moscow or Peru
+      get :search, :lat => 13.412643, :lon => 103.861782, :radius => 1000
+      expect(assigns(:stations)).to be_empty
+    end
 
+    it 'renders the correct template' do
+      get :search, :lat => 53.884916, :lon => 27.53088, :radius => 1000
+      expect(response).to render_template :search
+    end
   end
-
 end

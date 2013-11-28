@@ -34,7 +34,7 @@ describe RolesController do
     end
   end
 
-  describe "DELETE users/:user_id/roles/:role_id" do
+  describe "DELETE users/:user_id/roles" do
     context "when not authorized" do
       let(:user){ create(:user) }
       let!(:wizard) { Role.create(:name => :wizard) }
@@ -69,9 +69,11 @@ describe RolesController do
         delete :destroy, { user_id:  user.to_param, user: { roles: wizard.to_param }}
         expect(user.has_role? :wizard).to be_false
       end
+
+      it "redirects back to user" do
+        delete :destroy, { user_id:  user.to_param, user: { roles: wizard.to_param }}
+        expect(response).to redirect_to user_path user
+      end
     end
   end
-
-
-
 end

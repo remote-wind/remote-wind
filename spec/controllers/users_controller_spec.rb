@@ -2,13 +2,11 @@ require 'spec_helper'
 
 describe UsersController do
 
-
   let!(:user) do
     user = FactoryGirl.create(:user)
     sign_in user
     user
   end
-
 
   describe "GET 'show'" do
 
@@ -20,6 +18,11 @@ describe UsersController do
     it "should find the right user" do
       get :show, :id => user.id
       expect(assigns(:user)) == @user
+    end
+
+    it "renders the correct template" do
+      get :show, :id => user.id
+      expect(response).to render_template :show
     end
   end
 
@@ -40,7 +43,10 @@ describe UsersController do
         get 'index'
         expect(response).to be_success
       end
+      it "renders the correct template" do
+        get :index
+        expect(response).to render_template :index
+      end
     end
-
   end
 end
