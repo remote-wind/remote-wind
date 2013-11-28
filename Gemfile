@@ -9,11 +9,11 @@ gem 'sass-rails', '~> 4.0.0' # Use SCSS for stylesheets
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'coffee-rails', '~> 4.0.0' # Use CoffeeScript for .js.coffee assets and views
 gem 'jquery-rails' # Use jquery as the JavaScript library
-gem 'foundation-rails', :github => "zurb/foundation-rails"
+gem 'foundation-rails', :github => 'zurb/foundation-rails'
 gem 'compass'
 
 #= Authentication ======================
-gem "devise", ">= 2.2.3"
+gem 'devise', '>= 2.2.3'
 gem 'cancan'
 gem 'rolify', :github => 'EppO/rolify'
 gem 'omniauth'
@@ -21,12 +21,12 @@ gem 'omniauth-facebook'
 gem 'domp'
 
 #= Geolocation =========================
-gem "geocoder" # https://github.com/alexreisner/geocoder
+gem 'geocoder' # https://github.com/alexreisner/geocoder
 gem 'timezone' # Timezone lookup via lat / lon
 
 #= Misc =================================
 gem 'jbuilder', '~> 1.2' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem "friendly_id" # Slugging
+gem 'friendly_id' # Slugging
 gem 'nokogiri'
 
 group :doc do
@@ -42,15 +42,22 @@ group :development, :test do
   gem 'zeus', '0.13.4.pre2', require: false
 end
 
+group :development do
+  gem 'guard-livereload', require: false
+  gem 'better_errors' # better error pages
+  gem 'binding_of_caller' # REPL on error pages
+  gem 'meta_request' # used for RailsPanel in Google Chrome
+end
+
 group :test do
-  gem "rspec-rails", ">=1.14"
-  gem "database_cleaner"
-  gem "factory_girl_rails"
-  gem "fuubar", "~> 1.2.1", require: false
+  gem 'rspec-rails', '>=1.14'
+  gem 'database_cleaner'
+  gem 'factory_girl_rails'
+  gem 'fuubar', '~> 1.2.1', require: false
   gem 'shoulda-matchers'
   gem 'simplecov', :require => false
   gem 'guard-rspec', '>=2.5.0', require: false
-  gem "capybara"
+  gem 'capybara'
   gem 'terminal-notifier-guard', require: false # OS-X notifications
   gem 'guard-zeus', require: false
 end
@@ -62,5 +69,5 @@ group :production do
   gem 'rails_12factor', '0.0.2'
 end
 
-gem "omniauth"
-gem "omniauth-facebook"
+gem 'omniauth'
+gem 'omniauth-facebook'
