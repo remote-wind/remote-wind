@@ -1,6 +1,6 @@
 class StationsController < ApplicationController
-  before_filter :authenticate_user!, :except => [:show, :index, :measures, :search]
-  authorize_resource :except => [:show, :index, :measures, :search]
+  before_filter :authenticate_user!, :except => [:show, :index, :measures, :search, :embed]
+  authorize_resource :except => [:show, :index, :measures, :search, :embed]
   before_action :set_station, only: [:edit, :update, :destroy]
 
   # GET /stations
@@ -90,6 +90,24 @@ class StationsController < ApplicationController
     lon = params[:lon]
     radius = params[:radius] || 20
     @stations = Station.near([lat, lon], radius, :units => :km)
+  end
+
+  def embed
+    @station = Station.friendly.find(params[:station_id])
+    @measure = @station.current_measure
+    @css = params[:css].in? [true, 'true', 'TRUE']
+    @type = params[:type] || 'table'
+    @height = params[:height] || 350
+    @width = params[:width] || 500
+
+    unless @type.in? ['chart','table']
+      @message = "Sorry buddy, I don´t know how to render \"#{@type}\"."
+      @type = 'error'
+    end
+
+    respond_to do |format|
+      format.html { render "/stations/embeds/#{@type}", layout: false }
+    end
   end
 
   private

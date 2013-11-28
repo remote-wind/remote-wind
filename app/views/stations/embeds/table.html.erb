@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title><%= @station.name %> - Remote Wind</title>
+  <% if @css %>
+  <%= stylesheet_link_tag    "application" %>
+  <link href='http://fonts.googleapis.com/css?family=Lato:100,300,700,100italic,300italic,700italic' rel='stylesheet' type='text/css'>
+  <% end %>
+</head>
+<body>
+    <div class="remote-wind-widget" width="<%= @width %>" height="<%= @height %>">
+      <table class="current_measure">
+        <thead>
+        <th>Time</th>
+        <th>Wind Speed</th>
+        <th>Direction</th>
+        <th>Max Wind Speed</th>
+        <th>Min Wind Speed</th>
+        </thead>
+        <tbody>
+        <% if @measure.present? %>
+            <%= render :partial => 'measures/measure', object: @measure %>
+        <% else %>
+        <tr>
+            <td>No measurements available.</td>
+        </tr>
+        </tbody>
+        <% end %>
+      </table>
+    </div>
+</body>
+</html>

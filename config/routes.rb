@@ -13,6 +13,7 @@ RemoteWind::Application.routes.draw do
   end
 
   get "/stations/:station_id/measures", to: "stations#measures", as: :station_measures
+  get "/stations/:station_id/embed(/:css)", to: "stations#embed", as: :embed_station
   delete "/stations/:station_id/measures", to: "stations#destroy_measures", as: :destroy_station_measures
 
   resources :stations, :shallow => true do

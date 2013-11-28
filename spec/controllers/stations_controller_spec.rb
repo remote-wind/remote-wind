@@ -306,4 +306,55 @@ describe StationsController do
       expect(response).to render_template :search
     end
   end
+
+  describe "GET embed" do
+
+    before do
+      station
+      get :embed, station_id: station.to_param
+    end
+
+    it "returns http success" do
+      expect(response).to be_success
+    end
+
+    it "assigns station as @station" do
+      expect(assigns(:station)).to eq station
+    end
+
+    it "takes a css param" do
+      get :embed, station_id: station.to_param, css: "true"
+      expect(assigns(:css)).to be_true
+    end
+
+    it "defaults to table type" do
+      expect(assigns(:type)).to eq "table"
+    end
+
+    it "takes a type param" do
+      get :embed, station_id: station.to_param, type: "chart"
+      expect(assigns(:type)).to eq "chart"
+    end
+
+    it "enforces validity of type param" do
+      get :embed, station_id: station.to_param, type: "gogeligook"
+      expect(response).to render_template "stations/embeds/error"
+    end
+
+    it "displays a message if the type is invalid" do
+      get :embed, station_id: station.to_param, type: "gogeligook"
+      expect(assigns(:message)).to match /Sorry buddy, I don´t know how to render "gogeligook"/i
+    end
+
+    it "takes a height param" do
+      get :embed, station_id: station.to_param, height: 300
+      expect(assigns(:height)).to eq "300"
+    end
+
+    it "takes a width param" do
+      get :embed, station_id: station.to_param, width: 250
+      expect(assigns(:width)).to eq "250"
+    end
+
+  end
 end

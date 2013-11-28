@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title><%= @station.name %> - Remote Wind</title>
+  <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application" %>
+</head>
+<body>
+    <div class="station-chart" id="station_measures_chart" data-path="<%= station_measures_path(@station) %>"
+    height="<%= @height %>" width="<%= @width %>"></div>
+</body>
+</html>
