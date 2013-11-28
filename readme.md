@@ -33,7 +33,11 @@ export REMOTE_WIND_FB_APP_SECRET="secret"
 export REMOTE_WIND_EMAIL_PASSWORD="secret"
 ```
 REMOTE_WIND_GEONAMES is a [geonames.org](http://www.geonames.org) username.
-If you use an IDE on OS-x such as rubymine, you should add the following to /etc/launchd.conf
+If you use an IDE on
+
+#### Adding vars to your OS-X destop enviroment
+OS-x such as rubymine, you should add the following to /etc/launchd.conf
+(you do not need to add them to ~/.profile as well).
 ```
 set_env REMOTE_WIND_EMAIL your@emai.com
 set_env REMOTE_WIND_PASSWORD password
@@ -52,3 +56,7 @@ source /etc/launchd.conf
 zeus start
 bundle exec guard (in a new tab)
 ```
+
+## RailsPanel
+
+This application supports debugging in Google chrome via [the RailsPanel extension](https://chrome.google.com/webstore/detail/railspanel/gjpfobpafnhjhbajcjgccbbdofdckggg)
