@@ -357,4 +357,20 @@ describe StationsController do
     end
 
   end
+
+  describe "GET find" do
+    before do
+      station
+    end
+
+    it "should return HTTP success" do
+      get :find, hw_id: station.hw_id, format: "yaml"
+      expect(response).to be_success
+    end
+
+    it "should return HTTP success" do
+      get :find, hw_id: station.hw_id, format: "yaml"
+    end
+
+  end
 end
