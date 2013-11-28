@@ -120,4 +120,27 @@ class StationsController < ApplicationController
     def station_params
       params.require(:station).permit(:id, :name, :hw_id, :latitude, :longitude, :user_id, :slug)
     end
+    
+    def find
+      @station = Station.find_by_hw_id(params[:imei])
+
+      if(@station.nil?)
+        respond_to do |format|
+          format.html { head :not_found }
+          format.xml  { head :not_found }
+          format.json { head :not_found }
+          format.yaml { head :not_found, :content_type => 'text/x-yaml'}
+        end
+      else
+        respond_to do |format|
+          format.html # show.html.erb
+          format.xml  { render :xml => @station }
+          format.json  { render :json => @station }
+          format.yaml {render :json =>  {
+                  :id    => @station.id,
+                  :hw_id => @station.hw_id
+            }, :content_type => 'text/x-yaml'}
+          end
+        end
+    end
 end
