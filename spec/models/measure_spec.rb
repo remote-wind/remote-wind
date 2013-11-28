@@ -21,24 +21,26 @@ describe Measure do
 
   describe "Ardiuno adapted setters should" do
 
-    it "normalize direction" do
-      m = Measure.new(d: 10)
-      expect(m.direction).to eq 100
-    end
+
 
     it "normalize speed" do
-      m = Measure.new(s: 10)
-      expect(m.speed).to eq 100
+      m = Measure.new(s: 100)
+      expect(m.speed).to eq 1
+    end
+
+    it "normalize direction" do
+      m = Measure.new(d: 100)
+      expect(m.direction).to eq 10
     end
 
     it "normalize min" do
-      m = Measure.new(min: 10)
-      expect(m.min).to eq 100
+      m = Measure.new(min: 100)
+      expect(m.min).to eq 1
     end
 
     it "normalize max" do
-      m = Measure.new(max: 10)
-      expect(m.max).to eq 100
+      m = Measure.new(max: 100)
+      expect(m.max).to eq 1
     end
   end
 

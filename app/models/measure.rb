@@ -19,25 +19,27 @@ class Measure < ActiveRecord::Base
 
   # when writing from the ardiuno params short form
   def s= val
-    # @todo normalize!
-    write_attribute(:speed, val.to_f)
+
+    write_attribute(:speed, val.to_f / 100)
   end
 
   # when writing from the ardiuno params short form
   def d= val
-    # @todo normalize!
     write_attribute(:direction, val.to_f / 10)
   end
 
   # when writing from the ardiuno params short form
   def max= val
-    # @todo normalize!
-    write_attribute(:max_wind_speed, val.to_f)
+    write_attribute(:max_wind_speed, val.to_f / 100)
   end
 
   # when writing from the ardiuno params short form
   def min= val
-    # @todo normalize!
-    write_attribute(:min_wind_speed, val.to_f)
+    write_attribute(:min_wind_speed, val.to_f / 100)
   end
+
+  def b=
+    write_attribute(:min_wind_speed, val.to_f / 100)
+  end
+
 end
