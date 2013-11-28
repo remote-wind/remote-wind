@@ -33,16 +33,13 @@ describe UsersController do
     end
 
     context "when authorized" do
-
       before do
         sign_in create(:admin)
       end
-
       it "should be successful" do
         get 'index'
         expect(response).to be_success
       end
-
     end
 
   end
