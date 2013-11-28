@@ -1,6 +1,6 @@
 class StationsController < ApplicationController
-  before_filter :authenticate_user!, :except => [:show, :index, :measures, :search, :embed]
-  authorize_resource :except => [:show, :index, :measures, :search, :embed]
+  before_filter :authenticate_user!, :except => [:show, :index, :measures, :search, :embed, :find]
+  authorize_resource :except => [:show, :index, :measures, :search, :embed, :find]
   before_action :set_station, only: [:edit, :update, :destroy]
 
   # GET /stations
@@ -110,6 +110,32 @@ class StationsController < ApplicationController
     end
   end
 
+  def find
+
+    @station = Station.find_by_hw_id(params[:hw_id])
+
+
+
+    if(@station.nil?)
+      respond_to do |format|
+        format.html { head :not_found }
+        format.xml  { head :not_found }
+        format.json { head :not_found }
+        format.yaml { head :not_found, :content_type => 'text/x-yaml'}
+      end
+    else
+      respond_to do |format|
+        format.html # show.html.erb
+        format.xml  { render :xml => @station }
+        format.json  { render :json => @station }
+        format.yaml {render :json =>  {
+            :id    => @station.id,
+            :hw_id => @station.hw_id
+        }, :content_type => 'text/x-yaml'}
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_station
@@ -119,28 +145,5 @@ class StationsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def station_params
       params.require(:station).permit(:id, :name, :hw_id, :latitude, :longitude, :user_id, :slug)
-    end
-    
-    def find
-      @station = Station.find_by_hw_id(params[:imei])
-
-      if(@station.nil?)
-        respond_to do |format|
-          format.html { head :not_found }
-          format.xml  { head :not_found }
-          format.json { head :not_found }
-          format.yaml { head :not_found, :content_type => 'text/x-yaml'}
-        end
-      else
-        respond_to do |format|
-          format.html # show.html.erb
-          format.xml  { render :xml => @station }
-          format.json  { render :json => @station }
-          format.yaml {render :json =>  {
-                  :id    => @station.id,
-                  :hw_id => @station.hw_id
-            }, :content_type => 'text/x-yaml'}
-          end
-        end
     end
 end
