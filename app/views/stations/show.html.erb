@@ -27,6 +27,7 @@
     <dd><a href="#panel2-2">Table</a></dd>
     <% end %>
     <dd><a href="#panel3-3">Meta</a></dd>
+    <dd><a href="#panel4-4">Share!</a></dd>
   </dl>
   <div class="tabs-content">
     <% if @measures %>
@@ -80,7 +81,14 @@
         </tbody>
       </table>
     </section>
+    <section class="content" id="panel4-4">
+      <h3>Get embed code</h3>
+      <textarea class="share-embed-code" style="width: 600px; height: 40px;" onkeydown="if ((event.ctrlKey || event.metaKey) &amp;&amp; event.keyCode == 67) { yt.tracking.track('embedCodeCopied'); }">&lt;iframe width="600" height="300" src="<%= embed_station_path @station %>" frameborder="0"&gt;&lt;/iframe&gt;</textarea>
+      </p>
+    </section>
   </div>
+
+
 
 <% if can? :manage, Station %>
     <div class="admin-only btn-group">
