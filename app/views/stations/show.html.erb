@@ -18,8 +18,7 @@
   </div>
 </div>
 
-<article class="station row">
-
+<article class="station row accordion" data-accordion>
   <!-- Tabs containing  -->
   <dl class="tabs" data-tab>
     <% if @measures %>
@@ -40,8 +39,8 @@
         <th>Time</th>
         <th>Wind Speed</th>
         <th>Direction</th>
-        <th>Max Wind Speed</th>
         <th>Min Wind Speed</th>
+        <th>Max Wind Speed</th>
         </thead>
         <tbody>
         <% @measures.each do |measure| %>
