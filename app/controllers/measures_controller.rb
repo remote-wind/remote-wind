@@ -1,22 +1,11 @@
 class MeasuresController < ApplicationController
   before_filter :authenticate_user!, :only => [:destroy]
   load_and_authorize_resource :only => [:destroy]
-  before_action :set_measure, only: [:show, :destroy]
   protect_from_forgery :only => [:destroy]
-
-  # GET /measures/:id
-  def show
-  end
-
-  # GET /measures
-  def index
-    @measures = Measure.all
-  end
 
   # POST /measures
   def create
 
-    # @todo write spec and use normalize_ardiuno_params
     @measure = Measure.new(measure_params)
 
     respond_to do |format|
@@ -32,6 +21,7 @@ class MeasuresController < ApplicationController
 
   # DELETE /measures/:id
   def destroy
+    @measure = Measure.find(params[:id])
     @measure.destroy
     respond_to do |format|
       format.html { redirect_to measures_path }
@@ -49,9 +39,5 @@ class MeasuresController < ApplicationController
     params.require(:measure).permit(
         :id, :station_id, :direction, :speed, :min_wind_speed, :max_wind_speed
     )
-  end
-
-  def set_measure
-    @measure = Measure.find(params[:id])
   end
 end

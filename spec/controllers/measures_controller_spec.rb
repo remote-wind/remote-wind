@@ -8,45 +8,6 @@ describe MeasuresController do
     attributes_for(:measure, :station_id => 1 )
   }
 
-  describe "GET 'show'" do
-    before do
-      measure
-    end
-
-    it "returns http success" do
-      get 'show', { id: 1 }
-      expect(response).to be_success
-    end
-
-    it "renders the correct template" do
-      get 'show', { id: 1 }
-      expect(response).to render_template :show
-    end
-
-    it "assigns the requested measure as @measure" do
-      get :show, {:id => measure.to_param }
-      expect(assigns(:measure)).to eq(measure)
-    end
-  end
-
-  describe "GET 'index'" do
-    it "returns http success" do
-      get :index
-      expect(response).to be_success
-    end
-
-    it "assigns measures" do
-      measure
-      get :index
-      expect(assigns(:measures)).to eq [measure]
-    end
-
-    it "renders the correct template" do
-      get :index
-      expect(response).to render_template :index
-    end
-  end
-
   describe "POST 'create'" do
 
     let!(:station) { create(:station) }

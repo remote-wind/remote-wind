@@ -80,13 +80,12 @@ class RandomMeasureMaker
 
   def initialize n = 50
     puts "Creating #{n} random measures per station"
-    @speed = Random.new.rand(5..10)
-    @direction = Random.new.rand(0..360)
 
     Station.all.each do |station|
       puts station[:name] + ": "
-      @ctime = (5 * n).minutes.ago
-
+      @ctime = Time.new(2013, 11, 29, 23, 30, "+01:00")
+      @speed = Random.new.rand(5..10)
+      @direction = Random.new.rand(0..360)
       n.times do
         create_measure( station )
       end
@@ -97,7 +96,7 @@ class RandomMeasureMaker
   def create_measure station
 
     # speed variation
-    s_var = Random.new.rand(-5..5)
+    s_var = Random.new.rand(-2..2)
 
     # Prevent speed from becoming negative
     if @speed + s_var <= 0

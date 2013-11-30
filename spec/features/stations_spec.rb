@@ -92,5 +92,4 @@ feature "Stations", %{
       expect(Measure.where("station_id = #{station.id}").count).to eq 0
     end
   end
-
 end

@@ -23,7 +23,7 @@ describe MeasuresHelper do
   describe "#time_in_24h" do
 
     it "outputs hours and minutes" do
-      expect(time_in_24h Time.new(2002, 10, 31, 13, 22, 2)).to eq "13:22:02"
+      expect(time_in_24h Time.new(2002, 10, 31, 13, 22, 2)).to eq "13:22"
     end
 
 

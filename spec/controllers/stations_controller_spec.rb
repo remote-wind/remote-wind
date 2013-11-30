@@ -12,12 +12,20 @@ describe StationsController do
 
 
   describe "GET index" do
-    it "assigns all stations as @stations" do
-      #sign_in create(:user)
-      station = create(:station)
+
+    before :each do
+      station
       get :index
+    end
+
+    it "assigns all stations as @stations" do
       expect(assigns(:stations)).to eq([station])
     end
+
+    it "renders the index template" do
+      expect(response).to render_template :index
+    end
+
   end
 
 
