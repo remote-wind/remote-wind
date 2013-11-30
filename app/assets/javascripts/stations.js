@@ -211,11 +211,14 @@ $(function () {
                 if (this.max_wind_speed > data.max_recorded_speed) {
                     data.max_recorded_speed = this.max_wind_speed;
                 }
-                data.speed.push([this.tstamp, this.speed]);
-                data.min_wind_speed.push([this.tstamp, this.min_wind_speed]);
-                data.max_wind_speed.push([this.tstamp, this.max_wind_speed]);
-                data.direction.push([this.tstamp, this.direction]);
+                data.speed.push([this.tstamp * 1000, this.speed]);
+                data.min_wind_speed.push([this.tstamp * 1000, this.min_wind_speed]);
+                data.max_wind_speed.push([this.tstamp * 1000, this.max_wind_speed]);
+                data.direction.push([this.tstamp * 1000, this.direction]);
             });
+
+            console.info(data);
+
             return data;
         }
 
