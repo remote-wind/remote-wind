@@ -18,6 +18,7 @@ describe Station do
     it { should respond_to :timezone }
     it { should respond_to :down }
     it { should respond_to :balance }
+    it { should respond_to :zone }
 
     describe "attribute aliases" do
       it { should respond_to :lon }
@@ -32,27 +33,29 @@ describe Station do
     it { should validate_presence_of :hw_id }
   end
 
-  describe "#find_timezone" do
-    it "should find the correct timezone" do
-      expect(station.lookup_timezone).to eq "Europe/London"
-    end
-  end
-
   describe "#set_timezone!" do
 
-    it "should set timezone on object creation given lat and lon" do
+    before :each do
       Station.any_instance.unstub(:lookup_timezone)
-      zone = double(Timezone::Zone)
-      Timezone::Zone.stub(:new).and_return(zone)
+      @zone = double(Timezone::Zone)
+      @zone.stub(:zone).and_return("Europe/London")
+      Timezone::Zone.stub(:new).and_return(@zone)
+    end
+
+    it "should set timezone on object creation given lat and lon" do
       Timezone::Zone.should_receive(:new).with(:latlon => [35.6148800, 139.5813000])
-      zone.stub(:zone).and_return('Tokyo')
-      expect(create(:station, lat: 35.6148800, lon: 139.5813000).timezone).to eq "Tokyo"
+      expect(create(:station, lat: 35.6148800, lon: 139.5813000).timezone).to eq "Europe/London"
     end
 
     it "handles exceptions from Timezone" do
       Station.any_instance.stub(:lookup_timezone).and_raise(Timezone::Error::Base)
       expect{expect(create(:station, lat: 35.6148800, lon: 139.5813000))}.to_not raise_error
     end
+
+    it "should set the zone attribute after initialization" do
+      expect(Station.find(station.id).zone).to eq @zone
+    end
+
   end
 
   describe "slugging" do
@@ -135,4 +138,19 @@ describe Station do
     end
   end
 
+  describe "#time_to_local_time" do
+
+    it "converts a Time to local offset" do
+      t = Time.new(2013)
+      station.zone = Timezone::Zone.new :zone => "Europe/Stockholm"
+      expect(station.time_to_local(t)).to eq t + 1.hours
+    end
+
+    it "does not break if there is no zone" do
+      t = Time.new(2013)
+      station.zone = nil
+      expect(station.time_to_local(t)).to eq t
+    end
+
+  end
 end

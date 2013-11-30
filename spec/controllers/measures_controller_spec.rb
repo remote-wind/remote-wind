@@ -27,6 +27,21 @@ describe MeasuresController do
         }.to change(Measure, :count).by(1)
       end
     end
+
+    context "with yaml format" do
+
+      it "sends HTTP success" do
+        post :create, {:measure => valid_attributes, format: "yaml"}
+        expect(response).to be_success
+      end
+
+      it "does not render a template" do
+          post :create, {:measure => valid_attributes, format: "yaml"}
+          expect(response).to render_template nil
+      end
+    end
+
+
   end
 
   describe "DELETE 'destroy'" do

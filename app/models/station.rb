@@ -5,7 +5,7 @@ class Station < ActiveRecord::Base
   has_many  :measures, inverse_of: :station, counter_cache: true
   has_many :recent_measures, -> { order('created_at ASC').limit(10) }, class_name: 'Measure'
 
-            # constraints
+   # constraints
   validates_uniqueness_of :hw_id
   validates_presence_of :hw_id
 
@@ -16,18 +16,20 @@ class Station < ActiveRecord::Base
   # geolocation
   geocoded_by :name
   reverse_geocoded_by :latitude, :longitude
-  class_attribute :zone_class
-  self.zone_class ||= Timezone::Zone
-  before_save :set_timezone!
+
+  #callbacks
+  before_validation :set_timezone!
+  after_initialize :set_timezone!
 
   alias_attribute :lat, :latitude
   alias_attribute :lon, :longitude
   alias_attribute :lng, :longitude
   alias_attribute :owner, :user
+  attr_accessor :zone
 
   def lookup_timezone
-    timezone = self.zone_class.new(:latlon => [self.lat, self.lon])
-    timezone.zone
+    self.zone = Timezone::Zone.new(:latlon => [self.lat, self.lon])
+    self.zone.zone
   end
 
   def set_timezone!
@@ -38,6 +40,8 @@ class Station < ActiveRecord::Base
       rescue Timezone::Error::Base => e
         logger.warn e.message
       end
+    elsif self.timezone and self.zone.nil?
+      self.zone = Timezone::Zone.new( zone: self.timezone )
     end
   end
 
@@ -95,6 +99,10 @@ class Station < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def time_to_local time
+    self.zone.nil? ? time : zone.time(time)
   end
 
 end

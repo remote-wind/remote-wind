@@ -12,9 +12,11 @@ class MeasuresController < ApplicationController
       if @measure.save
         format.html { redirect_to @measure, notice: 'Measure was successfully created.' }
         format.json { render action: 'show', status: :created, location: station_measure_path(@measure.station, @measure) }
+        format.yaml { render nothing: true, status: :created }
       else
         format.html { return }
         format.json { render json: @measure.errors, status: :unprocessable_entity }
+        format.yaml { render nothing: true, status: :unprocessable_entity }
       end
     end
   end
