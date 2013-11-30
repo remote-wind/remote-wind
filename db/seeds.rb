@@ -83,7 +83,7 @@ class RandomMeasureMaker
 
     Station.all.each do |station|
       puts station[:name] + ": "
-      @ctime = Time.new(2013, 11, 29, 23, 30, "+01:00")
+      @ctime = (n * 5).minutes.ago
       @speed = Random.new.rand(5..10)
       @direction = Random.new.rand(0..360)
       n.times do

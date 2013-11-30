@@ -47,6 +47,11 @@ feature "Stations", %{
     expect(page).to have_selector "table.measures .direction td:first", text: stations.first[:direction]
   end
 
+
+  scenario "table should have station local time" do
+    visit station_path stations.first
+  end
+
   scenario "when I create a new station with valid input" do
     admin_session
     visit stations_path

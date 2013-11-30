@@ -2,7 +2,7 @@
   <thead>
     <th>Time</th>
     <% @measures.each do |m| %>
-    <th><%= time_in_24h(m.time) %></th>
+    <th><%= m.station.time_to_local(m.created_at) %></th>
     <% end %>
   </thead>
     <tbody>

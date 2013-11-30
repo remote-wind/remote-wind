@@ -1,5 +1,5 @@
 <tr class="measure">
-  <td class="created_at"><%= time_in_24h measure.time %></td>
+  <td class="created_at"><%= measure.station.time_to_local(measure.created_at) %></td>
   <% unless params[:controller] == 'stations' %>
   <td class="station"><%= measure.station.name %></td>
   <% end %>

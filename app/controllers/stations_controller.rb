@@ -13,8 +13,7 @@ class StationsController < ApplicationController
   # GET /stations/1.json
   def show
     @station = Station.friendly.find(params[:id])
-
-    @measures = @station.recent_measures
+    @measures = @station.measures
     @chart_min = 0
     @chart_max = 20
   end
@@ -114,9 +113,6 @@ class StationsController < ApplicationController
   def find
 
     @station = Station.find_by_hw_id(params[:hw_id])
-
-
-
     if(@station.nil?)
       respond_to do |format|
         format.html { head :not_found }
