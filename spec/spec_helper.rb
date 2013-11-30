@@ -50,7 +50,7 @@ prefork = lambda do
     include Features::SessionHelpers
 
     config.before(:each) do
-      Station.any_instance.stub(:lookup_timezone).and_return("London")
+      Station.any_instance.stub(:lookup_timezone).and_return("Europe/London")
     end
 
     OmniAuth.config.test_mode = true

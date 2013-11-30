@@ -4,11 +4,12 @@ feature "Stations", %{
 } do
 
   let!(:stations) {
-    stations = []
-    3.times do |i|
-      stations << create(:station, :name => "Station #{i+1}")
+
+    stations = [*1..3].map! do |i|
+      station = create(:station, :name => "Station #{i+1}")
+      station.measures.create attributes_for(:measure)
+      station
     end
-    stations
   }
 
   let(:admin) {
@@ -35,6 +36,15 @@ feature "Stations", %{
   scenario "when viewing a station" do
     visit station_path stations.first
     expect(page).to have_content stations.first.name
+  end
+
+  scenario "when i click table" do
+    visit station_path stations.first
+    click_link "Table"
+    expect(page).to have_selector "table.measures .speed td:first", text: stations.first[:speed]
+    expect(page).to have_selector "table.measures .min-wind-speed td:first", text: stations.first[:min]
+    expect(page).to have_selector "table.measures .max-wind-speed td:first", text: stations.first[:max]
+    expect(page).to have_selector "table.measures .direction td:first", text: stations.first[:direction]
   end
 
   scenario "when I create a new station with valid input" do

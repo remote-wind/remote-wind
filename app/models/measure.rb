@@ -1,5 +1,6 @@
 class Measure < ActiveRecord::Base
   belongs_to :station, dependent: :destroy, inverse_of: :measures
+  attr_accessor :timezone
 
   # constraints
   validates_presence_of :station
@@ -40,6 +41,13 @@ class Measure < ActiveRecord::Base
 
   def b=
     write_attribute(:min_wind_speed, val.to_f / 100)
+  end
+
+  def time
+    unless self.station.timezone.nil?
+      self.timezone = Timezone::Zone.new :zone => self.station.timezone
+    end
+    self.timezone.time self.created_at
   end
 
 end

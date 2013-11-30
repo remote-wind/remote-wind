@@ -3,6 +3,7 @@ class Station < ActiveRecord::Base
   # relations
   belongs_to :user, inverse_of: :stations
   has_many  :measures, inverse_of: :station, counter_cache: true
+  has_many :recent_measures, -> { order('created_at ASC').limit(10) }, class_name: 'Measure'
 
             # constraints
   validates_uniqueness_of :hw_id
@@ -26,7 +27,7 @@ class Station < ActiveRecord::Base
 
   def lookup_timezone
     timezone = self.zone_class.new(:latlon => [self.lat, self.lon])
-    timezone.active_support_time_zone
+    timezone.zone
   end
 
   def set_timezone!

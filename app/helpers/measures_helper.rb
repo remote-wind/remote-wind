@@ -9,7 +9,7 @@ module MeasuresHelper
   def speed_min_max(measure)
 
     unless measure.is_a? Hash
-      measure = measure.attributes
+      measure = HashWithIndifferentAccess.new(measure.attributes)
     end
 
     if measure
@@ -17,4 +17,7 @@ module MeasuresHelper
     end
   end
 
+  def time_in_24h time
+    time.strftime("%H:%M")
+  end
 end

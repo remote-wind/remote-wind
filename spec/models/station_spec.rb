@@ -34,7 +34,7 @@ describe Station do
 
   describe "#find_timezone" do
     it "should find the correct timezone" do
-      expect(station.lookup_timezone).to eq "London"
+      expect(station.lookup_timezone).to eq "Europe/London"
     end
   end
 
@@ -45,7 +45,7 @@ describe Station do
       zone = double(Timezone::Zone)
       Timezone::Zone.stub(:new).and_return(zone)
       Timezone::Zone.should_receive(:new).with(:latlon => [35.6148800, 139.5813000])
-      zone.stub(:active_support_time_zone).and_return('Tokyo')
+      zone.stub(:zone).and_return('Tokyo')
       expect(create(:station, lat: 35.6148800, lon: 139.5813000).timezone).to eq "Tokyo"
     end
 

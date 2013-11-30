@@ -30,26 +30,18 @@
   </dl>
   <div class="tabs-content">
     <% if @measures %>
+    <!-- chart -->
     <section class="content row active small-12 large-12 columns" id="panel2-1">
       <div class="station-chart" id="station_measures_chart" data-path="<%= station_measures_path(@station) %>"></div>
     </section>
+    <!-- table -->
     <section class="content small-12 columns" id="panel2-2">
-      <table class="measures small-12 columns">
-        <thead>
-        <th>Time</th>
-        <th>Wind Speed</th>
-        <th>Direction</th>
-        <th>Min Wind Speed</th>
-        <th>Max Wind Speed</th>
-        </thead>
-        <tbody>
-        <% @measures.each do |measure| %>
-            <%= render :partial => 'measures/measure', object: measure %>
-        <% end %>
-        </tbody>
-      </table>
+
+         <%= render :partial => 'measures/htable', object: @measures %>
+
     </section>
     <% end %>
+    <!-- meta -->
     <section class="content meta small-12 columns" id="panel3-3">
       <table class="small-12 columns">
         <tbody>
@@ -76,6 +68,10 @@
             <tr>
               <td>Longitude</td>
               <td><%= @station.lon %></td>
+            </tr>
+            <tr>
+              <td>Timezone</td>
+              <td><%= @station.timezone %></td>
             </tr>
         </tbody>
       </table>

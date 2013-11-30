@@ -13,7 +13,8 @@ class StationsController < ApplicationController
   # GET /stations/1.json
   def show
     @station = Station.friendly.find(params[:id])
-    @measures = @station.measures
+
+    @measures = @station.recent_measures
     @chart_min = 0
     @chart_max = 20
   end

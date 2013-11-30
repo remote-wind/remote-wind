@@ -1,10 +1,8 @@
 <tr class="measure">
-  <td class="created_at"><%= measure.created_at.to_s %></td>
+  <td class="created_at"><%= time_in_24h measure.time %></td>
   <% unless params[:controller] == 'stations' %>
   <td class="station"><%= measure.station.name %></td>
   <% end %>
-  <td class="speed"><%= measure.speed %></td>
   <td class="direction"><%= degrees_and_cardinal(measure.direction) %></td>
-  <td class="min_wind_speed"><%= measure.min_wind_speed %></td>
-  <td class="max_wind_speed"><%= measure.max_wind_speed %></td>
+  <td class="speed"><%= measure.speed %> (<%= measure.max %>-<%= measure.min %>)m/s</td>
 </tr>

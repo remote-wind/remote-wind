@@ -16,7 +16,6 @@ describe Measure do
       it { should respond_to :max }
       it { should respond_to :min }
     end
-
   end
 
   describe "Ardiuno adapted setters should" do
