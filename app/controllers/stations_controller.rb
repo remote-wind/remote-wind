@@ -13,7 +13,7 @@ class StationsController < ApplicationController
   # GET /stations/1.json
   def show
     @station = Station.friendly.find(params[:id])
-    @measures = @station.measures
+    @measures = @station.measures.order("created_at ASC")
     @chart_min = 0
     @chart_max = 20
   end
@@ -71,7 +71,7 @@ class StationsController < ApplicationController
   # GET /stations/:staton_id/measures
   def measures
     @station = Station.friendly.find(params[:station_id])
-    @measures = @station.measures
+    @measures = @station.measures.order("created_at ASC")
   end
 
   # DELETE /stations/:staton_id/measures

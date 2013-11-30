@@ -41,10 +41,8 @@ feature "Stations", %{
   scenario "when i click table" do
     visit station_path stations.first
     click_link "Table"
-    expect(page).to have_selector "table.measures .speed td:first", text: stations.first[:speed]
-    expect(page).to have_selector "table.measures .min-wind-speed td:first", text: stations.first[:min]
-    expect(page).to have_selector "table.measures .max-wind-speed td:first", text: stations.first[:max]
-    expect(page).to have_selector "table.measures .direction td:first", text: stations.first[:direction]
+    expect(page).to have_selector "table.measures tr:first .speed", text: stations.first[:speed]
+    expect(page).to have_selector "table.measures tr:first .direction", text: stations.first[:direction]
   end
 
 
