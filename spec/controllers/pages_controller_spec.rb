@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe PagesController do
 
+  before :each do
+    sign_out :user
+  end
+
   describe "GET 'home'" do
     it "returns http success" do
       get :home

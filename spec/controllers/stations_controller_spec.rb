@@ -10,6 +10,9 @@ describe StationsController do
   let(:invalid_attributes) { { :name => 'foo' } }
   let(:station) { FactoryGirl.create(:station, slug: 'xxx') }
 
+  before :each do
+    sign_out :user
+  end
 
   describe "GET index" do
 
@@ -157,7 +160,16 @@ describe StationsController do
           get :show, id: 'custom_slug'
           expect(response).to be_success
         end
+
+        it "changes visibilty" do
+          put :update, {:id => station.to_param, :station => { show: 'no' }}
+          expect(assigns(:station).show).to be_false
+        end
+
       end
+
+
+
 
       describe "with invalid params, it" do
         it "assigns the station as @station" do

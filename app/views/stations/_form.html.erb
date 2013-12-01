@@ -10,6 +10,13 @@
           f.select(:user_id, options_from_collection_for_select(User.all, :id, :email), { include_blank: true  })
         end
         %>
+        <%= f.div_field_with_label(:show, label: "Show") do |key|
+          check_box("station", :show, {}, "yes", "no")
+        end
+        %>
+
+
+
       </div>
       <aside class="help small-6 large-4 columns">
         <h3>Need Help?</h3>

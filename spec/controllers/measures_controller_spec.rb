@@ -8,6 +8,10 @@ describe MeasuresController do
     attributes_for(:measure, :station_id => 1 )
   }
 
+  before :each do
+    sign_out :user
+  end
+
   describe "POST 'create'" do
 
     let!(:station) { create(:station) }

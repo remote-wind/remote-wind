@@ -46,7 +46,7 @@ feature 'Facebook Authentiation' do
       visit new_user_registration_path
       valid_auth_response
       click_link "Sign in with Facebook"
-      sign_out
+      sign_out_via_capybara
     end
 
     scenario "I click login with facebook" do

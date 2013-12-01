@@ -32,10 +32,16 @@ class ApplicationController < ActionController::Base
       redirect_to new_user_session_path
     end
   end
-  private
 
   # since the stations are used by all
   def get_all_stations
-    @all_stations = Station.all
+
+    if user_signed_in?
+      if current_user.has_role? :admin
+        @all_stations = Station.all
+      end
+    end
+
+    @all_stations ||= Station.visible
   end
 end

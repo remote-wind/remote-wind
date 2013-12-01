@@ -19,6 +19,7 @@ describe Station do
     it { should respond_to :down }
     it { should respond_to :balance }
     it { should respond_to :zone }
+    it { should respond_to :show }
 
     describe "attribute aliases" do
       it { should respond_to :lon }

@@ -42,6 +42,7 @@ prefork = lambda do
     end
     config.after(:each) do
       DatabaseCleaner.clean
+      Warden.test_reset!
     end
 
     include FactoryGirl::Syntax::Methods

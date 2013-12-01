@@ -35,7 +35,7 @@ module Features
       assign(:ability, @ability)
     end
 
-    def sign_out
+    def sign_out_via_capybara
       visit root_path
       click_link "Log out"
     end

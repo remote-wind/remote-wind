@@ -45,7 +45,6 @@ feature "Stations", %{
     expect(page).to have_selector "table.measures tr:first .direction", text: stations.first[:direction]
   end
 
-
   scenario "table should have station local time" do
     visit station_path stations.first
   end
@@ -76,6 +75,15 @@ feature "Stations", %{
     fill_in 'Latitude', with: 999
     click_button 'Update'
     expect(current_path).to eq station_path(stations[0].slug)
+  end
+
+  scenario "when I make a station hidden" do
+    admin_session
+    visit edit_station_path(stations[0])
+    uncheck 'Show'
+    click_button 'Update'
+    sign_out_via_capybara
+    visit stations_path
   end
 
   context "given a station with measures" do

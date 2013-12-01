@@ -27,6 +27,9 @@ class Station < ActiveRecord::Base
   alias_attribute :owner, :user
   attr_accessor :zone
 
+  # Scopes
+  scope :visible, -> { where(show: true) }
+
   def lookup_timezone
     self.zone = Timezone::Zone.new(:latlon => [self.lat, self.lon])
     self.zone.zone
