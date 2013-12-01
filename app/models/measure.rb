@@ -49,9 +49,9 @@ class Measure < ActiveRecord::Base
 
   def calibrate!
     unless self.station.speed_calibration.nil?
-      self.speed            *= self.station.speed_calibration
-      self.min_wind_speed   *= self.station.speed_calibration
-      self.max_wind_speed   *= self.station.speed_calibration
+      self.speed            = (self.speed * self.station.speed_calibration).round(1)
+      self.min_wind_speed   = (self.min_wind_speed * self.station.speed_calibration).round(1)
+      self.max_wind_speed   = (self.max_wind_speed * self.station.speed_calibration).round(1)
     end
   end
 
