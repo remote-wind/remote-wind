@@ -38,10 +38,10 @@ class ApplicationController < ActionController::Base
 
     if user_signed_in?
       if current_user.has_role? :admin
-        @all_stations = Station.all
+        @all_stations = Station.includes(:measures).to_a
       end
     end
 
-    @all_stations ||= Station.visible
+    @all_stations ||= Station.includes(:measures).visible
   end
 end

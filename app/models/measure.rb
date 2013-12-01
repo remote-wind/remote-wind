@@ -18,6 +18,8 @@ class Measure < ActiveRecord::Base
   alias_attribute :max, :max_wind_speed
   alias_attribute :min, :min_wind_speed
 
+  default_scope { where("created_at > ?", 12.hours.ago) }
+
   scope :since, ->(time) { where("created_at > ?", time).order("created_at ASC") }
 
   # when writing from the ardiuno params short form
@@ -51,5 +53,7 @@ class Measure < ActiveRecord::Base
     end
     self.timezone.time self.created_at
   end
+
+
 
 end

@@ -12,8 +12,8 @@ class StationsController < ApplicationController
   # GET /stations/1
   # GET /stations/1.json
   def show
-    @station = Station.friendly.find(params[:id])
-    @measures = @station.measures.since(12.hours.ago)
+    @station = Station.includes(:measures).friendly.find(params[:id])
+    @measures = @station.measures
   end
 
   # GET /stations/new
@@ -68,8 +68,8 @@ class StationsController < ApplicationController
 
   # GET /stations/:staton_id/measures
   def measures
-    @station = Station.friendly.find(params[:station_id])
-    @measures = @station.measures.since(12.hours.ago)
+    @station = Station.includes(:measures).friendly.find(params[:station_id])
+    @measures = @station.measures
   end
 
   # DELETE /stations/:staton_id/measures
