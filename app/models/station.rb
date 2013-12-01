@@ -8,6 +8,7 @@ class Station < ActiveRecord::Base
    # constraints
   validates_uniqueness_of :hw_id
   validates_presence_of :hw_id
+  validates_numericality_of :speed_calibration
 
   # slugging
   extend FriendlyId

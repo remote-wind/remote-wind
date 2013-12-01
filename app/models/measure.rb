@@ -47,13 +47,12 @@ class Measure < ActiveRecord::Base
     write_attribute(:min_wind_speed, val.to_f / 100)
   end
 
-  def time
-    unless self.station.timezone.nil?
-      self.timezone = Timezone::Zone.new :zone => self.station.timezone
+  def calibrate!
+    unless self.station.speed_calibration.nil?
+      self.speed            *= self.station.speed_calibration
+      self.min_wind_speed   *= self.station.speed_calibration
+      self.max_wind_speed   *= self.station.speed_calibration
     end
-    self.timezone.time self.created_at
   end
-
-
 
 end

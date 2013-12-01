@@ -13,5 +13,6 @@ FactoryGirl.define do
     balance 1
     down nil
     user nil
+    speed_calibration 0
   end
 end

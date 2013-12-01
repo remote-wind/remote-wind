@@ -20,6 +20,7 @@ describe Station do
     it { should respond_to :balance }
     it { should respond_to :zone }
     it { should respond_to :show }
+    it { should respond_to :speed_calibration }
 
     describe "attribute aliases" do
       it { should respond_to :lon }
@@ -105,12 +106,10 @@ describe Station do
 
   describe ".send_down_alerts" do
 
-    context "when a station has not received measures in more than 15 minutes ago" do
+    context "when a station has not received measures in more than 15 minutes" do
 
       let!(:station) {
-        station = create(:station, :user => create(:user))
-        station.measures.create(attributes_for(:measure, :created_at => Time.new(2001)))
-        station
+        create(:station, user: create(:user))
       }
 
       it "logs a warning" do
@@ -119,12 +118,13 @@ describe Station do
       end
 
       it "sends an email to user" do
+        pending
         StationMailer.should_receive(:notify_about_station_down)
         Station.send_down_alerts()
       end
     end
 
-    context "when a station measures in less than 15 minutes ago" do
+    context "when a has recieved station input less than 15 minutes ago" do
 
       let!(:station) {
         station = create(:station, :user => create(:user))

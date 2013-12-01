@@ -8,7 +8,7 @@ describe StationsController do
 
   let(:valid_attributes) { FactoryGirl.attributes_for(:station) }
   let(:invalid_attributes) { { :name => 'foo' } }
-  let(:station) { FactoryGirl.create(:station, slug: 'xxx') }
+  let(:station) { create(:station, slug: 'xxx', speed_calibration: 0.5) }
 
   before :each do
     sign_out :user
@@ -28,7 +28,6 @@ describe StationsController do
     it "renders the index template" do
       expect(response).to render_template :index
     end
-
   end
 
 
@@ -41,6 +40,12 @@ describe StationsController do
     it "assigns measures as @measures" do
       get :show, {:id => station.to_param }
       expect(assigns(:measures)).to eq([])
+    end
+
+    it "calibrates measures" do
+      create(:measure, station: station, speed: 10)
+      get :show, {:id => station.to_param }
+      expect(assigns(:station).measures[0].speed).to eq 5
     end
   end
 
@@ -165,11 +170,7 @@ describe StationsController do
           put :update, {:id => station.to_param, :station => { show: 'no' }}
           expect(assigns(:station).show).to be_false
         end
-
       end
-
-
-
 
       describe "with invalid params, it" do
         it "assigns the station as @station" do
@@ -234,9 +235,10 @@ describe StationsController do
 
   describe "GET measures" do
 
-    before :each do
-      3.times do
-        station.measures.create attributes_for(:measure)
+    let(:station) { create(:station, speed_calibration: 0.5) }
+    let!(:measures) do
+      [*1..3].map do
+        create(:measure, station: station, speed: 10)
       end
     end
 
@@ -247,9 +249,13 @@ describe StationsController do
 
     it "assigns measures" do
       get :measures, :station_id => station.to_param
-      expect(assigns(:measures).count).to eq 3
+      expect(assigns(:measures)).to eq measures
     end
 
+    it "calibrates measures" do
+      get :measures, :station_id => station.to_param
+      expect(assigns(:measures).first.speed).to eq 5
+    end
   end
 
   describe "DELETE clear" do
@@ -388,8 +394,9 @@ describe StationsController do
       expect(response).to be_success
     end
 
-    it "should return HTTP success" do
+    it "should not render a template" do
       get :find, hw_id: station.hw_id, format: "yaml"
+      expect(response).to render_template nil
     end
 
   end

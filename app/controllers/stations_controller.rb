@@ -14,6 +14,9 @@ class StationsController < ApplicationController
   def show
     @station = Station.includes(:measures).friendly.find(params[:id])
     @measures = @station.measures
+    @measures.map! do |m|
+      m.calibrate!
+    end
   end
 
   # GET /stations/new
@@ -70,6 +73,9 @@ class StationsController < ApplicationController
   def measures
     @station = Station.includes(:measures).friendly.find(params[:station_id])
     @measures = @station.measures
+    @measures.map! do |m|
+      m.calibrate!
+    end
   end
 
   # DELETE /stations/:staton_id/measures
@@ -139,6 +145,6 @@ class StationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def station_params
-      params.require(:station).permit(:id, :name, :hw_id, :latitude, :longitude, :user_id, :slug, :show)
+      params.require(:station).permit(:name, :hw_id, :latitude, :longitude, :user_id, :slug, :show, :speed_calibration)
     end
 end

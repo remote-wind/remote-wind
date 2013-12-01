@@ -87,7 +87,6 @@ feature "Stations", %{
   end
 
   context "given a station with measures" do
-
     let!(:station) do
       station = create(:station)
       3.times do

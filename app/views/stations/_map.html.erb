@@ -12,7 +12,10 @@
       <div class="marker hidden" data-lat="<%= station.lat %>" data-lon="<%= station.lon %>">
         <h3 class="title"><%= link_to station.name, station %></h3>
         <% if station.measures? %>
-            <% current_measure = station.current_measure %>
+            <%
+               current_measure = station.current_measure
+               current_measure.calibrate!
+            %>
         <div class="measure" data-direction="<%= current_measure.direction %>" data-speed="<%= current_measure.speed %>">
             <dl>Wind speed</dl>
         </div>

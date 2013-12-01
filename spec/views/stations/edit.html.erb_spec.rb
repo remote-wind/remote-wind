@@ -18,7 +18,8 @@ describe "stations/edit" do
     it { should have_field "Latitude" }
     it { should have_field "Longitude" }
     it { should have_field "Hardware ID" }
-
+    it { should have_field "Show" }
+    it { should have_field "Speed Calibration" }
   end
 
 end

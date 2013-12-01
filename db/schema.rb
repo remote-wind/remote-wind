@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131201004327) do
+ActiveRecord::Schema.define(version: 20131201194858) do
 
   create_table "authentication_providers", force: true do |t|
     t.string   "name"
@@ -70,7 +70,8 @@ ActiveRecord::Schema.define(version: 20131201004327) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "slug"
-    t.boolean  "show",       default: true
+    t.boolean  "show",              default: true
+    t.float    "speed_calibration"
   end
 
   add_index "stations", ["hw_id"], name: "index_stations_on_hw_id", unique: true
