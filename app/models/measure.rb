@@ -18,6 +18,8 @@ class Measure < ActiveRecord::Base
   alias_attribute :max, :max_wind_speed
   alias_attribute :min, :min_wind_speed
 
+  scope :since, ->(time) { where("created_at > ?", time).order("created_at ASC") }
+
   # when writing from the ardiuno params short form
   def s= val
 
