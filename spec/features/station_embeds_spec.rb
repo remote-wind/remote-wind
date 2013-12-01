@@ -36,7 +36,7 @@ feature "Station Embeds", %q[
 
   scenario "when I visit a station there should be an embed option" do
     visit station_path station
-    expect(page).to have_selector "textarea.share-embed-code", text: /#{station_path(station)}/
+    expect(page).to have_selector "textarea.share-embed-code", text: /#{station_url(station)}/
   end
 
 end

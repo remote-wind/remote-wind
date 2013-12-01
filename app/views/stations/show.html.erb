@@ -95,9 +95,7 @@
       </table>
     </section>
     <section class="content" id="panel4-4">
-      <h3>Get embed code</h3>
-      <textarea class="share-embed-code" style="width: 600px; height: 40px;" onkeydown="if ((event.ctrlKey || event.metaKey) &amp;&amp; event.keyCode == 67) { yt.tracking.track('embedCodeCopied'); }">&lt;iframe width="600" height="300" src="<%= embed_station_path @station %>" frameborder="0"&gt;&lt;/iframe&gt;</textarea>
-      </p>
+      <%= render :partial => 'stations/embed', object: @station %>
     </section>
   </div>
 
