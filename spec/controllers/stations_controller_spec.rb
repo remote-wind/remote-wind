@@ -95,6 +95,19 @@ describe StationsController do
           get :show, id: 'custom_slug'
           expect(response).to be_success
         end
+
+        it "creates a visible station" do
+          valid_attributes[:show] = "yes"
+          post :create, {:station => valid_attributes}
+          expect(assigns(:station).show).to be_true
+        end
+
+        it "creates a hidden station" do
+          valid_attributes[:show] = "no"
+          post :create, {:station => valid_attributes}
+          expect(assigns(:station).show).to be_false
+        end
+
       end
 
       describe "with invalid params" do
@@ -166,10 +179,20 @@ describe StationsController do
           expect(response).to be_success
         end
 
-        it "changes visibilty" do
+        it "makes station hidden when show = no" do
+          station.show = true
+          station.save!
           put :update, {:id => station.to_param, :station => { show: 'no' }}
           expect(assigns(:station).show).to be_false
         end
+
+        it "makes station visible when show = yes" do
+          station.show = false
+          station.save!
+          put :update, {:id => station.to_param, :station => { show: 'yes' }}
+          expect(assigns(:station).show).to be_true
+        end
+
       end
 
       describe "with invalid params, it" do
@@ -398,6 +421,5 @@ describe StationsController do
       get :find, hw_id: station.hw_id, format: "yaml"
       expect(response).to render_template nil
     end
-
   end
 end

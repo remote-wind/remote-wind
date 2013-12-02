@@ -84,6 +84,16 @@ feature "Stations", %{
     click_button 'Update'
     sign_out_via_capybara
     visit stations_path
+    expect(page).to_not have_selector "a", text: stations[0].name
+  end
+
+  scenario "when I edit a station, it should not become hidden" do
+    admin_session
+    visit edit_station_path(stations[0])
+    click_button 'Update'
+    sign_out_via_capybara
+    visit stations_path
+    expect(page).to have_selector "a", text: stations[0].name
   end
 
   context "given a station with measures" do

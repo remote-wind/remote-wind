@@ -33,6 +33,10 @@ class StationsController < ApplicationController
   def create
     @station = Station.new(station_params)
 
+    unless params[:station][:show].nil?
+      @station.show = params[:station][:show] == 'yes'
+    end
+
     respond_to do |format|
       if @station.save
         format.html { redirect_to @station, notice: 'Station was successfully created.' }
@@ -47,6 +51,11 @@ class StationsController < ApplicationController
   # PATCH/PUT /stations/1
   # PATCH/PUT /stations/1.json
   def update
+
+    unless params[:station][:show].nil?
+      params[:station][:show] = params[:station][:show] == 'yes'
+    end
+
     respond_to do |format|
       if @station.update(station_params)
 
