@@ -31,6 +31,14 @@ class Station < ActiveRecord::Base
   # Scopes
   scope :visible, -> { where(show: true) }
 
+
+  after_initialize do
+    if self.new_record?
+      # values will be available for new record forms.
+      self.speed_calibration = 1
+    end
+  end
+
   def lookup_timezone
     self.zone = Timezone::Zone.new(:latlon => [self.lat, self.lon])
     self.zone.zone

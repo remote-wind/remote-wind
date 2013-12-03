@@ -49,16 +49,31 @@ feature "Stations", %{
     visit station_path stations.first
   end
 
-  scenario "when I create a new station with valid input" do
-    admin_session
-    visit stations_path
-    click_link "New Station"
-    fill_in "Name", with: "Sample Station"
-    fill_in "Hardware ID", with: "123456789"
-    expect {
+  describe "creating stations" do
+
+    background do
+      admin_session
+      visit stations_path
+      click_link "New Station"
+      fill_in "Name", with: "Sample Station"
+      fill_in "Hardware ID", with: "123456789"
+    end
+
+    scenario "when I create a new station with valid input" do
       click_button "Create Station"
-    }.to change(Station, :count).by(+1)
-    expect(current_path).to eq station_path(Station.last)
+      expect(current_path).to eq station_path("sample-station")
+    end
+
+    scenario "when I create a new station with valid input" do
+      click_button "Create Station"
+      expect(page).to have_content "Station was successfully created."
+    end
+
+    scenario "when I create a new station with valid input" do
+      click_button "Create Station"
+      expect(page).to have_selector "h1", text: "Sample Station"
+    end
+
   end
 
   scenario "when I click edit on a station" do
