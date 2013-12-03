@@ -6,6 +6,7 @@ class Measure < ActiveRecord::Base
   validates_presence_of :station
   validates :speed, :direction, :max_wind_speed, :min_wind_speed,
             :numericality => { :allow_blank => true }
+  validate :measure_cannot_be_calibrated
 
   # degrees to cardinal
   def compass_point
@@ -18,8 +19,12 @@ class Measure < ActiveRecord::Base
   alias_attribute :max, :max_wind_speed
   alias_attribute :min, :min_wind_speed
 
-  default_scope { where("created_at > ?", 12.hours.ago) }
+  attr_accessor :calibrated
+  after_save :calibrate!
+  after_initialize :calibrate_on_load
 
+  # Scopes
+  default_scope { where("created_at > ?", 12.hours.ago) }
   scope :since, ->(time) { where("created_at > ?", time).order("created_at ASC") }
 
   # when writing from the ardiuno params short form
@@ -47,10 +52,26 @@ class Measure < ActiveRecord::Base
   end
 
   def calibrate!
-    unless self.station.speed_calibration.nil?
-      self.speed            = (self.speed * self.station.speed_calibration).round(1)
-      self.min_wind_speed   = (self.min_wind_speed * self.station.speed_calibration).round(1)
-      self.max_wind_speed   = (self.max_wind_speed * self.station.speed_calibration).round(1)
+    unless self.calibrated
+      unless self.station.speed_calibration.nil?
+        self.speed            = (self.speed * self.station.speed_calibration).round(1)
+        self.min_wind_speed   = (self.min_wind_speed * self.station.speed_calibration).round(1)
+        self.max_wind_speed   = (self.max_wind_speed * self.station.speed_calibration).round(1)
+
+        self.calibrated = true
+      end
+    end
+  end
+
+  def calibrate_on_load
+    unless self.new_record?
+      self.calibrate!
+    end
+  end
+
+  def measure_cannot_be_calibrated
+    if self.calibrated
+      errors.add(:speed_calbration, "Calibrated measures cannot be saved!")
     end
   end
 

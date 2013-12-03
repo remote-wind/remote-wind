@@ -14,9 +14,6 @@ class StationsController < ApplicationController
   def show
     @station = Station.includes(:measures).friendly.find(params[:id])
     @measures = @station.measures
-    @measures.map! do |m|
-      m.calibrate!
-    end
   end
 
   # GET /stations/new
@@ -82,9 +79,6 @@ class StationsController < ApplicationController
   def measures
     @station = Station.includes(:measures).friendly.find(params[:station_id])
     @measures = @station.measures
-    @measures.map! do |m|
-      m.calibrate!
-    end
   end
 
   # DELETE /stations/:staton_id/measures

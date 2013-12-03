@@ -57,32 +57,55 @@ describe Measure do
 
   describe "#calibrate!" do
     let(:station) { create(:station, speed_calibration: 0.5) }
+    let(:params){{
+        station: station,
+        speed: 10,
+        min_wind_speed: 10,
+        max_wind_speed: 10
+    }}
     let(:measure) do
-      params = {
-          station: station,
-          speed: 10,
-          min_wind_speed: 10,
-          max_wind_speed: 10
-      }
       create(:measure, params)
     end
 
+    it "calibrates measures after save" do
+      m = Measure.new(params)
+      m.save!
+      expect(m.calibrated).to be_true
+    end
+
+    it "calibrates measures on load" do
+      m = Measure.find(measure.id)
+      expect(m.calibrated).to be_true
+    end
+
     it "multiplies speed" do
-      measure.calibrate!
       expect(measure.speed).to eq 5
     end
 
     it "multiplies min speed" do
-      measure.calibrate!
       expect(measure.min).to eq 5
     end
 
     it "multiplies max speed" do
+      expect(measure.max).to eq 5
+    end
+
+    it "sets calibrated property" do
+      expect(measure.calibrated).to be_true
+    end
+
+    it "calibrates only once during object lifetime" do
+      measure.calibrate!
       measure.calibrate!
       expect(measure.max).to eq 5
     end
+
+    it "does not allow saving a calibrated measure" do
+      measure.calibrate!
+      expect {
+        measure.save!
+      }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Speed calbration Calibrated measures cannot be saved!")
+    end
+
   end
-
-
-
 end
