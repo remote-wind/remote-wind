@@ -1,11 +1,15 @@
 .stations_map {
   height: 360px;
   background-color: #778899;
-  img{max-width: inherit;}
+  img { max-width: inherit; }
 }
 
 .map-canvas  {
   height: 350px;
+
+  &.no-fullscreen {
+    margin-bottom: 2em;
+  }
 }
 
 #downunder {
@@ -26,6 +30,9 @@
   }
 }
 
+.accordion {
+  margin-bottom: 2em;
+}
 
 .flash-bar {
   .flashes {

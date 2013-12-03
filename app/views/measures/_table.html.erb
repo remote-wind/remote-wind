@@ -1,0 +1,12 @@
+<table class="measures small-12 columns">
+  <thead>
+  <th>Time</th>
+  <th>Direction</th>
+  <th>Wind Speed</th>
+  </thead>
+  <tbody>
+  <% @measures.each do |measure| %>
+      <%= render :partial => 'measures/measure', object: measure %>
+  <% end %>
+  </tbody>
+</table>

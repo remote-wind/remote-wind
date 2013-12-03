@@ -5,114 +5,63 @@
   <% end %>
 </div>
 
-
 <div class="map-canvas small-12 large-12 columns no-fullscreen" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
-  <div class="marker hidden" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>">
-    <h3 class="title"><%= @station.name %></h3>
-    <% if @station.measures? %>
-        <% current_measure = @station.current_measure %>
-        <div class="measure" data-direction="<%= current_measure.direction %>" data-speed="<%= current_measure.speed %>">
-          <dl>Wind speed</dl>
-        </div>
-    <% end %>
-  </div>
+  <%= render :partial => 'stations/map_show', object: @station %>
 </div>
 
-<article class="station row accordion" data-accordion>
-  <!-- Tabs containing  -->
-  <dl class="tabs" data-tab>
-    <% if @measures %>
-    <dd class="active"><a href="#panel2-1">Chart</a></dd>
-    <dd><a href="#panel2-2">Table</a></dd>
-    <% end %>
-    <dd><a href="#panel3-3">Meta</a></dd>
-    <dd><a href="#panel4-4">Share!</a></dd>
-  </dl>
-  <div class="tabs-content">
-    <% if @measures %>
-    <!-- chart -->
-    <section class="content row active small-12 large-12 columns" id="panel2-1">
-      <div class="station-chart" id="station_measures_chart" data-path="<%= station_measures_path(@station) %>"></div>
-    </section>
-    <!-- table -->
-    <section class="content small-12 columns" id="panel2-2">
-      <table class="measures small-12 columns">
-        <thead>
-            <th>Time</th>
-            <th>Direction</th>
-            <th>Wind Speed</th>
-        </thead>
-        <tbody>
-        <% @measures.each do |measure| %>
-            <%= render :partial => 'measures/measure', object: measure %>
-        <% end %>
-        </tbody>
-      </table>
+<article class="station row">
 
+    <dl class="accordion" data-accordion>
+      <% if @measures %>
+      <dd id="chart">
+        <a href="#chart-panel">Chart</a>
+        <div class="content chart-wrapper active clearfix" id="chart-panel">
+          <%= render :partial => 'measures/chart', object: @measures %>
+        </div>
+      </dd>
 
-         <%# render :partial => 'measures/htable', object: @measures %>
+      <dd id="table">
+        <a href="#table-panel">Table</a>
+        <div class="content clearfix" id="table-panel">
+          <%= render :partial => 'measures/table', object: @measures %>
+        </div>
+      </dd>
 
-    </section>
-    <% end %>
-    <!-- meta -->
-    <section class="content meta small-12 columns" id="panel3-3">
-      <table class="small-12 columns">
-        <tbody>
-            <tr>
-              <td>Created</td>
-              <td><%= @station.created_at %></td>
-            </tr>
-            <% if @station.user.present? %>
-            <tr>
-              <dt>Owner</dt>
-              <dd><%= @station.user.email %></dd>
-            </tr>
-            <% end %>
-            <% if @station.measures? %>
-            <tr>
-              <td>Updated</td>
-              <td><%= @station.current_measure.created_at %></td>
-            </tr>
-            <% end %>
-            <tr>
-              <td>Latitude</td>
-              <td><%= @station.lat %></td>
-            </tr>
-            <tr>
-              <td>Longitude</td>
-              <td><%= @station.lon %></td>
-            </tr>
-            <tr>
-              <td>Timezone</td>
-              <td><%= @station.timezone %></td>
-            </tr>
-            <tr>
-              <td>Visible</td>
-              <td><%= @station.show ? 'yes' : 'no' %></td>
-            </tr>
+      <% end %>
+      <dd id="meta">
+        <a href="#meta-panel">Meta</a>
+        <div class="content clearfix" id="meta-panel">
+          <%= render :partial => 'stations/meta', object: @station %>
+        </div>
+      </dd>
 
-        </tbody>
-      </table>
-    </section>
-    <section class="content" id="panel4-4">
-      <%= render :partial => 'stations/embed', object: @station %>
-    </section>
-  </div>
+      <dd id="embed">
+        <a href="#embed-panel">Embed</a>
+        <div class="content clearfix" id="embed-panel">
+          <%= render :partial => 'stations/embed', object: @station %>
+        </div>
+      </dd>
 
-
-
-<% if can? :manage, Station %>
-    <div class="admin-only btn-group">
-      <%= link_to 'Edit', edit_station_path(@station), class: "button tiny" %>
-      <%= link_to "Clear all measures for this station?", station_measures_path(@station),
-                  :data => { :confirm =>  "Are you sure you want to delete all measues recorded by this station? This action cannot be undone!"  },
-                  :class =>"tiny button alert", :method => :delete %>
-    </div>
-<% end %>
+      <% if can? :manage, Station %>
+      <dd>
+        <a href="#admin-panel">Admin</a>
+        <div class="content clearfix" id="admin-panel">
+          <div class="admin-only btn-group">
+            <%= link_to 'Edit', edit_station_path(@station), class: "button tiny" %>
+            <%= link_to "Clear all measures for this station?", station_measures_path(@station),
+                        :data => { :confirm =>  "Are you sure you want to delete all measues recorded by this station? This action cannot be undone!"  },
+                        :class =>"tiny button alert", :method => :delete %>
+          </div>
+        </div>
+      </dd>
+      <% end %>
+    </dl>
+</article>
+<nav class="row">
     <ul class="breadcrumbs" role="navigation">
       <li class="root"><a href="<%= root_path %>">Home</a></li>
       <li><a href="<%= stations_path %>">Stations</a></li>
       <li class="current"><a href="<%= station_path(@station) %>"><%= @station.name %></a></li>
     </ul>
+</nav>
 
-</article>

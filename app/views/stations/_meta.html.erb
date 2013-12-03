@@ -1,0 +1,37 @@
+<table class="small-12 columns">
+  <tbody>
+  <tr>
+    <td>Created</td>
+    <td><%= @station.created_at %></td>
+  </tr>
+  <% if @station.user.present? %>
+      <tr>
+        <dt>Owner</dt>
+        <dd><%= @station.user.email %></dd>
+      </tr>
+  <% end %>
+  <% if @station.measures? %>
+      <tr>
+        <td>Updated</td>
+        <td><%= @station.current_measure.created_at %></td>
+      </tr>
+  <% end %>
+  <tr>
+    <td>Latitude</td>
+    <td><%= @station.lat %></td>
+  </tr>
+  <tr>
+    <td>Longitude</td>
+    <td><%= @station.lon %></td>
+  </tr>
+  <tr>
+    <td>Timezone</td>
+    <td><%= @station.timezone %></td>
+  </tr>
+  <tr>
+    <td>Visible</td>
+    <td><%= @station.show ? 'yes' : 'no' %></td>
+  </tr>
+
+  </tbody>
+</table>
