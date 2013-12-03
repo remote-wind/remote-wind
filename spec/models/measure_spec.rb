@@ -29,6 +29,12 @@ describe Measure do
       expect(m.direction).to eq 10
     end
 
+    specify "round direction properly" do
+      m = Measure.new(d: "2838")
+      expect(m.direction).to eq 284
+
+    end
+
     specify "normalize min" do
       m = Measure.new(min: 100)
       expect(m.min).to eq 1
@@ -61,12 +67,6 @@ describe Measure do
       create(:measure, params)
     end
 
-
-    it "does not do this wierd thing" do
-
-      measure.min_wind_speed = 2
-    end
-
     it "multiplies speed" do
       measure.calibrate!
       expect(measure.speed).to eq 5
@@ -82,4 +82,7 @@ describe Measure do
       expect(measure.max).to eq 5
     end
   end
+
+
+
 end

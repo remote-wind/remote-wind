@@ -24,13 +24,12 @@ class Measure < ActiveRecord::Base
 
   # when writing from the ardiuno params short form
   def s= val
-
     write_attribute(:speed, val.to_f / 100)
   end
 
   # when writing from the ardiuno params short form
   def d= val
-    write_attribute(:direction, val.to_f / 10)
+    write_attribute(:direction, (val.to_f / 10).round(0))
   end
 
   # when writing from the ardiuno params short form
