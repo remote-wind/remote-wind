@@ -73,24 +73,23 @@ describe Measure do
       expect(m.calibrated).to be_true
     end
 
-    it "calibrates measures on load" do
-      m = Measure.find(measure.id)
-      expect(m.calibrated).to be_true
-    end
-
     it "multiplies speed" do
+      measure.calibrate!
       expect(measure.speed).to eq 5
     end
 
     it "multiplies min speed" do
+      measure.calibrate!
       expect(measure.min).to eq 5
     end
 
     it "multiplies max speed" do
+      measure.calibrate!
       expect(measure.max).to eq 5
     end
 
     it "sets calibrated property" do
+      measure.calibrate!
       expect(measure.calibrated).to be_true
     end
 

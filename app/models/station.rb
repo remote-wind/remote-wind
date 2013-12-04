@@ -32,6 +32,17 @@ class Station < ActiveRecord::Base
   scope :visible, -> { where(show: true) }
 
 
+  alias_method :measures_orig, :measures
+
+  def measures
+      mrs = measures_orig
+      mrs.each do |m|
+        m.calibrate!
+      end
+      mrs
+  end
+
+
   after_initialize do
     if self.new_record?
       # values will be available for new record forms.

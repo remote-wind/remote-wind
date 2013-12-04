@@ -21,7 +21,6 @@ class Measure < ActiveRecord::Base
 
   attr_accessor :calibrated
   after_save :calibrate!
-  after_initialize :calibrate_on_load
 
   # Scopes
   default_scope { where("created_at > ?", 12.hours.ago) }
@@ -60,12 +59,6 @@ class Measure < ActiveRecord::Base
 
         self.calibrated = true
       end
-    end
-  end
-
-  def calibrate_on_load
-    unless self.new_record?
-      self.calibrate!
     end
   end
 
