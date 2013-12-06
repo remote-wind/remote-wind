@@ -1,6 +1,6 @@
 
 .accordion dd > a {
-  box-shadow: inset 0 -4px 6px -2px darken(#469fca, 5%);
+  box-shadow: inset 0 -2px 4px -2px darken(#fff, 30%);
 
   &.active {
     box-shadow: 0;
@@ -8,7 +8,7 @@
 }
 
 .accordion .content {
-  border: 1px solid darken(#469fca, 5%);
+  border: 1px solid darken(#fff, 25%);
 }
 
 .chart-wrapper {

@@ -23,8 +23,8 @@ class Measure < ActiveRecord::Base
   after_save :calibrate!
 
   # Scopes
-  default_scope { where("created_at > ?", 12.hours.ago) }
-  scope :since, ->(time) { where("created_at > ?", time).order("created_at ASC") }
+  default_scope { where("created_at > ?", 12.hours.ago).order("created_at ASC") }
+  scope :since, ->(time) { where("created_at > ?", time) }
 
   # when writing from the ardiuno params short form
   def s= val
