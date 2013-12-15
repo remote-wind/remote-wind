@@ -106,6 +106,7 @@ class Station < ActiveRecord::Base
     stations = Station.all()
     stations.each do |station|
       logger.info "Checking station #{station.name}"
+
       if !station.measures?
         station.down = true
         station.save

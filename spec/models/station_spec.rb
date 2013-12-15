@@ -86,7 +86,7 @@ describe Station do
       end
 
       it "sends an email to user" do
-        StationMailer.should_receive(:notify_about_low_balance)
+        StationMailer.should_receive(:notify_about_low_balance).with(station.user, station)
         Station.send_low_balance_alerts()
       end
     end
@@ -106,11 +106,19 @@ describe Station do
 
   describe ".send_down_alerts" do
 
+    let!(:station) {
+      create(:station, :user => create(:user))
+    }
+
+    before :each  do
+      Station.any_instance.stub(:measures?).and_return(true)
+    end
+
     context "when a station has not received measures in more than 15 minutes" do
 
-      let!(:station) {
-        create(:station, user: create(:user))
-      }
+      before :each do
+        Station.any_instance.stub_chain(:current_measure, :created_at).and_return(16.minutes.ago)
+      end
 
       it "logs a warning" do
         Rails.logger.should_receive(:warn).with(/Station down alert: Station \d* is down/)
@@ -118,19 +126,16 @@ describe Station do
       end
 
       it "sends an email to user" do
-        pending
-        StationMailer.should_receive(:notify_about_station_down)
+        StationMailer.should_receive(:notify_about_station_down).with(station.user, station)
         Station.send_down_alerts()
       end
     end
 
     context "when a has recieved station input less than 15 minutes ago" do
 
-      let!(:station) {
-        station = create(:station, :user => create(:user))
-        station.measures.create(attributes_for(:measure))
-        station
-      }
+      before :each do
+        Station.any_instance.stub_chain(:current_measure, :created_at).and_return(1.minutes.ago)
+      end
 
       it "does not send an email" do
         StationMailer.should_not_receive(:notify_about_station_down)
