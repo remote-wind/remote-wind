@@ -23,7 +23,7 @@ class Measure < ActiveRecord::Base
   after_save :calibrate!
 
   # Scopes
-  default_scope { limit(144).order("created_at ASC") }
+  default_scope { limit(144) }
   scope :since, ->(time) { where("created_at > ?", time) }
 
   # when writing from the ardiuno params short form
