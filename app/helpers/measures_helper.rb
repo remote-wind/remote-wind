@@ -20,4 +20,8 @@ module MeasuresHelper
   def time_in_24h time
     time.strftime("%H:%M")
   end
+
+  def time_date_hours_seconds time
+    time.today? ? time.strftime("%H:%M") : time.strftime("%m/%d %H:%M")
+  end
 end

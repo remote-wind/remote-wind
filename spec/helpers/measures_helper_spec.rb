@@ -28,5 +28,20 @@ describe MeasuresHelper do
     end
   end
 
+  describe "#time_date_hours_seconds" do
+
+    it "gives hour and minutes when time is today" do
+      time = 5.minutes.ago
+      expect(time_date_hours_seconds(time)).to eq time.strftime("%H:%M")
+    end
+
+    it "includes date when time is not today" do
+      time = 25.hours.ago
+      expect(time_date_hours_seconds(time)).to eq time.strftime("%m/%d %H:%M")
+    end
+
+
+  end
+
 
 end
