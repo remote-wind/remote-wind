@@ -1,0 +1,22 @@
+.map-label-inner {
+  font-size: 12px;
+  position: relative;
+  text-align: center;
+  top: 18px;
+  left: -50%;
+  padding: 3px;
+  height: 14px;
+  font-weight: bold !important;
+  z-index: 999;
+  -webkit-text-stroke: -1px white;
+  text-shadow:  3px   3px   3px rgba(255,255,255, 0.5),
+                -1px  -1px  0 rgba(255,255,255, 0.5),
+                1px   -1px  0 rgba(255,255,255, 0.5),
+                -1px  1px   0 rgba(255,255,255, 0.5),
+                1px   1px   0 rgba(255,255,255, 0.5);
+}
+
+.map-label-outer {
+  position: absolute;
+  display: none;
+}

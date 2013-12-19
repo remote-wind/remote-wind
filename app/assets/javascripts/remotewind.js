@@ -157,4 +157,4 @@ remotewind.convert = (function () {
         }
         return units;
     }
-}())
+}());
