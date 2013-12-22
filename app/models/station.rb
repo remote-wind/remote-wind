@@ -77,7 +77,7 @@ class Station < ActiveRecord::Base
   end
 
   def current_measure
-     self.measures.last
+     self.measures.first
   end
 
   def measures?
