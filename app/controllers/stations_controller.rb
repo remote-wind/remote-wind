@@ -12,6 +12,7 @@ class StationsController < ApplicationController
   # GET /stations/1
   # GET /stations/1.json
   def show
+    # get station with Friendly Id, params[:id] can either be id or slug
     @station = Station.includes(:measures).friendly.find(params[:id])
     @measures = @station.measures
   end
@@ -77,12 +78,14 @@ class StationsController < ApplicationController
 
   # GET /stations/:staton_id/measures
   def measures
+    # get station with Friendly Id, params[:id] can either be id or slug
     @station = Station.includes(:measures).friendly.find(params[:station_id])
     @measures = @station.measures
   end
 
   # DELETE /stations/:staton_id/measures
   def destroy_measures
+    # get station with Friendly Id, params[:id] can either be id or slug
     @station = Station.friendly.find(params[:station_id])
     Measure.delete_all("station_id = #{@station.id}")
     respond_to do |format|
@@ -100,6 +103,7 @@ class StationsController < ApplicationController
   end
 
   def embed
+    # get station with Friendly Id, params[:id] can either be id or slug
     @station = Station.friendly.find(params[:station_id])
     @measure = @station.current_measure
     @css = params[:css].in? [true, 'true', 'TRUE']
@@ -143,6 +147,7 @@ class StationsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_station
+      # get station with Friendly Id, params[:id] can either be id or slug
       @station = Station.friendly.find(params[:id])
     end
 
