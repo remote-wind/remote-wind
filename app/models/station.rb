@@ -81,7 +81,7 @@ class Station < ActiveRecord::Base
   end
 
   def current_measure
-     self.measures.last
+     self.measures.first
   end
 
   def measures?
@@ -96,7 +96,11 @@ class Station < ActiveRecord::Base
       if station.measures?
         logger.info "Last measure at #{station.current_measure.created_at}"
       end
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> 53f98d0a657bbcccb4fa370a45238f0ff2022781
       if !station.balance.nil? && station.balance < 15 && !station.down
         if !station.user.nil?
           logger.warn "Station low balance alert: #{station.name} only has #{station.balance} kr left! Notifing owner."

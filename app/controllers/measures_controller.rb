@@ -16,6 +16,15 @@ class MeasuresController < ApplicationController
       station.save
     end
 
+    station = Station.find(params[:m][:i])
+    if !station.nil?
+      if station.down
+        StationMailer.notify_about_station_up station.user, station
+      end
+      station.down = false
+      station.save
+    end
+    
     respond_to do |format|
       if @measure.save
         # Station must be present for measure to validate, no need to check
