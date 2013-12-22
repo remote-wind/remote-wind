@@ -8,6 +8,14 @@ class MeasuresController < ApplicationController
 
     @measure = Measure.new(measure_params)
 
+    station = Station.find(params[:m][:i])
+    if !station.nil?
+      if station.down
+        StationMailer.notify_about_station_up station.user, station
+      station.down = false
+      station.save
+    end
+    
     respond_to do |format|
       if @measure.save
         format.html { redirect_to @measure, notice: 'Measure was successfully created.' }

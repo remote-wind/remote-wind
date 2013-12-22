@@ -92,8 +92,8 @@ class Station < ActiveRecord::Base
       if station.measures?
         logger.info "Last measure at #{station.current_measure.created_at}"
       end
-
-      if station.balance < 15 && !station.down
+      
+      if !station.balance.nil? && station.balance < 15 && !station.down
         if !station.user.nil?
           logger.warn "Station low balance alert: #{station.name} only has #{station.balance} kr left! Notifing owner."
           StationMailer.notify_about_low_balance(station.user,station)
