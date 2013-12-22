@@ -66,7 +66,7 @@ class StationsMaker
       ].map! do |s|
         print s[:name]
         puts " "
-        Station.find_or_create_by_hw_id(s)
+        Station.find_or_create_by(hw_id: s.hw_id)
       end
     end
   end
@@ -119,7 +119,6 @@ class RandomMeasureMaker
       @direction += d_var
     end
 
-
     # Prevent speed from becoming negative
     if @speed + s_var <= 0
       @speed -=  s_var
@@ -127,21 +126,22 @@ class RandomMeasureMaker
       @speed += s_var
     end
 
+    measure = Measure.new({
+        station: station,
+        direction: Random.new.rand(0..360),
+        speed: @speed,
+        min_wind_speed: @speed - Random.new.rand(0..4),
+        max_wind_speed: @speed + Random.new.rand(0..5)
+    })
 
-    measure = station.measures.create({
-      station_id: station.id,
-      direction: Random.new.rand(0..360),
-      speed: @speed,
-      min_wind_speed: @speed - Random.new.rand(0..4),
-      max_wind_speed: @speed + Random.new.rand(0..5)
-     })
-    measure.update_attribute :created_at, @ctime
-    measure.update_attribute :updated_at, @ctime
+    if measure.save
+      measure.update_attribute :created_at, @ctime
+      measure.update_attribute :updated_at, @ctime
+    end
 
     @ctime += 300
     print "."
 
-    measure.save!
   end
 end
 
