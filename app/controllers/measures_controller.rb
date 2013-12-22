@@ -12,6 +12,7 @@ class MeasuresController < ApplicationController
     if !station.nil?
       if station.down
         StationMailer.notify_about_station_up station.user, station
+      end
       station.down = false
       station.save
     end
