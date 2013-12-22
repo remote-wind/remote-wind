@@ -115,7 +115,6 @@ class Station < ActiveRecord::Base
         station.down = true
         station.save
         logger.warn "Station down alert: #{station.name} is down"
-        return
       else
         if station.current_measure.created_at < 15.minutes.ago && !station.down
           station.down = true

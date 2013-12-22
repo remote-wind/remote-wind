@@ -6,6 +6,15 @@ class MeasuresController < ApplicationController
   # POST /measures
   def create
     @measure = Measure.new(measure_params)
+    
+    station = Station.find(params[:measure][:station_id])
+    if !station.nil? 
+      if station.down 
+        StationMailer.notify_about_station_up station.user, station
+      end
+      station.down = false
+      station.save
+    end
 
     respond_to do |format|
       if @measure.save

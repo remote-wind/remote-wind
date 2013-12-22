@@ -1,6 +1,13 @@
 class StationMailer < ActionMailer::Base
   default from: "from@example.com"
 
+  def notify_about_new_station user, station
+    @station  = station
+    mail :to => user.email, :subject => "Your station has been registered!" do |format|
+      format.html
+    end
+  end
+  
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
   #
@@ -24,4 +31,13 @@ class StationMailer < ActionMailer::Base
       format.html
     end
   end
+  
+  def notify_about_station_up owner, station 
+    @station  = station
+    mail :to => owner.email, :subject => "Your station #{station.name} is back online and reporting readings again." do |format|
+      format.html
+    end
+  end
+  
+  
 end
