@@ -8,8 +8,10 @@ class StationMailer < ActionMailer::Base
   #
   def notify_about_low_balance user, station
     @station = station
-    mail :to => user.email, :subject => "Low balance for your station #{station.name}" do |format|
-      format.html
+    if !user.nil? && !user.email.nil?
+      mail :to => user.email, :subject => "Low balance for your station #{station.name}" do |format|
+        format.html
+      end
     end
   end
 
@@ -20,8 +22,10 @@ class StationMailer < ActionMailer::Base
   #
   def notify_about_station_down user, station
     @station  = station
-    mail :to => user.email, :subject => "Your station #{station.name} has not responded for 15 minutes." do |format|
-      format.html
+    if !user.nil? && !user.email.nil?
+      mail :to => user.email, :subject => "Your station #{station.name} has not responded for 15 minutes." do |format|
+        format.html
+      end
     end
   end
   
@@ -32,8 +36,10 @@ class StationMailer < ActionMailer::Base
   #
   def notify_about_station_up user, station
     @station  = station
-    mail :to => user.email, :subject => "Your station #{station.name} has started to respond and we are now receiving data from it." do |format|
-      format.html
+    if !user.nil? && !user.email.nil?
+      mail :to => user.email, :subject => "Your station #{station.name} has started to respond and we are now receiving data from it." do |format|
+        format.html
+      end
     end
   end
 end
