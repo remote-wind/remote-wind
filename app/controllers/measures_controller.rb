@@ -7,7 +7,7 @@ class MeasuresController < ApplicationController
   def create
     @measure = Measure.new(measure_params)
     
-    station = Station.find(params[:measure][:station_id])
+    station = Station.find(params[:m][:i])
     if !station.nil? 
       if station.down 
         StationMailer.notify_about_station_up station.user, station
