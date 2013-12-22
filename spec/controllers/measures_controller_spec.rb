@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe MeasuresController do
 
-  let(:measure) { create(:measure, :station => create(:station) ) }
+  let(:station) {  create(:station) }
+  let(:measure) { create(:measure, :station => station) }
   let(:valid_attributes) {
     create(:station)
-    attributes_for(:measure, :station_id => 1 )
+    attributes_for(:measure, :station_id => station.id )
   }
 
   before :each do
@@ -33,7 +34,6 @@ describe MeasuresController do
     end
 
     context "with yaml format" do
-
       it "sends HTTP success" do
         post :create, {:measure => valid_attributes, format: "yaml"}
         expect(response).to be_success
@@ -45,6 +45,16 @@ describe MeasuresController do
       end
     end
 
+    it "updates station last_measure_received_at" do
+      post :create, {:measure => valid_attributes, format: "yaml"}
+      expect(assigns(:station).last_measure_received_at).to eq assigns(:measure).created_at
+    end
+
+    it "sets station.down to false" do
+      station.update_attributes(down: true)
+      post :create, {:measure => valid_attributes, format: "yaml"}
+      expect(assigns(:station).down).to be_false
+    end
 
   end
 

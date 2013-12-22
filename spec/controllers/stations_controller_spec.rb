@@ -272,7 +272,7 @@ describe StationsController do
 
     it "assigns measures" do
       get :measures, :station_id => station.to_param
-      expect(assigns(:measures)).to eq measures
+      expect(assigns(:measures).to_a).to include measures.first
     end
 
     it "calibrates measures" do

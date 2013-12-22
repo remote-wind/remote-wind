@@ -21,6 +21,7 @@ describe Station do
     it { should respond_to :zone }
     it { should respond_to :show }
     it { should respond_to :speed_calibration }
+    it { should respond_to :last_measure_received_at }
 
     describe "attribute aliases" do
       it { should respond_to :lon }
@@ -157,6 +158,23 @@ describe Station do
       station.zone = nil
       expect(station.time_to_local(t)).to eq t
     end
-
   end
+
+  describe "#get_calibrated_measures" do
+
+    let(:station) { create(:station) }
+    let(:measures) do
+      measures = []
+      3.times do |i|
+        measures << build_stubbed(:measure, station: station )
+      end
+      measures
+    end
+
+    it "gets measures only within the limit" do
+      expect(station.get_calibrated_measures(time - 2.hours).count).to eq 2
+    end
+  end
+
+
 end

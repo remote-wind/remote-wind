@@ -42,6 +42,10 @@ class Station < ActiveRecord::Base
       mrs
   end
 
+  def get_calibrated_measures(since)
+      mrs = measures_orig.where("created_at => ?", since)
+  end
+
 
   after_initialize do
     if self.new_record?

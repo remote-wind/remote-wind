@@ -5,16 +5,18 @@ class MeasuresController < ApplicationController
 
   # POST /measures
   def create
-
     @measure = Measure.new(measure_params)
 
     respond_to do |format|
       if @measure.save
-        format.html { redirect_to @measure, notice: 'Measure was successfully created.' }
+        # Station must be present for measure to validate, no need to check
+        @station = @measure.station
+        @station.update_attributes(last_measure_received_at: @measure.created_at, down: false)
+        format.html { render nothing: true, status: :success }
         format.json { render action: 'show', status: :created, location: station_measure_path(@measure.station, @measure) }
         format.yaml { render nothing: true, status: :created }
       else
-        format.html { return }
+        format.html { render nothing: true, status: :unprocessable_entity }
         format.json { render json: @measure.errors, status: :unprocessable_entity }
         format.yaml { render nothing: true, status: :unprocessable_entity }
       end
