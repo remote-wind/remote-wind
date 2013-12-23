@@ -13,7 +13,7 @@ class MeasuresController < ApplicationController
         station = @measure.station
         station.update_attributes(:last_measure_received_at => @measure.created_at)
         if station.down 
-          StationMailer.notify_about_station_up station.user, station
+          StationMailer.notify_about_station_up(station.user, station).deliver
         end
         station.down = false
         station.save
