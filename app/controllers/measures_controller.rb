@@ -6,12 +6,18 @@ class MeasuresController < ApplicationController
   # POST /measures
   def create
     @measure = Measure.new(measure_params)
-
+    
     respond_to do |format|
       if @measure.save
         # Station must be present for measure to validate, no need to check
-        @station = @measure.station
-        @station.update_attributes(last_measure_received_at: @measure.created_at, down: false)
+        station = @measure.station
+        station.update_attributes(:last_measure_received_at => @measure.created_at)
+        if station.down 
+          StationMailer.notify_about_station_up(station.user, station).deliver
+        end
+        station.down = false
+        station.save
+        
         format.html { render nothing: true, status: :success }
         format.json { render action: 'show', status: :created, location: station_measure_path(@measure.station, @measure) }
         format.yaml { render nothing: true, status: :created }

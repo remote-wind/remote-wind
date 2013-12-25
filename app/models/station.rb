@@ -83,7 +83,7 @@ class Station < ActiveRecord::Base
   end
 
   def current_measure
-     self.measures.last
+     self.measures.first
   end
 
   def measures?
@@ -99,10 +99,10 @@ class Station < ActiveRecord::Base
         logger.info "Last measure at #{station.current_measure.created_at}"
       end
 
-      if station.balance < 15 && !station.down
+      if !station.balance.nil? && station.balance < 15 && !station.down
         if !station.user.nil?
           logger.warn "Station low balance alert: #{station.name} only has #{station.balance} kr left! Notifing owner."
-          StationMailer.notify_about_low_balance(station.user,station)
+          StationMailer.notify_about_low_balance(station.user,station).deliver
         end
       end
     end
@@ -112,21 +112,24 @@ class Station < ActiveRecord::Base
     stations = Station.all()
     stations.each do |station|
       logger.info "Checking station #{station.name}"
-
-      if !station.measures?
+      if !station.measures? && !station.down
         station.down = true
         station.save
-        logger.warn "Station down alert: #{station.name} is down"
-        return
-      else
-        if station.current_measure.created_at < 15.minutes.ago && !station.down
-          station.down = true
-          station.save
-          logger.warn "Station down alert: #{station.name} is down"
-          if !station.user.nil?
-            StationMailer.notify_about_station_down(station.user, station)
-          end
+        logger.warn "Station alert: #{station.name} has never gone online"
+        if !station.user.nil?
+          StationMailer.notify_about_station_down(station.user, station).deliver
         end
+      elsif !station.measures?
+        logger.warn "Station warning: #{station.name} has still not come online"
+      elsif station.current_measure.created_at < 15.minutes.ago && !station.down
+        station.down = true
+        station.save
+        logger.warn "Station alert: #{station.name} is down"
+        if !station.user.nil?
+          StationMailer.notify_about_station_down(station.user, station).deliver
+        end
+      elsif station.current_measure.created_at < 15.minutes.ago
+        logger.warn "Station warning: #{station.name} is still offline"
       end
     end
   end
