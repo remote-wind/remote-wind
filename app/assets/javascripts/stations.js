@@ -107,7 +107,6 @@ $(function () {
 
                 speed = $(this).find('.measure').data('speed');
                 direction = 180.0+Number($(this).find('.measure').data('direction'));
-								console.log("Speed. " + speed + " direction " +direction);
                 // we use the beaufort scale to color the arrows
                 beaufort = remotewind.util.msToBeaufort(speed);
 
