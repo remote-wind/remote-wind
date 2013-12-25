@@ -1,3 +1,5 @@
+# NB! when getting a station use the Friendly ID method Station.friendly.find(params[:id])
+# Stations can use either slug or id as param
 class Station < ActiveRecord::Base
 
   # relations
