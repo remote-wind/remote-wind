@@ -100,7 +100,10 @@ class Station < ActiveRecord::Base
       if !station.balance.nil? && station.balance < 15 && !station.down
         if !station.user.nil?
           logger.warn "Station low balance alert: #{station.name} only has #{station.balance} kr left! Notifing owner."
-          StationMailer.notify_about_low_balance(station.user,station).deliver
+          mail = StationMailer.notify_about_low_balance(station.user,station)
+          if !mail.nil?
+            mail.deliver
+          end
         end
       end
     end
@@ -115,7 +118,10 @@ class Station < ActiveRecord::Base
         station.save
         logger.warn "Station alert: #{station.name} has never gone online"
         if !station.user.nil?
-          StationMailer.notify_about_station_down(station.user, station).deliver
+          mail = StationMailer.notify_about_station_down(station.user, station)
+          if !mail.nil?
+            mail.deliver
+          end
         end
       elsif !station.measures?
         logger.warn "Station warning: #{station.name} has still not come online"
@@ -124,7 +130,10 @@ class Station < ActiveRecord::Base
         station.save
         logger.warn "Station alert: #{station.name} is down"
         if !station.user.nil?
-          StationMailer.notify_about_station_down(station.user, station).deliver
+          StationMailer.notify_about_station_down(station.user, station)
+          if !mail.nil?
+            mail.deliver
+          end
         end
       elsif station.current_measure.created_at < 15.minutes.ago
         logger.warn "Station warning: #{station.name} is still offline"
