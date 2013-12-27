@@ -141,7 +141,8 @@ $(function () {
 
                 var label = new Label({
                     map: map,
-                    text: marker.title + "<br>(" + marker.speed + "m/s)"
+                    text: marker.title + "<br>" + marker.speed + "(" + $(this).find('.measure').data('min-speed') +
+											"-" + $(this).find('.measure').data('max-speed') + ")"+ "m/s"
                 });
                 label.bindTo('position', marker, 'position');
                 map.all_markers_bounds.extend(marker.position);
