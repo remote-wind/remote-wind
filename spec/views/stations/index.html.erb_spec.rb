@@ -21,6 +21,8 @@ describe "stations/index" do
   }
 
   it { should have_selector '.speed' }
+  it { should have_selector '.min-speed' }
+  it { should have_selector '.max-speed' }
   it { should have_selector '.direction' }
   it { should match /[s|S]tations/ }
   it { should have_selector('.station') }
