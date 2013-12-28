@@ -18,5 +18,5 @@ ActionMailer::Base.smtp_settings =  {
 ActionMailer::Base.default :charset => "utf-8"
 ActionMailer::Base.default :from =>  'support@yelloworb.com'
 
-# change so any mails from test or development will go to karl-petter@movintofun.com
-ActionMailer::Base.register_interceptor(DevelopmentTestMailInterceptor) if Rails.env.development?  || Rails.env.test?
+# change so any mails from development will go to karl-petter@movintofun.com
+ActionMailer::Base.register_interceptor(DevelopmentTestMailInterceptor) if Rails.env.development?
