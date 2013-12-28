@@ -37,11 +37,6 @@ describe StationsController do
       expect(assigns(:station)).to eq(station)
     end
 
-    it "assigns measures as @measures" do
-      get :show, {:id => station.to_param }
-      expect(assigns(:measures)).to eq([])
-    end
-
     it "calibrates measures" do
       create(:measure, station: station, speed: 10)
       get :show, {:id => station.to_param }

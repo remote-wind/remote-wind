@@ -14,7 +14,7 @@ class StationsController < ApplicationController
   def show
     # get station with Friendly Id, params[:id] can either be id or slug
     @station = Station.includes(:measures).friendly.find(params[:id])
-    @measures = @station.measures
+    @measures = @station.get_calibrated_measures
   end
 
   # GET /stations/new
@@ -80,7 +80,7 @@ class StationsController < ApplicationController
   def measures
     # get station with Friendly Id, params[:id] can either be id or slug
     @station = Station.includes(:measures).friendly.find(params[:station_id])
-    @measures = @station.measures
+    @measures = @station.get_calibrated_measures
   end
 
   # DELETE /stations/:staton_id/measures
