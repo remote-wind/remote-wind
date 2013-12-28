@@ -5,11 +5,15 @@ class StationMailer < ActionMailer::Base
   # with the following lookup:
   #
   #   en.station_mailer.notify_about_low_balance.subject
+  # @return Mail::Message
   #
   def notify_about_low_balance user, station
     @station = station
-    mail :to => user.email, :subject => "Low balance for your station #{station.name}" do |format|
+    @mail = mail :to => user.email, :subject => "Low balance for your station #{station.name}" do |format|
       format.html
+    end
+    unless @mail.nil?
+      @mail.deliver
     end
   end
 
@@ -17,11 +21,15 @@ class StationMailer < ActionMailer::Base
   # with the following lookup:
   #
   #   en.station_mailer.notify_about_station_down.subject
+  # @return Mail::Message
   #
   def notify_about_station_down user, station
     @station  = station
-    mail :to => user.email, :subject => "Your station #{station.name} has not responded for 15 minutes." do |format|
+    @mail = mail :to => user.email, :subject => "Your station #{station.name} has not responded for 15 minutes." do |format|
       format.html
+    end
+    unless @mail.nil?
+      @mail.deliver
     end
   end
 end
