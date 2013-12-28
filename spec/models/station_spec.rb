@@ -122,7 +122,7 @@ describe Station do
       end
 
       it "logs a warning" do
-        Rails.logger.should_receive(:warn).with(/Station down alert: Station \d* is down/)
+        Rails.logger.should_receive(:warn).with(/Station alert: Station \d* is down/)
         Station.send_down_alerts()
       end
 
