@@ -56,7 +56,6 @@ class Measure < ActiveRecord::Base
         self.speed            = (self.speed * self.station.speed_calibration).round(1)
         self.min_wind_speed   = (self.min_wind_speed * self.station.speed_calibration).round(1)
         self.max_wind_speed   = (self.max_wind_speed * self.station.speed_calibration).round(1)
-
         self.calibrated = true
       end
     end

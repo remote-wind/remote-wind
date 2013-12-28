@@ -163,19 +163,37 @@ describe Station do
   describe "#get_calibrated_measures" do
 
     let(:station) { create(:station) }
-    let(:measures) do
-      measures = []
-      3.times do |i|
-        measures << build_stubbed(:measure, station: station )
+
+    context "when there are measures in the last 12h" do
+
+      let!(:measures) do
+        [*1..3].map! do |i|
+          measure = create(:measure, station: station)
+          measure.update_attribute(:created_at, (i - 1).hours.ago )
+          measure
+        end
       end
-      measures
+
+      it "gets measures only within the limit" do
+        expect(station.get_calibrated_measures(Time.now - 2.hours).count).to eq 2
+      end
+
+      it "defaults to 12 hours ago" do
+        old_measure = create(:measure, station: station)
+        old_measure.update_attribute(:created_at, 14.hours.ago )
+        expect(station.get_calibrated_measures()).to_not include old_measure
+      end
+
+      it "calibrates measures" do
+        expect(station.get_calibrated_measures().first.calibrated).to be true
+      end
     end
 
-    it "gets measures only within the limit" do
-      pending "spec need to be finished"
-      expect(station.get_calibrated_measures(time - 2.hours).count).to eq 2
+    it "attempts to get measures N hours before last_measure_received if there are no measures in the last N h" do
+      station.last_measure_received_at = 12.hours.ago
+      measure = create(:measure, station: station)
+      measure.update_attribute( :created_at, 14.hours.ago )
+      expect(station.get_calibrated_measures()).to include measure
     end
   end
-
-
 end

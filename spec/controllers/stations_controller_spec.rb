@@ -45,10 +45,9 @@ describe StationsController do
     it "calibrates measures" do
       create(:measure, station: station, speed: 10)
       get :show, {:id => station.to_param }
-      expect(assigns(:station).measures[0].speed).to eq 5
+      expect(assigns(:measures)[0].speed).to eq 5
     end
   end
-
 
   describe "POST create" do
     context "as unpriveleged user" do

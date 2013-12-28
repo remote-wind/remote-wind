@@ -34,20 +34,22 @@ class Station < ActiveRecord::Base
   scope :visible, -> { where(show: true) }
 
 
-  alias_method :measures_orig, :measures
+  # Get measures since N time ago
+  # If no measures are found we fetch from last_measure_received_at
+  # Measures are then calibrated
+  def get_calibrated_measures(since = 12.hours.ago)
+     mrs = measures.where("created_at >= ?", since).order("measures.created_at DESC")
 
-  def measures
-      mrs = measures_orig
-      mrs.each do |m|
-        m.calibrate!
-      end
-      mrs
+     # If there are no recent measures we go back `since` time from last_measure_received_at to find measures
+     if mrs.length < 1 && self.last_measure_received_at?
+       mrs = measures.where("created_at >= ?", self.last_measure_received_at - (Time.now - since)).order("measures.created_at DESC")
+     end
+
+     mrs.each do |m|
+       m.calibrate!
+     end
+     mrs
   end
-
-  def get_calibrated_measures(since)
-      mrs = measures_orig.where("created_at => ?", since)
-  end
-
 
   after_initialize do
     if self.new_record?
