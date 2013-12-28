@@ -50,12 +50,49 @@ describe MeasuresController do
       expect(assigns(:station).last_measure_received_at).to eq assigns(:measure).created_at
     end
 
-    it "sets station.down to false" do
-      station.update_attributes(down: true)
-      post :create, {:measure => valid_attributes, format: "yaml"}
-      expect(assigns(:station).down).to be_false
+    context "sets station.down to false when receiving a new measure and" do
+      it "has no previous measures" do
+        station.update_attributes(down: true)
+        post :create, {:measure => valid_attributes, format: "yaml"}
+        expect(assigns(:station).down).to be_false
+      end
+      it "has three or more old measures and three last within 15 minutes" do
+        station.update_attributes(down: true)
+        create(:measure, :station => station, :created_at => 15.minutes.ago)
+        create(:measure, :station => station, :created_at => 10.minutes.ago)
+        create(:measure, :station => station, :created_at => 5.minutes.ago)
+        post :create, {:measure => valid_attributes, format: "yaml"}
+        expect(assigns(:station).down).to be_false
+      end
+      it "has three or more old measures and the two latest within 60 minutes" do
+        station.update_attributes(down: true)
+        create(:measure, :station => station, :created_at => 65.minutes.ago)
+        create(:measure, :station => station, :created_at => 59.minutes.ago)
+        create(:measure, :station => station, :created_at => 54.minutes.ago)
+        post :create, {:measure => valid_attributes, format: "yaml"}
+        expect(assigns(:station).down).to be_false
+      end
+      it "has three or more old measures that are older than 60 minutes" do
+        station.update_attributes(down: true)
+        create(:measure, :station => station, :created_at => 75.minutes.ago)
+        create(:measure, :station => station, :created_at => 70.minutes.ago)
+        create(:measure, :station => station, :created_at => 65.minutes.ago)
+        post :create, {:measure => valid_attributes, format: "yaml"}
+        expect(assigns(:station).down).to be_false
+      end
     end
-
+    
+    context "keep station.down as true when receiving a new measure and" do
+      it "has three or more old measures but not within 15 minutes and not two last within an hour" do
+        station.update_attributes(down: true)
+        create(:measure, :station => station, :created_at => 80.minutes.ago)
+        create(:measure, :station => station, :created_at => 75.minutes.ago)
+        create(:measure, :station => station, :created_at => 70.minutes.ago)
+        create(:measure, :station => station, :created_at => 25.minutes.ago)
+        post :create, {:measure => valid_attributes, format: "yaml"}
+        expect(assigns(:station).down).to be_true
+      end
+    end
   end
 
   describe "DELETE 'destroy'" do

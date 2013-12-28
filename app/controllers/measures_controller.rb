@@ -11,7 +11,28 @@ class MeasuresController < ApplicationController
       if @measure.save
         # Station must be present for measure to validate, no need to check
         @station = @measure.station
-        @station.update_attributes(last_measure_received_at: @measure.created_at, down: false)
+        @station.update_attributes(last_measure_received_at: @measure.created_at)
+        if @station.down
+          latest = Measure.last(4)
+          if 4>latest.length
+            # got fewer than 4 measures which means the station has not been up for long, set it to online immediately
+            @station.down = false
+            @station.save
+          elsif Time.now - latest[2].created_at > 1.hour
+            # online due to last measure was received over an hour ago
+            @station.down = false
+            @station.save
+          elsif Time.now - latest[1].created_at < 60.minutes
+            # online due to the second last measure was within an hour
+            @station.down = false
+            @station.save
+          end
+          # if not down anymore notify owner
+          if !@station.down 
+            StationMailer.notify_about_station_up(@station.user, @station)
+          end
+        end
+
         format.html { render nothing: true, status: :success }
         format.json { render action: 'show', status: :created, location: station_measure_path(@measure.station, @measure) }
         format.yaml { render nothing: true, status: :created }

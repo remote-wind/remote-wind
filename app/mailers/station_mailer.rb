@@ -32,4 +32,21 @@ class StationMailer < ActionMailer::Base
       @mail.deliver
     end
   end
+  
+  # Subject can be set in your I18n file at config/locales/en.yml
+  # with the following lookup:
+  #
+  #   en.station_mailer.notify_about_station_down.subject
+  #
+  def notify_about_station_up user, station
+    @station  = station
+    if !user.nil? && !user.email.nil? # due to tests do note set email
+      @mail = mail :to => user.email, :subject => "Your station #{station.name} has started to respond and we are now receiving data from it." do |format|
+        format.html
+      end
+      unless @mail.nil?
+        @mail.deliver
+      end
+    end
+  end
 end
