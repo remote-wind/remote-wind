@@ -53,12 +53,10 @@ group :test do
   gem 'rspec-rails', '>=1.14'
   gem 'database_cleaner'
   gem 'factory_girl_rails'
-  gem 'fuubar', '~> 1.2.1', require: false
   gem 'shoulda-matchers'
   gem 'simplecov', :require => false
   gem 'guard-rspec', '>=2.5.0', require: false
   gem 'capybara'
-  gem 'terminal-notifier-guard', require: false # OS-X notifications
   gem 'guard-zeus', require: false
 end
 
@@ -68,6 +66,3 @@ group :production do
   gem 'pg', '0.15.1' # postgres
   gem 'rails_12factor', '0.0.2'
 end
-
-gem 'omniauth'
-gem 'omniauth-facebook'
