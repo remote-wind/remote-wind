@@ -63,10 +63,10 @@ class StationsMaker
           {name: 'Mörbylånga N', hw_id: '342376487234', lat: 56.603728, lon: 16.418273},
           {name: 'Åre strand', hw_id: "3459798234982374", latitude: 63.397163, longitude: 13.074973 },
           {name: 'Gotlands Surfcenter', hw_id: "3482346253486", latitude: 57.483587, longitude: 18.126174}
-      ].map! do |s|
-        print s[:name]
+      ].map! do |st|
+        print st[:name]
         puts " "
-        Station.find_or_create_by(hw_id: s.hw_id)
+        Station.where(hw_id: st[:hw_id]).first_or_create(st)
       end
     end
   end
