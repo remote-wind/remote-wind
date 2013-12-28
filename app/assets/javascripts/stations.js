@@ -103,9 +103,11 @@ $(function () {
              */
             $markers.each(function(){
 
-                var direction, speed, marker, beaufort, icon;
+                var direction, speed, max_speed, min_speed, marker, beaufort, icon, label_text;
 
                 speed = $(this).find('.measure').data('speed');
+								min_speed = $(this).find('.measure').data('min-speed')
+								max_speed = $(this).find('.measure').data('max-speed')
                 direction = 180.0+Number($(this).find('.measure').data('direction'));
                 // we use the beaufort scale to color the arrows
                 beaufort = remotewind.util.msToBeaufort(speed);
@@ -139,10 +141,13 @@ $(function () {
                     marker.setMap(map);
                 }
 
+								label_text = "offline"
+								if ((null!=speed) && (null!=min_speed) && (null!=max_speed)) {
+									label_text = speed + "(" + min_speed + "-" + max_speed + ")"+ "m/s"
+								}
                 var label = new Label({
                     map: map,
-                    text: marker.title + "<br>" + marker.speed + "(" + $(this).find('.measure').data('min-speed') +
-											"-" + $(this).find('.measure').data('max-speed') + ")"+ "m/s"
+                    text: marker.title + "<br>" + label_text
                 });
                 label.bindTo('position', marker, 'position');
                 map.all_markers_bounds.extend(marker.position);
