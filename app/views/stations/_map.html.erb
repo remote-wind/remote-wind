@@ -10,8 +10,8 @@
   <% @stations.each do |station| %>
       <div class="marker hidden" data-lat="<%= station.lat %>" data-lon="<%= station.lon %>">
         <h3 class="title"><%= link_to station.name, station %></h3>
-        <% if station.measures? %>
         <% measure = station.current_measure %>
+        <% if measure %>
         <div class="measure" data-direction="<%= measure.direction %>" data-speed="<%= measure.speed %>" data-min-speed="<%= measure.min_wind_speed %>" data-max-speed="<%= measure.max_wind_speed %>">
         </div>
         <% end %>
