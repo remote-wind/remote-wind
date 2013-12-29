@@ -3,11 +3,15 @@ require 'spec_helper'
 describe Measure do
 
   describe "attributes" do
-    it { should belong_to :station }
-    it { should respond_to :speed }
-    it { should respond_to :direction }
-    it { should respond_to :max_wind_speed }
-    it { should respond_to :min_wind_speed }
+
+    describe "validations" do
+      it { should validate_presence_of :station }
+      it { should validate_numericality_of :speed }
+      it { should validate_numericality_of :direction }
+      it { should validate_numericality_of :max_wind_speed }
+      it { should validate_numericality_of :min_wind_speed }
+      it { should validate_numericality_of :speed_calibration }
+    end
 
     describe "aliases" do
       it { should respond_to :i }
@@ -17,6 +21,8 @@ describe Measure do
       it { should respond_to :min }
     end
   end
+
+
 
   describe "Ardiuno adapted setters should" do
     specify "normalize speed" do
@@ -46,13 +52,7 @@ describe Measure do
     end
   end
 
-  describe "validations" do
-    it { should validate_presence_of :station }
-    it { should validate_numericality_of :speed }
-    it { should validate_numericality_of :direction }
-    it { should validate_numericality_of :max_wind_speed }
-    it { should validate_numericality_of :min_wind_speed }
-  end
+
 
   describe "#calibrate!" do
     let(:station) { create(:station, speed_calibration: 0.5) }
@@ -116,4 +116,10 @@ describe Measure do
       expect(measure.calibrated?).to be_true
     end
   end
+
+  it "caches speed_calibration values" do
+    measure = create(:measure, station: create(:station, speed_calibration: 0.5))
+    expect(measure.speed_calibration).to eq 0.5
+  end
+
 end

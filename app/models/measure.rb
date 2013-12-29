@@ -4,7 +4,7 @@ class Measure < ActiveRecord::Base
 
   # constraints
   validates_presence_of :station
-  validates :speed, :direction, :max_wind_speed, :min_wind_speed,
+  validates :speed, :direction, :max_wind_speed, :min_wind_speed, :speed_calibration,
             :numericality => { :allow_blank => true }
   validate :measure_cannot_be_calibrated
 
@@ -21,6 +21,7 @@ class Measure < ActiveRecord::Base
 
   attr_accessor :calibrated
   after_save :calibrate!
+  after_validation :set_calibration_value!
 
   # Scopes
   default_scope { order("created_at DESC").limit(144) }
@@ -50,17 +51,16 @@ class Measure < ActiveRecord::Base
     write_attribute(:min_wind_speed, val.to_f / 100)
   end
 
-
   def calibrated?
     self.calibrated == true
   end
 
   def calibrate!
     unless self.calibrated
-      unless self.station.speed_calibration.nil?
-        self.speed            = (self.speed * self.station.speed_calibration).round(1)
-        self.min_wind_speed   = (self.min_wind_speed * self.station.speed_calibration).round(1)
-        self.max_wind_speed   = (self.max_wind_speed * self.station.speed_calibration).round(1)
+      unless self.speed_calibration.nil?
+        self.speed            = (self.speed * self.speed_calibration).round(1)
+        self.min_wind_speed   = (self.min_wind_speed * self.speed_calibration).round(1)
+        self.max_wind_speed   = (self.max_wind_speed * self.speed_calibration).round(1)
         self.calibrated = true
       end
     end
@@ -69,6 +69,12 @@ class Measure < ActiveRecord::Base
   def measure_cannot_be_calibrated
     if self.calibrated
       errors.add(:speed_calbration, "Calibrated measures cannot be saved!")
+    end
+  end
+
+  def set_calibration_value!
+    if self.station.present?
+      self.speed_calibration = station.speed_calibration
     end
   end
 

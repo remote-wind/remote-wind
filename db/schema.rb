@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131221125533) do
+ActiveRecord::Schema.define(version: 20131229193141) do
 
   create_table "authentication_providers", force: true do |t|
     t.string   "name"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20131221125533) do
     t.float    "temperature"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "speed_calibration"
   end
 
   add_index "measures", ["station_id"], name: "index_measures_on_station_id"
