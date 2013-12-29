@@ -38,11 +38,11 @@ class Station < ActiveRecord::Base
   # If no measures are found we fetch from last_measure_received_at
   # Measures are then calibrated
   def get_calibrated_measures(since = 12.hours.ago)
-     mrs = measures.where("created_at >= ?", since).order("measures.created_at DESC")
+     mrs = measures.where("created_at >= ?", since).order("measures.created_at ASC")
 
      # If there are no recent measures we go back `since` time from last_measure_received_at to find measures
      if mrs.length < 1 && self.last_measure_received_at?
-       mrs = measures.where("created_at >= ?", self.last_measure_received_at - (Time.now - since)).order("measures.created_at DESC")
+       mrs = measures.where("created_at >= ?", self.last_measure_received_at - (Time.now - since)).order("measures.created_at ASC")
      end
 
      mrs.each do |m|
@@ -85,7 +85,7 @@ class Station < ActiveRecord::Base
   end
 
   def current_measure
-     self.measures.last
+     self.measures.order("measures.created_at ASC").last
   end
 
   def measures?
