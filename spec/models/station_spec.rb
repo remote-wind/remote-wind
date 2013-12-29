@@ -196,4 +196,12 @@ describe Station do
       expect(station.get_calibrated_measures()).to include measure
     end
   end
+
+  describe "#current_measure" do
+    let!(:measure) { create(:measure, station: station) }
+    it "calibrates measure" do
+      expect(station.current_measure.calibrated).to be_true
+    end
+  end
+
 end

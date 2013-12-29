@@ -12,7 +12,7 @@
         <h3 class="title"><%= link_to station.name, station %></h3>
         <% measure = station.current_measure %>
         <% if measure %>
-        <div class="measure" data-direction="<%= measure.direction %>" data-speed="<%= measure.speed %>" data-min-speed="<%= measure.min_wind_speed %>" data-max-speed="<%= measure.max_wind_speed %>">
+        <div class="measure" data-uid="<%= measure.id %>" data-direction="<%= measure.direction %>" data-speed="<%= measure.speed %>" data-min-speed="<%= measure.min_wind_speed %>" data-max-speed="<%= measure.max_wind_speed %>">
         </div>
         <% end %>
       </div>

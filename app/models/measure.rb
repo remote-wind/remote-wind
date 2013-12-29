@@ -50,6 +50,11 @@ class Measure < ActiveRecord::Base
     write_attribute(:min_wind_speed, val.to_f / 100)
   end
 
+
+  def calibrated?
+    self.calibrated == true
+  end
+
   def calibrate!
     unless self.calibrated
       unless self.station.speed_calibration.nil?

@@ -54,7 +54,6 @@ describe Measure do
     it { should validate_numericality_of :min_wind_speed }
   end
 
-
   describe "#calibrate!" do
     let(:station) { create(:station, speed_calibration: 0.5) }
     let(:params){{
@@ -105,6 +104,16 @@ describe Measure do
         measure.save!
       }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Speed calbration Calibrated measures cannot be saved!")
     end
+  end
 
+  describe "calibrated?" do
+    it "returns false if measure is not calibrated" do
+      measure = build_stubbed(:measure)
+      expect(measure.calibrated?).to be_false
+    end
+    it "returns true if measure is calibrated" do
+      measure = build_stubbed(:measure, calibrated: true)
+      expect(measure.calibrated?).to be_true
+    end
   end
 end

@@ -1,4 +1,4 @@
-<tr class="measure">
+<tr class="measure" data-uid="<%= measure.id %>">
   <td class="created_at"><%= time_date_hours_seconds(measure.station.time_to_local(measure.created_at)) %></td>
   <% unless params[:controller] == 'stations' %>
   <td class="station"><%= measure.station.name %></td>

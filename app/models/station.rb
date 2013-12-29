@@ -85,7 +85,12 @@ class Station < ActiveRecord::Base
   end
 
   def current_measure
-     self.measures.order("measures.created_at ASC").last
+    # Should avoid querying the for all the measures
+    measure = Measure.where(station_id: self.id ).order("measures.created_at ASC").last
+    if measure && ! measure.calibrated
+      measure.calibrate!
+    end
+    measure
   end
 
   def measures?
