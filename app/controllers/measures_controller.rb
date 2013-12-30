@@ -6,7 +6,6 @@ class MeasuresController < ApplicationController
   # POST /measures
   def create
     @measure = Measure.new(measure_params)
-
     respond_to do |format|
       if @measure.save
         # Station must be present for measure to validate, no need to check

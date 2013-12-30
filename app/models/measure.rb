@@ -22,6 +22,7 @@ class Measure < ActiveRecord::Base
   attr_accessor :calibrated
   after_save :calibrate!
   after_validation :set_calibration_value!
+  after_find :calibrate!
 
   # Scopes
   default_scope { order("created_at DESC").limit(144) }
@@ -68,7 +69,7 @@ class Measure < ActiveRecord::Base
 
   def measure_cannot_be_calibrated
     if self.calibrated
-      errors.add(:speed_calbration, "Calibrated measures cannot be saved!")
+      errors.add(:speed_calibration, "Calibrated measures cannot be saved!")
     end
   end
 
