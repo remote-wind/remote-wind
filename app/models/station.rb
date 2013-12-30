@@ -33,6 +33,8 @@ class Station < ActiveRecord::Base
   # Scopes
   scope :visible, -> { where(show: true) }
 
+  after_save :update_measure_speed_calibration, :if => lambda { |station| station.speed_calibration_changed? }
+
 
   # Get measures since N time ago
   # If no measures are found we fetch from last_measure_received_at
@@ -141,5 +143,10 @@ class Station < ActiveRecord::Base
   def time_to_local time
     self.zone.nil? ? time : zone.time(time)
   end
+
+  def update_measure_speed_calibration
+    self.measures.update_all(speed_calibration: self.speed_calibration)
+  end
+
 
 end

@@ -52,8 +52,6 @@ describe Measure do
     end
   end
 
-
-
   describe "#calibrate!" do
     let(:station) { create(:station, speed_calibration: 0.5) }
     let(:params){{
@@ -98,11 +96,16 @@ describe Measure do
       expect(measure.max).to eq 5
     end
 
+    it "calibrates measure on find" do
+      create(:measure, station: build_stubbed(:station))
+      expect(Measure.last.calibrated?).to be_true
+    end
+
     it "does not allow saving a calibrated measure" do
       measure.calibrate!
       expect {
         measure.save!
-      }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Speed calbration Calibrated measures cannot be saved!")
+      }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Speed calibration Calibrated measures cannot be saved!")
     end
   end
 

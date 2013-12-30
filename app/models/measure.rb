@@ -20,9 +20,10 @@ class Measure < ActiveRecord::Base
   alias_attribute :min, :min_wind_speed
 
   attr_accessor :calibrated
-  after_save :calibrate!
   after_validation :set_calibration_value!
   after_find :calibrate!
+  after_save :calibrate!
+
 
   # Scopes
   default_scope { order("created_at DESC").limit(144) }
@@ -78,5 +79,7 @@ class Measure < ActiveRecord::Base
       self.speed_calibration = station.speed_calibration
     end
   end
+
+
 
 end
