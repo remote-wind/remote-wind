@@ -13,21 +13,18 @@ class MeasuresController < ApplicationController
         @station.update_attributes(last_measure_received_at: @measure.created_at)
         if @station.down
           latest = Measure.last(4)
-          if 4>latest.length
+          if 4 > latest.length
             # got fewer than 4 measures which means the station has not been up for long, set it to online immediately
-            @station.down = false
-            @station.save
-          elsif Time.now - latest[2].created_at > 1.hour
+            @station.update_attributes(down: true)
+          elsif latest[2].created_at < 1.hour.ago
             # online due to last measure was received over an hour ago
-            @station.down = false
-            @station.save
-          elsif Time.now - latest[1].created_at < 60.minutes
+            @station.update_attributes(down: true)
+          elsif latest[1].created_at > 60.minutes.ago
             # online due to the second last measure was within an hour
-            @station.down = false
-            @station.save
+            @station.update_attributes(down: true)
           end
           # if not down anymore notify owner
-          if !@station.down 
+          if !@station.down
             StationMailer.notify_about_station_up(@station.user, @station)
           end
         end
