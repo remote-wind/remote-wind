@@ -11,6 +11,7 @@ gem 'coffee-rails', '~> 4.0.0' # Use CoffeeScript for .js.coffee assets and view
 gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'foundation-rails', :github => 'zurb/foundation-rails'
 gem 'compass'
+gem 'rickshaw_rails'
 
 #= Authentication ======================
 gem 'devise', '>= 2.2.3'
