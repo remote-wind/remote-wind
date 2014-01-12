@@ -67,15 +67,13 @@ feature 'Facebook Authentiation' do
   end
 
   context "when a previously registered user adds FB authentication" do
-
     let!(:user) { create(:user, :email => 'test@example.com') }
-
     before :each do
       visit new_user_registration_path
       valid_auth_response
     end
 
-    it "adds authentication sheme to previous user" do
+    it "adds auth indentity to previous user" do
       expect{
         click_link "Sign in with Facebook"
       }.to change(user.authentications, :count).by(+1)

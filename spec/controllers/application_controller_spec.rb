@@ -31,7 +31,6 @@ describe ApplicationController do
       end
     end
 
-
     context "when logged in as an admin" do
       before :each do
         sign_in create(:admin)

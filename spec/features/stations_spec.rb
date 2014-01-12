@@ -133,7 +133,7 @@ feature "Stations", %{
     end
   end
 
-  scenario "when I visit station page should map should have same value as the the table" do
+  scenario "when I visit station page map should have correct values" do
     station
     create(:measure, station: station, created_at: 15.minutes.ago)
     create(:measure, station: station, created_at: 10.minutes.ago)
@@ -148,7 +148,7 @@ feature "Stations", %{
     expect(page).to have_selector map_marker_path + "[data-speed='#{expected.speed}']"
     expect(page).to have_selector map_marker_path + "[data-direction='#{expected.direction}']"
     expect(page).to have_selector "table.measures .measure[data-uid='#{expected.id}']"
-    expect(page).to have_selector table_path + '.direction', text: "S (180°)"
-    expect(page).to have_selector table_path + '.speed', text: "10.0 (10.0-55.0)m/s"
+    expect(page).to have_selector table_path + ".direction", text: "S (180°)"
+    expect(page).to have_selector table_path + ".speed", text: "10.0 (10.0-55.0)m/s"
   end
 end

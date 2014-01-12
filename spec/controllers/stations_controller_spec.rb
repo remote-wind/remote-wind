@@ -215,7 +215,6 @@ describe StationsController do
     context "when an unpriveleged user" do
       before { sign_in create(:user) }
 
-
       it "does not destroy station" do
         station = Station.create! valid_attributes
         expect do
@@ -398,7 +397,6 @@ describe StationsController do
       get :embed, station_id: station.to_param, width: 250
       expect(assigns(:width)).to eq "250"
     end
-
   end
 
   describe "GET find" do
