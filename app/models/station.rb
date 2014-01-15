@@ -12,10 +12,6 @@ class Station < ActiveRecord::Base
   validates_presence_of :hw_id
   validates_numericality_of :speed_calibration
 
-  # slugging
-  extend FriendlyId
-  friendly_id :name, :use => [:slugged, :history]
-
   # geolocation
   geocoded_by :name
   reverse_geocoded_by :latitude, :longitude
@@ -24,6 +20,7 @@ class Station < ActiveRecord::Base
   before_validation :set_timezone!
   after_initialize :set_timezone!
 
+  # Attribute aliases
   alias_attribute :lat, :latitude
   alias_attribute :lon, :longitude
   alias_attribute :lng, :longitude
@@ -33,8 +30,9 @@ class Station < ActiveRecord::Base
   # Scopes
   scope :visible, -> { where(show: true) }
 
-  after_save :update_measure_speed_calibration, :if => lambda { |station| station.speed_calibration_changed? }
-
+  # callbacks
+  after_save :update_measure_speed_calibration,
+             :if => lambda { |station| station.speed_calibration_changed? }
 
   # Get measures since N time ago
   # If no measures are found we fetch from last_measure_received_at
@@ -53,18 +51,22 @@ class Station < ActiveRecord::Base
      mrs
   end
 
+  # Setup default values for new records
   after_initialize do
     if self.new_record?
-      # values will be available for new record forms.
+
       self.speed_calibration = 1
     end
   end
 
+  # Lookup timezone via lat/lng
   def lookup_timezone
     self.zone = Timezone::Zone.new(:latlon => [self.lat, self.lon])
     self.zone.zone
   end
 
+  # Lookup and set timezone
+  # Also catches any errors caused by Timezone and logs them
   def set_timezone!
     if self.timezone.nil? and !self.latitude.nil? and !self.longitude.nil?
       # Lookup timezone and catch errors due to geonames not answering
@@ -78,6 +80,12 @@ class Station < ActiveRecord::Base
     end
   end
 
+
+  # Use FriendlyId to create easily "pretty urls"
+  extend FriendlyId
+  friendly_id :name, :use => [:slugged, :history]
+
+  # Generate a slug from name if none is given when creating station
   def should_generate_new_friendly_id?
     if !slug?
       name_changed?
