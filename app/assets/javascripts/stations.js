@@ -170,55 +170,128 @@ $(function () {
      * Station chart
      */
     (function(){
-        var $chart = $('#station_measures_chart');
+
+        var $graph = $('#station_measures_chart');
+
+        $graph.$chart = $graph.find('.chart');
+        $graph.$y_axis = $graph.find('.y-axis');
+        $graph.$x_axis = $graph.find('.x-axis');
+
+        console.log($graph);
 
         /**
-         * Convert each measure property to an array containing all the measurements
-         * @param data Object
-         * @return Object
+         * Format measures into stacks for Rickshaw
+         * @param data
          */
-        function processMeasureData(data) {
+        function formatData(data) {
 
+            var formatted;
 
-            var speed = {
-                attr: 'speed',
-                data: [],
-                color: 'steelblue'
-            };
+            formatted = [
+                { key: 'min', data : [] },
+                { key: 'avg', data : [] },
+                { key: 'max', data : [] }
+            ];
 
+            if (data.measures.length) {
+                $(data.measures).each(function(k,m){
 
-            $(data.measures).each(function(k, v){
-                speed.data.push({
-                    x: this.tstamp * 1000,
-                    y: this.speed
+                    formatted[0].data.push({
+                        x : m.tstamp,
+                        y : m.min_wind_speed
+                    });
+                    formatted[1].data.push({
+                        x : m.tstamp,
+                        y : m.speed
+                    });
+                    formatted[2].data.push({
+                        x : m.tstamp,
+                        y : m.max_wind_speed
+                    });
+
                 });
-            });
-
-            return [speed];
+            }
+            return formatted;
         }
 
-        /**
-         * process data and render chart
-         */
-        $chart.one('chart.measures.data-loaded', function(event, data){
-
-            console.log(data);
-
-
-            var graph = new Rickshaw.Graph({
-                element: document.getElementById('station_measures_chart'),
-                renderer: 'area',
-                stroke: true,
-                series: data
+        $graph.on('graph.data.load', function(){
+            $.getJSON($graph.data('path') + '.json', function(data){
+                $graph.trigger('graph.render', [formatData(data)]);
             });
         });
 
-        if ($chart.length) {
-            $.getJSON($chart.data('path'), function(data){
-                $chart.trigger('chart.measures.data-loaded', [processMeasureData(data)]);
-            });
-        }
 
+        $graph.on('graph.render', function(e, d) {
+
+            var palette, graph, x_axis, y_axis, time, $scroll_contents;
+
+            // Wraps the actual graph and x-axis so that we can scroll
+            $scroll_contents = $graph.find('.scroll-contents');
+
+            // Scroll to end of measures
+            $graph.find('.scroll-window').scrollLeft(9999);
+
+            // Fixtures
+            time = new Rickshaw.Fixtures.Time();
+            palette = new Rickshaw.Color.Palette();
+
+            graph = new Rickshaw.Graph( {
+                element: $graph.$chart[0],
+                width: $scroll_contents.innerWidth() - 20,
+                height: $scroll_contents.innerHeight() - 20,
+                renderer: 'line',
+                dotSize: 2,
+                series: [
+                    {
+                        key: 'min',
+                        name: 'Min Wind Speed',
+                        color: "#91B4ED",
+                        data: d[0].data
+                    },
+                    {
+                        key: 'avg',
+                        name: 'Average Wind Speed',
+                        color: "#3064B8",
+                        data: d[1].data
+                    },
+                    {
+                        key: 'max',
+                        name: 'Max Wind Speed',
+                        color: "#91B4ED",
+                        data: d[2].data
+                    }
+                ]
+
+            });
+            x_axis = new Rickshaw.Graph.Axis.Time({
+                graph: graph,
+                timeUnit: {
+                    seconds: 600,
+                    formatter: function(d) {
+                        return d.toUTCString().match(/(\d+:\d+):/)[1];
+                    }
+                }
+            });
+            y_axis = new Rickshaw.Graph.Axis.Y( {
+                graph: graph,
+                orientation: 'left',
+                element: $graph.$y_axis[0],
+                tickFormat: function(y){
+                    return y + ' m/s'
+                }
+            });
+
+            console.info(time.unit('15 minute'));
+
+            graph.render();
+
+
+
+        });
+
+        if ($graph.length) {
+            $graph.trigger('graph.data.load');
+        }
     }());
 });
 

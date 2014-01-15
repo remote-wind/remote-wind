@@ -1,0 +1,33 @@
+.chart-wrapper {
+}
+
+.station-chart {
+  position: relative;
+  overflow: hidden;
+
+  .scroll-window {
+    height:300px;
+    overflow: scroll;
+  }
+
+  .scroll-contents {
+    position: relative;
+    height:300px;
+    width: 1500px;
+    // Offset measures by y-axis width.
+    left: 50px;
+  }
+
+  .chart {
+    position: relative;
+  }
+  .y-axis {
+    background: rgba(white, 0.8);
+    position: absolute;
+    overflow: visible;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    z-index: 999;
+  }
+}
