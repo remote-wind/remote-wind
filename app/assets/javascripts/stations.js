@@ -265,12 +265,7 @@ $(function () {
             });
             x_axis = new Rickshaw.Graph.Axis.Time({
                 graph: graph,
-                timeUnit: {
-                    seconds: 600,
-                    formatter: function(d) {
-                        return d.toUTCString().match(/(\d+:\d+):/)[1];
-                    }
-                }
+                timeUnit: time.unit('15 minute')
             });
             y_axis = new Rickshaw.Graph.Axis.Y( {
                 graph: graph,
