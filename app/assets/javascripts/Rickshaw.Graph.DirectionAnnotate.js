@@ -42,7 +42,7 @@ Rickshaw.Graph.DirectionAnnotate = function(args) {
             }
 
             $(element).css({
-                transform: 'rotate(' + (360 - arrow.direction) + 'deg)',
+                transform: 'rotate(' + arrow.direction + 'deg)',
                 left : left + 'px',
                 display : 'block'
             });
