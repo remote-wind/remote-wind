@@ -172,18 +172,15 @@ $(function () {
     (function(){
 
         var $graph = $('#station_measures_chart');
-
         $graph.$chart = $graph.find('.chart');
         $graph.$y_axis = $graph.find('.y-axis');
         $graph.$x_axis = $graph.find('.x-axis');
 
-        console.log($graph);
-
         /**
          * Format measures into stacks for Rickshaw
-         * @param data object
          * @param series array
-         * @return array
+         * @param data object
+         * @returns array
          */
         function formatSeriesData(series, data) {
             if (data.measures.length) {
@@ -208,6 +205,7 @@ $(function () {
         $graph.on('graph.data.load', function(){
             $.getJSON($graph.data('path') + '.json', function(data){
                 $graph.trigger('graph.render', data);
+
             });
         });
 
@@ -235,7 +233,6 @@ $(function () {
                 }
             ], d);
 
-
             // Wraps the actual graph and x-axis so that we can scroll
             $scroll_contents = $graph.find('.scroll-contents');
 
@@ -245,6 +242,9 @@ $(function () {
             // Fixtures
             time = new Rickshaw.Fixtures.Time();
             palette = new Rickshaw.Color.Palette();
+
+            // Scale the Scroll Container after the number of measures
+            $graph.find('.scroll-contents').width( d.measures.length *  30 );
 
             graph = new Rickshaw.Graph( {
                 element: $graph.$chart[0],
