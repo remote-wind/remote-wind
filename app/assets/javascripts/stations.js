@@ -46,7 +46,6 @@ $(function () {
             });
         });
 
-
         $map_canvas.on('map.add_markers', function(event, map, $markers){
 
             if ($map_canvas.hasClass("cluster")) {
@@ -237,8 +236,6 @@ $(function () {
             $scroll_contents = $graph.find('.scroll-contents');
 
             // Scroll to end of measures
-            $graph.find('.scroll-window').scrollLeft(999999);
-
             // Fixtures
             time = new Rickshaw.Fixtures.Time();
             palette = new Rickshaw.Color.Palette();
@@ -280,6 +277,7 @@ $(function () {
                 });
             }
 
+            $graph.find('.scroll-window').scrollLeft(999999);
             graph.render();
             annotator.update();
 
