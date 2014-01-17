@@ -15,6 +15,7 @@
 //= require foundation
 //= require remotewind
 //= require rickshaw_with_d3
+//= require Rickshaw.Graph.DirectionAnnotate
 //= require markerclusterer_compiled
 //= require_tree .
 

@@ -181,49 +181,60 @@ $(function () {
 
         /**
          * Format measures into stacks for Rickshaw
-         * @param data
+         * @param data object
+         * @param series array
+         * @return array
          */
-        function formatData(data) {
-
-            var formatted;
-
-            formatted = [
-                { key: 'min', data : [] },
-                { key: 'avg', data : [] },
-                { key: 'max', data : [] }
-            ];
-
+        function formatSeriesData(series, data) {
             if (data.measures.length) {
                 $(data.measures).each(function(k,m){
-
-                    formatted[0].data.push({
+                    series[0].data.push({
                         x : m.tstamp,
                         y : m.min_wind_speed
                     });
-                    formatted[1].data.push({
+                    series[1].data.push({
                         x : m.tstamp,
                         y : m.speed
                     });
-                    formatted[2].data.push({
+                    series[2].data.push({
                         x : m.tstamp,
                         y : m.max_wind_speed
                     });
-
                 });
             }
-            return formatted;
+            return series;
         }
 
         $graph.on('graph.data.load', function(){
             $.getJSON($graph.data('path') + '.json', function(data){
-                $graph.trigger('graph.render', [formatData(data)]);
+                $graph.trigger('graph.render', data);
             });
         });
 
 
         $graph.on('graph.render', function(e, d) {
 
-            var palette, graph, x_axis, y_axis, time, $scroll_contents;
+            var palette, graph, x_axis, y_axis, time, $scroll_contents, series, annotator;
+
+            // These are the values drawn
+            series = formatSeriesData([
+                {
+                    name: 'Min Wind Speed',
+                    color: "#91B4ED",
+                    data: []
+                },
+                {
+                    name: 'Average Wind Speed',
+                    color: "#3064B8",
+                    data: []
+                },
+                {
+                    name: 'Max Wind Speed',
+                    color: "#91B4ED",
+                    data: []
+                }
+            ], d);
+
 
             // Wraps the actual graph and x-axis so that we can scroll
             $scroll_contents = $graph.find('.scroll-contents');
@@ -241,29 +252,10 @@ $(function () {
                 height: $scroll_contents.innerHeight() - 20,
                 renderer: 'line',
                 dotSize: 2,
-                series: [
-                    {
-                        key: 'min',
-                        name: 'Min Wind Speed',
-                        color: "#91B4ED",
-                        data: d[0].data
-                    },
-                    {
-                        key: 'avg',
-                        name: 'Average Wind Speed',
-                        color: "#3064B8",
-                        data: d[1].data
-                    },
-                    {
-                        key: 'max',
-                        name: 'Max Wind Speed',
-                        color: "#91B4ED",
-                        data: d[2].data
-                    }
-                ]
-
+                series: series
             });
             x_axis = new Rickshaw.Graph.Axis.Time({
+                element: $graph.$x_axis[0],
                 graph: graph,
                 timeUnit: time.unit('15 minute')
             });
@@ -276,11 +268,20 @@ $(function () {
                 }
             });
 
-            console.info(time.unit('15 minute'));
+            // Add direction arrows under x-axis
+            annotator = new Rickshaw.Graph.DirectionAnnotate({
+                graph: graph,
+                element: $graph.find('.timeline')[0]
+            });
+
+            if (d.measures.length) {
+                $(d.measures).each(function(i,m){
+                    annotator.add(m.tstamp, m.direction);
+                });
+            }
 
             graph.render();
-
-
+            annotator.update();
 
         });
 

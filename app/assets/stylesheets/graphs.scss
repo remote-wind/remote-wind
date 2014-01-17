@@ -18,6 +18,12 @@
     left: 50px;
   }
 
+  .rickshaw_graph.y_axis {
+    // prevents y-axis label on bottom from getting clipped
+    padding-bottom: 5px;
+  }
+
+
   .chart {
     position: relative;
   }
@@ -30,4 +36,22 @@
     width: 50px;
     z-index: 999;
   }
+
+  .rickshaw-direction-timeline {
+    height: 1px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 10px;
+    position: relative;
+
+    .arrow {
+
+      background-image: url(asset-path("arrow-16px.png"));
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      margin-left: -8px;
+      top: -8px;
+    }
+  }
 }
+
