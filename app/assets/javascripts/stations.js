@@ -237,7 +237,7 @@ $(function () {
             $scroll_contents = $graph.find('.scroll-contents');
 
             // Scroll to end of measures
-            $graph.find('.scroll-window').scrollLeft(9999);
+            $graph.find('.scroll-window').scrollLeft(999999);
 
             // Fixtures
             time = new Rickshaw.Fixtures.Time();
