@@ -24,6 +24,7 @@
         <a href="#table-panel">Table</a>
         <div class="content clearfix" id="table-panel">
           <%= render :partial => 'measures/table', object: @measures %>
+          <p><%= link_to("More", station_measures_path(@station)) %></p>
         </div>
       </dd>
 

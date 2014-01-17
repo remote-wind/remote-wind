@@ -8,6 +8,9 @@ describe "measures/_table" do
       build_stubbed(:measure, station: station, created_at: Time.now - i.hours)
     end
   end
+  let(:measure) do
+    measures.first
+  end
 
   before :each do
     assign(:station, station)
@@ -24,5 +27,7 @@ describe "measures/_table" do
   it "reverses the order of measures" do
     expect(subject).to have_selector ".measure:first .created_at", text: time_date_hours_seconds(station.time_to_local(measures.last.created_at))
   end
+  it { should have_selector '.speed',  text: "#{measure.speed} (#{measure.min}-#{measure.max})m/s" }
+  it { should have_selector '.direction', text: degrees_and_cardinal(measure.direction) }
 
 end
