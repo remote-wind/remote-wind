@@ -1160,20 +1160,11 @@ $tabs-navigation-bg-color: #efefef;
 @import 'type';
 @import 'navigation';
 @import 'modules';
+@import "graphs";
 @import "foundation";
+
 
 .hidden {
   display: none;
-}
-
-.station-chart {
-  position: relative;
-  width:600px;
-  height:300px;
-
-  @media #{$large-up} {
-    margin-left: 1em;
-    width: em-calc(1000);
-  }
 }
 

@@ -170,77 +170,124 @@ $(function () {
      * Station chart
      */
     (function(){
-        var $chart = $('#station_measures_chart');
+
+        var $graph = $('#station_measures_chart');
+
+        $graph.$chart = $graph.find('.chart');
+        $graph.$y_axis = $graph.find('.y-axis');
+        $graph.$x_axis = $graph.find('.x-axis');
+
+        console.log($graph);
 
         /**
-         * load measures via ajax
+         * Format measures into stacks for Rickshaw
+         * @param data object
+         * @param series array
+         * @return array
          */
-        $chart.one('chart.load-measures', function(event, path){
-            $.getJSON(path, function(data){
-                $chart.trigger('chart.measures.data-loaded', [processMeasureData(data)]);
-            });
-        });
-
-        /**
-         * Convert each measure property to an array containing all the measurements
-         * @param data Object
-         * @return Object
-         */
-        function processMeasureData(data) {
-
-            data.speed = [];
-            data.min_wind_speed = [];
-            data.max_wind_speed = [];
-            data.direction = [];
-            data.max_recorded_speed = 0;
-
-            $(data.measures).each(function(k, v){
-                var tstamp = this.tstamp * 1000;
-
-                if (this.max_wind_speed > data.max_recorded_speed) {
-                    data.max_recorded_speed = this.max_wind_speed;
-                }
-                data.speed.push([tstamp, this.speed]);
-                data.min_wind_speed.push([tstamp, this.min_wind_speed]);
-                data.max_wind_speed.push([tstamp, this.max_wind_speed]);
-                data.direction.push([tstamp, this.direction]);
-            });
-
-            return data;
-        }
-
-        /**
-         * process data and render chart
-         */
-        $chart.one('chart.measures.data-loaded', function(event, data){
-            var dataset = [
-                { yaxis: 1, data: data.max_wind_speed,  id: "max", lines: { show: true, lineWidth: 0, fill: false} },
-                { yaxis: 1, data: data.min_wind_speed,  fillBetween: "max", lines: { show: true, lineWidth: 0, fill: 0.5}, color: "rgb(80,80,255)"},
-                { yaxis: 1, label: "Windspeed", color: "rgb(0,0,255)", shadowSize: 0, data: data.speed },
-                { yaxis: 2, color: "rgb(255,0,0)", data: data.direction, label: "Direction" }
-            ];
-            function speedUnitAdder(v, axis) {
-                return v.toFixed(axis.tickDecimals) + "m/s";
+        function formatSeriesData(series, data) {
+            if (data.measures.length) {
+                $(data.measures).each(function(k,m){
+                    series[0].data.push({
+                        x : m.tstamp,
+                        y : m.min_wind_speed
+                    });
+                    series[1].data.push({
+                        x : m.tstamp,
+                        y : m.speed
+                    });
+                    series[2].data.push({
+                        x : m.tstamp,
+                        y : m.max_wind_speed
+                    });
+                });
             }
-            $.plot($chart, dataset,
-                {
-                    xaxes: [
-                        {mode: 'time'}
-                    ],
-                    yaxis: { min: 0, max: data.max_recorded_speed + 5, position: "left", tickFormatter: speedUnitAdder},
-                    yaxes: [ {}, { tickSize: 45, max: 360, position: "right",
-                        ticks: [
-                            [0, "N"], [45, "NE"], [90, "E"], [135, "SE"],
-                            [180, "S"], [225, "SW"], [270, "W"], [315, "NW"], [360, "N"]
-                        ] } ]
-                }
-            );
-        });
-
-        if ($chart.length) {
-            $chart.trigger('chart.load-measures', $chart.data('path') );
+            return series;
         }
 
+        $graph.on('graph.data.load', function(){
+            $.getJSON($graph.data('path') + '.json', function(data){
+                $graph.trigger('graph.render', data);
+            });
+        });
+
+
+        $graph.on('graph.render', function(e, d) {
+
+            var palette, graph, x_axis, y_axis, time, $scroll_contents, series, annotator;
+
+            // These are the values drawn
+            series = formatSeriesData([
+                {
+                    name: 'Min Wind Speed',
+                    color: "#91B4ED",
+                    data: []
+                },
+                {
+                    name: 'Average Wind Speed',
+                    color: "#3064B8",
+                    data: []
+                },
+                {
+                    name: 'Max Wind Speed',
+                    color: "#91B4ED",
+                    data: []
+                }
+            ], d);
+
+
+            // Wraps the actual graph and x-axis so that we can scroll
+            $scroll_contents = $graph.find('.scroll-contents');
+
+            // Scroll to end of measures
+            $graph.find('.scroll-window').scrollLeft(9999);
+
+            // Fixtures
+            time = new Rickshaw.Fixtures.Time();
+            palette = new Rickshaw.Color.Palette();
+
+            graph = new Rickshaw.Graph( {
+                element: $graph.$chart[0],
+                width: $scroll_contents.innerWidth() - 20,
+                height: $scroll_contents.innerHeight() - 20,
+                renderer: 'line',
+                dotSize: 2,
+                series: series
+            });
+            x_axis = new Rickshaw.Graph.Axis.Time({
+                element: $graph.$x_axis[0],
+                graph: graph,
+                timeUnit: time.unit('15 minute')
+            });
+            y_axis = new Rickshaw.Graph.Axis.Y( {
+                graph: graph,
+                orientation: 'left',
+                element: $graph.$y_axis[0],
+                tickFormat: function(y){
+                    return y + ' m/s'
+                }
+            });
+
+            // Add direction arrows under x-axis
+            annotator = new Rickshaw.Graph.DirectionAnnotate({
+                graph: graph,
+                element: $graph.find('.timeline')[0]
+            });
+
+            if (d.measures.length) {
+                $(d.measures).each(function(i,m){
+                    annotator.add(m.tstamp, m.direction);
+                });
+            }
+
+            graph.render();
+            annotator.update();
+
+        });
+
+        if ($graph.length) {
+            $graph.trigger('graph.data.load');
+        }
     }());
 });
 

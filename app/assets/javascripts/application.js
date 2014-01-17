@@ -14,27 +14,24 @@
 //= require jquery_ujs
 //= require foundation
 //= require remotewind
-//= require jquery.flot.min
-//= require jquery.flot.fillbetween
+//= require rickshaw_with_d3
+//= require Rickshaw.Graph.DirectionAnnotate
 //= require markerclusterer_compiled
 //= require_tree .
 
 // This lets us call console even in crap browsers.
-window.console = window.console||{
+window.console = window.console ||{
     log : function(){},
     info: function(){},
     error: function(){}
 };
-
-// Init foundation.js (UI toolkit)
-
 
 // dependencies loaded with Google loader
 google.load("maps", "3", { other_params: "sensor=true", callback : function(){
     $(document).trigger('google.maps.apiloaded');
 }});
 
+// Init foundation.js (UI toolkit)
 $(document).ready(function(){
-
   $(document).foundation();
 });

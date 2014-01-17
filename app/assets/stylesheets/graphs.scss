@@ -1,0 +1,57 @@
+.chart-wrapper {
+}
+
+.station-chart {
+  position: relative;
+  overflow: hidden;
+
+  .scroll-window {
+    height:300px;
+    overflow: scroll;
+  }
+
+  .scroll-contents {
+    position: relative;
+    height:300px;
+    width: 1500px;
+    // Offset measures by y-axis width.
+    left: 50px;
+  }
+
+  .rickshaw_graph.y_axis {
+    // prevents y-axis label on bottom from getting clipped
+    padding-bottom: 5px;
+  }
+
+
+  .chart {
+    position: relative;
+  }
+  .y-axis {
+    background: rgba(white, 0.8);
+    position: absolute;
+    overflow: visible;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    z-index: 999;
+  }
+
+  .rickshaw-direction-timeline {
+    height: 1px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 10px;
+    position: relative;
+
+    .arrow {
+
+      background-image: url(asset-path("arrow-16px.png"));
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      margin-left: -8px;
+      top: -8px;
+    }
+  }
+}
+
