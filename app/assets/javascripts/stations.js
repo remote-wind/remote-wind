@@ -235,6 +235,8 @@ $(function () {
             // Wraps the actual graph and x-axis so that we can scroll
             $scroll_contents = $graph.find('.scroll-contents');
 
+            $chart_div = $graph.find('.chart');
+
             // Scroll to end of measures
             // Fixtures
             time = new Rickshaw.Fixtures.Time();
@@ -245,8 +247,8 @@ $(function () {
 
             graph = new Rickshaw.Graph( {
                 element: $graph.$chart[0],
-                width: $scroll_contents.innerWidth() - 20,
-                height: $scroll_contents.innerHeight() - 20,
+                width: $chart_div.innerWidth() - 20,
+                height: $chart_div.innerHeight() - 20,
                 renderer: 'line',
                 dotSize: 2,
                 series: series
