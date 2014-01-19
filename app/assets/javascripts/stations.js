@@ -211,7 +211,7 @@ $(function () {
 
         $graph.on('graph.render', function(e, d) {
 
-            var palette, graph, x_axis, y_axis, time, $scroll_contents, series, annotator;
+            var palette, graph, x_axis, y_axis, time, $scroll_contents, series, annotator, $chart_div;
 
             // These are the values drawn
             series = formatSeriesData([
