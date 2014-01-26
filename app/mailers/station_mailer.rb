@@ -25,11 +25,13 @@ class StationMailer < ActionMailer::Base
   #
   def notify_about_station_down user, station
     @station  = station
-    @mail = mail :to => user.email, :subject => "Your station #{station.name} has not responded for 15 minutes." do |format|
-      format.html
-    end
-    unless @mail.nil?
-      @mail.deliver
+    unless user.nil? && user.email.nil?
+      @mail = mail :to => user.email, :subject => "Your station #{station.name} has not responded for 15 minutes." do |format|
+        format.html
+      end
+      unless @mail.nil?
+        @mail.deliver
+      end
     end
   end
   
@@ -40,7 +42,7 @@ class StationMailer < ActionMailer::Base
   #
   def notify_about_station_up user, station
     @station  = station
-    if !user.nil? && !user.email.nil? # due to tests do note set email
+    unless user.nil? && user.email.nil? # due to tests do note set email
       @mail = mail :to => user.email, :subject => "Your station #{station.name} has started to respond and we are now receiving data from it." do |format|
         format.html
       end
