@@ -29,8 +29,12 @@ class StationMailer < ActionMailer::Base
       @mail = mail :to => user.email, :subject => "Your station #{station.name} has not responded for 15 minutes." do |format|
         format.html
       end
-      unless @mail.nil?
-        @mail.deliver
+      if !!@mail
+        unless @mail.deliver
+          Rails.logger.error('StationMailer.notify_about_station_down: Email could not be delivered')
+        end
+      else
+        Rails.logger.error('StationMailer.notify_about_station_down: Mail could not be created')
       end
     end
   end
@@ -46,8 +50,12 @@ class StationMailer < ActionMailer::Base
       @mail = mail :to => user.email, :subject => "Your station #{station.name} has started to respond and we are now receiving data from it." do |format|
         format.html
       end
-      unless @mail.nil?
-        @mail.deliver
+      if !!@mail
+        unless @mail.deliver
+          Rails.logger.error('StationMailer.notify_about_station_up: Email could not be delivered')
+        end
+      else
+        Rails.logger.error('StationMailer.notify_about_station_up: Mail could not be created')
       end
     end
   end
