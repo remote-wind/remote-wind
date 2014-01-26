@@ -155,5 +155,23 @@ class Station < ActiveRecord::Base
     self.measures.update_all(speed_calibration: self.speed_calibration)
   end
 
+  def should_be_down?
+    # do heuristics if station is down
+    if self.down
+      latest = Measure.where(station: self).last(4)
+      if 4 > latest.length
+        # got fewer than 4 measures which means the station has not been up for long, set it to online immediately
+        self.update_attributes(down: false)
+      elsif latest[2].created_at < 1.hour.ago
+        # online due to last measure was received over an hour ago
+        self.update_attributes(down: false)
+      elsif latest[1].created_at > 60.minutes.ago
+        # online due to the second last measure was within an hour
+        self.update_attributes(down: false)
+      end
+    end
+  end
+
+
 
 end

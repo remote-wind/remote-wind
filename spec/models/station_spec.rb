@@ -204,4 +204,74 @@ describe Station do
     end
   end
 
+  describe "should_be_down?" do
+
+    let(:station) { create(:station, down: true) }
+
+
+    context "when station has no previous measures" do
+      it "should not be down" do
+        expect(station.should_be_down?).to be_false
+      end
+    end
+
+
+    context "when station has three or more old measures" do
+
+      context "and three last within 15 minutes" do
+        before(:each) do
+          create(:measure, :station => station)
+          create(:measure, :station => station, :created_at => 15.minutes.ago)
+          create(:measure, :station => station, :created_at => 10.minutes.ago)
+          create(:measure, :station => station, :created_at => 5.minutes.ago)
+        end
+
+        it "should not be down" do
+          expect(station.should_be_down?).to be_false
+        end
+      end
+
+      context "and the two latest within 60 minutes" do
+        before(:each) do
+          create(:measure, :station => station)
+          create(:measure, :station => station, :created_at => 65.minutes.ago)
+          create(:measure, :station => station, :created_at => 59.minutes.ago)
+          create(:measure, :station => station, :created_at => 54.minutes.ago)
+        end
+        it "should not be down" do
+          expect(station.should_be_down?).to be_false
+        end
+      end
+
+      context "and has three or more old measures that are older than 60 minutes" do
+        before(:each) do
+          create(:measure, :station => station)
+          create(:measure, :station => station, :created_at => 75.minutes.ago)
+          create(:measure, :station => station, :created_at => 70.minutes.ago)
+          create(:measure, :station => station, :created_at => 65.minutes.ago)
+        end
+        it "should not be down" do
+          expect(station.should_be_down?).to be_false
+        end
+      end
+
+      context "but not within 15 minutes and not two last within an hour" do
+        before(:each) do
+          create(:measure, :station => station, :created_at => 80.minutes.ago)
+          create(:measure, :station => station, :created_at => 75.minutes.ago)
+          create(:measure, :station => station, :created_at => 70.minutes.ago)
+          create(:measure, :station => station, :created_at => 25.minutes.ago)
+        end
+        it "should not be down" do
+          expect(station.should_be_down?).to be_true
+        end
+      end
+    end
+
+
+
+  end
+
+
+
 end
