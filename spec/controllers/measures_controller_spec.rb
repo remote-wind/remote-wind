@@ -2,11 +2,10 @@ require 'spec_helper'
 
 describe MeasuresController do
 
-  let(:station) {  create(:station) }
+  let!(:station) {  create(:station) }
   let(:measure) { create(:measure, :station => station) }
   let(:valid_attributes) {
-    create(:station)
-    attributes_for(:measure, :station_id => station.id )
+    attributes_for(:measure, :station_id => station.to_param )
   }
 
   before :each do

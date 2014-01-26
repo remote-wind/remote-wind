@@ -5,16 +5,19 @@ class MeasuresController < ApplicationController
 
   # POST /measures
   def create
+    # Find station via ID or SLUG
+
+    @station = Station.friendly.find(measure_params[:station_id] || measure_params[:i])
     @measure = Measure.new(measure_params)
+
     respond_to do |format|
       if @measure.save
         # Station must be present for measure to validate, no need to check
-        @station = @measure.station
         @station.update_attributes(last_measure_received_at: @measure.created_at)
 
         # do heuristics if station is down
         if @station.down
-          latest = Measure.last(4)
+          latest = Measure.where(station: @station).last(4)
           if 4 > latest.length
             # got fewer than 4 measures which means the station has not been up for long, set it to online immediately
             @station.update_attributes(down: false)
