@@ -125,6 +125,4 @@ describe Measure do
     expect(measure.speed_calibration).to eq 0.5
   end
 
-
-
 end

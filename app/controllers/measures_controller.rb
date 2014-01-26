@@ -16,10 +16,12 @@ class MeasuresController < ApplicationController
 
       if @measure.save
         @station = @measure.station
-        # Station must be present for measure to validate, no need to check
         @station.update_attributes(last_measure_received_at: @measure.created_at)
+        @station.check_status!
+
         format.yaml { render nothing: true, status: :created }
       else
+
         format.yaml { render nothing: true, status: :unprocessable_entity }
       end
     end

@@ -24,6 +24,10 @@ describe MeasuresController do
       expect(@response.response_code).to eq 400
     end
 
+    it "checks station status" do
+      Station.any_instance().should_receive(:check_status!)
+      post :create, { measure: valid_attributes, format: "yaml" }
+    end
 
     context "with valid attributes" do
       it "should create a new measure" do
@@ -57,9 +61,6 @@ describe MeasuresController do
       post :create, { measure: valid_attributes, format: "yaml"}
       expect(assigns(:station).last_measure_received_at).to eq assigns(:measure).created_at
     end
-
-
-
 
   end
 

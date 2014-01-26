@@ -161,17 +161,35 @@ class Station < ActiveRecord::Base
       latest = Measure.where(station: self).last(4)
       if 4 > latest.length
         # got fewer than 4 measures which means the station has not been up for long, set it to online immediately
-        self.update_attributes(down: false)
+        return false
       elsif latest[2].created_at < 1.hour.ago
         # online due to last measure was received over an hour ago
-        self.update_attributes(down: false)
+        return false
       elsif latest[1].created_at > 60.minutes.ago
         # online due to the second last measure was within an hour
-        self.update_attributes(down: false)
+        return false
       end
     end
   end
 
+  def check_status!
 
+    logger.info "Checking station #{self.name}"
+
+    if self.should_be_down?
+      unless self.down?
+        self.update_attribute('down', true)
+        logger.warn "Station alert: #{self.name} is now down"
+        StationMailer.notify_about_station_down(self.user, self)
+      end
+    else
+      if self.down?
+        logger.warn "Station alert: #{self.name} is now up"
+        StationMailer.notify_about_station_up(self.user, self)
+        self.update_attribute('down', false)
+      end
+    end
+
+  end
 
 end
