@@ -65,7 +65,7 @@ RemoteWind::Application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
   # Disable delivery errors, bad email addresses will be ignored
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
   # ActionMailer Config
   config.action_mailer.default_url_options = { :host => 'www.blast.nu' }
 
