@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe NotificationsController do
 
+  include Warden::Test::Helpers
+
   before :each do
     sign_out :user
   end
@@ -9,6 +11,12 @@ describe NotificationsController do
   describe "GET 'index'" do
 
     let(:note) { create(:notification) }
+
+    it "redirects if user is not logged in" do
+      expect {
+        get :index
+      }.to raise_error
+    end
 
     it "assigns current user as @user" do
       user = create(:user)
@@ -31,6 +39,5 @@ describe NotificationsController do
       get :index
       expect(assigns(:notifications)).to include private
     end
-
   end
 end

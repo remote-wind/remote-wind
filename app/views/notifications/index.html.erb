@@ -1,8 +1,7 @@
 <% if @notifications.any? %>
 <ul class="notifications">
     <% @notifications.each do |note| %>
-    <li class="notification <%= note.key %>">
-      <h3 class="subject"><%= note.subject %></h3>
+    <li class="notification <%= note.event %>">
       <div class="message"><%= note.message %></div>
     </li>
     <% end %>
