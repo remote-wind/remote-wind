@@ -1,0 +1,10 @@
+<% if @notifications.any? %>
+<ul class="notifications">
+    <% @notifications.each do |note| %>
+    <li class="notification <%= note.key %>">
+      <h3 class="subject"><%= note.subject %></h3>
+      <div class="message"><%= note.message %></div>
+    </li>
+    <% end %>
+</ul>
+<% end %>
