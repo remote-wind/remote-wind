@@ -58,3 +58,15 @@ bundle exec guard (in a new tab)
 ## RailsPanel
 
 This application supports debugging in Google chrome via [the RailsPanel extension](https://chrome.google.com/webstore/detail/railspanel/gjpfobpafnhjhbajcjgccbbdofdckggg)
+
+## Postgres
+This app defaults to using SQLite for the dev environment but can be used with Postgres.
+Postgres can configured via the following enviromental vars:
+
+```
+REMOTE_WIND_DATABASE_ADAPTER # set to postgresql
+REMOTE_WIND_POSTGRES_DATABASE_DEV # database name; defaults to remote_wind_dev
+REMOTE_WIND_POSTGRES_PASSWORD # if needed
+REMOTE_WIND_POSTGRES_USER # if needed
+REMOTE_WIND_POSTGRES_HOST # if needed
+```
