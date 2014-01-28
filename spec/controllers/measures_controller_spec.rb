@@ -48,7 +48,7 @@ describe MeasuresController do
     context "with yaml format" do
       it "sends HTTP success" do
         post :create, { measure: valid_attributes, format: "yaml"}
-        expect(response).to be_success
+        expect(response.code).to eq "200"
       end
 
       it "does not render a template" do
