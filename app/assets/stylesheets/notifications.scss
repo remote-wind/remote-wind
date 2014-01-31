@@ -1,0 +1,9 @@
+@import "foundation/components/alert-boxes";
+
+.notifications {
+  margin-left: 0;
+}
+
+.notification {
+  @include alert();
+}

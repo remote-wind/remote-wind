@@ -1,9 +1,12 @@
-<% if @notifications.any? %>
-<ul class="notifications">
-    <% @notifications.each do |note| %>
-    <li class="notification <%= note.event %>">
-      <div class="message"><%= note.message %></div>
-    </li>
-    <% end %>
-</ul>
-<% end %>
+<section class="row">
+  <h3>Notifications</h3>
+  <% if @notifications.any? %>
+      <ul class="notifications">
+        <% @notifications.each do |note| %>
+            <li class="notification <%= note.event %>" id="notification-<%= note.id %>">
+              <div class="message"><%= note.message %></div>
+            </li>
+        <% end %>
+      </ul>
+  <% end %>
+</section>
