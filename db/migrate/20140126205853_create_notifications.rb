@@ -4,6 +4,7 @@ class CreateNotifications < ActiveRecord::Migration
       t.string :event
       t.text :message
       t.belongs_to :user
+      t.timestamps
     end
   end
 end

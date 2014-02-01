@@ -7,7 +7,6 @@ feature "Notifications", %{
   let(:user) { create(:user) }
   let(:note) { create(:notification, user: user) }
 
-
   context "when user receives a notification" do
 
     before :each do
@@ -15,10 +14,10 @@ feature "Notifications", %{
       sign_in! user
     end
 
-    scenario "when I click inbox" do
-      pending "BUG: why is this redirecting?"
-      visit notifications_path
-      expect(current_path).to eq "/notifications"
+    scenario "when I click inbox page should show notification" do
+      click_link "Inbox", href: notifications_path
+      expect(page).to have_content note.message
     end
+
   end
 end

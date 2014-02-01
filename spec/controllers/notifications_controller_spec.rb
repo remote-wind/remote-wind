@@ -39,5 +39,14 @@ describe NotificationsController do
       get :index
       expect(assigns(:notifications)).to include private
     end
+
+    it "sets notifications as read after render" do
+      user = create(:user)
+      sign_in user
+      create(:notification, user_id: user.id)
+      get :index
+      expect(assigns(:notifications).first.read).to be_true
+    end
+
   end
 end

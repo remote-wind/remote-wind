@@ -3,7 +3,10 @@
   <% if @notifications.any? %>
       <ul class="notifications">
         <% @notifications.each do |note| %>
-            <li class="notification <%= note.event %>" id="notification-<%= note.id %>">
+            <li class="notification <%= note.event %> <%= note.read ? 'read' : 'unread' %>" id="notification-<%= note.id %>">
+              <time class="created-at" datetime="<%= note.created_at.iso8601.to_s %>">
+                <%= note.created_at.strftime("%F %R") %>
+              </time>
               <div class="message"><%= note.message %></div>
             </li>
         <% end %>
