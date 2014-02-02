@@ -174,19 +174,29 @@ class Station < ActiveRecord::Base
 
   def check_status!
 
-    logger.info "Checking station #{self.name}"
-
-    if self.should_be_down?
+    if should_be_down?
       unless self.down?
-        self.update_attribute('down', true)
-        logger.warn "Station alert: #{self.name} is now down"
-        StationMailer.notify_about_station_down(self.user, self)
+        update_attribute('down', true)
+        logger.warn "Station alert: #{name} is now down"
+        StationMailer.notify_about_station_down(user, self)
+        Notification.create(
+          user: self.user,
+          level: :warn,
+          message: "#{name} is down.",
+          event: "station_down"
+        )
       end
     else
-      if self.down?
-        logger.warn "Station alert: #{self.name} is now up"
-        StationMailer.notify_about_station_up(self.user, self)
-        self.update_attribute('down', false)
+      if down?
+        update_attribute('down', false)
+        logger.info "Station alert: #{name} is now up"
+        StationMailer.notify_about_station_up(user, self)
+        Notification.create(
+            user: self.user,
+            level: :info,
+            message: "#{name} is up.",
+            event: "station_up"
+        )
       end
     end
 

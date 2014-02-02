@@ -274,9 +274,11 @@ describe Station do
   describe "check_status!" do
 
 
+    let(:user) { build_stubbed(:user) }
+
     context "when station was up" do
 
-      let(:station){ create(:station, down: false, user: build_stubbed(:user)) }
+      let(:station){ create(:station, down: false, user: user) }
 
       it "logs that its checking station" do
         station.stub(:should_be_down?).and_return(false)
@@ -310,15 +312,35 @@ describe Station do
           station.stub(:should_be_down?).and_return(true)
         end
 
+        specify "station should be down" do
+          station.check_status!
+          expect(station.down).to be_true
+        end
+
         it "should send message" do
           StationMailer.should_receive("notify_about_station_down")
           station.check_status!
         end
 
-
-        specify "station should be down" do
+        it "should log error" do
+          Rails.logger.should_receive(:warn).with("Station alert: #{station.name} is now down")
           station.check_status!
-          expect(station.down).to be_true
+        end
+
+        it "should create notification" do
+          expect {
+            station.check_status!
+          }.to change(Notification, :count).by(1)
+        end
+
+        it "should create notification with correct attributes" do
+          Notification.should_receive(:create).with(
+              user: user,
+              level: :warn,
+              message: "#{station.name} is down.",
+              event: "station_down"
+          )
+          station.check_status!
         end
 
       end
@@ -327,7 +349,7 @@ describe Station do
 
     context "when station was down" do
 
-      let(:station){ create(:station, down: true, user: build_stubbed(:user)) }
+      let(:station){ create(:station, down: true, user: user) }
 
       context "and now should be up" do
         # Essentially nothing should happen here.
@@ -336,14 +358,35 @@ describe Station do
           station.stub(:should_be_down?).and_return(false)
         end
 
+        specify "station should not be down" do
+          station.check_status!
+          expect(station.down).to be_false
+        end
+
         it "should send message" do
           StationMailer.should_receive("notify_about_station_up")
           station.check_status!
         end
 
-        specify "station should not be down" do
+        it "should log" do
+          Rails.logger.should_receive(:info).with("Station alert: #{station.name} is now up")
           station.check_status!
-          expect(station.down).to be_false
+        end
+
+        it "should create notification" do
+          expect {
+            station.check_status!
+          }.to change(Notification, :count).by(1)
+        end
+
+        it "should create notification with correct attributes" do
+          Notification.should_receive(:create).with(
+              user: user,
+              level: :info,
+              message: "#{station.name} is up.",
+              event: "station_up"
+          )
+          station.check_status!
         end
 
       end
