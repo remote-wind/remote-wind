@@ -25,5 +25,6 @@ RemoteWind::Application.routes.draw do
   get "/stations/search/(:lon)(/:lat)(/:radius)", to: "stations#search", as: :search_stations
 
   resources :measures,  only: [:index, :create]
+  resources :notifications, only: [:index]
 
 end

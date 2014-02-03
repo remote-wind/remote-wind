@@ -147,8 +147,8 @@ class Station < ActiveRecord::Base
                 .order(created_at: :desc)
                 .last(5)
 
-      # Gives leeway for stations that have not yet been deployed
-      if measures.size === 0
+      # Give leeway for stations that have not yet been deployed or where just turned on
+      if measures.size < 3
         false
       # Are there 3 or more measures in the last 24 minutes?
       elsif measures.take_while { |measure| measure.created_at > 24.minutes.ago }.size >= 3

@@ -180,18 +180,16 @@ describe Station do
 
     let(:station) { create(:station, down: true) }
 
+    context "when station has less than 3 measures" do
+      let(:measures) { [*1..2].map! { create(:measure, station: station) } }
 
-    context "when station has no previous measures" do
       it "should not be down" do
         expect(station.should_be_down?).to be_false
       end
     end
 
     context "when station has three measures in last 24 min" do
-
-      let(:measures) { [*1..3].map! { create(:measure, station: station) } }
-      before(:each) {}
-
+      let(:measures) { [*1..4].map! { create(:measure, station: station) } }
       it "should not be down" do
         expect(station.should_be_down?).to be_false
       end
@@ -199,14 +197,19 @@ describe Station do
 
     context "when station has less than three measures in last 24 min" do
 
+      let(:measures) { [*1..4].map! { create(:measure, station: station) } }
+
+      before :each do
+        measures.each do |m, index|
+          m.update_attribute(:created_at, 1.hours.ago )
+        end
+      end
+
       it "should be down" do
-        measure = create(:measure, station: station)
+        create(:measure, station: station)
         expect(station.should_be_down?).to be_true
       end
     end
-
-
-
   end
 
   describe "check_status!" do

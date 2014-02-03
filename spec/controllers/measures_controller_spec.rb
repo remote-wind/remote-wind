@@ -15,7 +15,7 @@ describe MeasuresController do
 
   describe "POST 'create'" do
 
-    let!(:station) { create(:station) }
+    let!(:station) { create(:station, user: build_stubbed(:user)) }
 
     it "does not accept any other format than yaml" do
       expect {
