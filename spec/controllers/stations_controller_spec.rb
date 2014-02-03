@@ -38,8 +38,11 @@ describe StationsController do
     end
 
     it "orders measures by creation" do
-      Measure.should_receive(:order).with(created_by: :asc)
-      get :show, {:id => station.to_param, :format => 'html' }
+      measure = create(:measure, station: station)
+      measure2 = create(:measure, station: station)
+      measure2.update_attribute('created_at', 1.hour.ago)
+      get :show, {:id => station.to_param }
+      expect(assigns(:measures).first.created_at).to be < assigns(:measures).last.created_at
     end
 
     it "calibrates measures" do

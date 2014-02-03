@@ -13,7 +13,7 @@ class StationsController < ApplicationController
   # GET /stations/1.json
   def show
     # get station with Friendly Id, params[:id] can either be id or slug
-    @station = Station.includes(:measures).friendly.find(params[:id])
+    @station = Station.friendly.find(params[:id])
     @measures = @station.measures.limit(10).order(created_at: :asc)
   end
 
