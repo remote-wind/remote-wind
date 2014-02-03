@@ -54,7 +54,6 @@ class Station < ActiveRecord::Base
   # Setup default values for new records
   after_initialize do
     if self.new_record?
-
       self.speed_calibration = 1
     end
   end

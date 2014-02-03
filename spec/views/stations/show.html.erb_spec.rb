@@ -54,10 +54,4 @@ describe "stations/show" do
     it { should have_selector "#map_canvas .marker[data-lon='#{station.lon}']" }
   end
 
-  describe "table ordering" do
-    it { should have_selector 'table.measures .measure:first .created_at', text: "12/31 22:55" }
-    it { should have_selector 'table.measures .measure:nth-child(2) .created_at', text: "12/31 22:45" }
-    it { should have_selector 'table.measures .measure:nth-child(3) .created_at', text: "12/31 22:35" }
-  end
-
 end

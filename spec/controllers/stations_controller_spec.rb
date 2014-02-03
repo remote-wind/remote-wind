@@ -37,6 +37,14 @@ describe StationsController do
       expect(assigns(:station)).to eq(station)
     end
 
+    it "orders measures by creation in descending order" do
+      measure = create(:measure, station: station)
+      measure2 = create(:measure, station: station)
+      measure2.update_attribute('created_at', 1.hour.ago)
+      get :show, {:id => station.to_param }
+      expect(assigns(:measures).first.created_at).to be > assigns(:measures).last.created_at
+    end
+
     it "calibrates measures" do
       create(:measure, station: station, speed: 10)
       get :show, {:id => station.to_param }
@@ -258,19 +266,31 @@ describe StationsController do
       end
     end
 
-    it "assigns station" do
-      get :measures, :station_id => station.to_param
-      expect(assigns(:station)).to be_a(Station)
+    context "when request is HTML" do
+      it "uses the page param to paginate measures" do
+        Measure.stub(:order).and_return(Measure)
+        Measure.should_receive(:paginate).with(page: "2").and_return([].paginate)
+        get :measures, station_id: station.to_param, page: "2"
+      end
     end
 
-    it "assigns measures" do
-      get :measures, :station_id => station.to_param
-      expect(assigns(:measures).to_a).to include measures.first
-    end
+    context "when request is JSON" do
 
-    it "calibrates measures" do
-      get :measures, :station_id => station.to_param
-      expect(assigns(:measures).first.speed).to eq 5
+      before :each do
+        get :measures, station_id: station.to_param, format: 'json'
+      end
+
+      it "assigns station" do
+        expect(assigns(:station)).to be_a(Station)
+      end
+
+      it "assigns measures" do
+        expect(assigns(:measures).to_a).to include measures.first
+      end
+
+      it "calibrates measures" do
+        expect(assigns(:measures).first.speed).to eq 5
+      end
     end
   end
 
