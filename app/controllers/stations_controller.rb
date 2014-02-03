@@ -13,8 +13,8 @@ class StationsController < ApplicationController
   # GET /stations/1.json
   def show
     # get station with Friendly Id, params[:id] can either be id or slug
-    @station = Station.includes(:measures).friendly.find(params[:id])
-    @measures = @station.get_calibrated_measures
+    @station = Station.friendly.find(params[:id])
+    @measures = @station.measures.limit(10).order(created_at: :asc)
   end
 
   # GET /stations/new
@@ -56,7 +56,6 @@ class StationsController < ApplicationController
 
     respond_to do |format|
       if @station.update(station_params)
-
         format.html { redirect_to @station, notice: 'Station was successfully updated.' }
         format.json { head :no_content }
       else
@@ -80,7 +79,11 @@ class StationsController < ApplicationController
   def measures
     # get station with Friendly Id, params[:id] can either be id or slug
     @station = Station.includes(:measures).friendly.find(params[:station_id])
-    @measures = @station.get_calibrated_measures
+
+    respond_to do |format|
+      format.html { @measures = Measure.order(created_at: :asc).paginate(page: params[:page]) }
+      format.json { @measures = @station.get_calibrated_measures }
+    end
   end
 
   # DELETE /stations/:staton_id/measures

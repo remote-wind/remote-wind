@@ -208,10 +208,9 @@ $(function () {
             });
         });
 
-
         $graph.on('graph.render', function(e, d) {
 
-            var palette, graph, x_axis, y_axis, time, $scroll_contents, series, annotator, $chart_div;
+            var graph, x_axis, y_axis, time, $scroll_contents, series, annotator;
 
             // These are the values drawn
             series = formatSeriesData([
@@ -240,7 +239,6 @@ $(function () {
             // Scroll to end of measures
             // Fixtures
             time = new Rickshaw.Fixtures.Time();
-            palette = new Rickshaw.Color.Palette();
 
             // Scale the Scroll Container after the number of measures
             $graph.find('.scroll-contents').width( d.measures.length *  30 );

@@ -2,24 +2,22 @@ require 'spec_helper'
 
 describe "stations/measures" do
 
-  let! :station do
-    station = create(:station)
-    assign(:station, station)
-    station
-  end
+  let!(:station) { build_stubbed(:station) }
 
-  let! :measures do
-    3.times do
-      3.times do
-        station.measures.create attributes_for(:measure)
-      end
+  let!(:measures) do
+    # page, per_page, total_entries
+    WillPaginate::Collection.create(1, 10, 50) do |pager|
+      pager.replace([*1..50].map! { build_stubbed(:measure, station: station) })
     end
-    assign(:measures, station.measures)
-    station.measures
+
   end
 
   before(:each) do
+    Measure.stub(:last).and_return(measures.last)
+    assign(:station, station)
+    assign(:measures, measures)
     stub_user_for_view_test
+    view.stub(:url_for)
   end
 
   subject {
@@ -27,12 +25,11 @@ describe "stations/measures" do
     rendered
   }
 
-  it { should match /Latest measures for #{station.name.capitalize}/ }
-  it { should match /Latest measurement recieved at #{measures.last.created_at.to_s}/ }
-  it { should have_selector '.speed',          text: measures[0].speed }
-  it { should have_selector '.direction',      text: measures[0].direction }
-  it { should have_selector '.max_wind_speed', text: measures[0].max_wind_speed }
-  it { should have_selector '.min_wind_speed', text: measures[0].min_wind_speed }
-  it { should have_selector '.created_at',     text: measures[0].created_at.to_s }
 
+  it { should match /Latest measures for #{station.name.capitalize}/ }
+  it { should match /Latest measurement recieved at #{measures.last.created_at.strftime("%H:%M")}/ }
+  it { should have_selector '.pagination' }
+  it { should have_selector '.current' }
+  it { should have_selector '.previous_page' }
+  it { should have_selector '.next_page' }
 end

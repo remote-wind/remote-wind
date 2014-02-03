@@ -17,11 +17,11 @@ RemoteWind::Application.routes.draw do
   delete "/stations/:station_id/measures", to: "stations#destroy_measures", as: :destroy_station_measures
 
   get "/stations/find/:hw_id", to: "stations#find", as: :find_station
-  resources :stations, :shallow => true do
-    resources :measures, only: [:show, :create, :destroy] do |measure|
-    end
+  resources :stations, shallow: true do
+    resources :measures, only: [:show, :create, :destroy]
   end
 
+  get "/stations/:station_id/measures/page/:page", to: "stations#measures", as: :station_measures_paginate
   get "/stations/search/(:lon)(/:lat)(/:radius)", to: "stations#search", as: :search_stations
 
   resources :measures,  only: [:index, :create]
