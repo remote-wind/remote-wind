@@ -125,25 +125,11 @@ class Station < ActiveRecord::Base
     end
   end
 
-  def self.send_down_alerts
-    stations = Station.all()
-    stations.each do |station|
-      logger.info "Checking station #{station.name}"
-
-      if !station.measures?
-        station.down = true
-        station.save
-        logger.warn "Station alert: #{station.name} has no measures => down"
-      else
-        if station.current_measure.created_at < 15.minutes.ago && !station.down
-          station.down = true
-          station.save
-          logger.warn "Station alert: #{station.name} no new measures in 15 min => down"
-          if !station.user.nil?
-            StationMailer.notify_about_station_down(station.user, station)
-          end
-        end
-      end
+  # Rake task which periodically tests the status of each station.
+  # @param stations array
+  def self.check_all_stations stations = Station.all
+    stations.each do |s|
+      s.check_status!
     end
   end
 
@@ -155,51 +141,82 @@ class Station < ActiveRecord::Base
     self.measures.update_all(speed_calibration: self.speed_calibration)
   end
 
+  # do heuristics if station is down
   def should_be_down?
-    # do heuristics if station is down
-    if self.down
-      latest = Measure.where(station: self).last(4)
-      if 4 > latest.length
-        # got fewer than 4 measures which means the station has not been up for long, set it to online immediately
-        return false
-      elsif latest[2].created_at < 1.hour.ago
-        # online due to last measure was received over an hour ago
-        return false
-      elsif latest[1].created_at > 60.minutes.ago
-        # online due to the second last measure was within an hour
-        return false
+      measures = Measure
+                .where(station_id: self.id)
+                .order(created_at: :desc)
+                .last(5)
+
+      # Gives leeway for stations that have not yet been deployed
+      if measures.size === 0
+        false
+      # Are there 3 or more measures in the last 24 minutes?
+      elsif measures.take_while { |measure| measure.created_at > 24.minutes.ago }.size >= 3
+        false
+      else
+        true
       end
-    end
   end
 
   def check_status!
-
     if should_be_down?
-      unless self.down?
+      unless down?
         update_attribute('down', true)
-        logger.warn "Station alert: #{name} is now down"
-        StationMailer.notify_about_station_down(user, self)
-        Notification.create(
-          user: self.user,
-          level: :warn,
-          message: "#{name} is down.",
-          event: "station_down"
-        )
+        notify_down
       end
     else
       if down?
         update_attribute('down', false)
-        logger.info "Station alert: #{name} is now up"
-        StationMailer.notify_about_station_up(user, self)
-        Notification.create(
-            user: self.user,
-            level: :info,
-            message: "#{name} is up.",
-            event: "station_up"
-        )
+        notify_up
       end
     end
+  end
 
+  # Log and send notifications that station is down
+  def notify_down
+
+    logger.warn "Station alert: #{name} is now down"
+
+    # Only mail about this event once every 12h
+    notified = Notification
+                    .where(message: "#{name} is down.")
+                    .where("created_at >= ?", 12.hours.ago)
+                    .count > 0
+
+    unless notified
+      StationMailer.notify_about_station_down(user, self)
+    end
+
+    # create UI notification.
+    Notification.create(
+        user: self.user,
+        level: :warn,
+        message: "#{name} is down.",
+        event: "station_down"
+    )
+  end
+
+  # Log and send notifications that station is up
+  def notify_up
+    logger.info "Station alert: #{name} is now up"
+
+    # Only mail about this event once every 12h
+    notified = Notification
+                    .where(message: "#{name} is up.")
+                    .where("created_at >= ?", 12.hours.ago)
+                    .count > 0
+
+    unless notified
+      StationMailer.notify_about_station_up(user, self)
+    end
+
+    Notification.create(
+        user: self.user,
+        level: :info,
+        message: "#{name} is up.", 
+        event: "station_up"
+    )
   end
 
 end
