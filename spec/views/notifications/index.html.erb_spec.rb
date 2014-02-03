@@ -3,12 +3,13 @@ require 'spec_helper'
 describe "notifications/index" do
 
   let(:notifications) {
-    notes = [*1..3].map! { build_stubbed(:notification, created_at: Time.new(2000) + 1.hour) }
-    notes.push ( build_stubbed(:notification, read: true, created_at: Time.new(2000)) )
-    notes
+    WillPaginate::Collection.create(1, 10, 50) do |pager|
+      pager.replace([*1..50].map! { |i| build_stubbed(:notification, created_at: Time.new(2000) + i.hour) })
+    end
   }
 
   before do
+    notifications.last.read = true
     assign(:notifications, notifications)
     render
   end
@@ -22,5 +23,6 @@ describe "notifications/index" do
   it { should have_selector '.notification.unread', exact: 3 }
   it { should have_selector '.notification.read' }
   it { should have_selector '.notification:first .created-at', text: "2000-01-01 00:00" }
+  it { should have_selector '.pagination' }
 
 end
