@@ -5,7 +5,7 @@
   <th>Wind Speed</th>
   </thead>
   <tbody>
-  <% @measures.reverse.each do |measure| %>
+  <% @measures.each do |measure| %>
       <%= render :partial => 'measures/measure', object: measure %>
   <% end %>
   </tbody>
