@@ -1,0 +1,14 @@
+@import "foundation/components/alert-boxes";
+
+.notifications {
+  margin-left: 0;
+}
+
+.notification {
+  @include alert();
+
+  &.read {
+    border-color: darken(#efefef, 90);
+    background-color: darken(#efefef, 50);
+  }
+}

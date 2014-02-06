@@ -79,7 +79,7 @@ class RandomMeasureMaker
   @ctime
 
   def initialize n = 50
-    puts "Creating #{n} random measures per station"
+    puts "Creating #{n} random measures per station \n"
 
     Station.all.each do |station|
       puts station[:name] + ": "
@@ -145,8 +145,53 @@ class RandomMeasureMaker
   end
 end
 
+class NotificationMaker
 
-admin = AdminMaker.new
-users = RandomUsersMaker.new(25)
-stations = StationsMaker.new
-measures  = RandomMeasureMaker.new(50)
+
+  def initialize (n)
+
+    user = User.find_by_email(ENV["REMOTE_WIND_EMAIL"])
+    stations = Station.all()
+
+    stations.each do |station|
+
+      puts "Creating random notifications for #{station.name} \n"
+
+      n.times do
+        create_notification(user, station)
+        print "."
+      end
+
+      puts "\n"
+    end
+  end
+
+  def create_notification user, station
+
+    templates = [
+        { message: "Station %s is down.", level: :warn },
+        { message: "Station %s is up.", level: :info }
+    ]
+
+    template = templates.sample.merge!({ user: user })
+    template[:message] =  template[:message] % [station.name]
+
+    note = Notification.new( template )
+
+    if note.save
+      note.update_attribute(:created_at, Time.at(rand_in_range(30.days.ago.to_f, Time.now.to_f)))
+    end
+  end
+
+  def rand_in_range(from, to)
+    rand * (to - from) + from
+  end
+
+end
+
+
+AdminMaker.new
+RandomUsersMaker.new(25)
+StationsMaker.new
+RandomMeasureMaker.new(50)
+NotificationMaker.new(10)

@@ -29,6 +29,7 @@ describe Station do
       it { should respond_to :lat }
       it { should respond_to :owner }
     end
+
   end
 
   describe "validations" do
@@ -105,44 +106,15 @@ describe Station do
     end
   end
 
-  describe ".send_down_alerts" do
+  describe ".check_all_stations" do
 
-    let!(:station) {
-      create(:station, :user => create(:user))
-    }
+    let!(:stations) { [*1..3].map! { build_stubbed(:station) } }
 
-    before :each  do
-      Station.any_instance.stub(:measures?).and_return(true)
+    it "should check each station" do
+      stations.last.should_receive(:check_status!)
+      Station.check_all_stations(stations)
     end
 
-    context "when a station has not received measures in more than 15 minutes" do
-
-      before :each do
-        Station.any_instance.stub_chain(:current_measure, :created_at).and_return(16.minutes.ago)
-      end
-
-      it "logs a warning" do
-        Rails.logger.should_receive(:warn).with(/Station alert: Station \d* no new measures in 15 min => down/)
-        Station.send_down_alerts()
-      end
-
-      it "sends an email to user" do
-        StationMailer.should_receive(:notify_about_station_down).with(station.user, station)
-        Station.send_down_alerts()
-      end
-    end
-
-    context "when a has recieved station input less than 15 minutes ago" do
-
-      before :each do
-        Station.any_instance.stub_chain(:current_measure, :created_at).and_return(1.minutes.ago)
-      end
-
-      it "does not send an email" do
-        StationMailer.should_not_receive(:notify_about_station_down)
-        Station.send_down_alerts()
-      end
-    end
   end
 
   describe "#time_to_local_time" do
@@ -208,82 +180,45 @@ describe Station do
 
     let(:station) { create(:station, down: true) }
 
+    context "when station has less than 3 measures" do
+      let(:measures) { [*1..2].map! { create(:measure, station: station) } }
 
-    context "when station has no previous measures" do
       it "should not be down" do
         expect(station.should_be_down?).to be_false
       end
     end
 
+    context "when station has three measures in last 24 min" do
+      let(:measures) { [*1..4].map! { create(:measure, station: station) } }
+      it "should not be down" do
+        expect(station.should_be_down?).to be_false
+      end
+    end
 
-    context "when station has three or more old measures" do
+    context "when station has less than three measures in last 24 min" do
 
-      context "and three last within 15 minutes" do
-        before(:each) do
-          create(:measure, :station => station)
-          create(:measure, :station => station, :created_at => 15.minutes.ago)
-          create(:measure, :station => station, :created_at => 10.minutes.ago)
-          create(:measure, :station => station, :created_at => 5.minutes.ago)
-        end
+      let(:measures) { [*1..4].map! { create(:measure, station: station) } }
 
-        it "should not be down" do
-          expect(station.should_be_down?).to be_false
+      before :each do
+        measures.each do |m, index|
+          m.update_attribute(:created_at, 1.hours.ago )
         end
       end
 
-      context "and the two latest within 60 minutes" do
-        before(:each) do
-          create(:measure, :station => station)
-          create(:measure, :station => station, :created_at => 65.minutes.ago)
-          create(:measure, :station => station, :created_at => 59.minutes.ago)
-          create(:measure, :station => station, :created_at => 54.minutes.ago)
-        end
-        it "should not be down" do
-          expect(station.should_be_down?).to be_false
-        end
-      end
-
-      context "and has three or more old measures that are older than 60 minutes" do
-        before(:each) do
-          create(:measure, :station => station)
-          create(:measure, :station => station, :created_at => 75.minutes.ago)
-          create(:measure, :station => station, :created_at => 70.minutes.ago)
-          create(:measure, :station => station, :created_at => 65.minutes.ago)
-        end
-        it "should not be down" do
-          expect(station.should_be_down?).to be_false
-        end
-      end
-
-      context "but not within 15 minutes and not two last within an hour" do
-        before(:each) do
-          create(:measure, :station => station)
-          create(:measure, :station => station, :created_at => 80.minutes.ago)
-          create(:measure, :station => station, :created_at => 75.minutes.ago)
-          create(:measure, :station => station, :created_at => 70.minutes.ago)
-          create(:measure, :station => station, :created_at => 25.minutes.ago)
-        end
-        it "should not be down" do
-          pending "test is broken?"
-          expect(station.should_be_down?).to be_true
-        end
+      it "should be down" do
+        create(:measure, station: station)
+        expect(station.should_be_down?).to be_true
       end
     end
   end
 
   describe "check_status!" do
 
+    let(:user) { build_stubbed(:user) }
 
     context "when station was up" do
 
-      let(:station){ create(:station, down: false, user: build_stubbed(:user)) }
-
-      it "logs that its checking station" do
-        station.stub(:should_be_down?).and_return(false)
-        Rails.logger.should_receive(:info).with("Checking station #{station.name}")
-        station.check_status!
-      end
-
+      let(:station){ create(:station, down: false, user: user) }
 
       context "and station should be up" do
         # Essentially nothing should happen here.
@@ -292,14 +227,14 @@ describe Station do
           station.stub(:should_be_down?).and_return(false)
         end
 
-        it "should not send message" do
-          station.check_status!
-          StationMailer.should_not_receive("notify_about_station_down")
-        end
-
         it "station not be down" do
           station.check_status!
           expect(station.down).to be_false
+        end
+
+        it "should not notify" do
+          station.should_not_receive("notify_down")
+          station.check_status!
         end
       end
 
@@ -310,15 +245,14 @@ describe Station do
           station.stub(:should_be_down?).and_return(true)
         end
 
-        it "should send message" do
-          StationMailer.should_receive("notify_about_station_down")
-          station.check_status!
-        end
-
-
         specify "station should be down" do
           station.check_status!
           expect(station.down).to be_true
+        end
+
+        it "should notify that station is down" do
+          station.should_receive("notify_down")
+          station.check_status!
         end
 
       end
@@ -327,7 +261,7 @@ describe Station do
 
     context "when station was down" do
 
-      let(:station){ create(:station, down: true, user: build_stubbed(:user)) }
+      let(:station){ create(:station, down: true, user: user) }
 
       context "and now should be up" do
         # Essentially nothing should happen here.
@@ -336,14 +270,14 @@ describe Station do
           station.stub(:should_be_down?).and_return(false)
         end
 
-        it "should send message" do
-          StationMailer.should_receive("notify_about_station_up")
-          station.check_status!
-        end
-
         specify "station should not be down" do
           station.check_status!
           expect(station.down).to be_false
+        end
+
+        it "should notify" do
+          station.should_receive(:notify_up)
+          station.check_status!
         end
 
       end
@@ -357,8 +291,7 @@ describe Station do
 
 
         it "should not send message" do
-          StationMailer.should_not_receive("notify_about_station_down")
-          StationMailer.should_not_receive("notify_about_station_up")
+          station.should_not_receive(:notify_up)
           station.check_status!
         end
 
@@ -368,5 +301,88 @@ describe Station do
         end
       end
     end
+  end
+
+  describe "#notify_down" do
+
+    let(:user) { build_stubbed(:user) }
+    let(:station) { create(:station, user: user) }
+
+
+
+    it "should log error" do
+      Rails.logger.should_receive(:warn).with("Station alert: #{station.name} is now down")
+      station.notify_down
+    end
+
+    it "should create notification" do
+      expect {
+        station.notify_down
+      }.to change(Notification, :count).by(1)
+    end
+
+    it "should create notification with correct attributes" do
+      Notification.should_receive(:create).with(
+          user: user,
+          level: :warn,
+          message: "#{station.name} is down.",
+          event: "station_down"
+      )
+      station.notify_down
+    end
+
+    it "should send email if not notified in 12h" do
+      StationMailer.should_receive(:notify_about_station_down)
+      station.notify_down
+    end
+
+    it "should not send email if notified in last 12h" do
+      create(:notification, message: "#{station.name} is down.")
+      StationMailer.should_not_receive(:notify_about_station_down)
+      station.notify_down
+    end
+  end
+
+  describe "#notify_up" do
+    let(:user) { build_stubbed(:user) }
+    let(:station) { create(:station, user: user) }
+
+    it "should send message" do
+      StationMailer.should_receive(:notify_about_station_up)
+      station.notify_up
+    end
+
+    it "should log" do
+      Rails.logger.should_receive(:info).with("Station alert: #{station.name} is now up")
+      station.notify_up
+    end
+
+    it "should create notification" do
+      expect {
+        station.notify_up
+      }.to change(Notification, :count).by(1)
+    end
+
+    it "should create notification with correct attributes" do
+      Notification.should_receive(:create).with(
+          user: user,
+          level: :info,
+          message: "#{station.name} is up.",
+          event: "station_up"
+      )
+      station.notify_up
+    end
+
+    it "should send email if not notified in 12h" do
+      StationMailer.should_receive(:notify_about_station_down)
+      station.notify_down
+    end
+
+    it "should not send email if notified in last 12h" do
+      create(:notification, message: "#{station.name} is down.")
+      StationMailer.should_not_receive(:notify_about_station_down)
+      station.notify_down
+    end
+
   end
 end

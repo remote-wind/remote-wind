@@ -1,0 +1,17 @@
+<section class="row">
+  <h3>Notifications</h3>
+  <% if @notifications.any? %>
+      <ul class="notifications">
+        <% @notifications.each do |note| %>
+            <li class="<%= notification_classes(note).join(" ") %>" id="notification-<%= note.id %>">
+              <time class="created-at" datetime="<%= note.created_at.iso8601.to_s %>">
+                <%= note.created_at.strftime("%F %R") %>
+              </time>
+              <div class="message"><%= note.message %></div>
+            </li>
+        <% end %>
+      </ul>
+  <% end %>
+</section>
+
+<%= will_paginate @notifications %>
