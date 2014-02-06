@@ -67,6 +67,14 @@ describe NotificationsController do
       get :index, page: 4
     end
 
+    it "flashes when user has unread notifications" do
+      create(:notification, user: user)
+      get :index
+      expect(flash[:notice]).to include "You have 1 unread notification."
+    end
+
+
+
 
   end
 end

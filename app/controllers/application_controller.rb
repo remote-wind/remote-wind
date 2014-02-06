@@ -1,9 +1,10 @@
 class ApplicationController < ActionController::Base
 
-  before_filter :get_all_stations
+  before_filter :get_all_stations, :get_notifications
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
+  include ActionView::Helpers::TextHelper
 
   # Tell devise to redirect to root instead of user#show
   def after_sign_in_path_for(resource)
@@ -44,4 +45,20 @@ class ApplicationController < ActionController::Base
 
     @all_stations ||= Station.includes(:measures).visible
   end
+
+  # Get notifications
+  def get_notifications
+    if user_signed_in?
+      count = Notification.where(user: current_user, read: false).count
+      if count > 0
+        flash[:notice] = view_context.link_to(
+            "You have #{pluralize(count, 'unread notification')}.", notifications_path
+        )
+        @unread_notifications_count = count
+      end
+    end
+
+  end
+
+
 end

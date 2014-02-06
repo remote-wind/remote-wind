@@ -7,7 +7,7 @@ feature "Notifications", %{
   let(:user) { create(:user) }
   let(:note) { create(:notification, user: user) }
 
-  context "when user receives a notification" do
+  context "when I receive a notification" do
 
     before :each do
       note
@@ -15,7 +15,13 @@ feature "Notifications", %{
     end
 
     scenario "when I click inbox page should show notification" do
-      click_link "Inbox", href: notifications_path
+      click_link "Inbox(1)", href: notifications_path
+      expect(page).to have_content note.message
+    end
+
+    scenario "when I am at any page there should be a flash message" do
+      visit root_path
+      click_link "You have 1 unread notification."
       expect(page).to have_content note.message
     end
 
