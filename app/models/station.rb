@@ -107,21 +107,10 @@ class Station < ActiveRecord::Base
     self.measures.present?
   end
 
-  def self.send_low_balance_alerts
-    stations = Station.all()
+  def self.send_low_balance_alerts stations = Station.all()
+
     stations.each do |station|
-      logger.info "Checking station #{station.name}"
-
-      if station.measures?
-        logger.info "Last measure at #{station.current_measure.created_at}"
-      end
-
-      if station.balance < 15 && !station.down
-        if !station.user.nil?
-          logger.warn "Station low balance alert: #{station.name} only has #{station.balance} kr left! Notifing owner."
-          StationMailer.notify_about_low_balance(station.user,station)
-        end
-      end
+      station.check_balance
     end
   end
 
@@ -219,7 +208,7 @@ class Station < ActiveRecord::Base
     )
   end
 
-  # Check station balance and send notifications if balance is low
+  # Send notifications if station balance is low
   # @return boolean true for ok balance, false if balance is low
   def check_balance
     if balance < 15
@@ -246,8 +235,5 @@ class Station < ActiveRecord::Base
       true
     end
   end
-
-
-
 
 end
