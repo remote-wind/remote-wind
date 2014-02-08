@@ -11,6 +11,7 @@ class Station < ActiveRecord::Base
   validates_uniqueness_of :hw_id
   validates_presence_of :hw_id
   validates_numericality_of :speed_calibration
+  validates_numericality_of :balance, allow_blank: true
 
   # geolocation
   geocoded_by :name
@@ -213,9 +214,40 @@ class Station < ActiveRecord::Base
     Notification.create(
         user: self.user,
         level: :info,
-        message: "#{name} is up.", 
+        message: "#{name} is up.",
         event: "station_up"
     )
   end
+
+  # Check station balance and send notifications if balance is low
+  # @return boolean true for ok balance, false if balance is low
+  def check_balance
+    if balance < 15
+      Rails.logger.info "#{name} has a low balance, only #{balance} kr left."
+
+      message = "#{name} has a low balance, only #{balance} kr left."
+
+      # Check if there have been notifications of this event
+      notified = Notification
+        .where(message: message)
+        .where("created_at >= ?", 12.hours.ago)
+        .count > 0
+
+      StationMailer.notify_about_low_balance(user, self) unless notified
+
+      Notification.create(
+          user: self.user,
+          level: :info,
+          message: message,
+          event: "station_low_balance"
+      )
+      false
+    else
+      true
+    end
+  end
+
+
+
 
 end

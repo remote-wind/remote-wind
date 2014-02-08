@@ -35,6 +35,8 @@ describe Station do
   describe "validations" do
     it { should validate_uniqueness_of :hw_id }
     it { should validate_presence_of :hw_id }
+    it { should validate_numericality_of :speed_calibration }
+    it { should validate_numericality_of :balance }
   end
 
   describe "#set_timezone!" do
@@ -383,6 +385,77 @@ describe Station do
       StationMailer.should_not_receive(:notify_about_station_down)
       station.notify_down
     end
+  end
+
+  describe "#check_balance" do
+
+
+    context "when balance is low" do
+      let(:station){ build_stubbed(:station, balance: 10, user: build_stubbed(:user)) }
+
+
+      it "should return false" do
+        expect(station.check_balance).to be_false
+      end
+
+      it "should log notice" do
+        Rails.logger.should_receive(:info)
+            .with("#{station.name} has a low balance, only 10.0 kr left.")
+        station.check_balance
+      end
+
+      it "should send email" do
+        StationMailer.should_receive(:notify_about_low_balance)
+        station.check_balance
+      end
+
+      it "should only create email if not yet notified" do
+        create(:notification, message: "#{station.name} has a low balance, only 10.0 kr left.")
+        StationMailer.should_not_receive(:notify_about_low_balance)
+        station.check_balance
+      end
+
+      it "should create a notification" do
+        expect {
+          station.check_balance
+        }.to change(Notification, :count).by(1)
+      end
+
+      it "should create a notification with the correct attributes" do
+        station.check_balance
+        note = Notification.last
+        expect(note.message).to eq "#{station.name} has a low balance, only 10.0 kr left."
+        expect(note.event).to eq "station_low_balance"
+      end
+
+    end
+
+    context "when balance is high" do
+
+      let(:station){ build_stubbed(:station, balance: 999, user: build_stubbed(:user)) }
+
+      it "should return true" do
+        expect(station.check_balance).to be_true
+      end
+
+      it "should not log notice" do
+        Rails.logger.should_not_receive(:info)
+        station.check_balance
+      end
+
+      it "should not send email" do
+        StationMailer.should_not_receive(:notify_about_low_balance)
+        station.check_balance
+      end
+
+      it "should not create a notification" do
+        expect {
+          station.check_balance
+        }.to_not change(Notification, :count)
+      end
+
+    end
 
   end
+
 end

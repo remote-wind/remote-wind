@@ -16,6 +16,8 @@ RemoteWind::Application.routes.draw do
   get "/stations/:station_id/embed(/:css)", to: "stations#embed", as: :embed_station
   delete "/stations/:station_id/measures", to: "stations#destroy_measures", as: :destroy_station_measures
 
+
+  put "/s/:station_id" => "stations#update_balance"
   get "/stations/find/:hw_id", to: "stations#find", as: :find_station
   resources :stations, :shallow => true do
     resources :measures, only: [:show, :create, :destroy] do |measure|
@@ -26,5 +28,7 @@ RemoteWind::Application.routes.draw do
 
   resources :measures,  only: [:index, :create]
   resources :notifications, only: [:index]
+
+
 
 end

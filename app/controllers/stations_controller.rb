@@ -1,6 +1,6 @@
 class StationsController < ApplicationController
-  before_filter :authenticate_user!, :except => [:show, :index, :measures, :search, :embed, :find]
-  authorize_resource :except => [:show, :index, :measures, :search, :embed, :find]
+  before_filter :authenticate_user!, :except => [:show, :index, :measures, :search, :embed, :find, :update_balance]
+  authorize_resource :except => [:show, :index, :measures, :search, :embed, :find, :update_balance]
   before_action :set_station, only: [:edit, :update, :destroy]
 
   # GET /stations
@@ -25,6 +25,8 @@ class StationsController < ApplicationController
   # GET /stations/1/edit
   def edit
   end
+
+
 
   # POST /stations
   # POST /stations.json
@@ -61,6 +63,25 @@ class StationsController < ApplicationController
       else
         format.html { render action: 'edit' }
         format.json { render json: @station.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # @throws ActiveRecord::RecordNotFound if no station
+  # PUT /s/:station_id
+  def update_balance
+
+    @station = Station.friendly.find(params[:station_id])
+    @station.balance = params[:b] if params[:b].present?
+
+    respond_to do |format|
+      if @station.balance_changed? && @station.save
+        format.any { render nothing: true, status: :ok }
+        # check station balance after reply has been sent
+        @station.check_balance
+      else
+        logger.error( "Someone attemped to update #{@station.name} balance with invalid data ('#{params[:b]}') from #{request.remote_ip}" )
+        format.any { render nothing: true, status: :unprocessable_entity }
       end
     end
   end
@@ -146,6 +167,9 @@ class StationsController < ApplicationController
       end
     end
   end
+
+
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
