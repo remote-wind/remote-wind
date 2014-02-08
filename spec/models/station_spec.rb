@@ -78,33 +78,14 @@ describe Station do
 
   describe ".send_low_balance_alerts" do
 
-    context "when a station has a low balance" do
+    it "checks all the stations" do
 
-      let!(:station) {
-        create(:station, :balance => 3, :user => create(:user))
-      }
+      # prevents no user error
+      Station.any_instance.stub(:check_balance)
 
-      it "logs a warning" do
-        Rails.logger.should_receive(:warn).with(/Station low balance alert: Station \d* only has 3.0 kr left! Notifing owner/)
-        Station.send_low_balance_alerts()
-      end
-
-      it "sends an email to user" do
-        StationMailer.should_receive(:notify_about_low_balance).with(station.user, station)
-        Station.send_low_balance_alerts()
-      end
-    end
-
-    context "when a station does not have a low balance" do
-
-      let!(:station) {
-        create(:station, :balance => 99, :user => create(:user))
-      }
-
-      it "does not send an email" do
-        StationMailer.should_not_receive(:notify_about_low_balance)
-        Station.send_low_balance_alerts()
-      end
+      stations = [*1..3].map! { build_stubbed(:station) }
+      stations.last.should_receive(:check_balance)
+      Station.send_low_balance_alerts(stations)
     end
   end
 
@@ -256,9 +237,7 @@ describe Station do
           station.should_receive("notify_down")
           station.check_status!
         end
-
       end
-
     end
 
     context "when station was down" do
@@ -281,7 +260,6 @@ describe Station do
           station.should_receive(:notify_up)
           station.check_status!
         end
-
       end
 
       context "and now should be down" do
@@ -290,7 +268,6 @@ describe Station do
         before(:each) do
           station.stub(:should_be_down?).and_return(true)
         end
-
 
         it "should not send message" do
           station.should_not_receive(:notify_up)
@@ -309,8 +286,6 @@ describe Station do
 
     let(:user) { build_stubbed(:user) }
     let(:station) { create(:station, user: user) }
-
-
 
     it "should log error" do
       Rails.logger.should_receive(:warn).with("Station alert: #{station.name} is now down")
@@ -389,7 +364,6 @@ describe Station do
 
   describe "#check_balance" do
 
-
     context "when balance is low" do
       let(:station){ build_stubbed(:station, balance: 10, user: build_stubbed(:user)) }
 
@@ -453,9 +427,6 @@ describe Station do
           station.check_balance
         }.to_not change(Notification, :count)
       end
-
     end
-
   end
-
 end
