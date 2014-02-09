@@ -99,7 +99,7 @@ class StationsController < ApplicationController
   # GET /stations/:staton_id/measures
   def measures
     # get station with Friendly Id, params[:id] can either be id or slug
-    @station = Station.includes(:measures).friendly.find(params[:station_id])
+    @station = Station.friendly.find(params[:station_id])
 
     respond_to do |format|
       format.html { @measures = Measure.order(created_at: :desc).paginate(page: params[:page]) }
