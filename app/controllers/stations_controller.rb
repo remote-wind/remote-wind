@@ -16,6 +16,8 @@ class StationsController < ApplicationController
     # Use etag to check if we have a cached version of request and skip rendering.
     if user_signed_in? or stale?(etag: @station, last_modified: @station.last_measure_received_at)
       @measures = Measure.where(station_id: @station.id).joins(:station).limit(10).order(created_at: :desc)
+      expires_in 3.minutes, public: true
+
       respond_to do |format|
         format.html #show.html.erb
       end
