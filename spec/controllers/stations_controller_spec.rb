@@ -462,34 +462,34 @@ describe StationsController do
     end
 
     it "should take b (balance) parameter" do
-      put :update_balance, station_id: station.id, b: 90
+      put :update_balance, station_id: station.id, s: { b: 90 }
       expect(assigns(:station).balance).to eq 90
     end
 
     it "should update balance" do
-      put :update_balance, station_id: station.id, b: 90
+      put :update_balance, station_id: station.id, s: { b: 90 }
       station.reload
       expect(station.balance).to eq 90
     end
 
     it "should return 200/OK with valid input" do
-      put :update_balance, station_id: station.id, b: 90
+      put :update_balance, station_id: station.id, s: { b: 90 }
       expect(response.status).to eq 200
     end
 
     it "should return 422 - Unprocessable Entity when given an invalid balance" do
-      put :update_balance, station_id: station.id, b: "not a number"
+      put :update_balance, station_id: station.id, s: { b: "nan" }
       expect(response.status).to eq 422
     end
 
     it "should log error if given an invalid balance" do
-      Rails.logger.should_receive(:error).with("Someone attemped to update #{station.name} balance with invalid data ('not a number') from 0.0.0.0")
-      put :update_balance, station_id: station.id, b: "not a number"
+      Rails.logger.should_receive(:error).with("Someone attemped to update #{station.name} balance with invalid data ('nan') from 0.0.0.0")
+      put :update_balance, station_id: station.id, s: { b: "nan" }
     end
 
     it "should check station balance" do
       Station.any_instance.should_receive(:check_balance)
-      put :update_balance, station_id: station.id, b: 10
+      put :update_balance, station_id: station.id, s: { b: 10 }
     end
 
   end

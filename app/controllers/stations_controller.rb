@@ -80,8 +80,10 @@ class StationsController < ApplicationController
   # PUT /s/:station_id
   def update_balance
 
+    sp = params.require(:s).permit(:b)
+
     @station = Station.friendly.find(params[:station_id])
-    @station.balance = params[:b] if params[:b].present?
+    @station.balance = sp[:b] if sp[:b].present?
 
     respond_to do |format|
       if @station.balance_changed? && @station.save
@@ -89,7 +91,7 @@ class StationsController < ApplicationController
         # check station balance after reply has been sent
         @station.check_balance
       else
-        logger.error( "Someone attemped to update #{@station.name} balance with invalid data ('#{params[:b]}') from #{request.remote_ip}" )
+        logger.error( "Someone attemped to update #{@station.name} balance with invalid data ('#{params[:s][:b]}') from #{request.remote_ip}" )
         format.any { render nothing: true, status: :unprocessable_entity }
       end
     end
