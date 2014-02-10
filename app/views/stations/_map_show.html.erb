@@ -1,9 +1,0 @@
-<div class="marker hidden" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>">
-  <h3 class="title"><%= @station.name %></h3>
-  <% if @station.measures? %>
-      <% measure = @station.current_measure %>
-      <div class="measure" data-uid="<%= measure.id %>" data-direction="<%= measure.direction %>" data-speed="<%= measure.speed %>" data-min-speed="<%= measure.min_wind_speed %>" data-max-speed="<%= measure.max_wind_speed %>">
-        <dl>Wind speed</dl>
-      </div>
-  <% end %>
-</div>

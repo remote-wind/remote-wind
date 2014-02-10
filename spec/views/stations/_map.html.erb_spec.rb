@@ -8,11 +8,11 @@ describe "stations/_map" do
   before(:each) do
     station.measures.create(attributes_for(:measure))
     stub_user_for_view_test
-    assign(:stations, [station])
+    render "stations/map", stations: [station]
   end
 
   subject (:page) do
-    render
+
     rendered
   end
 

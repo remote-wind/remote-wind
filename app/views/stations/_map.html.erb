@@ -1,4 +1,4 @@
-<% if @stations.length.nonzero?  %>
+<% if stations.length.nonzero?  %>
 <%
     classes = %w[map-canvas cluster small-12 large-12 columns]
     if !!defined? fullscreen and fullscreen
@@ -6,8 +6,8 @@
     end
 
 %>
-<div class="<%= classes.join(' ') %>" id="map_canvas" data-lat="<%= @stations.first.lat %>" data-lon="<%= @stations.first.lon %>">
-  <% @stations.each do |station| %>
+<div class="<%= classes.join(' ') %>" id="map_canvas" data-lat="<%= stations.first.lat %>" data-lon="<%= stations.first.lon %>">
+  <% stations.each do |station| %>
       <div class="marker hidden" data-lat="<%= station.lat %>" data-lon="<%= station.lon %>">
         <h3 class="title"><%= link_to station.name, station %></h3>
         <% measure = station.measures.last %>
