@@ -4,6 +4,10 @@ class StationsController < ApplicationController
   before_action :set_station, only: [:update, :destroy]
   before_action :select_station, only: [:show, :edit]
 
+  # Skip CSRF protection since station does not send CSRF token.
+  protect_from_forgery :except => [:create, :update_balance]
+
+
   # GET /stations
   # GET /stations.json
   def index
