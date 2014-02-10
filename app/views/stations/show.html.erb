@@ -60,7 +60,7 @@
       <% end %>
     </dl>
 </article>
-<% cache @station do %>
+
 <nav class="row">
     <ul class="breadcrumbs" role="navigation">
       <li class="root"><a href="<%= root_path %>">Home</a></li>
@@ -68,4 +68,3 @@
       <li class="current"><a href="<%= station_path(@station) %>"><%= @station.name %></a></li>
     </ul>
 </nav>
-<% end %>
