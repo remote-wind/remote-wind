@@ -1,7 +1,8 @@
 class StationsController < ApplicationController
   before_filter :authenticate_user!, :except => [:show, :index, :measures, :search, :embed, :find, :update_balance]
   authorize_resource :except => [:show, :index, :measures, :search, :embed, :find, :update_balance]
-  before_action :set_station, only: [:edit, :update, :destroy]
+  before_action :set_station, only: [:update, :destroy]
+  before_action :select_station, only: [:show, :edit]
 
   # GET /stations
   # GET /stations.json
@@ -12,11 +13,6 @@ class StationsController < ApplicationController
   # GET /stations/1
   # GET /stations/1.json
   def show
-    @station = @all_stations.select { |station| [station.id, station.slug].include?(params[:id] ) }.first
-    unless @station
-      throw ActiveRecord::RecordNotFound.new(
-          "Station with id or slug = '#{params[:id]}' cannot be found" )
-    end
     @measures = Measure.where(station_id: @station.id).joins(:station).limit(10).order(created_at: :desc)
   end
 
@@ -52,7 +48,7 @@ class StationsController < ApplicationController
   # PATCH/PUT /stations/1
   # PATCH/PUT /stations/1.json
   def update
-
+    @station = Station.friendly.find(params[:id])
     unless params[:station][:show].nil?
       params[:station][:show] = params[:station][:show] == 'yes'
     end
@@ -147,7 +143,6 @@ class StationsController < ApplicationController
   end
 
   def find
-
     @station = Station.find_by_hw_id(params[:hw_id])
     if(@station.nil?)
       respond_to do |format|
@@ -169,14 +164,19 @@ class StationsController < ApplicationController
     end
   end
 
-
-
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_station
       # get station with Friendly Id, params[:id] can either be id or slug
       @station = Station.friendly.find(params[:id])
+    end
+
+    def select_station
+      @station = @all_stations.select_by_slug_or_id(params[:id])
+      unless @station
+        throw ActiveRecord::RecordNotFound.new(
+                  "Station with id or slug = '#{params[:id]}' cannot be found" )
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

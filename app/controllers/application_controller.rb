@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
 
-  before_filter :get_all_stations, :get_notifications
+  before_filter :get_all_stations
+  before_filter :get_notifications, if: -> { user_signed_in? }
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -42,21 +43,19 @@ class ApplicationController < ActionController::Base
     end
 
     @all_stations ||= Station.includes(:measures).where(show: true)
+
+    # Add methods to search for station in collection
+    @all_stations.extend(Slugged)
   end
 
   # Get notifications
   def get_notifications
-    if user_signed_in?
-      count = Notification.where(user: current_user, read: false).count
-      if count > 0
-        flash[:notice] = view_context.link_to(
-            "You have #{pluralize(count, 'unread notification')}.", notifications_path
-        )
-        @unread_notifications_count = count
-      end
+    count = Notification.where(user: current_user, read: false).count
+    if count > 0
+      flash[:notice] = view_context.link_to(
+          "You have #{pluralize(count, 'unread notification')}.", notifications_path
+      )
+      @unread_notifications_count = count
     end
-
   end
-
-
 end
