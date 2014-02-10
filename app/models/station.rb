@@ -132,20 +132,7 @@ class Station < ActiveRecord::Base
 
   # do heuristics if station is down
   def should_be_down?
-      measures = Measure
-                .where(station_id: self.id)
-                .order(created_at: :desc)
-                .last(5)
-
-      # Give leeway for stations that have not yet been deployed or where just turned on
-      if measures.size < 3
-        false
-      # Are there 3 or more measures in the last 24 minutes?
-      elsif measures.take_while { |measure| measure.created_at > 24.minutes.ago }.size >= 3
-        false
-      else
-        true
-      end
+      Measure.where({station_id: id}).since(24.minutes.ago).order(created_at: :desc).count  < 3
   end
 
   def check_status!
@@ -173,17 +160,20 @@ class Station < ActiveRecord::Base
                     .where("created_at >= ?", 12.hours.ago)
                     .count > 0
 
-    unless notified
-      StationMailer.notify_about_station_down(user, self)
-    end
+    if user.present?
 
-    # create UI notification.
-    Notification.create(
-        user: self.user,
-        level: :warn,
-        message: "#{name} is down.",
-        event: "station_down"
-    )
+      unless notified
+        StationMailer.notify_about_station_down(user, self)
+      end
+
+      # create UI notification.
+      Notification.create(
+          user: self.user,
+          level: :warn,
+          message: "#{name} is down.",
+          event: "station_down"
+      )
+    end
   end
 
   # Log and send notifications that station is up

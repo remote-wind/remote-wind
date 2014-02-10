@@ -91,9 +91,12 @@ describe Station do
 
   describe ".check_all_stations" do
 
+
+
     let!(:stations) { [*1..3].map! { build_stubbed(:station) } }
 
     it "should check each station" do
+      Station.any_instance.stub(:check_status!)
       stations.last.should_receive(:check_status!)
       Station.check_all_stations(stations)
     end
@@ -163,17 +166,9 @@ describe Station do
 
     let(:station) { create(:station, down: true) }
 
-    context "when station has less than 3 measures" do
-      let(:measures) { [*1..2].map! { create(:measure, station: station) } }
-
-      it "should not be down" do
-        expect(station.should_be_down?).to be_false
-      end
-    end
-
     context "when station has three measures in last 24 min" do
-      let(:measures) { [*1..4].map! { create(:measure, station: station) } }
       it "should not be down" do
+        4.times { create(:measure, station: station) }
         expect(station.should_be_down?).to be_false
       end
     end
