@@ -16,8 +16,6 @@ class StationsController < ApplicationController
     # Use etag to check if we have a cached version of request and skip rendering.
     if user_signed_in? or stale?(etag: @station, last_modified: @station.last_measure_received_at)
       @measures = Measure.where(station_id: @station.id).joins(:station).limit(10).order(created_at: :desc)
-      expires_in 3.minutes, public: true
-
       respond_to do |format|
         format.html #show.html.erb
       end
@@ -108,10 +106,13 @@ class StationsController < ApplicationController
   def measures
     # get station with Friendly Id, params[:id] can either be id or slug
     @station = Station.friendly.find(params[:station_id])
+    expires_in 2.minutes, public: true
 
-    respond_to do |format|
-      format.html { @measures = Measure.order(created_at: :desc).paginate(page: params[:page]) }
-      format.json { @measures = @station.get_calibrated_measures }
+    if stale?(etag: @station, last_modified: @station.last_measure_received_at)
+      respond_to do |format|
+        format.html { @measures = Measure.order(created_at: :desc).paginate(page: params[:page]) }
+        format.json { @measures = @station.get_calibrated_measures }
+      end
     end
   end
 
