@@ -1,11 +1,9 @@
-<% cache @station do %>
 <div class="row">
   <h1><%= @station.name %></h1>
   <% unless @station.user.nil? %>
       <p>Owned by <%= @station.user.email %></p>
   <% end %>
 </div>
-<% end %>
 
 <div class="map-canvas small-12 large-12 columns no-fullscreen" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
   <%= render :partial => 'stations/map', locals: { stations: [@station] } %>
