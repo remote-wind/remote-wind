@@ -37,13 +37,11 @@ class ApplicationController < ActionController::Base
   # since the stations are used by all
   def get_all_stations
 
-    if user_signed_in?
-      if current_user.has_role? :admin
+    if user_signed_in? && current_user.has_role?(:admin)
         @all_stations = Station.includes(:measures).to_a
-      end
     end
 
-    @all_stations ||= Station.includes(:measures).visible
+    @all_stations ||= Station.includes(:measures).where(show: true)
   end
 
   # Get notifications
