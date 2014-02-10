@@ -1,0 +1,38 @@
+<%  cache do  %>
+<nav class="right-off-canvas-menu">
+  <ul class="off-canvas-list">
+    <li><label>Get serious</label></li>
+    <% unless user_signed_in? %>
+        <li><%= link_to 'Sign up', new_user_registration_path %></li>
+        <li><%= link_to 'Log in', new_user_session_path %></li>
+    <% else %>
+        <li class="logged-in has-dropdown">
+          <a href="<%= url_for current_user  %>">
+            <div class="avatar">
+              <% if current_user.image? %>
+                  <img src="<%= current_user.image %>">
+              <% else %>
+                  <img src="http://placehold.it/25x25">
+              <% end %>
+              <%= current_user.email %>
+            </div>
+          </a>
+          <ul class="dropdown">
+
+
+            <li class="notifications"><%= link_to_notifications(@unread_notifications_count.presence) %> </li>
+            <li class="show"><%= link_to "View profile", current_user %></li>
+            <li class="edit"><%= link_to "Edit profile", edit_user_registration_path %></li>
+            <li class="signout"><%= link_to "Log out", destroy_user_session_path, :method => :delete %></li>
+          </ul>
+        </li>
+    <% end %>
+  </ul>
+  <ul class="off-canvas-list">
+    <li><label>Remote Wind</label></li>
+    <li><%= link_to 'Products', products_path %></li>
+    <li><%= link_to 'Stations', stations_path %></li>
+  </ul>
+  <%= yield :right_nav %>
+</nav>
+<% end unless user_signed_in? %>

@@ -110,6 +110,11 @@ describe StationsController do
           expect(assigns(:station).show).to be_false
         end
 
+        it "expires all_stations cache" do
+          StationsController.any_instance.should_receive(:expire_fragment).with('all_stations')
+          post :create, {:station => valid_attributes}
+        end
+
       end
 
       describe "with invalid params" do
@@ -195,6 +200,11 @@ describe StationsController do
           expect(assigns(:station).show).to be_true
         end
 
+        it "expires all_stations cache" do
+          StationsController.any_instance.should_receive(:expire_fragment).with('all_stations')
+          put :update, {:id => station.to_param, :station => { slug: 'custom_slug' }}
+        end
+
       end
 
       describe "with invalid params, it" do
@@ -240,20 +250,30 @@ describe StationsController do
     end
 
     context "when an admin" do
-      before { sign_in create(:admin) }
+
+      let!(:station) { create(:station) }
+
+      before(:each) do
+        sign_in create(:admin)
+
+      end
 
       it "destroys the requested station" do
-        station = Station.create! valid_attributes
         expect {
           delete :destroy, {:id => station.to_param}
         }.to change(Station, :count).by(-1)
       end
 
       it "redirects to the stations list" do
-        station = Station.create! valid_attributes
         delete :destroy, {:id => station.to_param}
         response.should redirect_to(stations_url)
       end
+
+      it "expires all_stations cache" do
+        StationsController.any_instance.should_receive(:expire_fragment).with('all_stations')
+        delete :destroy, {:id => station.to_param}
+      end
+
     end
   end
 

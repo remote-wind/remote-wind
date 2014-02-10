@@ -48,6 +48,9 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.1.4)
+    cache_digests (0.3.1)
+      actionpack (>= 3.2)
+      thread_safe
     callsite (0.0.11)
     cancan (1.6.9)
     capybara (2.1.0)
@@ -287,6 +290,7 @@ PLATFORMS
 DEPENDENCIES
   better_errors
   binding_of_caller
+  cache_digests
   cancan
   capybara
   coffee-rails (~> 4.0.0)

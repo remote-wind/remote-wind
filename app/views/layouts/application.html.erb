@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- Set the viewport width to device width for mobile -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= content_for?(:title) ? yield(:title) : "Remote Wind" %></title>
+  <!-- Set the viewport width to device width for mobile -->
+<% cache do %>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <%= stylesheet_link_tag    "application" %>
   <link href='http://fonts.googleapis.com/css?family=Lato:100,300,700,100italic,300italic,700italic' rel='stylesheet' type='text/css'>
   <%= csrf_meta_tags %>
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <%= javascript_include_tag "application" %>
 </head>
 <body>
 <div class="off-canvas-wrap">
@@ -26,63 +28,16 @@
         <a class="right-off-canvas-toggle menu-icon" ><span></span></a>
       </section>
     </nav>
-
+<% end %>
     <!-- Application notifications -->
     <%= render 'layouts/flash' %>
 
     <!-- pull in navigation -->
-    <nav class="left-off-canvas-menu" id="left-off-canvas-menu">
-      <% cache('all_stations') do %>
-      <% unless @all_stations.empty? %>
-          <ul class="off-canvas-list">
-            <li><label><%= link_to "Stations", stations_path %></label></li>
-            <% @all_stations.each do |station| %>
-                <li><%= link_to station.name, station %></li>
-            <% end %>
-          </ul>
-      <% end %>
-
-      <% end %>
-      <%= yield :left_nav %>
-    </nav>
+    <%= render 'layouts/left_menu' %>
 
     <!-- pull in navigation -->
-    <nav class="right-off-canvas-menu">
-      <ul class="off-canvas-list">
-        <li><label>Get serious</label></li>
-        <% unless user_signed_in? %>
-            <li><%= link_to 'Sign up', new_user_registration_path %></li>
-            <li><%= link_to 'Log in', new_user_session_path %></li>
-        <% else %>
-            <li class="logged-in has-dropdown">
-              <a href="<%= url_for current_user  %>">
-                <div class="avatar">
-                  <% if current_user.image? %>
-                      <img src="<%= current_user.image %>">
-                  <% else %>
-                      <img src="http://placehold.it/25x25">
-                  <% end %>
-                  <%= current_user.email %>
-                </div>
-              </a>
-              <ul class="dropdown">
+    <%= render 'layouts/right_menu' %>
 
-
-                <li class="notifications"><%= link_to_notifications(@unread_notifications_count.presence) %> </li>
-                <li class="show"><%= link_to "View profile", current_user %></li>
-                <li class="edit"><%= link_to "Edit profile", edit_user_registration_path %></li>
-                <li class="signout"><%= link_to "Log out", destroy_user_session_path, :method => :delete %></li>
-              </ul>
-            </li>
-        <% end %>
-      </ul>
-      <ul class="off-canvas-list">
-        <li><label>Remote Wind</label></li>
-        <li><%= link_to 'Products', products_path %></li>
-        <li><%= link_to 'Stations', stations_path %></li>
-      </ul>
-      <%= yield :right_nav %>
-    </nav>
     <section class="main-section" id="main-section">
       <%= yield %>
     </section>
@@ -90,7 +45,7 @@
   </div>
 </div>
 
-<%= javascript_include_tag "application" %>
+
 </body>
 </html>
 

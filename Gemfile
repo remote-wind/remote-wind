@@ -29,6 +29,7 @@ gem 'jbuilder', '~> 1.2' # Build JSON APIs with ease. Read more: https://github.
 gem 'friendly_id' # Slugging
 gem 'nokogiri' # XML/SAX parser.
 gem 'will_paginate' #Pagination
+gem 'cache_digests' #Cache invalidation
 
 #= BDD Tools =========================================================
 group :doc do
