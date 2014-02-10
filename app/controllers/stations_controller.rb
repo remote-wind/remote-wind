@@ -12,9 +12,12 @@ class StationsController < ApplicationController
   # GET /stations/1
   # GET /stations/1.json
   def show
-    # get station with Friendly Id, params[:id] can either be id or slug
-    @station = Station.friendly.find(params[:id])
-    @measures = @station.measures.limit(10).order(created_at: :desc)
+    @station = @all_stations.select { |station| [station.id, station.slug].include?(params[:id] ) }.first
+    unless @station
+      throw ActiveRecord::RecordNotFound.new(
+          "Station with id or slug = '#{params[:id]}' cannot be found" )
+    end
+    @measures = Measure.where(station_id: @station.id).joins(:station).limit(10).order(created_at: :desc)
   end
 
   # GET /stations/new
@@ -25,8 +28,6 @@ class StationsController < ApplicationController
   # GET /stations/1/edit
   def edit
   end
-
-
 
   # POST /stations
   # POST /stations.json

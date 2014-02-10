@@ -16,14 +16,14 @@
       <dd id="chart">
         <a href="#chart-panel">Chart</a>
         <div class="content chart-wrapper active clearfix" id="chart-panel">
-          <%= render :partial => 'measures/chart', object: @measures %>
+          <% ##= render :partial => 'measures/chart', object: @measures %>
         </div>
       </dd>
 
       <dd id="table">
         <a href="#table-panel">Table</a>
         <div class="content clearfix" id="table-panel">
-          <%= render :partial => 'measures/table', object: @measures %>
+          <%= render :partial => 'measures/table', object: @measures, locals: { station: @station } %>
           <p><%= link_to("More", station_measures_path(@station)) %></p>
         </div>
       </dd>
