@@ -1,9 +1,11 @@
+<% cache @station do %>
 <div class="row">
   <h1><%= @station.name %></h1>
   <% unless @station.user.nil? %>
       <p>Owned by <%= @station.user.email %></p>
   <% end %>
 </div>
+<% end %>
 
 <div class="map-canvas small-12 large-12 columns no-fullscreen" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
   <%= render :partial => 'stations/map', locals: { stations: [@station] } %>
@@ -27,8 +29,9 @@
           <p><%= link_to("More", station_measures_path(@station)) %></p>
         </div>
       </dd>
-
       <% end %>
+
+      <% cache @station do %>
       <dd id="meta">
         <a href="#meta-panel">Meta</a>
         <div class="content clearfix" id="meta-panel">
@@ -42,6 +45,7 @@
           <%= render :partial => 'stations/embed', object: @station %>
         </div>
       </dd>
+      <% end %>
 
       <% if can? :manage, Station %>
       <dd>
@@ -58,6 +62,7 @@
       <% end %>
     </dl>
 </article>
+<% cache @station do %>
 <nav class="row">
     <ul class="breadcrumbs" role="navigation">
       <li class="root"><a href="<%= root_path %>">Home</a></li>
@@ -65,4 +70,4 @@
       <li class="current"><a href="<%= station_path(@station) %>"><%= @station.name %></a></li>
     </ul>
 </nav>
-
+<% end %>

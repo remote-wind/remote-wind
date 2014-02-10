@@ -1,4 +1,4 @@
-<%  cache do  %>
+<%  cache_unless user_signed_in? do  %>
 <nav class="right-off-canvas-menu">
   <ul class="off-canvas-list">
     <li><label>Get serious</label></li>
@@ -35,4 +35,4 @@
   </ul>
   <%= yield :right_nav %>
 </nav>
-<% end unless user_signed_in? %>
+<% end %>
