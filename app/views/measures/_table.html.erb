@@ -6,6 +6,7 @@
   </thead>
   <tbody>
   <% @measures.each do |measure| %>
+      <% cache measure do %>
       <tr class="measure" data-uid="<%= measure.id %>">
         <td class="created_at"><%= time_date_hours_seconds(@station.time_to_local(measure.created_at)) %></td>
         <% unless params[:controller] == 'stations' %>
@@ -14,6 +15,7 @@
         <td class="direction"><%= degrees_and_cardinal(measure.direction) %></td>
         <td class="speed"><%= measure.speed %> (<%= measure.min %>-<%= measure.max %>)m/s</td>
       </tr>
+      <% end %>
   <% end %>
   </tbody>
 </table>
