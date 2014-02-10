@@ -30,16 +30,6 @@ describe "stations/index" do
     it { should_not have_link 'Delete' }
   end
 
-  context "when an admin" do
-    subject {
-      @ability.can :manage, Station
-      render
-      rendered
-    }
-    it { should have_link 'Edit' }
-    it { should have_link 'Delete' }
-  end
-
   describe "breadcumbs" do
     it { should have_selector '.breadcrumbs .root', text: 'Home' }
     it { should have_selector '.breadcrumbs .current', text: 'Stations' }
