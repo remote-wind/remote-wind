@@ -4,14 +4,12 @@
     <th>Name</th>
     <th>Wind speed</th>
     <th>Direction</th>
-    <% if can? :manage, Station %>
-        <th>Actions</th>
-    <% end %>
     <th>Status</th>
   </tr>
   </thead>
   <tbody>
   <% @stations.each do |station| %>
+      <% cache station do %>
       <tr class="station" id="station-<%= station.id %>">
         <td class="name"><%= link_to station.name, station %></td>
         <td class="speed">
@@ -24,15 +22,6 @@
               <%=  station.current_measure.direction %> (<%=  station.current_measure.compass_point %>)
           <% end %>
         </td>
-
-        <% if can? :manage, Station %>
-            <td class="admin-only">
-              <ul class="actions button-group tiny">
-                <li><%= link_to 'Edit', edit_station_path(station), class: 'button tiny' %></li>
-                <li><%= link_to 'Delete', station, method: :delete, data: { confirm: 'Are you sure?' }, class: 'button alert tiny' %></li>
-              </ul>
-            </td>
-        <% end %>
         <td>
           <% unless station.down? %>
               <span class="label success">OK</span>
@@ -41,6 +30,7 @@
           <% end %>
         </td>
       </tr>
+      <% end %>
   <% end %>
   <% if can? :create, Station && params[:controller] == 'stations' %>
       <tr class="station">

@@ -83,8 +83,8 @@ feature "Stations", %{
   scenario "when I click edit on a station" do
     station
     admin_session
-    visit stations_path
-    first('.station').click_link('Edit')
+    visit station_path station
+    click_link("Edit")
     expect(current_path).to include edit_station_path(station)
   end
 
