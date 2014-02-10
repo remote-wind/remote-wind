@@ -36,6 +36,7 @@ class StationsController < ApplicationController
 
     respond_to do |format|
       if @station.save
+        expire_fragment('all_stations')
         format.html { redirect_to @station, notice: 'Station was successfully created.' }
         format.json { render action: 'show', status: :created, location: @station }
       else
@@ -55,6 +56,7 @@ class StationsController < ApplicationController
 
     respond_to do |format|
       if @station.update(station_params)
+        expire_fragment('all_stations')
         format.html { redirect_to @station, notice: 'Station was successfully updated.' }
         format.json { head :no_content }
       else
@@ -87,6 +89,7 @@ class StationsController < ApplicationController
   # DELETE /stations/1.json
   def destroy
     @station.destroy
+    expire_fragment('all_stations')
     respond_to do |format|
       format.html { redirect_to stations_url }
       format.json { head :no_content }
