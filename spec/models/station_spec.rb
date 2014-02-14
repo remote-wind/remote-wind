@@ -77,12 +77,9 @@ describe Station do
   end
 
   describe ".send_low_balance_alerts" do
-
     it "checks all the stations" do
-
       # prevents no user error
       Station.any_instance.stub(:check_balance)
-
       stations = [*1..3].map! { build_stubbed(:station) }
       stations.last.should_receive(:check_balance)
       Station.send_low_balance_alerts(stations)
@@ -90,17 +87,12 @@ describe Station do
   end
 
   describe ".check_all_stations" do
-
-
-
     let!(:stations) { [*1..3].map! { build_stubbed(:station) } }
-
     it "should check each station" do
       Station.any_instance.stub(:check_status!)
       stations.last.should_receive(:check_status!)
       Station.check_all_stations(stations)
     end
-
   end
 
   describe "#time_to_local_time" do
@@ -303,14 +295,14 @@ describe Station do
       station.notify_down
     end
 
-    it "should send email if not notified in 12h" do
+    it "should send email" do
       StationMailer.should_receive(:notify_about_station_down)
       station.notify_down
     end
 
-    it "should not send email if notified in last 12h" do
+    it "should send email if notified in last 12h" do
       create(:notification, message: "#{station.name} is down.")
-      StationMailer.should_not_receive(:notify_about_station_down)
+      StationMailer.should_receive(:notify_about_station_down)
       station.notify_down
     end
   end
@@ -350,9 +342,9 @@ describe Station do
       station.notify_down
     end
 
-    it "should not send email if notified in last 12h" do
+    it "should send email if notified in last 12h" do
       create(:notification, message: "#{station.name} is down.")
-      StationMailer.should_not_receive(:notify_about_station_down)
+      StationMailer.should_receive(:notify_about_station_down)
       station.notify_down
     end
   end

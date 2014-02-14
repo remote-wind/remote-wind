@@ -80,7 +80,6 @@ class Station < ActiveRecord::Base
     end
   end
 
-
   # Use FriendlyId to create easily "pretty urls"
   extend FriendlyId
   friendly_id :name, :use => [:slugged, :history]
@@ -108,7 +107,6 @@ class Station < ActiveRecord::Base
   end
 
   def self.send_low_balance_alerts stations = Station.all()
-
     stations.each do |station|
       station.check_balance
     end
@@ -153,18 +151,9 @@ class Station < ActiveRecord::Base
   def notify_down
 
     logger.warn "Station alert: #{name} is now down"
-
-    # Only mail about this event once every 12h
-    notified = Notification
-                    .where(message: "#{name} is down.")
-                    .where("created_at >= ?", 12.hours.ago)
-                    .count > 0
-
+    # Allows tests without user
     if user.present?
-
-      unless notified
-        StationMailer.notify_about_station_down(user, self)
-      end
+      StationMailer.notify_about_station_down(user, self)
 
       # create UI notification.
       Notification.create(
@@ -180,22 +169,16 @@ class Station < ActiveRecord::Base
   def notify_up
     logger.info "Station alert: #{name} is now up"
 
-    # Only mail about this event once every 12h
-    notified = Notification
-                    .where(message: "#{name} is up.")
-                    .where("created_at >= ?", 12.hours.ago)
-                    .count > 0
-
-    unless notified
+    # Allows tests without user
+    if user.present?
       StationMailer.notify_about_station_up(user, self)
+      Notification.create(
+          user: self.user,
+          level: :info,
+          message: "#{name} is up.",
+          event: "station_up"
+      )
     end
-
-    Notification.create(
-        user: self.user,
-        level: :info,
-        message: "#{name} is up.",
-        event: "station_up"
-    )
   end
 
   # Send notifications if station balance is low
