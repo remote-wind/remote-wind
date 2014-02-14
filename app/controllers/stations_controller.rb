@@ -116,7 +116,7 @@ class StationsController < ApplicationController
 
     if stale?(etag: @station, last_modified: @station.last_measure_received_at)
       respond_to do |format|
-        format.html { @measures = Measure.order(created_at: :desc).paginate(page: params[:page]) }
+        format.html { @measures = @station.measures.order(created_at: :desc).paginate(page: params[:page]) }
         format.json { @measures = @station.get_calibrated_measures }
       end
     end

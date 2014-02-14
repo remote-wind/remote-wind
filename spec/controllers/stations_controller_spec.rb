@@ -287,8 +287,12 @@ describe StationsController do
     end
 
     context "when request is HTML" do
+
       it "uses the page param to paginate measures" do
+        # Stub the chain to set up expection
+        Station.any_instance.stub(:measures).and_return(Measure)
         Measure.stub(:order).and_return(Measure)
+
         Measure.should_receive(:paginate).with(page: "2").and_return([].paginate)
         get :measures, station_id: station.to_param, page: "2"
       end
