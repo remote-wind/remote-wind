@@ -1,11 +1,12 @@
 class ApplicationController < ActionController::Base
 
+  include ActionView::Helpers::TextHelper
+
+  # Prevent Devise issue
+  protect_from_forgery with: :null_session
+
   before_filter :get_all_stations
   before_filter :get_notifications, if: -> { user_signed_in? }
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
-  protect_from_forgery with: :exception
-  include ActionView::Helpers::TextHelper
 
   # Tell devise to redirect to root instead of user#show
   def after_sign_in_path_for(resource)
