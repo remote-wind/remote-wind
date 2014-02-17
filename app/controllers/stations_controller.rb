@@ -46,7 +46,7 @@ class StationsController < ApplicationController
 
     respond_to do |format|
       if @station.save
-        expire_fragment('all_stations')
+        #expire_fragment('all_stations')
         format.html { redirect_to @station, notice: 'Station was successfully created.' }
         format.json { render action: 'show', status: :created, location: @station }
       else
