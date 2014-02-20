@@ -1,3 +1,5 @@
+
+
 <table class="stations large-12 columns">
   <thead>
   <tr>
@@ -9,17 +11,17 @@
   </thead>
   <tbody>
   <% @stations.each do |station| %>
-      <% cache station do %>
+      <% measure = station.current_measure.presence %>
       <tr class="station" id="station-<%= station.id %>">
         <td class="name"><%= link_to station.name, station %></td>
         <td class="speed">
-          <% unless station.measures.empty? %>
-              <%= station.current_measure.speed %> (<%=  station.current_measure.min_wind_speed %> - <%=  station.current_measure.max_wind_speed %>)
+          <% if measure %>
+              <%= measure.speed %> (<%=  measure.min_wind_speed %> - <%= measure.max_wind_speed %>)
           <% end %>
         </td>
         <td class="direction">
-          <% unless station.measures.empty? %>
-              <%=  station.current_measure.direction %> (<%=  station.current_measure.compass_point %>)
+          <% if measure %>
+              <%= degrees_and_cardinal(measure.direction) %>
           <% end %>
         </td>
         <td>
@@ -30,7 +32,7 @@
           <% end %>
         </td>
       </tr>
-      <% end %>
+
   <% end %>
   <% if can? :create, Station && params[:controller] == 'stations' %>
       <tr class="station">

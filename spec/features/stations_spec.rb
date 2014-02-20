@@ -139,7 +139,7 @@ feature "Stations", %{
     create(:measure, station: station, created_at: 10.minutes.ago)
     create(:measure, station: station, created_at: 5.minutes.ago, speed: 10, direction: 180)
 
-    expected = station.current_measure
+    expected = station.measures.order(created_at: :desc).first
     visit station_path station
     map_marker_path = '.map-canvas .measure'
     table_path = 'table.measures .measure:first '

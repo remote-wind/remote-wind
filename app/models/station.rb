@@ -27,6 +27,7 @@ class Station < ActiveRecord::Base
   alias_attribute :lng, :longitude
   alias_attribute :owner, :user
   attr_accessor :zone
+  attr_accessor :current_measure
 
   # Scopes
   scope :visible, -> { where(show: true) }
@@ -94,12 +95,7 @@ class Station < ActiveRecord::Base
   end
 
   def current_measure
-    # Should avoid querying the for all the measures
-    measure = Measure.where(station_id: self.id ).order("measures.created_at ASC").last
-    if measure && ! measure.calibrated
-      measure.calibrate!
-    end
-    measure
+    measures.first unless @current_measure.presence
   end
 
   def measures?

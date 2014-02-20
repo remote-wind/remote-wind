@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   # Prevent Devise issue
   protect_from_forgery with: :null_session
 
-  before_filter :get_all_stations
+  before_filter :get_all_stations, if: -> { get_all_stations? }
   before_filter :get_notifications, if: -> { user_signed_in? }
 
   # Tell devise to redirect to root instead of user#show
@@ -40,13 +40,30 @@ class ApplicationController < ActionController::Base
   def get_all_stations
 
     if user_signed_in? && current_user.has_role?(:admin)
-        @all_stations = Station.includes(:measures).to_a
+        @all_stations = Station.all.load
     end
 
-    @all_stations ||= Station.includes(:measures).where(show: true)
+    @all_stations ||= Station.where(show: true).load
+
+    measures = Measure.find_by_sql(%Q{
+      SELECT DISTINCT ON(m.station_id)
+        m.*
+      FROM measures m
+      ORDER BY m.station_id, m.created_at ASC
+    })
+
+    @all_stations.each do |station|
+      station.current_measure = measures.bsearch { |m| m.station_id == station.id  }
+
+    end
+
 
     # Add methods to search for station in collection
     @all_stations.extend(Slugged)
+  end
+
+  def get_all_stations?
+    true unless ['json', 'xml', 'yaml'].include?(request['format'])
   end
 
   # Get notifications
