@@ -1,12 +1,11 @@
 class StationsController < ApplicationController
-  before_filter :authenticate_user!, :except => [:show, :index, :measures, :search, :embed, :find, :update_balance]
+  before_filter :authenticate_user!, :except => [:show, :index, :measures, :search, :embed, :find, :update_balance], unless: -> { user_signed_in? }
   authorize_resource :except => [:show, :index, :measures, :search, :embed, :find, :update_balance]
   before_action :set_station, only: [:update, :destroy]
   before_action :select_station, only: [:show, :edit]
 
   # Skip CSRF protection since station does not send CSRF token.
   protect_from_forgery :except => [:create, :update_balance]
-
 
   # GET /stations
   # GET /stations.json

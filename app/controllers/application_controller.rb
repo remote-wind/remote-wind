@@ -2,8 +2,7 @@ class ApplicationController < ActionController::Base
 
   include ActionView::Helpers::TextHelper
 
-  # Prevent Devise issue
-  #protect_from_forgery with: :null_session
+  protect_from_forgery with: :reset_session
 
   before_filter :get_all_stations, if: -> { get_all_stations? }
   before_filter :get_notifications, if: -> { user_signed_in? }
