@@ -13,20 +13,16 @@ feature "Stations", %{
     end
   end
 
-  let(:admin) {
-    create :admin
-  }
-
-  let(:admin_session) {
-    sign_in! admin
-  }
+  let(:admin) { create :admin }
+  let(:admin_session) { sign_in! admin }
 
   scenario "when I view the index page" do
     stations
     visit root_path
     Capybara.find("#left-off-canvas-menu a", :text => "Stations").click
     expect(page).to have_selector '.station', count: 3
-    expect(page).to have_content stations[0].name
+    expect(page).to have_content stations.first.name
+    expect(page).to have_title "Stations | Remote Wind"
   end
 
   scenario "when I click on a station" do
@@ -38,7 +34,7 @@ feature "Stations", %{
 
   scenario "when viewing a station" do
     visit station_path station
-    expect(page).to have_content station.name
+    expect(page).to have_title "#{station.name} | Remote Wind"
   end
 
   scenario "when i click table" do
@@ -47,10 +43,6 @@ feature "Stations", %{
     click_link "Table"
     expect(page).to have_selector "table.measures tr:first .speed", text: station.current_measure.speed
     expect(page).to have_selector "table.measures tr:first .direction", text: "E (90°)"
-  end
-
-  scenario "table should have station local time" do
-    visit station_path station
   end
 
   describe "creating stations" do
@@ -66,15 +58,7 @@ feature "Stations", %{
     scenario "when I create a new station with valid input" do
       click_button "Create Station"
       expect(current_path).to eq station_path("sample-station")
-    end
-
-    scenario "when I create a new station with valid input" do
-      click_button "Create Station"
       expect(page).to have_content "Station was successfully created."
-    end
-
-    scenario "when I create a new station with valid input" do
-      click_button "Create Station"
       expect(page).to have_selector "h1", text: "Sample Station"
     end
 
@@ -86,6 +70,7 @@ feature "Stations", %{
     visit station_path station
     click_link("Edit")
     expect(current_path).to include edit_station_path(station)
+    expect(page).to have_title "Editing #{station.name} | Remote Wind"
   end
 
   scenario "when I edit a page" do
