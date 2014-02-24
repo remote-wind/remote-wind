@@ -1,6 +1,16 @@
 class StationsController < ApplicationController
-  before_filter :authenticate_user!, :except => [:show, :index, :measures, :search, :embed, :find, :update_balance], unless: -> { user_signed_in? }
-  authorize_resource :except => [:show, :index, :measures, :search, :embed, :find, :update_balance]
+
+  # Security exceptions:
+  skip_before_filter :authenticate_user!, only:
+      [:show, :index, :measures, :search, :embed, :find, :update_balance]
+
+  DO_NOT_AUTHORIZE =  [:show, :index, :measures, :search, :embed, :find, :update_balance]
+
+      authorize_resource except: DO_NOT_AUTHORIZE
+  skip_authorization_check only: DO_NOT_AUTHORIZE
+
+
+
   before_action :set_station, only: [:update, :destroy]
   before_action :select_station, only: [:show, :edit]
 

@@ -7,6 +7,13 @@ class ApplicationController < ActionController::Base
   before_filter :get_all_stations, if: -> { get_all_stations? }
   before_filter :get_notifications, if: -> { user_signed_in? }
 
+  # OPT OUT security model
+  before_filter :authenticate_user!, except: [:honeypot]
+
+  # Ensure authorization with CanCan
+  # https://github.com/ryanb/cancan/wiki/Ensure-Authorization
+  check_authorization unless: :devise_controller?
+
   # Tell devise to redirect to root instead of user#show
   def after_sign_in_path_for(resource)
     root_path

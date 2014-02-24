@@ -1,7 +1,9 @@
 class MeasuresController < ApplicationController
-  before_filter :authenticate_user!, :only => [:destroy]
+
+  skip_before_filter :authenticate_user!, :only => [:create]
   load_and_authorize_resource :only => [:destroy]
   protect_from_forgery :only => [:destroy]
+  skip_authorization_check only: [:create]
 
   # POST /measures
   def create

@@ -10,9 +10,13 @@ class Ability
       can :show, User do |u|
         u.id == user.id
       end
-      can :read, Station do
-
+      can :read, Station do |s|
+        s.show?
       end
+      can :read, Notification do |n|
+        n.user_id == user.id
+      end
+
     end
   end
 end

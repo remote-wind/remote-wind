@@ -1,7 +1,6 @@
 class NotificationsController < ApplicationController
 
-  before_filter :authenticate_user!
-
+  authorize_resource
   # Display notifications belonging to the currently logged in user.
   # GET notifications
   def index
