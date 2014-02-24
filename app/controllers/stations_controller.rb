@@ -2,7 +2,7 @@ class StationsController < ApplicationController
 
 
   # Security exceptions:
-  DO_NOT_AUTHORIZE =  [:show, :index, :measures, :search, :embed, :find, :update_balance]
+  DO_NOT_AUTHORIZE =  [:edit, :update, :show, :index, :measures, :search, :embed, :find, :update_balance]
 
   skip_before_filter :authenticate_user!, only: DO_NOT_AUTHORIZE
       authorize_resource except: DO_NOT_AUTHORIZE
