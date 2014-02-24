@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   before_filter :get_notifications, if: -> { user_signed_in? }
 
   # OPT OUT security model
-  before_filter :authenticate_user!, except: [:honeypot]
+  before_filter :authenticate_user!, except: [:honeypot], unless: -> { user_signed_in? }
 
   # Ensure authorization with CanCan
   # https://github.com/ryanb/cancan/wiki/Ensure-Authorization
