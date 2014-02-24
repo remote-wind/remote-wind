@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   # GET /users/:id
   def show
     @user = User.find(params[:id])
+    @title = @user.email
     @available_roles =  Role.all.keep_if do |role|
       !@user.has_role?(role.name.to_sym)
     end
@@ -12,6 +13,7 @@ class UsersController < ApplicationController
 
   # GET /users/
   def index
+    @title = "Users"
     @users = User.all
   end
 

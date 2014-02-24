@@ -8,6 +8,6 @@ class PagesController < ApplicationController
   end
 
   def products
-
+    @title = "Products"
   end
 end

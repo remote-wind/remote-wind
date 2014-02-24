@@ -10,6 +10,8 @@ class NotificationsController < ApplicationController
             .order(created_at: :desc)
             .paginate(page: params[:page])
 
+    @title = "Inbox(#{ @notifications.count })"
+
     # Render response before marking notifications as read
     respond_to do |format|
       format.html { render :index }

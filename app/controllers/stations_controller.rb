@@ -20,12 +20,14 @@ class StationsController < ApplicationController
   # GET /stations
   # GET /stations.json
   def index
+    @title = "Stations"
     @stations = @all_stations
   end
 
   # GET /stations/1
   # GET /stations/1.json
   def show
+    @title = @station.name
     @measures = Measure.where(station_id: @station.id).joins(:station).limit(10).order(created_at: :desc)
     respond_to do |format|
       format.html #show.html.erb
@@ -39,6 +41,7 @@ class StationsController < ApplicationController
 
   # GET /stations/1/edit
   def edit
+    @title = "Editing #{@station.name}"
   end
 
   # POST /stations

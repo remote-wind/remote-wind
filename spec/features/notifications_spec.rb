@@ -19,6 +19,11 @@ feature "Notifications", %{
       expect(page).to have_content note.message
     end
 
+    scenario "when I click inbox page should show notification" do
+      click_link "Inbox(1)", href: notifications_path
+      expect(page).to have_title "Inbox(1) | Remote Wind"
+    end
+
     scenario "when I am at any page there should be a flash message" do
       visit root_path
       click_link "You have 1 unread notification."
