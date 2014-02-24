@@ -27,12 +27,9 @@ class StationsController < ApplicationController
   # GET /stations/1
   # GET /stations/1.json
   def show
-    # Use etag to check if we have a cached version of request and skip rendering.
-    if user_signed_in? or stale?(etag: @station, last_modified: @station.last_measure_received_at)
-      @measures = Measure.where(station_id: @station.id).joins(:station).limit(10).order(created_at: :desc)
-      respond_to do |format|
-        format.html #show.html.erb
-      end
+    @measures = Measure.where(station_id: @station.id).joins(:station).limit(10).order(created_at: :desc)
+    respond_to do |format|
+      format.html #show.html.erb
     end
   end
 
