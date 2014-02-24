@@ -1,37 +1,44 @@
 <table class="small-12 columns">
-  <tbody>
-  <tr>
-    <td>Created</td>
-    <td><%= @station.created_at %></td>
-  </tr>
-  <% if @station.user.present? %>
-      <tr>
+    <tbody>
+      <tr class="created-at">
+        <td>Created</td>
+        <td><%= @station.created_at %></td>
+      </tr>
+      <tr class="updated-at">
+        <td>Updated</td>
+        <td><%= @station.updated_at %></td>
+      </tr>
+      <% if @station.user.present? %>
+      <tr class="owner">
         <dt>Owner</dt>
         <dd><%= @station.user.email %></dd>
       </tr>
-  <% end %>
-  <% if @station.measures? %>
-      <tr>
-        <td>Updated</td>
+      <% end %>
+      <% if @station.measures? %>
+      <tr class="last-measure-received_at">
+        <td>Last data recieved at</td>
         <td><%= @station.last_measure_received_at %></td>
       </tr>
-  <% end %>
-  <tr>
-    <td>Latitude</td>
-    <td><%= @station.lat %></td>
-  </tr>
-  <tr>
-    <td>Longitude</td>
-    <td><%= @station.lon %></td>
-  </tr>
-  <tr>
-    <td>Timezone</td>
-    <td><%= @station.timezone %></td>
-  </tr>
-  <tr>
-    <td>Visible</td>
-    <td><%= @station.show ? 'yes' : 'no' %></td>
-  </tr>
-
+      <% end %>
+      <tr class="latitude">
+        <td>Latitude</td>
+        <td><%= @station.lat %></td>
+      </tr>
+      <tr class="longitude">
+        <td>Longitude</td>
+        <td><%= @station.lon %></td>
+      </tr>
+      <tr class="timezone">
+        <td>Timezone</td>
+        <td><%= @station.timezone %></td>
+      </tr>
+      <tr class="visible">
+        <td>Visible</td>
+        <td><%= @station.show ? 'yes' : 'no' %></td>
+      </tr>
+      <tr class="speed-calibration">
+        <td>Speed Calibration</td>
+        <td><%= @station.speed_calibration.round(2) %></td>
+      </tr>
   </tbody>
 </table>
