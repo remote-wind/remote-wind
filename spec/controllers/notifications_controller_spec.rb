@@ -63,6 +63,7 @@ describe NotificationsController do
                     .any_instance
                     .should_receive(:paginate)
                     .with(page: "4")
+                    .and_return(Notification)
       #Notification
       get :index, page: 4
     end
@@ -72,9 +73,5 @@ describe NotificationsController do
       get :index
       expect(flash[:notice]).to include "You have 1 unread notification."
     end
-
-
-
-
   end
 end
