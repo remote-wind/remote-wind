@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   include ActionView::Helpers::TextHelper
 
   # Prevent Devise issue
-  protect_from_forgery with: :null_session
+  #protect_from_forgery with: :null_session
 
   before_filter :get_all_stations, if: -> { get_all_stations? }
   before_filter :get_notifications, if: -> { user_signed_in? }
@@ -54,7 +54,6 @@ class ApplicationController < ActionController::Base
 
     @all_stations.each do |station|
       station.current_measure = measures.bsearch { |m| m.station_id == station.id  }
-
     end
 
 
@@ -63,7 +62,10 @@ class ApplicationController < ActionController::Base
   end
 
   def get_all_stations?
-    true unless ['json', 'xml', 'yaml'].include?(request['format'])
+
+    true unless \
+      ['json', 'xml', 'yaml'].include?(request['format'])
+
   end
 
   # Get notifications
