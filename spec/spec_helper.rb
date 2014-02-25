@@ -20,7 +20,6 @@ prefork = lambda do
   require 'rspec/rails'
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
   require 'will_paginate/array'
-
   RSpec.configure do |config|
 
     config.tty = true
@@ -50,6 +49,7 @@ prefork = lambda do
     include Devise::TestHelpers
     include Warden::Test::Helpers
     include Features::SessionHelpers
+
 
     config.before(:each) do
       Station.any_instance.stub(:lookup_timezone).and_return("Europe/London")

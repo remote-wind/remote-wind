@@ -1,6 +1,8 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 FactoryGirl.define do
+
   factory :user do
+    nickname 'j_random_user'
     email 'example@example.com'
     password 'changeme'
     password_confirmation 'changeme'
@@ -9,6 +11,7 @@ FactoryGirl.define do
   end
 
   factory :admin, class: User  do
+    nickname 'the_boss'
     email "admin@example.com"
     password "abc123123"
     password_confirmation { "abc123123" }
@@ -16,5 +19,6 @@ FactoryGirl.define do
       admin.add_role(:admin)
     end
   end
+
 end
 

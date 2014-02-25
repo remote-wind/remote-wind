@@ -4,10 +4,9 @@ describe 'users/show.html.erb' do
 
   before :each do
     stub_user_for_view_test(create(:user))
-    developer = Role.create(name: :developer)
-    spammer = Role.create(name: :spammer)
-    @user.add_role :spammer
-    assign( :available_roles, [developer] )
+    @user.add_role Role.create(name: :spammer).name
+    assign( :available_roles, [Role.create(name: :developer)] )
+
   end
 
   subject do
@@ -16,6 +15,7 @@ describe 'users/show.html.erb' do
   end
 
   it { should include @user.email }
+  it { should include @user.nickname }
 
   describe 'role management' do
 
@@ -24,26 +24,18 @@ describe 'users/show.html.erb' do
     end
 
     context 'when an admin' do
-      subject {
-        @ability.can :manage, User
-        render
-        rendered
-      }
-      it { should have_content "Add role to #{@user.email}"}
+
+      before { @ability.can :manage, User }
+
+      it { should have_content "Add role to j_random_user"}
       it { should have_selector '.add-role' }
       it { should have_selector('.add-role select', text: 'developer') }
       it { should_not have_selector('.add-role select', text: 'spammer') }
+      it { should have_content "Remove role from j_random_user"}
       it { should have_selector('.remove-role select', text: 'spammer') }
       it { should_not have_selector('.remove-role select', text: 'developer') }
 
     end
-  end
-
-  describe 'providers' do
-    before :each do
-
-    end
-
   end
 
 end

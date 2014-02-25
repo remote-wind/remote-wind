@@ -9,23 +9,17 @@ class User < ActiveRecord::Base
   has_many :authentications, class_name: 'UserAuthentication'
   has_many :stations, inverse_of: :user
 
-
   def self.create_from_omniauth(params)
-
-    params = HashWithIndifferentAccess.new(params)
-
-    attributes = {
-        email: params[:info][:email],
-        image: params[:info][:image],
-        password: Devise.friendly_token
-    }
-
-    create(attributes)
+    info = params[:info]
+    create do |user|
+        user.email    = info[:email]
+        user.image    = info[:image]
+        user.nickname = info[:nickname]
+        user.password = Devise.friendly_token
+    end
   end
 
   def update_from_omniauth(params)
-
-    params = HashWithIndifferentAccess.new(params)
     if params[:info].key?(:image)
       @image = params[:info][:image]
     end
