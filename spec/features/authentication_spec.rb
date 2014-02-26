@@ -68,27 +68,11 @@ feature 'authentication' do
         expect(current_path).to eq edit_user_registration_path
       end
 
-      scenario 'try to edit details without current password' do
+      scenario 'edit details without current password' do
         visit edit_user_registration_path
         fill_in 'Email', :with => 'foo@bar.com'
         click_button 'Update'
-        expect(page).to have_content "Current password can't be blank"
-      end
-
-      scenario 'try to edit details with wrong password' do
-        visit edit_user_registration_path
-        fill_in 'Email', :with => 'foo@bar.com'
-        fill_in 'Current password', :with  => 'haxxor666'
-        click_button 'Update'
-        expect(page).to have_content "Current password is invalid"
-      end
-
-      scenario 'edit detatils with current password' do
-        visit edit_user_registration_path
-        fill_in 'Email', :with => 'foo@bar.com'
-        fill_in 'Current password', :with  => user.password
-        click_button 'Update'
-        expect(page).to have_content "You updated your account successfully."
+        expect(page).to have_content "Your profile has been updated."
       end
     end
   end
