@@ -1,8 +1,15 @@
-<div class="row">
-    <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => 'row' }) do |f| %>
-      <%= devise_error_messages! %>
+<hgroup class="row">
+  <h1>Edit Profile</h1>
+</hgroup>
 
-      <%= f.div_field_with_label(:email, class: "has_tip", :autofocus => true ) %>
+<div class="row">
+
+
+
+    <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
+      <%= devise_error_messages! %>
+      <%= f.div_field_with_label(:nickname, autofocus: true ) %>
+      <%= f.div_field_with_label(:email, type: :email ) %>
       <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
         <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
       <% end %>
@@ -15,7 +22,7 @@
           )%>
 
       <%= f.div_field_with_label(:password_confirmation, autocomplete: "off", type: :password ) %>
-      <%= f.div_field_with_label(:current_password, label: "Current password", type: :password ) %>
+      <%#= f.div_field_with_label(:current_password, label: "Current password", type: :password ) %>
       <div><%= f.submit "Update" %></div>
     <% end %>
 

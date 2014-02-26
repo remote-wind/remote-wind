@@ -11,7 +11,7 @@
   </thead>
   <tbody>
   <% @stations.each do |station| %>
-      <% measure = station.current_measure.presence %>
+      <% measure = station.measures.last.presence %>
       <tr class="station" id="station-<%= station.id %>">
         <td class="name"><%= link_to station.name, station %></td>
         <td class="speed">

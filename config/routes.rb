@@ -6,7 +6,7 @@ RemoteWind::Application.routes.draw do
 
   delete '/users/:user_id/roles(/:id)', to: 'roles#destroy', as: :destroy_user_role
 
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: "users/registrations" }
   resources :users do
     resources :roles, only: [:create, :destroy] do
     end
