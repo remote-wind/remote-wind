@@ -1,6 +1,9 @@
 # Override verify_authenticity_token to prevent InvalidAuthenticationToken issues when using omniauth
 class Users::RegistrationsController < Devise::RegistrationsController
-  skip_before_filter :verify_authenticity_token, only: [:create, :destroy]
+
+  def create
+    super
+  end
 
   def update
     # For Rails 4
@@ -19,7 +22,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       set_flash_message :notice, :updated
       # Sign in the user bypassing validation in case his password changed
       sign_in @user, :bypass => true
-      redirect_to after_update_path_for(@user)
+      redirect_to after_update_path_for(@user), notice: "Your profile has been updated."
     else
       render :edit
     end
