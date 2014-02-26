@@ -10,18 +10,19 @@ describe UsersController do
 
   describe "GET 'show'" do
 
+    before do
+      get :show, id: user.to_param
+    end
+
     it "should be successful" do
-      get :show, :id => user.id
       expect(response).to be_success
     end
 
     it "should find the right user" do
-      get :show, :id => user.id
       expect(assigns(:user)) == @user
     end
 
     it "renders the correct template" do
-      get :show, :id => user.id
       expect(response).to render_template :show
     end
   end

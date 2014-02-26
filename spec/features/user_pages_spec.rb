@@ -1,6 +1,6 @@
 feature 'user pages' do
 
-  let!(:user) { create(:user) }
+  let!(:user) { create(:user, nickname: 'foo') }
   let!(:admin) do
     admin = create(:admin)
     sign_in_as admin.email, admin.password
@@ -16,9 +16,14 @@ feature 'user pages' do
   scenario 'when clicking user on index' do
     visit users_path
     click_link user.email
-    expect(page).to have_title "example@example.com | Remote Wind"
+    expect(page).to have_title "foo | Remote Wind"
     expect(current_path).to eq user_path(user)
     expect(page).to have_content user.email
+  end
+
+  scenario 'when I enter friendly url' do
+    visit '/users/foo'
+    expect(page).to have_title 'foo | Remote Wind'
   end
 
 end
