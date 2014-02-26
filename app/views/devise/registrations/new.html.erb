@@ -15,6 +15,9 @@
         <legend>Or, if your not into those "social media shenanigans"</legend>
         <%= f.div_field_with_label(:email, type: :email, autofocus: true ) %>
         <%= f.div_field_with_label(:nickname, type: :text ) %>
+        <%= f.div_field_with_label(:timezone, label: "Time Zone") do %>
+            <%= f.time_zone_select :timezone %>
+        <% end %>
         <%= f.div_field_with_label(:password, type: :password) %>
         <%= f.div_field_with_label(:password_confirmation, type: :password) %>
       </fieldset>

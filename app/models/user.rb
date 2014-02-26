@@ -12,10 +12,18 @@ class User < ActiveRecord::Base
   has_many :stations, inverse_of: :user
 
   validates_uniqueness_of :nickname
+  validate :valid_timezone
 
   # Use FriendlyId to create "pretty urls"
   extend FriendlyId
   friendly_id :nickname, :use => [:slugged]
+
+  # Setup default values for new records
+  after_initialize do
+    if self.new_record?
+      self.timezone = "Stockholm"
+    end
+  end
 
   def self.create_from_omniauth(params)
     info = params[:info]
@@ -39,6 +47,15 @@ class User < ActiveRecord::Base
     else
       false
     end
+  end
+
+  def valid_timezone
+    errors.add(:timezone, "#{timezone} is not a valid zone name") unless ActiveSupport::TimeZone::MAPPING.has_key?(timezone)
+  end
+
+  def to_local_time(time)
+    @_timezone = Timezone::Zone.new( zone: ActiveSupport::TimeZone::MAPPING[timezone] ) if @_timezone.nil?
+    @_timezone.time(time)
   end
 
 end
