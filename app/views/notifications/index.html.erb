@@ -4,7 +4,7 @@
       <ul class="notifications">
         <% @notifications.each do |note| %>
             <li class="<%= notification_classes(note).join(" ") %>" id="notification-<%= note.id %>">
-              <time class="created-at" datetime="<%= note.created_at.iso8601.to_s %>">
+              <time class="created-at" datetime="<%= time_date_hours_seconds( @user.to_local_time( note.created_at ) ) %>">
                 <%= note.created_at.strftime("%F %R") %>
               </time>
               <div class="message"><%= note.message %></div>

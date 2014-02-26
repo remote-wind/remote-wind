@@ -2,15 +2,16 @@ require 'spec_helper'
 
 describe "notifications/index" do
 
-  let(:notifications) {
+  let(:notifications) do
     WillPaginate::Collection.create(1, 10, 50) do |pager|
       pager.replace([*1..50].map! { |i| build_stubbed(:notification, created_at: Time.new(2000) + i.hour) })
     end
-  }
+  end
 
   before do
     notifications.last.read = true
     assign(:notifications, notifications)
+    assign(:user, build_stubbed(:user))
     render
   end
 
