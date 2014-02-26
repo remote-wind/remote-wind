@@ -1,8 +1,5 @@
 <article class="user row">
   <h1><%= @user.nickname %></h1>
-
-
-
   <p>Email: <%= @user.email %></p>
 
   <% if can? :manage, @user and @available_roles.any?  %>

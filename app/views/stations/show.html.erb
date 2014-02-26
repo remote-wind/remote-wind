@@ -1,7 +1,7 @@
 <div class="row">
   <h1><%= @station.name %></h1>
   <% unless @station.user.nil? %>
-      <p>Owned by <%= @station.user.email %></p>
+      <p>Owned by <%= link_to(@station.user.nickname, user_path(@station.user)) %></p>
   <% end %>
 </div>
 

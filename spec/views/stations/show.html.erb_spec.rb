@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "stations/show" do
 
   let (:station) {
-    build_stubbed(:station, timezone: "Brisbane", speed_calibration: 0.5143)
+    build_stubbed(:station, timezone: "Brisbane", speed_calibration: 0.5143, user: build_stubbed(:user))
   }
 
   let (:measures) do
@@ -50,6 +50,7 @@ describe "stations/show" do
   end
 
   describe "meta" do
+    it { should have_link 'j_random_user', href: user_path(station.user.to_param) }
     it { should have_selector ".station-meta .created-at td:last", text: station.time_to_local(station.created_at) }
     it { should have_selector ".station-meta .updated-at td:last", text: station.time_to_local(station.updated_at) }
     it { should have_selector ".station-meta .latitude td:last", text: station.latitude }
