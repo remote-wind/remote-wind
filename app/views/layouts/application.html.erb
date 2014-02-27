@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <title><%= title %></title>
   <!-- Set the viewport width to device width for mobile -->
-<% cache do %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Remote Wind - open source wind data.">
   <%= stylesheet_link_tag    "application" %>
@@ -28,7 +27,7 @@
         <a class="right-off-canvas-toggle menu-icon" ><span></span></a>
       </section>
     </nav>
-<% end %>
+
     <!-- Application notifications -->
     <%= render 'layouts/flash' %>
 
