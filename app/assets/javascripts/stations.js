@@ -30,7 +30,7 @@ $(function () {
                 });
 
             if ($controls.length) {
-                $map_canvas.trigger('map.add_markers', [map, $controls]);
+                $map_canvas.trigger('map.add_controls', [map, $controls]);
             }
             if ($markers.length) {
                 $map_canvas.trigger('map.add_markers', [map, $markers]);
@@ -100,54 +100,84 @@ $(function () {
             /**
              * Loop through the HTML "markers", extract data and create google.maps.Markers
              */
-            $markers.each(function(){
+            $markers.each(function(i, elem){
 
-                var direction, speed, max_speed, min_speed, marker, beaufort, icon, label_text;
+                var station, measure, marker, label, label_text, beaufort, $elem = $(elem);
 
-                speed = $(this).find('.measure').data('speed');
-								min_speed = $(this).find('.measure').data('min-speed')
-								max_speed = $(this).find('.measure').data('max-speed')
-                direction = 180.0+Number($(this).find('.measure').data('direction'));
-                // we use the beaufort scale to color the arrows
-                beaufort = remotewind.util.msToBeaufort(speed);
+                // Fetch all data attributes from station
+                station = $elem.data();
 
-                icon = {
-                    size: new google.maps.Size(40, 40),
-                    origin: new google.maps.Point(20,20),
-                    anchor: new google.maps.Point(20, 20),
-                    path: remotewind.arrow,
-                    fillColor: beaufort.color,
-                    fillOpacity: 0.8,
-                    strokeColor: 'black',
-                    strokeWeight: 1,
-                    rotation: direction
+                // default attributes for marker
+                marker = {
+                    position: new google.maps.LatLng(station.lat, station.lon),
+                    title: $elem.find('.title').text(),
+                    content: $elem.html(),
+                    href: $elem.find('a').attr('href'),
+                    zIndex: 50
                 };
 
-                marker = new google.maps.Marker({
-                    position: new google.maps.LatLng($(this).data('lat'), $(this).data('lon')),
-                    title: $(this).find('.title').text(),
-                    content: $(this).html(),
-                    direction: direction,
-                    speed: speed,
-                    icon: icon,
-                    href: $(this).find('a').attr('href'),
-                    zIndex: 50
-                });
+                if (station.down) {
+                    // Configure marker
+                    marker = $.extend(marker, {
+                        icon: {
+                            size: new google.maps.Size(40, 40),
+                            origin: new google.maps.Point(20, 20),
+                            anchor: new google.maps.Point(23, 23),
+                            path: remotewind.icons.station_down,
+                            fillColor: 'white',
+                            fillOpacity: 0.8,
+                            strokeColor: 'black',
+                            strokeWeight: 1.2
+                        }
+                    });
 
+                    label = new Label({
+                        map: map,
+                        text: marker.title + "<br> Offline"
+                    });
+
+                } else {
+                    // Fetch all data attributes from  measure
+                    measure = $elem.find('.measure').data() || {};
+                    measure.direction = parseInt($(this).find('.measure').data('direction'));
+                    beaufort = remotewind.util.msToBeaufort(measure.speed || 0);
+                    // Configure marker
+                    marker = $.extend(marker, {
+                        direction: measure.direction,
+                        speed: measure.speed,
+                        icon: {
+                            size: new google.maps.Size(40, 40),
+                            origin: new google.maps.Point(20,20),
+                            anchor: new google.maps.Point(20, 20),
+                            path: remotewind.icons.arrow,
+                            fillColor: beaufort.color,
+                            fillOpacity: 0.8,
+                            strokeColor: 'black',
+                            strokeWeight: 1.2,
+                            rotation: 180.0 + measure.direction
+                        }
+                    });
+
+                    label_text = function(m){
+                        return m.speed + "(" + m.minSpeed + "-" + m.maxSpeed + ")  m/s"
+                    }
+
+                    label = new Label({
+                        map: map,
+                        text: marker.title + "<br>" + label_text(measure)
+                    });
+                }
+
+                // Mutate marker args to google.maps.Marker
+                marker = new google.maps.Marker( marker );
+
+                // Add marker to map
                 if (map.markerCluster) {
                     map.markerCluster.addMarker(marker);
                 } else {
                     marker.setMap(map);
                 }
 
-								label_text = "offline"
-								if ((null!=speed) && (null!=min_speed) && (null!=max_speed)) {
-									label_text = speed + "(" + min_speed + "-" + max_speed + ")"+ "m/s"
-								}
-                var label = new Label({
-                    map: map,
-                    text: marker.title + "<br>" + label_text
-                });
                 label.bindTo('position', marker, 'position');
                 map.all_markers_bounds.extend(marker.position);
 
