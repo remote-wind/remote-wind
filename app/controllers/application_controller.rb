@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
 
   include ActionView::Helpers::TextHelper
 
-  protect_from_forgery with: :exception
+  #protect_from_forgery with: :exception
 
   before_filter :get_all_stations, if: -> { get_all_stations? }
   before_filter :get_notifications, if: -> { user_signed_in? }
