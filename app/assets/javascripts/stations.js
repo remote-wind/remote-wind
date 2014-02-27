@@ -120,7 +120,7 @@ $(function () {
                     // Configure marker
                     marker = $.extend(marker, {
                         icon: {
-                            size: new google.maps.Size(40, 40),
+                            size: new google.maps.Size(25, 25),
                             origin: new google.maps.Point(20, 20),
                             anchor: new google.maps.Point(23, 23),
                             path: remotewind.icons.station_down,
