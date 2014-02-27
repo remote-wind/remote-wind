@@ -1,14 +1,11 @@
 <nav class="left-off-canvas-menu" id="left-off-canvas-menu">
-  <% cache('all_stations') do %>
-      <% unless @all_stations.empty? %>
-          <ul class="off-canvas-list">
-            <li><label><%= link_to "Stations", stations_path %></label></li>
-            <% @all_stations.each do |station| %>
-                <li><%= link_to station.name, station %></li>
-            <% end %>
-          </ul>
-      <% end %>
-
+  <% unless @all_stations.empty? %>
+      <ul class="off-canvas-list">
+        <li><label><%= link_to "Stations", stations_path %></label></li>
+        <% @all_stations.each do |station| %>
+            <li><%= link_to station.name, station %></li>
+        <% end %>
+      </ul>
   <% end %>
   <%= yield :left_nav %>
 </nav>
