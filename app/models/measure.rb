@@ -23,7 +23,7 @@ class Measure < ActiveRecord::Base
   after_validation :set_calibration_value!
   after_find :calibrate!
   after_save :calibrate!
-
+  after_save :update_station
 
   # Scopes
   #default_scope { order("created_at DESC").limit(144) }
@@ -80,6 +80,11 @@ class Measure < ActiveRecord::Base
     end
   end
 
-
+  # Update station when saving measure
+  def update_station
+    unless station.nil?
+      station.update_attribute(:last_measure_received_at, created_at)
+    end
+  end
 
 end

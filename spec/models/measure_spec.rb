@@ -2,6 +2,13 @@ require 'spec_helper'
 
 describe Measure do
 
+  before do
+    # makes it possible to use stubbed stations
+    Measure.any_instance.stub(:update_station)
+  end
+
+
+
   describe "attributes" do
 
     describe "validations" do
@@ -123,6 +130,18 @@ describe Measure do
   it "caches speed_calibration values" do
     measure = create(:measure, station: create(:station, speed_calibration: 0.5))
     expect(measure.speed_calibration).to eq 0.5
+  end
+
+
+  it "updates station last measure recieved at time after saving" do
+    Measure.any_instance.unstub(:update_station)
+    station = create(:station)
+    expected = Time.new(2000)
+    Time.stub(:now).and_return(expected)
+    measure = create(:measure, station: station)
+
+    expect(station.last_measure_received_at).to eq expected
+
   end
 
 end

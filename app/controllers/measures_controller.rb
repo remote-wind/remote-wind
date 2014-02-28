@@ -18,7 +18,6 @@ class MeasuresController < ApplicationController
 
       if @measure.save
         @station = @measure.station
-        @station.update_attributes(last_measure_received_at: @measure.created_at)
         @station.check_status!
 
         format.yaml { render nothing: true, status: :ok }
