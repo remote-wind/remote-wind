@@ -2,21 +2,20 @@ require 'spec_helper'
 
 describe "stations/show" do
 
-  let (:station) {
-    build_stubbed(:station, timezone: "Brisbane", speed_calibration: 0.5143, user: build_stubbed(:user))
-  }
-
-  let (:measures) do
-    measures = [build_stubbed(:measure, station: station, created_at: Time.new(2000) - 25.minutes)]
-    measures << build_stubbed(:measure, station: station, created_at: Time.new(2000) - 15.minutes)
-    measures << build_stubbed(:measure, station: station, created_at: Time.new(2000) - 5.minutes)
-    measures.sort_by! { |m| m.created_at }
+  let (:station) do
+    build_stubbed(:station,
+                  speed_calibration: 0.5143,
+                  user: build_stubbed(:user),
+                  updated_at: Time.new(2000),
+                  last_measure_received_at: Time.new(2000)
+    )
   end
 
   before(:each) do
+    Time.stub(:now).and_return(Time.new(2000))
     stub_user_for_view_test
     assign(:station, station)
-    assign(:measures, measures)
+    #assign(:measures, measures)
   end
 
   subject {
@@ -51,8 +50,9 @@ describe "stations/show" do
 
   describe "meta" do
     it { should have_link 'j_random_user', href: user_path(station.user.to_param) }
-    it { should have_selector ".station-meta .created-at td:last", text: station.time_to_local(station.created_at) }
-    it { should have_selector ".station-meta .updated-at td:last", text: station.time_to_local(station.updated_at) }
+    it { should have_selector ".station-meta .created-at td:last", text: "23:00" }
+    it { should have_selector ".station-meta .updated-at td:last", text: "23:00" }
+    it { should have_selector ".station-meta .last-measure-received-at td:last", text: "23:00" }
     it { should have_selector ".station-meta .latitude td:last", text: station.latitude }
     it { should have_selector ".station-meta .longitude td:last", text: station.longitude }
     it { should have_selector ".station-meta .timezone td:last", text: station.timezone }

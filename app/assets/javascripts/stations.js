@@ -102,7 +102,7 @@ $(function () {
              */
             $markers.each(function(i, elem){
 
-                var station, measure, marker, label, label_text, beaufort, $elem = $(elem);
+                var station, measure, marker, label, label_text, beaufort, start_val, hue, $elem = $(elem);
 
                 // Fetch all data attributes from station
                 station = $elem.data();
@@ -141,6 +141,8 @@ $(function () {
                     measure = $elem.find('.measure').data() || {};
                     measure.direction = parseInt($(this).find('.measure').data('direction'));
                     beaufort = remotewind.util.msToBeaufort(measure.speed || 0);
+
+
                     // Configure marker
                     marker = $.extend(marker, {
                         direction: measure.direction,

@@ -2,22 +2,24 @@
     <tbody>
       <tr class="created-at">
         <td>Created</td>
-        <td><%= @station.created_at %></td>
+        <td><%= time_date_hours_seconds(@station.created_at_local) %></td>
       </tr>
+      <% unless @station.updated_at.nil? %>
       <tr class="updated-at">
         <td>Updated</td>
-        <td><%= @station.updated_at %></td>
+        <td><%= time_date_hours_seconds(@station.updated_at_local) %></td>
       </tr>
+      <% end %>
       <% if @station.user.present? %>
       <tr class="owner">
         <dt>Owner</dt>
         <dd><%= link_to(@station.user.nickname, user_path(@station.user)) %></dd>
       </tr>
       <% end %>
-      <% if @station.measures? %>
-      <tr class="last-measure-received_at">
+      <% unless @station.last_measure_received_at.nil? %>
+      <tr class="last-measure-received-at">
         <td>Last data recieved at</td>
-        <td><%= @station.last_measure_received_at %></td>
+        <td><%= time_date_hours_seconds(@station.last_measure_received_at_local) %></td>
       </tr>
       <% end %>
       <tr class="latitude">

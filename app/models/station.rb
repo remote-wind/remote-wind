@@ -205,4 +205,16 @@ class Station < ActiveRecord::Base
     end
   end
 
+  def created_at_local
+    time_to_local created_at if created_at.present?
+  end
+
+  def updated_at_local
+    time_to_local updated_at if updated_at.present?
+  end
+
+  def last_measure_received_at_local
+    time_to_local updated_at if last_measure_received_at.present?
+  end
+
 end
