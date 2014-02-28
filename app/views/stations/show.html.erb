@@ -1,5 +1,5 @@
 <div class="row">
-  <h1><%= @station.name %></h1>
+  <h1><%= @station.name %> <%= " <em>(offline)</em>" if @station.down? %></h1>
   <% unless @station.user.nil? %>
       <p>Owned by <%= link_to(@station.user.nickname, user_path(@station.user)) %></p>
   <% end %>
