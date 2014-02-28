@@ -17,7 +17,13 @@ $(function () {
         $map_canvas.on('map.init', function(){
             var $markers, $controls, map;
             if ($map_canvas.hasClass("fullscreen")) {
+                // poll for window size changes and resize map
+                // cause binding a handler to window resize causes performance problems
                 $map_canvas.height($(window).innerHeight() - 45);
+                window.setInterval(function(){
+                    $map_canvas.height($(window).innerHeight() - 45);
+                }, 800);
+
             }
 
             $markers = $map_canvas.find('.marker').clone();
