@@ -2,10 +2,10 @@
 
 <%= render :partial => 'stations/map', object: @stations, locals: { stations: @stations, fullscreen: false } %>
 
-<div class="row">
+<section class="row contents">
     <%= render :partial => 'stations/stations', object: @stations %>
     <ul class="breadcrumbs">
       <li class="root"><a href="<%= root_path %>">Home</a></li>
       <li class="current"><a href="<%= stations_path %>">Stations</a></li>
     </ul>
-</div>
+</section>

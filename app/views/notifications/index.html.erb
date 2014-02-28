@@ -1,5 +1,5 @@
-<section class="row">
-  <h3>Notifications</h3>
+<section class="row contents">
+  <h1>Notifications</h1>
   <% if @notifications.any? %>
       <ul class="notifications">
         <% @notifications.each do |note| %>
@@ -12,6 +12,6 @@
         <% end %>
       </ul>
   <% end %>
+  <%= foundation_paginate(@notifications) %>
 </section>
 
-<%= will_paginate @notifications %>

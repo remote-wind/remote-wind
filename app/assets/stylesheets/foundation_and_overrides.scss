@@ -1159,6 +1159,11 @@ $tabs-navigation-bg-color: #efefef;
   display: none;
 }
 
+.contents {
+  &.row { margin-bottom: 2.3em;}
+  margin-bottom: 2.3em;
+}
+
 
 @import 'color';
 @import 'forms';

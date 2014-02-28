@@ -9,7 +9,9 @@
   <%= render :partial => 'stations/map', locals: { stations: [@station] } %>
 </div>
 
-<article class="station row">
+
+
+<article class="station row contents">
 
     <dl class="accordion" data-accordion>
       <% if @measures %>
@@ -24,7 +26,7 @@
         <a href="#table-panel">Table</a>
         <div class="content clearfix" id="table-panel">
           <%= render :partial => 'measures/table', object: @measures, locals: { station: @station } %>
-          <p><%= link_to("More", station_measures_path(@station)) %></p>
+          <p><%= link_to("More", station_measures_path(@station), class: 'button tiny radius') %></p>
         </div>
       </dd>
       <% end %>
