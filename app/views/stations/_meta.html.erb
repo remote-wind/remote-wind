@@ -12,8 +12,8 @@
       <% end %>
       <% if @station.user.present? %>
       <tr class="owner">
-        <dt>Owner</dt>
-        <dd><%= link_to(@station.user.nickname, user_path(@station.user)) %></dd>
+        <td>Owner</td>
+        <td><%= link_to(@station.user.nickname, user_path(@station.user)) %></td>
       </tr>
       <% end %>
       <% unless @station.last_measure_received_at.nil? %>
