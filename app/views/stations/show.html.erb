@@ -1,72 +1,69 @@
-<div class="row">
-  <h1><%= @station.name %> <%= " <em>(offline)</em>".html_safe if @station.down? %></h1>
-  <% unless @station.user.nil? %>
-      <p>Owned by <%= link_to(@station.user.nickname, user_path(@station.user)) %></p>
-  <% end %>
-</div>
-
+<% content_for :map do %>
 <div class="map-canvas small-12 large-12 columns no-fullscreen" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
   <%= render :partial => 'stations/map', locals: { stations: [@station] } %>
 </div>
+<% end %>
 
+<h1><%= @station.name %> <%= "<em>(offline)</em>".html_safe if @station.down? %></h1>
+<% unless @station.user.nil? %>
+    <p>Owned by <%= link_to(@station.user.nickname, user_path(@station.user)) %></p>
+<% end %>
 
+<article class="station">
 
-<article class="station row contents">
+  <dl class="accordion" data-accordion>
+    <% if @measures %>
+    <dd id="chart">
+      <a href="#chart-panel">Chart</a>
+      <div class="content chart-wrapper active clearfix" id="chart-panel">
+        <%= render :partial => 'measures/chart', object: @measures %>
+      </div>
+    </dd>
 
-    <dl class="accordion" data-accordion>
-      <% if @measures %>
-      <dd id="chart">
-        <a href="#chart-panel">Chart</a>
-        <div class="content chart-wrapper active clearfix" id="chart-panel">
-          <%= render :partial => 'measures/chart', object: @measures %>
+    <dd id="table">
+      <a href="#table-panel">Table</a>
+      <div class="content clearfix" id="table-panel">
+        <%= render :partial => 'measures/table', object: @measures, locals: { station: @station } %>
+        <p><%= link_to("More", station_measures_path(@station), class: 'button tiny radius') %></p>
+      </div>
+    </dd>
+    <% end %>
+
+    <% cache @station do %>
+    <dd id="meta">
+      <a href="#meta-panel">Meta</a>
+      <div class="content clearfix" id="meta-panel">
+        <%= render :partial => 'stations/meta', object: @station %>
+      </div>
+    </dd>
+
+    <dd id="embed">
+      <a href="#embed-panel">Embed</a>
+      <div class="content clearfix" id="embed-panel">
+        <%= render :partial => 'stations/embed', object: @station %>
+      </div>
+    </dd>
+    <% end %>
+
+    <% if can? :manage, Station %>
+    <dd id="admin">
+      <a href="#admin-panel">Admin</a>
+      <div class="content clearfix" id="admin-panel">
+        <div class="admin-only btn-group">
+          <%= link_to 'Edit', edit_station_path(@station), class: "button tiny" %>
+          <%= link_to "Clear all measures for this station?", station_measures_path(@station),
+                      :data => { :confirm =>  "Are you sure you want to delete all measues recorded by this station? This action cannot be undone!"  },
+                      :class =>"tiny button alert", :method => :delete %>
         </div>
-      </dd>
-
-      <dd id="table">
-        <a href="#table-panel">Table</a>
-        <div class="content clearfix" id="table-panel">
-          <%= render :partial => 'measures/table', object: @measures, locals: { station: @station } %>
-          <p><%= link_to("More", station_measures_path(@station), class: 'button tiny radius') %></p>
-        </div>
-      </dd>
-      <% end %>
-
-      <% cache @station do %>
-      <dd id="meta">
-        <a href="#meta-panel">Meta</a>
-        <div class="content clearfix" id="meta-panel">
-          <%= render :partial => 'stations/meta', object: @station %>
-        </div>
-      </dd>
-
-      <dd id="embed">
-        <a href="#embed-panel">Embed</a>
-        <div class="content clearfix" id="embed-panel">
-          <%= render :partial => 'stations/embed', object: @station %>
-        </div>
-      </dd>
-      <% end %>
-
-      <% if can? :manage, Station %>
-      <dd>
-        <a href="#admin-panel">Admin</a>
-        <div class="content clearfix" id="admin-panel">
-          <div class="admin-only btn-group">
-            <%= link_to 'Edit', edit_station_path(@station), class: "button tiny" %>
-            <%= link_to "Clear all measures for this station?", station_measures_path(@station),
-                        :data => { :confirm =>  "Are you sure you want to delete all measues recorded by this station? This action cannot be undone!"  },
-                        :class =>"tiny button alert", :method => :delete %>
-          </div>
-        </div>
-      </dd>
-      <% end %>
-    </dl>
+      </div>
+    </dd>
+    <% end %>
+  </dl>
 </article>
 
-<nav class="row">
-    <ul class="breadcrumbs" role="navigation">
-      <li class="root"><a href="<%= root_path %>">Home</a></li>
-      <li><a href="<%= stations_path %>">Stations</a></li>
-      <li class="current"><a href="<%= station_path(@station) %>"><%= @station.name %></a></li>
-    </ul>
-</nav>
+<ul class="breadcrumbs" role="navigation">
+  <li class="root"><a href="<%= root_path %>">Home</a></li>
+  <li><a href="<%= stations_path %>">Stations</a></li>
+  <li class="current"><a href="<%= station_path(@station) %>"><%= @station.name %></a></li>
+</ul>
+

@@ -12,12 +12,12 @@ describe "stations/_map" do
   end
 
   subject (:page) do
-
     rendered
   end
 
-  it { should have_selector(".map-canvas") }
-  it { should have_selector(".marker") }
+  it { should have_selector "#map_canvas .marker .title", text: station.name }
+  it { should have_selector "#map_canvas .marker[data-lat='#{station.lat}']" }
+  it { should have_selector "#map_canvas .marker[data-lon='#{station.lon}']" }
 
   specify "the map marker should have the correct min speed" do
     expect(page).to have_selector(".measure[data-min-speed='#{measure.min}']")

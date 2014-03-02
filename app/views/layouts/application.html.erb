@@ -38,7 +38,10 @@
     <%= render 'layouts/right_menu' %>
 
     <section class="main-section" id="main-section">
-      <%= yield %>
+      <%= yield :map %>
+      <div class="row">
+        <%= yield %>
+      </div>
     </section>
     <a class="exit-off-canvas"></a>
   </div>

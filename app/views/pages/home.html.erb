@@ -1,3 +1,3 @@
-<%= render :partial => 'stations/map', locals: { stations: @stations, fullscreen: true } %>
-<%# %= render :partial => 'stations/table', object: @stations %>
-
+<% content_for :map do %>
+    <%= render :partial => 'stations/map', locals: { stations: @stations, fullscreen: true } %>
+<% end %>

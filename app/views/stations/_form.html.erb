@@ -1,38 +1,38 @@
 <%= form_for(@station) do |f| %>
-    <div class="row">
-      <div class="small-6 large-8 columns">
-        <%= f.div_field_with_label(:name, class: "has-tip", title: "Used to create friendly urls") %>
-        <%= f.div_field_with_label(:slug,  class: "has-tip", title: "Used to create friendly urls")  %>
-        <%= f.div_field_with_label(:hw_id, label: 'Hardware ID') %>
-        <%= f.div_field_with_label(:latitude, class: "has-tip", title: "Degrees decimal please!") %>
-        <%= f.div_field_with_label(:longitude,  class: "has-tip", title: "Degrees decimal please!") %>
-        <%= f.div_field_with_label(:user_id, label: "Owner") do |key|
-          f.select(:user_id, options_from_collection_for_select(User.all, :id, :email), { include_blank: true  })
-        end
-        %>
-        <%= f.div_field_with_label(:show, label: "Show") do |key|
-          check_box("station", key, { }, "yes", "no")
-        end
-        %>
-        <%= f.div_field_with_label(:speed_calibration, label: "Speed Calibration") do |key|
-          number_field("station",key, min: 0, max: 10, step: 0.01)
-        end
-        %>
-      </div>
-      <aside class="help small-6 large-4 columns">
-        <h3>Need Help?</h3>
-        <dl>
-          <dt>Name</dt>
-          <dd>A human readable name for the station. All utf-8 characters ok!</dd>
-          <dt>Slug</dt>
-          <dd>Used to create friendly urls.</dd>
-          <dt>Latitude & Longitude</dt>
-          <dd>Use <a href="http://en.wikipedia.org/wiki/Decimal_degrees">degrees decimal</a> please!</dd>
-          <dt>Speed Calibration</dt>
-          <dd>Multiplier which can be used to adjust the speed input from the station.</dd>
-        </dl>
-      </aside>
+
+    <div class="small-6 large-8 columns">
+      <%= f.div_field_with_label(:name, class: "has-tip", title: "Used to create friendly urls") %>
+      <%= f.div_field_with_label(:slug,  class: "has-tip", title: "Used to create friendly urls")  %>
+      <%= f.div_field_with_label(:hw_id, label: 'Hardware ID') %>
+      <%= f.div_field_with_label(:latitude, class: "has-tip", title: "Degrees decimal please!") %>
+      <%= f.div_field_with_label(:longitude,  class: "has-tip", title: "Degrees decimal please!") %>
+      <%= f.div_field_with_label(:user_id, label: "Owner") do |key|
+        f.select(:user_id, options_from_collection_for_select(User.all, :id, :email), { include_blank: true  })
+      end
+      %>
+      <%= f.div_field_with_label(:show, label: "Show") do |key|
+        check_box("station", key, { }, "yes", "no")
+      end
+      %>
+      <%= f.div_field_with_label(:speed_calibration, label: "Speed Calibration") do |key|
+        number_field("station",key, min: 0, max: 10, step: 0.01)
+      end
+      %>
     </div>
+    <aside class="help small-6 large-4 columns">
+      <h3>Need Help?</h3>
+      <dl>
+        <dt>Name</dt>
+        <dd>A human readable name for the station. All utf-8 characters ok!</dd>
+        <dt>Slug</dt>
+        <dd>Used to create friendly urls.</dd>
+        <dt>Latitude & Longitude</dt>
+        <dd>Use <a href="http://en.wikipedia.org/wiki/Decimal_degrees">degrees decimal</a> please!</dd>
+        <dt>Speed Calibration</dt>
+        <dd>Multiplier which can be used to adjust the speed input from the station.</dd>
+      </dl>
+    </aside>
+
     <div class="actions">
       <%= f.submit %>
     </div>

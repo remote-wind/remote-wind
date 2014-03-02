@@ -1,12 +1,9 @@
-<div class="row">
 <h1>Editing <%= @station.name %></h1>
 
-  <%= render 'form' %>
+<%= render 'form' %>
 
-  <ul class="breadcrumbs row">
-    <li class="root"><a href="<%= root_path %>">Home</a></li>
-    <li><%= link_to 'Stations', stations_path %></li>
-    <li class="current"><%= link_to 'Edit station', edit_station_path(@station) %></li>
-  </ul>
-
-</div>
+<ul class="breadcrumbs row">
+  <li class="root"><a href="<%= root_path %>">Home</a></li>
+  <li><%= link_to 'Stations', stations_path %></li>
+  <li class="current"><%= link_to 'Edit station', edit_station_path(@station) %></li>
+</ul>

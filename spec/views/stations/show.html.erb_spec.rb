@@ -42,11 +42,7 @@ describe "stations/show" do
     it { should have_selector '.breadcrumbs .current', text: station.name }
   end
 
-  describe "map" do
-    it { should have_selector "#map_canvas .marker .title", text: station.name }
-    it { should have_selector "#map_canvas .marker[data-lat='#{station.lat}']" }
-    it { should have_selector "#map_canvas .marker[data-lon='#{station.lon}']" }
-  end
+
 
   describe "meta" do
     it { should have_link 'j_random_user', href: user_path(station.user.to_param) }

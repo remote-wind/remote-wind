@@ -1,11 +1,9 @@
-<h1>Wind stations</h1>
-
+<% content_for :map do %>
 <%= render :partial => 'stations/map', object: @stations, locals: { stations: @stations, fullscreen: false } %>
-
-<section class="row contents">
-    <%= render :partial => 'stations/stations', object: @stations %>
-    <ul class="breadcrumbs">
-      <li class="root"><a href="<%= root_path %>">Home</a></li>
-      <li class="current"><a href="<%= stations_path %>">Stations</a></li>
-    </ul>
-</section>
+<% end %>
+<h1>Wind stations</h1>
+<%= render :partial => 'stations/stations', object: @stations %>
+<ul class="breadcrumbs">
+  <li class="root"><a href="<%= root_path %>">Home</a></li>
+  <li class="current"><a href="<%= stations_path %>">Stations</a></li>
+</ul>
