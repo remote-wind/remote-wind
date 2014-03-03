@@ -7,7 +7,7 @@
 %>
 <div class="<%= classes.join(' ') %>" id="map_canvas" data-lat="<%= stations.first.lat %>" data-lon="<%= stations.first.lon %>">
   <% stations.each do |station| %>
-      <div class="marker hidden" data-lat="<%= station.lat %>" data-lon="<%= station.lon %>" data-uid="<%= station.id %>" <% if station.down? %>data-down="true"<% end %>>
+      <div class="marker hide" data-lat="<%= station.lat %>" data-lon="<%= station.lon %>" data-uid="<%= station.id %>" <% if station.down? %>data-down="true"<% end %>>
         <h3 class="title"><%= link_to station.name, station %></h3>
         <% measure = station.measures.last %>
         <% if measure %>

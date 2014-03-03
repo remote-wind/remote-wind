@@ -1155,10 +1155,6 @@ $tabs-navigation-bg-color: #efefef;
   }
 }
 
-.hidden {
-  display: none;
-}
-
 .contents {
   &.row { margin-bottom: 2.3em;}
   margin-bottom: 2.3em;
@@ -1174,7 +1170,7 @@ $tabs-navigation-bg-color: #efefef;
 @import "graphs";
 @import "foundation";
 @import "notifications";
-
+@import "table";
 
 
 input[type='submit'] {
