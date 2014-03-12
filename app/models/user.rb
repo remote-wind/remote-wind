@@ -5,11 +5,10 @@ class User < ActiveRecord::Base
   devise :omniauthable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
          :omniauth_providers => [:facebook]
-  # create urls based on nickname
-  #friendly_id :nickname, use: :slugged
 
   has_many :authentications, class_name: 'UserAuthentication'
   has_many :stations, inverse_of: :user
+  has_many :notifications, inverse_of: :user
 
   validates_uniqueness_of :nickname
   validate :valid_timezone
