@@ -32,7 +32,7 @@ feature "Notifications", %{
 
   end
 
-  context "when I am on notifications page" do
+  describe "marking all notifications as read" do
 
     before :each do
       sign_in! user
@@ -46,5 +46,22 @@ feature "Notifications", %{
     end
 
   end
+
+  describe "deleting a notification" do
+
+    before :each do
+      sign_in! user
+      note
+    end
+
+    scenario "when I click delete" do
+      visit notifications_path
+      expect {
+        click_link "delete"
+      }.to change(Notification, :count).by(-1)
+    end
+
+  end
+
 
 end

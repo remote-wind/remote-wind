@@ -11,6 +11,7 @@
                 <%= note.created_at.strftime("%F %R") %>
               </time>
               <div class="message"><%= note.message %></div>
+              <%= link_to 'delete', notification_path(note), method: :delete %>
             </li>
         <% end %>
       </ul>

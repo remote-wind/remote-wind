@@ -39,4 +39,13 @@ class NotificationsController < ApplicationController
 
   end
 
+  # DESTROY /notifications/:id
+  def destroy
+
+    @notification = Notification.find(params[:id])
+    @notification.destroy
+    flash[:success] = 'Notification deleted.'
+    redirect_to action: :index
+  end
+
 end

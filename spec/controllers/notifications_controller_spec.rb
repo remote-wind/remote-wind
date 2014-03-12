@@ -119,4 +119,32 @@ describe NotificationsController do
     end
 
   end
+
+  describe "DELETE 'destroy'" do
+
+    let(:user) { user = create(:user) }
+    let(:note) { create(:notification, user: user) }
+    before(:each) do
+      sign_in user
+      note
+    end
+
+    it "should delete notice" do
+      expect {
+        delete :destroy, { id: note.to_param}
+      }.to change(Notification, :count).by(-1)
+    end
+
+    it "should flash success" do
+      delete :destroy, { id: note.to_param }
+      expect(flash[:success]).to match /notification deleted/i
+    end
+
+    it "should redirect to index" do
+      delete :destroy, { id: note.to_param }
+      expect(response).to redirect_to /#{notifications_url}/
+    end
+
+  end
+
 end
