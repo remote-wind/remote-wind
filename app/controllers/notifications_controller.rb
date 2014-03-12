@@ -41,10 +41,36 @@ class NotificationsController < ApplicationController
 
   # DESTROY /notifications/:id
   def destroy
-
     @notification = Notification.find(params[:id])
     @notification.destroy
     flash[:success] = 'Notification deleted.'
+    redirect_to action: :index
+  end
+
+  # DESTROY /notifications
+  def destroy_all
+
+    conditions = { user_id: current_user.id }
+    conditions[:read] = true if params[:condition] == 'read'
+
+    @notifications = Notification.where(conditions)
+
+    # Use time input to limit delete chonographically
+    if (!params[:time].nil? && !params[:time_unit].nil?)
+      time = params[:time].to_i
+      unit = ['days', 'weeks', 'months', 'years'].include?(params[:time_unit]) ?  \
+          params[:time_unit].to_sym : nil
+      @notifications = @notifications.where('created_at >= ?', time.send(unit).ago)
+    end
+
+    destroyed = @notifications.destroy_all
+
+    if destroyed.size.nonzero?
+      flash[:success] = 'All notifications have been deleted.'
+    else
+      flash[:failed] = 'No notifications to delete.'
+    end
+
     redirect_to action: :index
   end
 

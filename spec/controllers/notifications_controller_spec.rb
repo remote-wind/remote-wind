@@ -142,9 +142,55 @@ describe NotificationsController do
 
     it "should redirect to index" do
       delete :destroy, { id: note.to_param }
-      expect(response).to redirect_to /#{notifications_url}/
+      expect(response).to redirect_to notifications_url
+    end
+
+
+  end
+
+  describe "DELETE 'destroy_all'" do
+    let(:user) { user = create(:user) }
+    let(:note) { create(:notification, user: user) }
+    before(:each) do
+      sign_in user
+      note
+    end
+
+    it "should delete all notices" do
+      delete :destroy_all
+      expect(Notification.count).to eq 0
+    end
+
+    it "should flash success" do
+      delete :destroy_all
+      expect(flash[:success]).to match /all notifications have been deleted/i
+    end
+
+    it "should flash failed if no notifications" do
+      note.destroy!
+      delete :destroy_all
+      expect(flash[:failed]).to match /No notifications to delete/i
+    end
+
+    it "should redirect to index" do
+      delete :destroy_all
+      expect(response).to redirect_to notifications_url
+    end
+
+    it "should delete only read posts if condition is selected" do
+      create(:notification, read: true, user: user)
+      delete :destroy_all, { condition: "read" }
+      expect(Notification.last.id).to eq note.id
+    end
+
+    it "should respect since conditions" do
+      note.update_attribute(:created_at, 2.days.ago)
+      expect {
+        delete :destroy_all, { time_unit: "days", time: 1 }
+      }.to_not change(Notification, :count)
     end
 
   end
+
 
 end

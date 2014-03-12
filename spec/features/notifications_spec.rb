@@ -63,5 +63,24 @@ feature "Notifications", %{
 
   end
 
+  describe "deleting all notifications" do
+
+    before :each do
+      sign_in! user
+      note
+    end
+
+    scenario "when I click delete all" do
+      visit notifications_path
+      expect {
+        within('#delete-notifications-form') do
+          click_button "Delete", "#delete-notifications-form"
+        end
+      }.to change(Notification, :count).by(-1)
+    end
+
+
+  end
+
 
 end

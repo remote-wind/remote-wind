@@ -17,5 +17,31 @@
       </ul>
   <% end %>
   <%= foundation_paginate(@notifications) %>
+
+  <%= form_tag notifications_path, id: 'delete-notifications-form', method: :delete, class: 'panel radius' do %>
+      <h3>Delete Notifications</h3>
+      <div class="row">
+        <p class="columns">that are</p>
+        <div class="columns">
+          <%= label_tag(:conditions, 'condition') %>
+          <%= select_tag(:conditions, options_for_select([['Read or unread', 'all'], ['read', 'read']], 'read')) %>
+        </div>
+        <p class="columns">and older than</p>
+        <div class="field small-6 columns">
+          <%= label_tag(:time, 'time ago') %>
+          <%= number_field_tag(:time, 1, min:1, max: 100, step: 1 ) %>
+        </div>
+        <div class="field small-6 columns">
+          <%= label_tag(:time_unit, 'unit') %>
+          <%= select_tag(:time_unit, options_for_select( [['days', 'days'], ['weeks', 'weeks'], ['months', 'months'], ['years', 'years']], 'years')) %>
+        </div>
+      </div>
+      <% if @notifications.any? %>
+          <%= button_tag 'Delete', class: 'alert' %>
+      <% else %>
+          <%= button_tag 'Delete', class: 'disabled' %>
+      <% end %>
+  <% end %>
+
 </section>
 

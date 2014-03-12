@@ -34,6 +34,7 @@ RemoteWind::Application.routes.draw do
   resources :notifications, only: [:index, :destroy] do
     collection do
       patch 'mark_all_as_read'
+      delete '/', to: :destroy_all
     end
   end
 
