@@ -71,7 +71,7 @@ describe NotificationsController do
     end
   end
 
-  describe "PATCH 'mark_all_as_read'" do
+  describe "PATCH 'update_all'" do
 
     let(:user) { user = create(:user) }
     let(:note) { create(:notification, user: user) }
@@ -82,7 +82,7 @@ describe NotificationsController do
     context "when user has no unread notifications" do
 
       before(:each) do
-        patch :mark_all_as_read
+        patch :update_all
       end
 
       it { should redirect_to /#{notifications_url}/ }
@@ -97,7 +97,7 @@ describe NotificationsController do
 
       before(:each) do
          note
-         patch :mark_all_as_read
+         patch :update_all
       end
 
       it { should redirect_to /#{notifications_url}/ }
@@ -114,7 +114,7 @@ describe NotificationsController do
 
     it "should not change notifications that do not belong to current user" do
       private = create(:notification, user_id: 999)
-      patch :mark_all_as_read
+      patch :update_all
       expect(private.reload.read).to be_false
     end
 
