@@ -1,8 +1,11 @@
 class NotificationsController < ApplicationController
 
   authorize_resource
+
+  skip_before_filter :get_notifications, only: [:mark_all_as_read]
+
   # Display notifications belonging to the currently logged in user.
-  # GET notifications
+  # GET /notifications
   def index
     @user = current_user
     @notifications = Notification
@@ -18,6 +21,22 @@ class NotificationsController < ApplicationController
     end
     # Mark notifications as read after page has been rendered
     @notifications.update_all(read: true) if @notifications.present?
+  end
+
+  # PATCH /notifications/mark_all_as_read
+  def mark_all_as_read
+
+    @notifications = Notification.where(user_id: current_user.id, read: false)
+    updated = @notifications.update_all(read: true)
+
+    if updated > 0
+      flash[:success] = 'All notifications have been marked as read.'
+      redirect_to action: :index
+    else
+      flash[:error] = 'No unread notifications found.'
+      redirect_to action: :index
+    end
+
   end
 
 end

@@ -31,7 +31,11 @@ RemoteWind::Application.routes.draw do
   get "/stations/search/(:lon)(/:lat)(/:radius)", to: "stations#search", as: :search_stations
 
   resources :measures,  only: [:index, :create]
-  resources :notifications, only: [:index]
+  resources :notifications, only: [:index] do
+    collection do
+      patch 'mark_all_as_read'
+    end
+  end
 
 
 

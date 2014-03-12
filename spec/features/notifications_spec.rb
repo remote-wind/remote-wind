@@ -31,4 +31,20 @@ feature "Notifications", %{
     end
 
   end
+
+  context "when I am on notifications page" do
+
+    before :each do
+      sign_in! user
+      visit notifications_path
+      note
+    end
+
+    scenario "when I click mark all as read" do
+      click_link "Mark all as read"
+      expect(note.reload.read).to be_true
+    end
+
+  end
+
 end

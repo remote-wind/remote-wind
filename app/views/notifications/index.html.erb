@@ -1,5 +1,8 @@
 <section class="row contents">
   <h1>Notifications</h1>
+  <ul class="button-group actions">
+    <li><%= link_to_mark_all_as_read(@notifications.size) %></li>
+  </ul>
   <% if @notifications.any? %>
       <ul class="notifications">
         <% @notifications.each do |note| %>

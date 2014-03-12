@@ -13,7 +13,7 @@ class Ability
       can :read, Station do |s|
         s.show?
       end
-      can :read, Notification do |n|
+      can :manage, Notification do |n|
         n.user_id == user.id
       end
 

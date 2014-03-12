@@ -1,10 +1,6 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe NotificationsController do
-
-  before :each do
-    sign_out :user
-  end
 
   describe "GET 'index'" do
 
@@ -73,5 +69,54 @@ describe NotificationsController do
       get :index
       expect(flash[:notice]).to include "You have 1 unread notification."
     end
+  end
+
+  describe "PATCH 'mark_all_as_read'" do
+
+    let(:user) { user = create(:user) }
+    let(:note) { create(:notification, user: user) }
+
+    before(:each) { sign_in user }
+    subject { response }
+
+    context "when user has no unread notifications" do
+
+      before(:each) do
+        patch :mark_all_as_read
+      end
+
+      it { should redirect_to /#{notifications_url}/ }
+
+      it "should flash error" do
+        expect(flash[:error]).to match /no unread notifications found/i
+      end
+
+    end
+
+    context "when user has notifications" do
+
+      before(:each) do
+         note
+         patch :mark_all_as_read
+      end
+
+      it { should redirect_to /#{notifications_url}/ }
+
+      it "should redirect to notifications" do
+        expect(flash[:success]).to match /all notifications have been marked as read/i
+      end
+
+      it "set all notifications as read" do
+        expect(note.reload.read).to be_true
+      end
+
+    end
+
+    it "should not change notifications that do not belong to current user" do
+      private = create(:notification, user_id: 999)
+      patch :mark_all_as_read
+      expect(private.reload.read).to be_false
+    end
+
   end
 end
