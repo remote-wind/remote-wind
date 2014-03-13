@@ -43,12 +43,8 @@ describe NotificationsHelper do
   describe "#link_to_mark_all_as_read" do
 
     context "when called with nil number of notifications" do
-
-      subject { link_to_mark_all_as_read(user, nil) }
-
+      subject { link_to_mark_all_as_read(user) }
       it { should have_link "Mark all as read", href: user_notifications_path(user) }
-      it { should have_css ".disabled[disabled]" }
-
     end
 
   end

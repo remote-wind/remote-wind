@@ -1,23 +1,22 @@
 <section class="row contents">
   <h1>Notifications</h1>
+
   <ul class="button-group actions">
-    <li><%= link_to_mark_all_as_read(@user, @unread_notifications_count, {}) %></li>
+    <li><%= link_to_mark_all_as_read(@user) %></li>
   </ul>
-  <% if @notifications.any? %>
+  <% if @notifications.present? %>
       <ul class="notifications">
         <% @notifications.each do |note| %>
             <li class="<%= notification_classes(note).join(" ") %>" id="notification-<%= note.id %>">
-              <time class="created-at" datetime="<%= time_date_hours_seconds( @user.to_local_time( note.created_at ) ) %>">
+              <time class="created-at" datetime="<%= notification_timestamp(note) %>">
                 <%= note.created_at.strftime("%F %R") %>
               </time>
               <div class="message"><%= note.message %></div>
-              <%= link_to 'delete', user_notification_path(note, user_id: @user.to_param), method: :delete %>
+              <%= link_to_destroy_notification(note) %>
             </li>
         <% end %>
       </ul>
-  <% end %>
   <%= foundation_paginate(@notifications, params: { user_id: @user.to_param }) %>
-
   <%= form_tag user_notifications_path(user_id: @user.to_param), id: 'delete-notifications-form', method: :delete, class: 'panel radius' do %>
       <h3>Delete Notifications</h3>
       <div class="row">
@@ -42,6 +41,8 @@
           <%= button_tag 'Delete', class: 'disabled' %>
       <% end %>
   <% end %>
-
+  <% else %>
+  <p>There are no notifications to display. Sorry.</p>
+  <% end %>
 </section>
 

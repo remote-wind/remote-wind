@@ -21,28 +21,29 @@ module NotificationsHelper
     link_to txt, user_notifications_path(user_id: user), opts
   end
 
-  # Create link to mark all as read, button is disabled if there are no
-  # @param count int || nil
+  # Create link to mark all as read
   # @param opts hash || nil
-  # @return string - an anchor element
-  def link_to_mark_all_as_read(user, count = nil, opts = {})
-
-    opts ||= {}
+  # @return String - an anchor element
+  def link_to_mark_all_as_read(user, opts = {})
     opts.merge!({
       method: :patch,
       class: 'button'
     })
-    if count.nil?
-      opts[:disabled] = true
-      opts[:class] << ' disabled'
-    end
-
     link_to "Mark all as read", user_notifications_path(user_id: user.to_param), opts
   end
 
-  def link_to_destroy_note(user, note)
-    link_to 'delete', user_notification_path(note, user_id: user.to_param), method: :delete
+  # Create link to destroy notification
+  # @param note Notification
+  # @return String - an anchor element
+  def link_to_destroy_notification(note)
+    link_to 'delete', user_notification_path(note, user_id: @user.to_param), method: :delete
   end
 
+  # Create timestamp for html5 <time> element
+  # @param note Notification
+  # @return String - a machine readable time string
+  def notification_timestamp(note)
+    time_date_hours_seconds( @user.to_local_time( note.created_at ) )
+  end
 
 end
