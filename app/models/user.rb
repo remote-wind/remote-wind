@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   has_many :stations, inverse_of: :user
   has_many :notifications, inverse_of: :user
 
-  validates_uniqueness_of :nickname
+  validates_uniqueness_of :nickname, allow_nil: true
   validates_uniqueness_of :confirmation_token, allow_nil: true
   validate :valid_timezone
 
