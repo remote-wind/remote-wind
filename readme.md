@@ -20,34 +20,13 @@ Postgres > 9.3
 - bundle install
 - install mailcatcher: http://mailcatcher.me/
 
-### Enviromental vars
-The app uses enviromental vars in to avoid checking in passwords and local enviroment config.
-Add the following to your ~/.profile (os-x) or  ~/.bash_profile (linux)
+### Set up enviromental vars
+You may need set some enviromental vars to get the app running on your system.
 ```
-export REMOTE_WIND_EMAIL="your@email.com"
-export REMOTE_WIND_PASSWORD="password"
-export REMOTE_WIND_GEONAMES="username"
-export REMOTE_WIND_FB_APP_ID="id"
-export REMOTE_WIND_FB_APP_SECRET="secret"
-export REMOTE_WIND_EMAIL_PASSWORD="secret"
+cp .env.dist .env
 ```
-REMOTE_WIND_GEONAMES is a [geonames.org](http://www.geonames.org) username.
-
-#### Adding vars to your OS-X destop enviroment
-If you use an IDE on OS-x such as rubymine, you should add the following to /etc/launchd.conf
-(you do not need to add them to ~/.profile as well).
-```
-set_env REMOTE_WIND_EMAIL your@emai.com
-set_env REMOTE_WIND_PASSWORD password
-set_env REMOTE_WIND_GEONAMES username
-set_env REMOTE_WIND_FB_APP_ID id
-set_env REMOTE_WIND_FB_APP_SECRET secret
-set_env REMOTE_WIND_EMAIL_PASSWORD secret
-```
-Note that the values should not be quoted!
-```
-source /etc/launchd.conf
-```
+Edit `.env` in your favorite text editor. DO NOT CHECK IT IN!
+See see https://github.com/bkeepers/dotenv for details
 
 ## Mailcatcher
 This app uses the mailcatcher smtp server for the dev environment

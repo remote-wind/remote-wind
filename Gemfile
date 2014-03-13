@@ -10,7 +10,6 @@ gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'coffee-rails', '~> 4.0.0' # Use CoffeeScript for .js.coffee assets and views
 gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'foundation-rails', :github => 'zurb/foundation-rails'
-gem 'compass' # sass toolkit
 gem 'rickshaw_rails' # Javascript toolkit for graphs
 
 #= Authentication ====================================================
@@ -32,6 +31,7 @@ gem 'nokogiri' # XML/SAX parser.
 gem 'will_paginate' #Pagination
 gem 'cache_digests' #Cache invalidation
 
+
 #= BDD Tools =========================================================
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -39,8 +39,8 @@ group :doc do
 end
 
 group :development, :test do
+  gem "dotenv-rails", "~> 0.10.0" # load local config from .env file
   gem 'therubyracer', platforms: :ruby # V8 Javascript runtime
-  gem 'sqlite3'
   gem 'debugger'
   gem 'thin'  # use Thin as web server instead of webbrick
   gem 'zeus', '0.13.4.pre2', require: false # Zeus is a process forker that quickstarts rSpec and server

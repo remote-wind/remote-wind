@@ -18,3 +18,8 @@
 *.sock
 .rspec
 *.dump
+
+# Environmental variable files
+.env
+.env.test
+.env.dev
