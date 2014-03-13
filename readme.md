@@ -8,7 +8,6 @@ This open-source project is available under a [GNU GPL v3 license](http://www.gn
 See the [project wiki](https://github.com/remote-wind/remote-wind/wiki) for more detailed information.
 
 ### Requirements
-
 ```
 RVM > 1.2
 Ruby >= 2.0.0
@@ -19,6 +18,7 @@ Postgres > 9.3
 - set up RVM to use ruby 2.0.0 and create a gemset named remote-wind
 - clone the repo
 - bundle install
+- install mailcatcher: http://mailcatcher.me/
 
 ### Enviromental vars
 The app uses enviromental vars in to avoid checking in passwords and local enviroment config.
@@ -48,6 +48,10 @@ Note that the values should not be quoted!
 ```
 source /etc/launchd.conf
 ```
+
+## Mailcatcher
+This app uses the mailcatcher smtp server for the dev environment
+see http://mailcatcher.me/ for instructions
 
 ## Continuus testing with Guard and Zeus
 ```
