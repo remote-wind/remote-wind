@@ -1,18 +1,10 @@
-# SQLite version 3.x
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem 'sqlite3'
-
-development:
-<% if ENV["REMOTE_WIND_DATABASE_ADAPTER"] == "postgresql" %>
+common: &common
   adapter: postgresql
-  database: <%= ENV["REMOTE_WIND_POSTGRES_DATABASE_DEV"] || "remote_wind_dev" %>
   encoding: utf8
   template: template0 # Required for UTF8 encoding
   # When using postgress.app for example you do not want to specify user / pw
   <% if ENV["REMOTE_WIND_POSTGRES_USER"] %>
-  user: <%= ENV["REMOTE_WIND_POSTGRES_USER"] %>
+  username: <%= ENV["REMOTE_WIND_POSTGRES_USER"] %>
   <% end %>
   <% if ENV["REMOTE_WIND_POSTGRES_PASSWORD"] %>
   password: <%= ENV["REMOTE_WIND_POSTGRES_PASSWORD"] %>
@@ -20,26 +12,14 @@ development:
   <% if ENV["REMOTE_WIND_POSTGRES_HOST"] %>
   host: <%= ENV["REMOTE_WIND_POSTGRES_HOST"] %>
   <% end %>
-<% else %>
-  adapter: sqlite3
-  database: db/development.sqlite3
-  pool: 5
-  timeout: 5000
-<% end %>
+
+development:
+  <<: *common
+  database: <%= ENV["REMOTE_WIND_POSTGRES_DATABASE_DEV"] || "remote_wind_dev" %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-<% if ENV["REMOTE_WIND_DATABASE_ADAPTER"] == "postgresql" %>
-  adapter: postgresql
+  <<: *common
   database: <%= ENV["REMOTE_WIND_POSTGRES_DATABASE_TEST"] || "remote_wind_test" %>
-  encoding: utf8
-  template: template0 # Required for UTF8 encoding
-<% else %>
-  adapter: sqlite3
-  database: db/test.sqlite3
-  pool: 5
-  timeout: 5000
-<% end %>
-
