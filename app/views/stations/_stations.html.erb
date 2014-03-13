@@ -32,7 +32,7 @@
       </tr>
 
   <% end %>
-  <% if can? :create, Station && params[:controller] == 'stations' %>
+  <% if can? :manage, Station && params[:controller] == 'stations' %>
       <tr class="station">
         <td><%= link_to 'New Station', new_station_path %></td>
       </tr>

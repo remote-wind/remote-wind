@@ -15,6 +15,7 @@ class UserAuthentication < ActiveRecord::Base
       token_expires_at: Time.at(params['credentials']['expires_at']).to_datetime,
       params: params,
     )
+
   end
 
   alias :provider :authentication_provider
