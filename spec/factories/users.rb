@@ -7,7 +7,14 @@ FactoryGirl.define do
     password 'changeme'
     password_confirmation 'changeme'
     # required if the Devise Confirmable module is used
-    # confirmed_at Time.now
+    confirmed_at Time.now
+  end
+
+  factory :unconfirmed_user, class: User do
+    nickname 'j_random_user'
+    email 'example@example.com'
+    password 'changeme'
+    password_confirmation 'changeme'
   end
 
   factory :admin, class: User  do
@@ -18,6 +25,7 @@ FactoryGirl.define do
     after(:create) do |admin|
       admin.add_role(:admin)
     end
+    confirmed_at Time.now
   end
 
 end

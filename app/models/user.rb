@@ -2,8 +2,8 @@ class User < ActiveRecord::Base
   rolify
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :omniauthable, :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
+  devise :omniauthable, :database_authenticatable, :registerable, :confirmable,
+         :recoverable, :rememberable, :trackable, :validatable,
          :omniauth_providers => [:facebook]
 
   has_many :authentications, class_name: 'UserAuthentication'
@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   has_many :notifications, inverse_of: :user
 
   validates_uniqueness_of :nickname
+  validates_uniqueness_of :confirmation_token, allow_nil: true
   validate :valid_timezone
 
   # Use FriendlyId to create "pretty urls"
@@ -26,11 +27,13 @@ class User < ActiveRecord::Base
 
   def self.create_from_omniauth(params)
     info = params[:info]
+
     create do |user|
         user.email    = info[:email]
         user.image    = info[:image]
         user.nickname = info[:nickname]
         user.password = Devise.friendly_token
+        user.confirmed_at = Time.now
     end
   end
 
