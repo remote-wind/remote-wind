@@ -6,6 +6,7 @@ feature "Notifications", %{
 
   let(:user) { create(:user) }
   let(:note) { create(:notification, user: user) }
+  let(:notifications_path) {  user_notifications_path(user_id: user.to_param)  }
 
   context "when I receive a notification" do
 
@@ -72,8 +73,10 @@ feature "Notifications", %{
 
     scenario "when I click delete all" do
       visit notifications_path
+
       expect {
         within('#delete-notifications-form') do
+          fill_in :time, with: 0
           click_button "Delete", "#delete-notifications-form"
         end
       }.to change(Notification, :count).by(-1)

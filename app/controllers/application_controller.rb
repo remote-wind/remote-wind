@@ -79,7 +79,7 @@ class ApplicationController < ActionController::Base
     count = Notification.where(user: current_user, read: false).count
     if count > 0
       flash[:notice] = view_context.link_to(
-          "You have #{pluralize(count, 'unread notification')}.", notifications_path
+          "You have #{pluralize(count, 'unread notification')}.", user_notifications_path(user_id: current_user)
       )
       @unread_notifications_count = count
     end

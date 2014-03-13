@@ -14,7 +14,7 @@ class Ability
         s.show?
       end
       can :manage, Notification do |n|
-        n.user_id == user.id
+        user.has_role? :admin || n.user_id == user.id
       end
 
     end

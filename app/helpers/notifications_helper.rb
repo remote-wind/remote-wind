@@ -11,20 +11,23 @@ module NotificationsHelper
   end
 
   # Create link to inbox with number of notifications
+  # @param user User
   # @param count int || nil
   # @param opts hash || nil
   # @return string - an anchor element
-  def link_to_notifications(count=nil, opts = {})
+  def link_to_notifications(user, count=nil, opts = {})
     txt = "Inbox"
     txt += "(#{count})" unless count.to_i.zero?
-    link_to txt, notifications_path, opts
+    link_to txt, user_notifications_path(user_id: user), opts
   end
 
   # Create link to mark all as read, button is disabled if there are no
   # @param count int || nil
   # @param opts hash || nil
   # @return string - an anchor element
-  def link_to_mark_all_as_read(count = nil, opts = {})
+  def link_to_mark_all_as_read(user, count = nil, opts = {})
+
+    opts ||= {}
     opts.merge!({
       method: :patch,
       class: 'button'
@@ -34,7 +37,12 @@ module NotificationsHelper
       opts[:class] << ' disabled'
     end
 
-    link_to "Mark all as read", mark_all_as_read_notifications_path, opts
+    link_to "Mark all as read", user_notifications_path(user_id: user.to_param), opts
   end
+
+  def link_to_destroy_note(user, note)
+    link_to 'delete', user_notification_path(note, user_id: user.to_param), method: :delete
+  end
+
 
 end

@@ -3,7 +3,6 @@ class NotificationsController < ApplicationController
   authorize_resource
 
   skip_before_filter :get_notifications, only: [:mark_all_as_read]
-
   before_filter :set_user
 
   # Display notifications belonging to the currently logged in user.
@@ -15,7 +14,7 @@ class NotificationsController < ApplicationController
             .paginate(page: params[:page])
 
     @title = "Inbox"
-    @title += " - page #{params[:page]}" unless params[:page].nil?
+    @title += "(#{@unread_notifications_count})" unless @unread_notifications_count.nil?
 
     # Render response before marking notifications as read
     respond_to do |format|
@@ -25,8 +24,8 @@ class NotificationsController < ApplicationController
     @notifications.update_all(read: true) if @notifications.present?
   end
 
-  # PATCH /notifications/mark_all_as_read
-  def mark_all_as_read
+  # PATCH /notifications
+  def update_all
 
     @notifications = @user.notifications.where(read: false)
 
@@ -59,7 +58,7 @@ class NotificationsController < ApplicationController
       time = params[:time].to_i
       unit = ['days', 'weeks', 'months', 'years'].include?(params[:time_unit]) ?  \
           params[:time_unit].to_sym : nil
-      @notifications = @notifications.where('created_at >= ?', time.send(unit).ago)
+      @notifications = @notifications.where('created_at <= ?', time.send(unit).ago)
     end
 
     if @notifications.destroy_all.size.nonzero?
@@ -72,7 +71,12 @@ class NotificationsController < ApplicationController
   end
 
   def set_user
-    @user = current_user
+    # Avoid DB query if user is current_user
+    if [current_user.to_param, current_user.id.to_s].include?(params[:user_id])
+      @user = current_user
+    else
+      @user = User.friendly.find(params[:user_id])
+    end
   end
 
 end

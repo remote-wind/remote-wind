@@ -1,7 +1,7 @@
 <section class="row contents">
   <h1>Notifications</h1>
   <ul class="button-group actions">
-    <li><%= link_to_mark_all_as_read(@unread_notifications_count) %></li>
+    <li><%= link_to_mark_all_as_read(@user, @unread_notifications_count, {}) %></li>
   </ul>
   <% if @notifications.any? %>
       <ul class="notifications">
@@ -11,14 +11,14 @@
                 <%= note.created_at.strftime("%F %R") %>
               </time>
               <div class="message"><%= note.message %></div>
-              <%= link_to 'delete', notification_path(note), method: :delete %>
+              <%= link_to 'delete', user_notification_path(note, user_id: @user.to_param), method: :delete %>
             </li>
         <% end %>
       </ul>
   <% end %>
-  <%= foundation_paginate(@notifications) %>
+  <%= foundation_paginate(@notifications, params: { user_id: @user.to_param }) %>
 
-  <%= form_tag notifications_path, id: 'delete-notifications-form', method: :delete, class: 'panel radius' do %>
+  <%= form_tag user_notifications_path(user_id: @user.to_param), id: 'delete-notifications-form', method: :delete, class: 'panel radius' do %>
       <h3>Delete Notifications</h3>
       <div class="row">
         <p class="columns">that are</p>
@@ -29,7 +29,7 @@
         <p class="columns">and older than</p>
         <div class="field small-6 columns">
           <%= label_tag(:time, 'time ago') %>
-          <%= number_field_tag(:time, 1, min:1, max: 100, step: 1 ) %>
+          <%= number_field_tag(:time, 1, min:0, max: 100, step: 1, value: 1 ) %>
         </div>
         <div class="field small-6 columns">
           <%= label_tag(:time_unit, 'unit') %>

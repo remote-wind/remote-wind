@@ -14,6 +14,12 @@ RemoteWind::Application.routes.draw do
   resources :users do
     resources :roles, only: [:create, :destroy] do
     end
+    resources :notifications, only: [:index, :destroy] do
+      collection do
+        patch '/', to: :update_all
+        delete '/', to: :destroy_all
+      end
+    end
   end
 
   get "/stations/:station_id/measures", to: "stations#measures", as: :station_measures
@@ -31,12 +37,7 @@ RemoteWind::Application.routes.draw do
   get "/stations/search/(:lon)(/:lat)(/:radius)", to: "stations#search", as: :search_stations
 
   resources :measures,  only: [:index, :create]
-  resources :notifications, only: [:index, :destroy] do
-    collection do
-      patch '/', to: :update_all
-      delete '/', to: :destroy_all
-    end
-  end
+
 
 
 

@@ -2,9 +2,13 @@ require 'spec_helper'
 
 describe NotificationsHelper do
 
+  let(:user) { build_stubbed(:user) }
+
   describe "#notification_classes" do
 
     let(:note) { create(:notification, event: 'test-event', level: :warning, read: false) }
+
+
     subject { notification_classes(note) }
 
     it { should include 'notification' }
@@ -20,19 +24,18 @@ describe NotificationsHelper do
 
   end
 
-
   describe "#link_to_notifications" do
 
     it "should accept nil" do
-      expect(link_to_notifications(nil)).to eq link_to "Inbox", notifications_path
+      expect(link_to_notifications(user, nil)).to eq link_to "Inbox", user_notifications_path(user)
     end
 
     it "should not append 0" do
-      expect(link_to_notifications(0)).to eq link_to "Inbox", notifications_path
+      expect(link_to_notifications(user, 0)).to eq link_to "Inbox", user_notifications_path(user)
     end
 
     it "should append count within parens" do
-      expect(link_to_notifications(5)).to eq link_to "Inbox(5)", notifications_path
+      expect(link_to_notifications(user, 5)).to eq link_to "Inbox(5)", user_notifications_path(user)
     end
 
   end
@@ -41,18 +44,12 @@ describe NotificationsHelper do
 
     context "when called with nil number of notifications" do
 
+      subject { link_to_mark_all_as_read(user, nil) }
 
-      subject { link_to_mark_all_as_read(nil) }
-
-      it { should have_link "Mark all as read", href: mark_all_as_read_notifications_path }
+      it { should have_link "Mark all as read", href: user_notifications_path(user) }
       it { should have_css ".disabled[disabled]" }
 
     end
 
-
-
-
   end
-
-
 end
