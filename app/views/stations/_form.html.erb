@@ -7,9 +7,9 @@
       <%= f.div_field_with_label(:latitude, class: "has-tip", title: "Degrees decimal please!") %>
       <%= f.div_field_with_label(:longitude,  class: "has-tip", title: "Degrees decimal please!") %>
       <%= f.div_field_with_label(:user_id, label: "Owner") do |key|
-        f.select(:user_id, options_from_collection_for_select(User.all, :id, :email), { include_blank: true  })
-      end
-      %>
+            f.select(:user_id, options_from_collection_for_select(User.all, :id, :email), { include_blank: true  }) +
+            link_to('Invite a new user', new_user_invitation_path )
+      end %>
       <%= f.div_field_with_label(:show, label: "Show") do |key|
         check_box("station", key, { }, "yes", "no")
       end
