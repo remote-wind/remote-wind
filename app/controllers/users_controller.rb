@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, except: [:show, :index]
   before_filter :set_user, except: [:index]
-  load_and_authorize_resource
+  authorize_resource only: [:destroy]
+  skip_authorization_check only: [:show, :index]
 
   # GET /users/:id
   def show

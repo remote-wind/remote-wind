@@ -9,45 +9,22 @@ describe UsersController do
   end
 
   describe "GET 'show'" do
+    before { get :show, id: user.to_param}
+    subject { response }
 
-    before do
-      get :show, id: user.to_param
-    end
-
-    it "should be successful" do
-      expect(response).to be_success
-    end
+    it { should be_successful }
+    it { should render_template :show }
 
     it "should find the right user" do
-      expect(assigns(:user)) == @user
-    end
-
-    it "renders the correct template" do
-      expect(response).to render_template :show
+      expect(assigns(:user).id) == user.id
     end
   end
 
   describe "GET 'index'" do
+    before {  get 'index' }
+    subject { response }
 
-    context "when not authorized" do
-      it "should be denied" do
-        bypass_rescue
-        expect { get 'index' }.to raise_error(CanCan::AccessDenied)
-      end
-    end
-
-    context "when authorized" do
-      before do
-        sign_in create(:admin)
-      end
-      it "should be successful" do
-        get 'index'
-        expect(response).to be_success
-      end
-      it "renders the correct template" do
-        get :index
-        expect(response).to render_template :index
-      end
-    end
+      it { should be_successful }
+      it { render_template :index }
   end
 end

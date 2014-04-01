@@ -1,6 +1,10 @@
 <article class="user">
-  <h1><%= @user.nickname %></h1>
-  <p>Email: <%= @user.email %></p>
+
+  <h1><%= @user.nickname || @user.email %></h1>
+
+  <% if user_signed_in? %>
+  <p>Email: <a href="mailto:<%= @user.email %>"><%= @user.email %></a></p>
+  <% end %>
 
   <% if can? :manage, @user and @available_roles.any?  %>
       <%= form_for(@user, :url => user_roles_path(@user), :html => { :method => :post, :class => 'add-role row' }) do |f| %>
