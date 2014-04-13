@@ -2,8 +2,12 @@ require 'spec_helper'
 
 describe 'users/show.html.erb' do
 
+
+  let(:u) { create(:user) }
+
   before :each do
-    stub_user_for_view_test(create(:user))
+    sign_out :user
+    stub_user_for_view_test(u)
     @user.add_role Role.create(name: :spammer).name
     assign( :available_roles, [Role.create(name: :developer)] )
 
@@ -14,8 +18,7 @@ describe 'users/show.html.erb' do
     rendered
   end
 
-  it { should include @user.email }
-  it { should include @user.nickname }
+  it { should include u.nickname }
 
   describe 'role management' do
 
@@ -24,9 +27,7 @@ describe 'users/show.html.erb' do
     end
 
     context 'when an admin' do
-
       before { @ability.can :manage, User }
-
       it { should have_content "Add role to j_random_user"}
       it { should have_selector '.add-role' }
       it { should have_selector('.add-role select', text: 'developer') }
@@ -34,7 +35,6 @@ describe 'users/show.html.erb' do
       it { should have_content "Remove role from j_random_user"}
       it { should have_selector('.remove-role select', text: 'spammer') }
       it { should_not have_selector('.remove-role select', text: 'developer') }
-
     end
   end
 

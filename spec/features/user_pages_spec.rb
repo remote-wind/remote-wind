@@ -1,11 +1,7 @@
 feature 'user pages' do
 
-  let!(:user) { create(:user, nickname: 'foo') }
-  let!(:admin) do
-    admin = create(:admin)
-    sign_in_as admin.email, admin.password
-    admin
-  end
+  let(:user) { create(:user, nickname: 'foo') }
+  before(:each) { login user }
 
   scenario 'when visiting index' do
     visit users_path
