@@ -19,6 +19,11 @@ class ApplicationController < ActionController::Base
     root_path
   end
 
+  # Overwriting the sign_out redirect path method
+  def after_sign_out_path_for(resource_or_scope)
+    root_path
+  end
+
   # Setup geonames user name
   Timezone::Configure.begin do |c|
     c.username = ENV['REMOTE_WIND_GEONAMES']
