@@ -11,7 +11,10 @@ RemoteWind::Application.routes.draw do
       registrations: "users/registrations" ,
       sessions: 'users/sessions'
   }
+
   resources :users do
+    # Avoid rails looking for a user named 'sign_out'
+    get 'sign_out', to: 'users/sessions#destroy', on: :collection
     resources :roles, only: [:create, :destroy] do
     end
     resources :notifications, only: [:index, :destroy] do
@@ -21,6 +24,7 @@ RemoteWind::Application.routes.draw do
       end
     end
   end
+
 
   get "/stations/:station_id/measures", to: "stations#measures", as: :station_measures
   get "/stations/:station_id/embed(/:css)", to: "stations#embed", as: :embed_station
