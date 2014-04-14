@@ -8,13 +8,12 @@ RemoteWind::Application.routes.draw do
 
   devise_for :users, controllers: {
       omniauth_callbacks: 'users/omniauth_callbacks',
-      registrations: "users/registrations" ,
-      sessions: 'users/sessions'
+      registrations: "users/registrations"
   }
 
   resources :users do
     # Avoid rails looking for a user named 'sign_out'
-    get 'sign_out', to: 'users/sessions#destroy', on: :collection
+
     resources :roles, only: [:create, :destroy] do
     end
     resources :notifications, only: [:index, :destroy] do
