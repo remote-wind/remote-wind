@@ -122,18 +122,21 @@ class StationsController < ApplicationController
   # GET /stations/:id/embed
   def embed
     @measure = @station.current_measure
-    @css = params[:css].in? [true, 'true', 'TRUE']
-    @type = params[:type] || 'table'
-    @height = params[:height] || 350
-    @width = params[:width] || 500
 
-    unless @type.in? ['chart','table']
-      @message = "Sorry buddy, I don´t know how to render \"#{@type}\"."
-      @type = 'error'
+    @embed_options = {
+      css: (params[:css].in?(['true', 'TRUE'])),
+      type: params[:type] || 'table',
+      height: params[:height] || 350,
+      width: params[:width] || 500
+    }
+
+    unless @embed_options[:type].in? ['chart','table']
+      @message = "Sorry buddy, I don´t know how to render \"#{@embed_options[:type]}\"."
+      @embed_options[:type] = 'error'
     end
 
     respond_to do |format|
-      format.html { render "/stations/embeds/#{@type}", layout: false }
+      format.html { render "/stations/embeds/#{@embed_options[:type]}", layout: false }
     end
   end
 

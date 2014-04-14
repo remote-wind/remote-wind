@@ -69,6 +69,7 @@ class MeasuresController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def measure_params
       ## Handle short form params
+
       if params[:m]
         return params.require(:m).permit(:i,:s,:d,:min,:max)
       end

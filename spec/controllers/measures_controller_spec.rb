@@ -18,10 +18,9 @@ describe MeasuresController do
     let!(:station) { create(:station, user: build_stubbed(:user)) }
 
     it "does not accept any other format than yaml" do
-      expect {
-        post :create, { measure: valid_attributes, format: 'html' }
-      }.to_not change(Measure, :count)
-      expect(@response.response_code).to eq 400
+     expect {
+       post :create, { measure: valid_attributes, format: 'html' }
+     }.to raise_exception(ActionController::UnknownFormat)
     end
 
     it "checks station status" do

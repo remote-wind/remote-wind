@@ -312,17 +312,17 @@ describe StationsController do
 
     it "takes a css param" do
       get :embed, params.merge!( css: "true" )
-      expect(assigns(:css)).to be_true
+      expect(assigns(:embed_options)[:css]).to be_true
     end
 
     it "defaults to table type" do
       get :embed, params
-      expect(assigns(:type)).to eq "table"
+      expect(assigns(:embed_options)[:type]).to eq "table"
     end
 
     it "takes a type param" do
       get :embed, params.merge!( type: "chart" )
-      expect(assigns(:type)).to eq "chart"
+      expect(assigns(:embed_options)[:type]).to eq "chart"
     end
 
     it "enforces validity of type param" do
@@ -337,12 +337,12 @@ describe StationsController do
 
     it "takes a height param" do
       get :embed, params.merge!( height: 300 )
-      expect(assigns(:height)).to eq "300"
+      expect(assigns(:embed_options)[:height]).to eq "300"
     end
 
     it "takes a width param" do
       get :embed, params.merge!( width: 250 )
-      expect(assigns(:width)).to eq "250"
+      expect(assigns(:embed_options)[:width]).to eq "250"
     end
   end
 
@@ -368,36 +368,50 @@ describe StationsController do
       station
     end
 
-    it "should take b (balance) parameter" do
-      put :update_balance, station_id: station.id, s: { b: 90 }
-      expect(assigns(:station).balance).to eq 90
+
+
+
+    context 'with valid params' do
+
+      let(:params) { { id: station.id, s: { b: 90 } } }
+
+
+      it "should take b (balance) parameter" do
+        put :update_balance, params
+        expect(assigns(:station).balance).to eq 90
+      end
+
+      it "should update balance" do
+        put :update_balance, params
+        station.reload
+        expect(station.balance).to eq 90
+      end
+
+      it "should return 200/OK with valid input" do
+        put :update_balance, params
+        expect(response.status).to eq 200
+      end
+
+      it "should check station balance" do
+        Station.any_instance.should_receive(:check_balance)
+        put :update_balance, params
+      end
+
     end
 
-    it "should update balance" do
-      put :update_balance, station_id: station.id, s: { b: 90 }
-      station.reload
-      expect(station.balance).to eq 90
-    end
 
-    it "should return 200/OK with valid input" do
-      put :update_balance, station_id: station.id, s: { b: 90 }
-      expect(response.status).to eq 200
-    end
 
     it "should return 422 - Unprocessable Entity when given an invalid balance" do
-      put :update_balance, station_id: station.id, s: { b: "nan" }
+      put :update_balance, id: station.id, s: { b: "nan" }
       expect(response.status).to eq 422
     end
 
     it "should log error if given an invalid balance" do
       Rails.logger.should_receive(:error).with("Someone attemped to update #{station.name} balance with invalid data ('nan') from 0.0.0.0")
-      put :update_balance, station_id: station.id, s: { b: "nan" }
+      put :update_balance, id: station.id, s: { b: "nan" }
     end
 
-    it "should check station balance" do
-      Station.any_instance.should_receive(:check_balance)
-      put :update_balance, station_id: station.id, s: { b: 10 }
-    end
+
 
   end
 end
