@@ -33,7 +33,7 @@ RemoteWind::Application.routes.draw do
   put '/s/:station_id' => 'stations#update_balance'
   resources :measures,  only: [:create]
 
-  resources :stations, shallow: true do
+  resources :stations do
     collection do
       # Used by Ardiuno station to lookup ID
       get '/find/:hw_id',
@@ -51,7 +51,7 @@ RemoteWind::Application.routes.draw do
           as: :embed
     end
 
-    resources :measures, only: [:index, :show, :create, :destroy] do |measure|
+    resources :measures, only: [:index, :create, :destroy] do |measure|
       collection do
         delete '/',
           to: "measures#clear",
