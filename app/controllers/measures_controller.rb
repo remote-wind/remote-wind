@@ -12,11 +12,6 @@ class MeasuresController < ApplicationController
     @measure = Measure.new(measure_params)
 
     respond_to do |format|
-
-      unless request.format == 'yaml'
-        render nothing: true, status: :bad_request and return
-      end
-
       if @measure.save
         @station = @measure.station
         @station.check_status!

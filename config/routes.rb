@@ -30,8 +30,8 @@ RemoteWind::Application.routes.draw do
   end
 
   # Legacy routes to support Ardiuno stations
-  put '/s/:station_id' => 'stations#update_balance'
-  resources :measures,  only: [:create]
+  put '/s/:id' => 'stations#update_balance', constraints: { format: :yaml }
+  resources :measures,  only: [:create], constraints: { format: :yaml }
 
   resources :stations do
     collection do

@@ -4,14 +4,12 @@ class StationsController < ApplicationController
   DO_NOT_AUTHORIZE =  [:show, :index, :measures, :search, :embed, :find, :update_balance]
 
   skip_before_filter :authenticate_user!, only: DO_NOT_AUTHORIZE
-      authorize_resource except: DO_NOT_AUTHORIZE
+  authorize_resource except: DO_NOT_AUTHORIZE
   skip_authorization_check only: DO_NOT_AUTHORIZE
 
+  skip_before_filter :get_all_stations, only: [:update, :destroy, :update_balance]
 
-  skip_before_filter :get_all_stations, only: [:update, :destroy]
-
-
-  before_action :set_station, only: [:update, :destroy, :embed]
+  before_action :set_station, only: [:update, :destroy, :embed, :update_balance]
   before_action :select_station, only: [:show, :edit]
 
   # Skip CSRF protection since station does not send CSRF token.
@@ -90,8 +88,6 @@ class StationsController < ApplicationController
   def update_balance
 
     sp = params.require(:s).permit(:b)
-
-    @station = Station.friendly.find(params[:station_id])
     @station.balance = sp[:b] if sp[:b].present?
 
     respond_to do |format|
@@ -117,16 +113,14 @@ class StationsController < ApplicationController
     end
   end
 
-  # GET stations/search?lat=x&lon=x&radius
+  # GET /stations/search?lat=x&lon=x&radius
   def search
-    lat = params[:lat]
-    lon = params[:lon]
     radius = params[:radius] || 20
-    @stations = Station.near([lat, lon], radius, :units => :km)
+    @stations = Station.near([params[:lat], params[:lon]], radius, units: :km)
   end
 
+  # GET /stations/:id/embed
   def embed
-    # get station with Friendly Id, params[:id] can either be id or slug
     @measure = @station.current_measure
     @css = params[:css].in? [true, 'true', 'TRUE']
     @type = params[:type] || 'table'
@@ -143,24 +137,27 @@ class StationsController < ApplicationController
     end
   end
 
+  # Used by Ardiuno to lookup station ID
+  # GET /stations/search?lat&lon&(radius)
   def find
-    @station = Station.find_by_hw_id(params[:hw_id])
+    @station = Station.find_by(hw_id: params[:hw_id])
+
     if(@station.nil?)
       respond_to do |format|
         format.html { head :not_found }
-        format.xml  { head :not_found }
         format.json { head :not_found }
         format.yaml { head :not_found, :content_type => 'text/x-yaml'}
       end
     else
       respond_to do |format|
-        format.html # show.html.erb
-        format.xml  { render :xml => @station }
-        format.json  { render :json => @station }
-        format.yaml {render :json =>  {
-            :id    => @station.id,
-            :hw_id => @station.hw_id
-        }, :content_type => 'text/x-yaml'}
+        format.html { redirect_to action: :show, status: :found }
+        format.json  { render json: @station, status: :found }
+        format.yaml {render json:  {
+            id:    @station.id,
+            hw_id: @station.hw_id
+        },
+            content_type: 'text/x-yaml'
+        }
       end
     end
   end
