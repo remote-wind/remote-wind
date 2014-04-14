@@ -23,7 +23,5 @@ describe MeasuresController do
       get("/measures").should route_to("measures#index")
     end
 
-
-
   end
 end

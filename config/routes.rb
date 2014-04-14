@@ -6,10 +6,17 @@ RemoteWind::Application.routes.draw do
 
   delete '/users/:user_id/roles(/:id)', to: 'roles#destroy', as: :destroy_user_role
 
-  devise_for :users, controllers: {
+  devise_for :users, skip: [:sessions], controllers: {
       omniauth_callbacks: 'users/omniauth_callbacks',
       registrations: "users/registrations"
   }
+
+  as :user do
+    get 'signin' => 'devise/sessions#new', as: :new_user_session
+    post 'signin' => 'devise/sessions#create', as: :user_session
+    match 'signout' => 'devise/sessions#destroy', as: :destroy_user_session,
+          via: Devise.mappings[:user].sign_out_via
+  end
 
   resources :users do
     # Avoid rails looking for a user named 'sign_out'
@@ -32,7 +39,7 @@ RemoteWind::Application.routes.draw do
 
   put "/s/:station_id" => "stations#update_balance"
   get "/stations/find/:hw_id", to: "stations#find", as: :find_station
-  resources :stations, :shallow => true do
+  resources :stations, shallow: true do
     resources :measures, only: [:show, :create, :destroy] do |measure|
     end
   end
