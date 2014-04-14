@@ -19,8 +19,6 @@ RemoteWind::Application.routes.draw do
   end
 
   resources :users do
-    # Avoid rails looking for a user named 'sign_out'
-
     resources :roles, only: [:create, :destroy] do
     end
     resources :notifications, only: [:index, :destroy] do
@@ -31,24 +29,35 @@ RemoteWind::Application.routes.draw do
     end
   end
 
+  # Legacy routes to support Ardiuno stations
+  put '/s/:station_id' => 'stations#update_balance'
+  resources :measures,  only: [:create]
 
-  get "/stations/:station_id/measures", to: "stations#measures", as: :station_measures
-  get "/stations/:station_id/embed(/:css)", to: "stations#embed", as: :embed_station
-  delete "/stations/:station_id/measures", to: "stations#destroy_measures", as: :destroy_station_measures
-
-
-  put "/s/:station_id" => "stations#update_balance"
-  get "/stations/find/:hw_id", to: "stations#find", as: :find_station
   resources :stations, shallow: true do
-    resources :measures, only: [:show, :create, :destroy] do |measure|
+    collection do
+      # Used by Ardiuno station to lookup ID
+      get '/find/:hw_id',
+          to: 'stations#find',
+          as: :find
+      # Proximity search - not in use
+      get '/search/(:lon)(/:lat)(/:radius)',
+          to: 'stations#search',
+          as: :search
+    end
+
+    member do
+      get '/embed(/:css)',
+          to: 'stations#embed',
+          as: :embed
+    end
+
+    resources :measures, only: [:index, :show, :create, :destroy] do |measure|
+      collection do
+        delete '/',
+          to: "measures#clear",
+          as: :destroy
+      end
     end
   end
-
-  get "/stations/search/(:lon)(/:lat)(/:radius)", to: "stations#search", as: :search_stations
-
-  resources :measures,  only: [:index, :create]
-
-
-
 
 end

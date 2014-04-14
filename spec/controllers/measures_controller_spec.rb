@@ -64,6 +64,84 @@ describe MeasuresController do
 
   end
 
+  describe "GET index" do
+
+    let(:station) { create(:station, speed_calibration: 0.5) }
+    let!(:measures) { [ create(:measure, station: station, speed: 10) ] }
+
+    context "when request is HTML" do
+
+      it "uses the page param to paginate measures" do
+        # Stub the chain to set up expection
+        Station.any_instance.stub(:measures).and_return(Measure)
+        Measure.stub(:order).and_return(Measure)
+
+        Measure.should_receive(:paginate).with(page: "2").and_return([].paginate)
+        get :index, station_id: station.to_param, page: "2"
+      end
+    end
+
+    context "when request is JSON" do
+
+      before :each do
+        get :index, station_id: station.to_param, format: 'json'
+      end
+
+      it "assigns station" do
+        expect(assigns(:station)).to be_a(Station)
+      end
+
+      it "assigns measures" do
+        expect(assigns(:measures).to_a).to include measures.first
+      end
+
+      it "calibrates measures" do
+        expect(assigns(:measures).first.speed).to eq 5
+      end
+    end
+  end
+
+  describe "DELETE clear" do
+
+    before :each do
+      3.times do
+        station.measures.create attributes_for(:measure)
+      end
+    end
+
+    context "when an unpriveleged user" do
+      before { sign_in create(:user) }
+      it "does not allow measures to be destoyed" do
+        expect do
+          delete :clear, {:station_id => station.to_param}
+        end.to_not change(Measure, :count)
+        bypass_rescue
+      end
+
+      it "does not allow measures to be destoyed" do
+        expect do
+          bypass_rescue
+          delete :clear, {:station_id => station.to_param}
+        end.to raise_error CanCan::AccessDenied
+      end
+
+    end
+
+    context "when an admin" do
+      before { sign_in create(:admin) }
+
+      it "destroys the related measures" do
+        delete :clear, {:station_id => station.to_param}
+        expect(Measure.where("station_id = #{station.id}").count).to eq 0
+      end
+
+      it "redirects to the station" do
+        delete :clear, {:station_id => station.to_param}
+        expect(response).to redirect_to(station_url(station.to_param))
+      end
+    end
+  end
+
   describe "DELETE 'destroy'" do
 
     before do

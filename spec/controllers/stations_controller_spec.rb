@@ -262,88 +262,6 @@ describe StationsController do
     end
   end
 
-  describe "GET measures" do
-
-    let(:station) { create(:station, speed_calibration: 0.5) }
-    let!(:measures) do
-      [*1..3].map do
-        create(:measure, station: station, speed: 10)
-      end
-    end
-
-    context "when request is HTML" do
-
-      it "uses the page param to paginate measures" do
-        # Stub the chain to set up expection
-        Station.any_instance.stub(:measures).and_return(Measure)
-        Measure.stub(:order).and_return(Measure)
-
-        Measure.should_receive(:paginate).with(page: "2").and_return([].paginate)
-        get :measures, station_id: station.to_param, page: "2"
-      end
-    end
-
-    context "when request is JSON" do
-
-      before :each do
-        get :measures, station_id: station.to_param, format: 'json'
-      end
-
-      it "assigns station" do
-        expect(assigns(:station)).to be_a(Station)
-      end
-
-      it "assigns measures" do
-        expect(assigns(:measures).to_a).to include measures.first
-      end
-
-      it "calibrates measures" do
-        expect(assigns(:measures).first.speed).to eq 5
-      end
-    end
-  end
-
-  describe "DELETE clear" do
-
-    before :each do
-      3.times do
-        station.measures.create attributes_for(:measure)
-      end
-    end
-
-    context "when an unpriveleged user" do
-      before { sign_in create(:user) }
-      it "does not allow measures to be destoyed" do
-        expect do
-          delete :destroy_measures, {:station_id => station.to_param}
-        end.to_not change(Measure, :count)
-        bypass_rescue
-      end
-
-      it "does not allow measures to be destoyed" do
-        expect do
-          bypass_rescue
-          delete :destroy_measures, {:station_id => station.to_param}
-        end.to raise_error CanCan::AccessDenied
-      end
-
-    end
-
-    context "when an admin" do
-      before { sign_in create(:admin) }
-
-      it "destroys the related measures" do
-        delete :destroy_measures, {:station_id => station.to_param}
-        expect(Measure.where("station_id = #{station.id}").count).to eq 0
-      end
-
-      it "redirects to the station" do
-        delete :destroy_measures, {:station_id => station.to_param}
-        response.should redirect_to(station_url(station.to_param))
-      end
-    end
-  end
-
   describe "GET search" do
     let!(:machu_pichu)  { create(:station, name: 'Machu Pichu',  lat:  -13.163392, lon:  -72.546368) }
     let!(:red_square)   { create(:station, name: 'Red Square',   lat:  55.754144,  lon:  37.620403) }
@@ -380,50 +298,50 @@ describe StationsController do
 
   describe "GET embed" do
 
-    before do
-      station
-      get :embed, station_id: station.to_param
-    end
+    let(:params) { { id: station.to_param } }
 
     it "returns http success" do
+      get :embed, params
       expect(response).to be_success
     end
 
     it "assigns station as @station" do
+      get :embed, params
       expect(assigns(:station)).to eq station
     end
 
     it "takes a css param" do
-      get :embed, station_id: station.to_param, css: "true"
+      get :embed, params.merge!( css: "true" )
       expect(assigns(:css)).to be_true
     end
 
     it "defaults to table type" do
+      get :embed, params
       expect(assigns(:type)).to eq "table"
     end
 
     it "takes a type param" do
-      get :embed, station_id: station.to_param, type: "chart"
+      get :embed, params.merge!( type: "chart" )
       expect(assigns(:type)).to eq "chart"
     end
 
     it "enforces validity of type param" do
-      get :embed, station_id: station.to_param, type: "gogeligook"
+      get :embed, params.merge!(type: "gogeligook" )
       expect(response).to render_template "stations/embeds/error"
     end
 
     it "displays a message if the type is invalid" do
-      get :embed, station_id: station.to_param, type: "gogeligook"
+      get :embed, params.merge!( type: "gogeligook" )
       expect(assigns(:message)).to match /Sorry buddy, I don´t know how to render "gogeligook"/i
     end
 
     it "takes a height param" do
-      get :embed, station_id: station.to_param, height: 300
+      get :embed, params.merge!( height: 300 )
       expect(assigns(:height)).to eq "300"
     end
 
     it "takes a width param" do
-      get :embed, station_id: station.to_param, width: 250
+      get :embed, params.merge!( width: 250 )
       expect(assigns(:width)).to eq "250"
     end
   end

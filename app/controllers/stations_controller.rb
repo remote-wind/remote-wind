@@ -11,7 +11,7 @@ class StationsController < ApplicationController
   skip_before_filter :get_all_stations, only: [:update, :destroy]
 
 
-  before_action :set_station, only: [:update, :destroy]
+  before_action :set_station, only: [:update, :destroy, :embed]
   before_action :select_station, only: [:show, :edit]
 
   # Skip CSRF protection since station does not send CSRF token.
@@ -117,31 +117,6 @@ class StationsController < ApplicationController
     end
   end
 
-  # GET /stations/:staton_id/measures
-  def measures
-    # get station with Friendly Id, params[:id] can either be id or slug
-    @station = Station.friendly.find(params[:station_id])
-    expires_in 2.minutes, public: true
-
-    if stale?(etag: @station, last_modified: @station.last_measure_received_at)
-      respond_to do |format|
-        format.html { @measures = @station.measures.order(created_at: :desc).paginate(page: params[:page]) }
-        format.json { @measures = @station.get_calibrated_measures }
-      end
-    end
-  end
-
-  # DELETE /stations/:staton_id/measures
-  def destroy_measures
-    # get station with Friendly Id, params[:id] can either be id or slug
-    @station = Station.friendly.find(params[:station_id])
-    Measure.delete_all("station_id = #{@station.id}")
-    respond_to do |format|
-      format.html { redirect_to station_url(@station) }
-      format.json { head :no_content }
-    end
-  end
-
   # GET stations/search?lat=x&lon=x&radius
   def search
     lat = params[:lat]
@@ -152,7 +127,6 @@ class StationsController < ApplicationController
 
   def embed
     # get station with Friendly Id, params[:id] can either be id or slug
-    @station = Station.friendly.find(params[:station_id])
     @measure = @station.current_measure
     @css = params[:css].in? [true, 'true', 'TRUE']
     @type = params[:type] || 'table'

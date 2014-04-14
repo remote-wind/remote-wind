@@ -3,6 +3,7 @@ class Ability
 
   def initialize(user)
     user ||= User.new
+
     if user.has_role? :admin
       can :manage, :all
     else
@@ -13,10 +14,12 @@ class Ability
       can :read, Station do |s|
         s.show?
       end
+      can :read, Measure do |m|
+        m.show?
+      end
       can :manage, Notification do |n|
         user.has_role? :admin || n.user_id == user.id
       end
-
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "stations/measures" do
+describe "measures/index" do
 
   let!(:station) { build_stubbed(:station) }
 
@@ -9,7 +9,6 @@ describe "stations/measures" do
     WillPaginate::Collection.create(1, 10, 50) do |pager|
       pager.replace([*1..50].map! { build_stubbed(:measure, station: station) })
     end
-
   end
 
   before(:each) do
@@ -24,7 +23,6 @@ describe "stations/measures" do
     render
     rendered
   }
-
 
   it { should match /Latest measures for #{station.name.capitalize}/ }
   it { should match /Latest measurement recieved at #{measures.last.created_at.strftime("%H:%M")}/ }

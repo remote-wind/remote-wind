@@ -20,7 +20,11 @@ describe MeasuresController do
     end
 
     it "routes to measures#index" do
-      get("/measures").should route_to("measures#index")
+      get("/stations/1/measures").should route_to("measures#index", :station_id => "1")
+    end
+
+    it "routes to measures#clear" do
+      delete("/stations/1/measures").should route_to("measures#clear", :station_id => "1")
     end
 
   end

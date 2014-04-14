@@ -1,7 +1,10 @@
 <h1>Latest measures for <%= @station.name.capitalize %></h1>
 <p>Latest measurement recieved at <%= time_date_hours_seconds(@measures.last.created_at) %></p>
 <%= render :partial => 'measures/table', object: @measures %>
-<%= foundation_paginate(@measures) %>
+<nav class="row">
+  <%= foundation_paginate(@measures) %>
+</div>
+
 
 <ul class="breadcrumbs" role="navigation">
   <li class="root"><a href="<%= root_path %>">Home</a></li>
