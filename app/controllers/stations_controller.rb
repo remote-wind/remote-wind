@@ -7,13 +7,11 @@ class StationsController < ApplicationController
   authorize_resource except: DO_NOT_AUTHORIZE
   skip_authorization_check only: DO_NOT_AUTHORIZE
 
-  skip_before_filter :get_all_stations, only: [:update, :destroy, :update_balance]
-
-  before_action :set_station, only: [:update, :destroy, :embed, :update_balance]
-  before_action :select_station, only: [:show, :edit]
+  skip_before_filter :get_all_stations, except: [:index, :show, :new, :edit, :search]
+  before_action :set_station, except: [:new, :index, :create, :find]
 
   # Skip CSRF protection since station does not send CSRF token.
-  protect_from_forgery :except => [:create, :update_balance]
+  protect_from_forgery except: [:create, :update_balance]
 
   # GET /stations
   # GET /stations.json
@@ -168,16 +166,10 @@ class StationsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_station
-      # get station with Friendly Id, params[:id] can either be id or slug
-      @station = Station.friendly.find(params[:id])
-    end
-
-    def select_station
-      @station = @all_stations.select_by_slug_or_id(params[:id])
-      unless @station
-        throw ActiveRecord::RecordNotFound.new(
-                  "Station with id or slug = '#{params[:id]}' cannot be found" )
-      end
+      # Look in @all_stations for station to avoid query
+      @station = @all_stations.select_by_slug_or_id(params[:id]) if defined? @all_stations
+      # Get station normally if no @all_stations
+      @station = Station.friendly.find(params[:id]) unless defined? @station
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

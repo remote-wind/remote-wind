@@ -67,7 +67,6 @@ class ApplicationController < ActionController::Base
       station.current_measure = measures.bsearch { |m| m.station_id == station.id  }
     end
 
-
     # Add methods to search for station in collection
     @all_stations.extend(Slugged)
   end
