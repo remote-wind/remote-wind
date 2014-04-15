@@ -2,36 +2,29 @@ require 'spec_helper'
 
 describe "stations/index" do
 
+  let (:station) { build_stubbed(:station) }
 
-  let! :stations do
-    stations = []
-    stations << create(:station)
-    stations[0].measures.push(create(:measure))
-    assign(:stations, stations)
-    stations
-  end
-  
-  before(:each) do
+  let :stations do
+    station.stub(:measures).and_return([build_stubbed(:measure)])
+    [station]
+  end 
+
+  let! (:rendered_view) do
     stub_user_for_view_test
-  end
-
-  subject {
+    assign(:stations, stations)
     render
     rendered
-  }
-
-  it { should have_selector '.speed' }
-  it { should have_selector '.direction' }
-  it { should match /[s|S]tations/ }
-  it { should have_selector('.station') }
-
-  context "when not an admin" do
-    it { should_not have_link 'Edit' }
-    it { should_not have_link 'Delete' }
   end
-
-  describe "breadcumbs" do
-    it { should have_selector '.breadcrumbs .root', text: 'Home' }
-    it { should have_selector '.breadcrumbs .current', text: 'Stations' }
+  
+  it "has the currect contents" do
+    expect(rendered_view).to have_selector '.speed'
+    expect(rendered_view).to have_selector '.direction'
+    expect(rendered_view).to match /[s|S]tations/
+    expect(rendered_view).to have_selector('.station')
+    expect(rendered_view).to_not have_link 'Edit'
+    expect(rendered_view).to_not have_link 'Delete'
+    expect(rendered_view).to have_selector '.breadcrumbs .root', text: 'Home'
+    expect(rendered_view).to have_selector '.breadcrumbs .current', text: 'Stations'  
   end
+  
 end

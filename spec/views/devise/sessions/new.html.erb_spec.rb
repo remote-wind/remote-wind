@@ -9,10 +9,16 @@ describe "devise/sessions/new" do
     view.stub(:devise_mapping).and_return(Devise.mappings[:user])
   end
 
-  subject { render; rendered }
+  let(:page) do
+    render
+    rendered
+  end
 
-  it { should have_link "Sign in with Facebook" }
-  it { should have_field "Email" }
-  it { should have_field "Password" }
+  it "has the correct contents" do
+    expect(page).to have_link "Sign in with Facebook"
+    expect(page).to have_field "Email"
+    expect(page).to have_field "Password"
+  end
+  
 
 end

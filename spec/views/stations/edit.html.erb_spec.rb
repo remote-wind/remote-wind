@@ -1,25 +1,25 @@
 require 'spec_helper'
 
 describe "stations/edit" do
-  before(:each) do
-    stub_user_for_view_test
-    assign(:station, create(:station))
-  end
 
   describe 'form' do
 
-    subject do
+    let! (:form) do
+      stub_user_for_view_test
+      assign(:station, build_stubbed(:station))
       render
       rendered
     end
 
-    it { should have_field "Name" }
-    it { should have_field "Slug" }
-    it { should have_field "Latitude" }
-    it { should have_field "Longitude" }
-    it { should have_field "Hardware ID" }
-    it { should have_field "Show" }
-    it { should have_field "Speed Calibration" }
+    it "has the correct fields" do
+      expect(form).to have_field "Name"
+      expect(form).to have_field "Slug"
+      expect(form).to have_field "Latitude"
+      expect(form).to have_field "Longitude"
+      expect(form).to have_field "Hardware ID"
+      expect(form).to have_field "Show"
+      expect(form).to have_field "Speed Calibration"
+    end
   end
 
 end

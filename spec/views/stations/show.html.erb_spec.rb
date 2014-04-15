@@ -15,45 +15,53 @@ describe "stations/show" do
     Time.stub(:now).and_return(Time.new(2000))
     stub_user_for_view_test
     assign(:station, station)
-    #assign(:measures, measures)
   end
-
-  subject {
+  
+  let(:page) do
     render
     rendered
-  }
-
-  it { should have_selector('h1', :text => station.name )}
+  end
+  
+  it "has the correct content" do
+    expect(page).to have_selector('h1', text: station.name)
+  end
 
   context "when not an admin" do
-    it { should_not have_link 'Delete' }
-    it { should_not have_link 'Clear all measures for this station' }
+    it "does not have any destructive buttons" do
+      expect(page).to_not have_link 'Delete'
+      expect(page).to_not have_link 'Clear all measures for this station'
+      
+    end
   end
 
   context "when an admin" do
     before { @ability.can :manage, Station }
-    it { should have_link 'Edit' }
-    it { should have_link 'Clear all measures for this station' }
+    it "has admin buttons" do
+      expect(page).to have_link 'Edit'
+      expect(page).to have_link 'Clear all measures for this station'
+    end
   end
 
   describe "breadcumbs" do
-    it { should have_selector '.breadcrumbs .root', text: 'Home' }
-    it { should have_selector '.breadcrumbs a', text: 'Stations' }
-    it { should have_selector '.breadcrumbs .current', text: station.name }
+    it "has the correct breadcrumbs" do
+      expect(page).to have_selector '.breadcrumbs .root', text: 'Home'
+      expect(page).to have_selector '.breadcrumbs a', text: 'Stations'
+      expect(page).to have_selector '.breadcrumbs .current', text: station.name
+    end
   end
 
-
-
   describe "meta" do
-    it { should have_link 'j_random_user', href: user_path(station.user.to_param) }
-    it { should have_selector ".station-meta .created-at td:last", text: "23:00" }
-    it { should have_selector ".station-meta .updated-at td:last", text: "23:00" }
-    it { should have_selector ".station-meta .last-measure-received-at td:last", text: "23:00" }
-    it { should have_selector ".station-meta .latitude td:last", text: station.latitude }
-    it { should have_selector ".station-meta .longitude td:last", text: station.longitude }
-    it { should have_selector ".station-meta .timezone td:last", text: station.timezone }
-    it { should have_selector ".station-meta .visible td:last", text: "yes" }
-    it { should have_selector ".station-meta .speed-calibration td:last", text: 0.51 }
+    it "has the correct metadata" do
+      expect(page).to have_link 'j_random_user', href: user_path(station.user.to_param)
+      expect(page).to have_selector ".station-meta .created-at td:last", text: "23:00"
+      expect(page).to have_selector ".station-meta .updated-at td:last", text: "23:00"
+      expect(page).to have_selector ".station-meta .last-measure-received-at td:last", text: "23:00"
+      expect(page).to have_selector ".station-meta .latitude td:last", text: station.latitude
+      expect(page).to have_selector ".station-meta .longitude td:last", text: station.longitude
+      expect(page).to have_selector ".station-meta .timezone td:last", text: station.timezone
+      expect(page).to have_selector ".station-meta .visible td:last", text: "yes"
+      expect(page).to have_selector ".station-meta .speed-calibration td:last", text: 0.51
+    end
   end
 
 end

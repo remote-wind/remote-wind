@@ -11,23 +11,24 @@ describe "measures/index" do
     end
   end
 
-  before(:each) do
+
+  let!(:rendered_view) do
     Measure.stub(:last).and_return(measures.last)
     assign(:station, station)
     assign(:measures, measures)
     stub_user_for_view_test
     view.stub(:url_for)
-  end
-
-  subject {
     render
     rendered
-  }
+  end
 
-  it { should match /Latest measures for #{station.name.capitalize}/ }
-  it { should match /Latest measurement recieved at #{measures.last.created_at.strftime("%H:%M")}/ }
-  it { should have_selector '.pagination' }
-  it { should have_selector '.current' }
-  it { should have_selector '.previous_page' }
-  it { should have_selector '.next_page' }
+  it "has the correct contents" do
+    expect(rendered_view).to match /Latest measures for #{station.name.capitalize}/
+    expect(rendered_view).to match /Latest measurement recieved at #{measures.last.created_at.strftime("%H:%M")}/
+    expect(rendered_view).to have_selector '.pagination'
+    expect(rendered_view).to have_selector '.current'
+    expect(rendered_view).to have_selector '.previous_page'
+    expect(rendered_view).to have_selector '.next_page'
+  end
+  
 end

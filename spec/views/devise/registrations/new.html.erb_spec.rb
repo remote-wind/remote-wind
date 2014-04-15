@@ -9,14 +9,16 @@ describe "devise/registrations/new" do
     view.stub(:devise_mapping).and_return(Devise.mappings[:user])
   end
 
-  subject {
+  let(:page) do
     render
     rendered
-  }
-
-  it { should have_field "Nickname" }
-  it { should have_field "Email" }
-  it { should have_field "Password" }
-  it { should have_field "Time Zone" }
-  it { should have_link "Sign in with Facebook" }
+  end
+  
+  it "has the correct contents" do
+    expect(page).to have_field "Nickname"
+    expect(page).to have_field "Email"
+    expect(page).to have_field "Password"
+    expect(page).to have_field "Time Zone"
+    expect(page).to have_link "Sign in with Facebook"
+  end
 end

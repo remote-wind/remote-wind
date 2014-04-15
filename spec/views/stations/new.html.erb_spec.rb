@@ -2,31 +2,27 @@ require 'spec_helper'
 
 describe "stations/new" do
 
-  before(:each) do
-    stub_user_for_view_test
-    assign(:station, stub_model(Station).as_new_record)
-  end
-
 
   describe 'form' do
 
-    it "renders new station form" do
-      render
-      # Run the generator again with the --webrat flag if you want to use webrat matchers
-      assert_select "form[action=?][method=?]", stations_path, "post"
-    end
-
-    subject do
+    let!(:page) do
+      stub_user_for_view_test
+      assign(:station, stub_model(Station).as_new_record)
       render
       rendered
     end
+    
+    
+    it "has the correct contents" do
 
-    it { should have_field "Name" }
-    it { should have_field "Slug" }
-    it { should have_field "Latitude" }
-    it { should have_field "Longitude" }
-    it { should have_field "Hardware ID" }
-    it { should have_select "Owner" }
+      expect(page).to have_selector 'form[action="%s"][method=post]' % [stations_path]
+      expect(page).to have_field "Name"
+      expect(page).to have_field "Slug"
+      expect(page).to have_field "Latitude"
+      expect(page).to have_field "Longitude"
+      expect(page).to have_field "Hardware ID"
+      expect(page).to have_select "Owner"
 
+    end
   end
 end

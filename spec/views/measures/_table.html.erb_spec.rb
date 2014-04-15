@@ -12,19 +12,19 @@ describe "measures/_table" do
     measures.first
   end
 
-  before :each do
+
+  let(:rendered_view) do
     assign(:station, station)
     assign(:measures, measures)
-  end
-
-  subject do
     render
     rendered
   end
 
-  it { should have_selector ".measure", exact: measures.length }
-  it { should have_selector ".measure:first .created_at", text: time_date_hours_seconds(station.time_to_local(measures.first.created_at)) }
-  it { should have_selector '.speed',  text: "#{measure.speed} (#{measure.min}-#{measure.max})m/s" }
-  it { should have_selector '.direction', text: degrees_and_cardinal(measure.direction) }
+  it "should have the correct contents" do
+    expect(rendered_view).to have_selector ".measure", exact: measures.length
+    expect(rendered_view).to have_selector ".measure:first .created_at", text: time_date_hours_seconds(station.time_to_local(measures.first.created_at))
+    expect(rendered_view).to have_selector '.speed',  text: "#{measure.speed} (#{measure.min}-#{measure.max})m/s"
+    expect(rendered_view).to have_selector '.direction', text: degrees_and_cardinal(measure.direction)
+  end
 
 end
