@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
     })
 
     @all_stations.each do |station|
-      station.current_measure = measures.bsearch { |m| m.station_id == station.id  }
+      station.latest_measure = measures.bsearch { |m| m.station_id == station.id  }
     end
 
     # Add methods to search for station in collection

@@ -148,10 +148,27 @@ describe Station do
   end
 
   describe "#current_measure" do
-    let!(:measure) { create(:measure, station: station) }
-    it "calibrates measure" do
-      expect(station.current_measure.calibrated).to be_true
+
+    let!(:measure) do
+      create(:measure, station: station, speed: 777)
     end
+
+    it "returns cached measure" do
+      station.latest_measure = build_stubbed(:measure, speed: 999)
+      expect(station.current_measure.speed).to eq 999
+    end
+
+    it "does not issue query if cached measure available" do
+      station.latest_measure = build_stubbed(:measure, speed: 999)
+      station.measures.should_not_receive(:last)
+      station.current_measure
+    end
+
+    it "returns latest measure if none cached" do
+      expect(station.current_measure.speed).to eq 777
+    end
+
+
   end
 
   describe "should_be_down?" do

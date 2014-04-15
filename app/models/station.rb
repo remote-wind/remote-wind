@@ -27,7 +27,7 @@ class Station < ActiveRecord::Base
   alias_attribute :lng, :longitude
   alias_attribute :owner, :user
   attr_accessor :zone
-  attr_accessor :current_measure
+  attr_accessor :latest_measure
 
   # Scopes
   scope :visible, -> { where(show: true) }
@@ -95,7 +95,7 @@ class Station < ActiveRecord::Base
   end
 
   def current_measure
-    measures.first unless @current_measure.presence
+    latest_measure.presence || measures.last
   end
 
   def measures?

@@ -24,7 +24,12 @@ class StationsController < ApplicationController
   # GET /stations/1.json
   def show
     @title = @station.name
-    @measures = Measure.where(station_id: @station.id).joins(:station).limit(10).order(created_at: :desc)
+    @measures = @station.measures
+      .limit(10)
+      .order(created_at: :desc)
+      .load
+    @station.latest_measure = @measures.first
+
     respond_to do |format|
       format.html #show.html.erb
     end
