@@ -8,22 +8,26 @@ describe "notifications/index" do
     end
   end
 
-  before do
+
+  let(:rendered_view) do
     notifications.last.read = true
     assign(:notifications, notifications)
     assign(:user, build_stubbed(:user))
     render
+    rendered
   end
 
-  subject { rendered }
+  it "should have the right contents" do
+    expect(rendered_view).to have_selector '.notification', exact: notifications.size
+    expect(rendered_view).to have_selector ".#{notifications.first.event}"
+    expect(rendered_view).to have_selector '.notification:first .message', text: notifications.first.message
+    expect(rendered_view).to have_selector "#notification-#{notifications.first.id}"
+    expect(rendered_view).to have_selector '.notification.unread', exact: 3
+    expect(rendered_view).to have_selector '.notification.read'
+    expect(rendered_view).to have_selector '.notification:first .created-at', text: "2000-01-01 00:00"
+    expect(rendered_view).to have_selector '.pagination'
+  end
 
-  it { should have_selector '.notification', exact: notifications.size }
-  it { should have_selector ".#{notifications.first.event}" }
-  it { should have_selector '.notification:first .message', text: notifications.first.message }
-  it { should have_selector "#notification-#{notifications.first.id}" }
-  it { should have_selector '.notification.unread', exact: 3 }
-  it { should have_selector '.notification.read' }
-  it { should have_selector '.notification:first .created-at', text: "2000-01-01 00:00" }
-  it { should have_selector '.pagination' }
+
 
 end
