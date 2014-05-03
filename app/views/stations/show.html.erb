@@ -1,6 +1,6 @@
 <% content_for :map do %>
 <div class="map-canvas small-12 large-12 columns no-fullscreen" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
-  <%= render :partial => 'stations/map', locals: { stations: [@station] } %>
+  <%= render partial: 'stations/map', locals: { stations: [@station] } %>
 </div>
 <% end %>
 
@@ -16,7 +16,7 @@
     <dd id="chart">
       <a href="#chart-panel">Chart</a>
       <div class="content chart-wrapper active clearfix" id="chart-panel">
-        <%= render :partial => 'measures/chart', object: @measures %>
+        <%= render partial: 'measures/chart', object: @measures %>
       </div>
     </dd>
 
@@ -35,14 +35,14 @@
     <dd id="meta">
       <a href="#meta-panel">Meta</a>
       <div class="content clearfix" id="meta-panel">
-        <%= render :partial => 'stations/meta', object: @station %>
+        <%= render partial: 'stations/meta', object: @station %>
       </div>
     </dd>
 
     <dd id="embed">
       <a href="#embed-panel">Embed</a>
       <div class="content clearfix" id="embed-panel">
-        <%= render :partial => 'stations/embed', object: @station, id: @station %>
+        <%= render partial: 'stations/embed', object: @station, id: @station %>
       </div>
     </dd>
     <% end %>
