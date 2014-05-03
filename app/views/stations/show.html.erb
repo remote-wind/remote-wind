@@ -4,7 +4,7 @@
 </div>
 <% end %>
 
-<h1><%= @station.name %> <%= "<em>(offline)</em>".html_safe if @station.down? %></h1>
+<h1><%= station_header(@station) %></h1>
 <% unless @station.user.nil? %>
     <p>Owned by <%= link_to(@station.user.nickname, user_path(@station.user)) %></p>
 <% end %>
@@ -53,9 +53,7 @@
       <div class="content clearfix" id="admin-panel">
         <div class="admin-only btn-group">
           <%= link_to 'Edit', edit_station_path(@station), class: "button tiny" %>
-          <%= link_to "Clear all measures for this station?", station_measures_path(@station),
-                      :data => { :confirm =>  "Are you sure you want to delete all measues recorded by this station? This action cannot be undone!"  },
-                      :class =>"tiny button alert", :method => :delete %>
+          <%= clear_measures_button(@station) %>
         </div>
       </div>
     </dd>
@@ -64,8 +62,8 @@
 </article>
 
 <ul class="breadcrumbs" role="navigation">
-  <li class="root"><a href="<%= root_path %>">Home</a></li>
-  <li><a href="<%= stations_path %>">Stations</a></li>
-  <li class="current"><a href="<%= station_path(@station) %>"><%= @station.name %></a></li>
+  <li class="root"><%= link_to 'Home', root_path %></li>
+  <li><%= link_to 'Stations', stations_path  %></li>
+  <li class="current"><%= link_to @station.name, station_path(@station)  %></li>
 </ul>
 

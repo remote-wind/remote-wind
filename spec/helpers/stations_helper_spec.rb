@@ -2,4 +2,51 @@ require 'spec_helper'
 
 describe StationsHelper do
 
+  let(:station) { build_stubbed(:station) }
+
+  describe "#clear_measures_button" do
+
+    subject(:button) { helper.clear_measures_button(station) }
+
+    it "should have the correct classes" do
+      expect(button).to have_selector 'a.tiny.button.alert'
+    end
+
+    it "has the correct text" do
+      expect(button).to have_selector "a", text: "Clear all measures for this station?"
+    end
+
+    it 'has method=DELETE' do
+      expect(button).to have_selector 'a[data-method="delete"]'
+    end
+
+    it "has a data-confirm attibute" do
+      expect(button).to match /data-confirm\=\"*.?\"/
+    end
+
+  end
+
+  describe "#station_header" do
+
+    subject(:heading) { helper.station_header(station) }
+
+
+    it "contains the stations name" do
+      expect(heading).to eq (station.name)
+    end
+
+
+    context "when station is down" do
+
+      subject(:heading)  { helper.station_header(build_stubbed(:station, down: true)) }
+
+      it "says 'offline'" do
+        expect(heading).to have_selector 'em', text: 'offline'
+      end
+    end
+
+
+  end
+
+
 end
