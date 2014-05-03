@@ -125,6 +125,7 @@ class StationsController < ApplicationController
   # GET /stations/:id/embed
   def embed
     @measure = @station.current_measure
+    @measures = [@measure]
 
     @embed_options = {
       css: (params[:css].in?(['true', 'TRUE'])),

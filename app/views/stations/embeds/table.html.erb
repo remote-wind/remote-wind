@@ -9,7 +9,7 @@
 <body>
     <div class="remote-wind-widget" width="<%= @embed_options[:width] %>" height="<%= @embed_options[:height] %>">
       <%= render partial: 'measures/table',
-                 locals: { measures: [@measure], station: @station }
+                 locals: { measures: @measures, station: @station }
       %>
     </div>
 </body>

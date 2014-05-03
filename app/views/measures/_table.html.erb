@@ -6,8 +6,8 @@
   </thead>
   <tbody>
   <%= render partial: "measures/measure",
-             collection: @measures,
-             locals: { station: @station }
+             collection: measures,
+             locals: { station: station } if measures.any?
   %>
   </tbody>
 </table>
