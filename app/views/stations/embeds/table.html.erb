@@ -8,22 +8,9 @@
 </head>
 <body>
     <div class="remote-wind-widget" width="<%= @embed_options[:width] %>" height="<%= @embed_options[:height] %>">
-      <table class="current_measure">
-        <thead>
-            <th>Time</th>
-            <th>Direction</th>
-            <th>Wind Speed</th>
-        </thead>
-        <tbody>
-        <% if @measure.present? %>
-            <%= render :partial => 'measures/measure', object: @measure %>
-        <% else %>
-        <tr>
-            <td>No measurements available.</td>
-        </tr>
-        </tbody>
-        <% end %>
-      </table>
+      <%= render partial: 'measures/table',
+                 locals: { measures: [@measure], station: @station }
+      %>
     </div>
 </body>
 </html>
