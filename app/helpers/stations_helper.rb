@@ -16,7 +16,7 @@ module StationsHelper
 
   #@param station Station
   def station_header(station)
-    station.down? ? station.name + '<em>offline</em>'.html_safe : station.name
+    station.down? ? station.name + '<em>offline</em>' : station.name
   end
 
 end
