@@ -1,7 +1,9 @@
 module StationsHelper
 
+  # Create link to clear measures for station
   #@param station Station
   #@param options Hash
+  #@return string
   def clear_measures_button(station, options = {})
     options.merge!({
         text: "Clear all measures for this station?",
@@ -15,6 +17,7 @@ module StationsHelper
   end
 
   #@param station Station
+  #@return String station name + (offline)
   def station_header(station)
     (station.down? ? station.name + "(#{content_tag(:em, 'offline')})" : station.name).html_safe
   end
