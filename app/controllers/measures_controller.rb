@@ -26,14 +26,17 @@ class MeasuresController < ApplicationController
   def index
     expires_in 2.minutes, public: true
 
-    # Avoid E-tag cache for dev environment
+    # Use E-tag cache in production to speed things up by avoiding re-rendering if there are no new measures
     stale = Rails.env.production? ?
         stale?(etag: @station, last_modified: @station.last_measure_received_at) : true
 
     if stale
       respond_to do |format|
         format.html { @measures = @station.measures.order(created_at: :desc).paginate(page: params[:page]) }
-        format.json { @measures = @station.get_calibrated_measures }
+        format.json do
+          @measures = @station.get_calibrated_measures
+          render json: @measures
+        end
       end
     end
   end

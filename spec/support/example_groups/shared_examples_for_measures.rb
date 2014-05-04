@@ -1,13 +1,12 @@
 shared_examples "a measure" do
   describe "attributes" do
-    it "has the correct attributes" do
-      expect(subject.id).to eq measure.id
-      expect(subject.speed).to eq measure.speed
-      expect(subject.direction).to eq measure.direction
-      expect(subject.max_wind_speed).to eq measure.max_wind_speed
-      expect(subject.min_wind_speed).to eq measure.min_wind_speed
-      expect(subject.tstamp).to eq 946681200 #
-      expect(subject.created_at).to eq "1999-12-31T23:00:00Z"
-    end
+    its(:id)              { should eq attributes[:id] }
+    its(:station_id)      { should eq attributes[:station_id] }
+    its(:speed)           { should eq attributes[:speed] }
+    its(:direction)       { should eq attributes[:direction] }
+    its(:max_wind_speed)  { should eq attributes[:max_wind_speed] }
+    its(:min_wind_speed)  { should eq attributes[:min_wind_speed] }
+    its(:created_at)      { should eq Time.new(2000).iso8601 }
+    its(:tstamp)          { should eq Time.new(2000).to_i }
   end
 end
