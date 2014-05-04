@@ -6,7 +6,7 @@ shared_examples "a measure" do
     its(:direction)       { should eq attributes[:direction] }
     its(:max_wind_speed)  { should eq attributes[:max_wind_speed] }
     its(:min_wind_speed)  { should eq attributes[:min_wind_speed] }
-    its(:created_at)      { should eq Time.new(2000).iso8601 }
+    its(:created_at)      { should eq "1999-12-31T23:00:00Z" }
     its(:tstamp)          { should eq Time.new(2000).to_i }
   end
 end

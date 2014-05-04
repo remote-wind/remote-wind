@@ -1,14 +1,12 @@
 shared_examples "a station" do
   describe "attributes" do
-    it "has the correct attributes" do
-      expect(subject.id).to eq station.id
-      expect(subject.latitude).to eq station.latitude
-      expect(subject.longitude).to eq station.longitude
-      expect(subject.name).to eq station.name
-      expect(subject.slug).to eq station.slug
-      expect(subject.url).to eq station_url(station)
-      expect(subject.path).to eq station_path(station)
-    end
+    its(:id)        { should eq attributes[:id] }
+    its(:latitude)  { should eq attributes[:latitude] }
+    its(:longitude) { should eq attributes[:longitude] }
+    its(:name)      { should eq attributes[:name] }
+    its(:slug)      { should eq attributes[:slug] }
+    its(:url)       { should include station_url(attributes[:slug]) }
+    its(:path)      { should eq station_path(attributes[:slug]) }
   end
 end
 

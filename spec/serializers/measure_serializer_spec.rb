@@ -16,7 +16,7 @@ require 'spec_helper'
 
 describe MeasureSerializer do
 
-  let(:attributes) { attributes_for(:measure, created_at: Time.new(2000)) }
+  let(:resource) { build_stubbed(:measure, created_at: Time.new(2000)) }
   it_behaves_like 'a measure'
 
 end
