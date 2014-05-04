@@ -14,15 +14,14 @@
 #  speed_calibration :float
 #
 
-# Read about factories at https://github.com/thoughtbot/factory_girl
+class MeasureSerializer < ActiveModel::Serializer
+  attributes :id, :station_id, :speed, :direction, :max_wind_speed, :min_wind_speed
 
-FactoryGirl.define do
-  factory :measure do
-    station_id 1
-    speed 30
-    direction 90
-    max_wind_speed 55
-    min_wind_speed 10
-    temperature 1.5
+  def attributes
+    data = super
+    data[:created_at] = object.created_at.iso8601
+    data[:tstamp] = object.created_at.to_i
+    data
   end
+
 end

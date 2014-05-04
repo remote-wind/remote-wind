@@ -88,4 +88,10 @@ class ApplicationController < ActionController::Base
       @unread_notifications_count = count
     end
   end
+
+  # Don´t emit root node by default when serializing
+  def default_serializer_options
+    {root: false}
+  end
+
 end

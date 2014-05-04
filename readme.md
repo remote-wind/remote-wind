@@ -41,3 +41,9 @@ bundle exec guard (in a new tab)
 ## RailsPanel
 
 This application supports debugging in Google chrome via [the RailsPanel extension](https://chrome.google.com/webstore/detail/railspanel/gjpfobpafnhjhbajcjgccbbdofdckggg)
+
+## Thanks to
+Norman Clarke
+Benedikt Deicke
+
+

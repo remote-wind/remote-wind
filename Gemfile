@@ -30,7 +30,7 @@ gem 'friendly_id' # Slugging
 gem 'nokogiri' # XML/SAX parser.
 gem 'will_paginate' #Pagination
 gem 'cache_digests' #Cache invalidation
-
+gem 'active_model_serializers' # object serialization
 
 #= BDD Tools =========================================================
 group :doc do
