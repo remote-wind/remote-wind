@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: notifications
+#
+#  id         :integer          not null, primary key
+#  event      :string(255)
+#  message    :text
+#  user_id    :integer
+#  created_at :datetime
+#  updated_at :datetime
+#  read       :boolean          default(FALSE)
+#  level      :integer
+#
+
 class Notification < ActiveRecord::Base
   belongs_to :user
 
