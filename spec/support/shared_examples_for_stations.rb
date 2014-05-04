@@ -7,7 +7,7 @@ shared_examples "a station" do
       expect(subject.name).to eq station.name
       expect(subject.slug).to eq station.slug
       expect(subject.url).to eq station_url(station)
-      expect(subject.url).to eq station_path(station)
+      expect(subject.path).to eq station_path(station)
     end
   end
 end
