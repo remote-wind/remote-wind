@@ -220,8 +220,9 @@ $(function () {
          * @returns array
          */
         function formatSeriesData(series, data) {
-            if (data.measures.length) {
-                $(data.measures).each(function(k,m){
+
+            if (data.length) {
+                $(data).each(function(k,m){
                     series[0].data.push({
                         x : m.tstamp,
                         y : m.min_wind_speed
@@ -241,14 +242,16 @@ $(function () {
 
         $graph.on('graph.data.load', function(){
             $.getJSON($graph.data('path') + '.json', function(data){
-                $graph.trigger('graph.render', data);
-
+                $graph.trigger('graph.render', [data]);
             });
         });
 
-        $graph.on('graph.render', function(e, d) {
+        if ($graph.length) {
+            $graph.trigger('graph.data.load');
+        }
 
-            var graph, x_axis, y_axis, time, $scroll_contents, series, annotator;
+        $graph.on('graph.render', function(e, data) {
+            var graph, time, series, annotator;
 
             // These are the values drawn
             series = formatSeriesData([
@@ -267,19 +270,14 @@ $(function () {
                     color: "#91B4ED",
                     data: []
                 }
-            ], d);
-
-            // Wraps the actual graph and x-axis so that we can scroll
-            $scroll_contents = $graph.find('.scroll-contents');
+            ], data);
 
             $chart_div = $graph.find('.chart');
 
-            // Scroll to end of measures
-            // Fixtures
             time = new Rickshaw.Fixtures.Time();
 
             // Scale the Scroll Container after the number of measures
-            $graph.find('.scroll-contents').width( d.measures.length *  30 );
+            $graph.find('.scroll-contents').width( data.length *  30 );
 
             graph = new Rickshaw.Graph( {
                 element: $graph.$chart[0],
@@ -289,12 +287,13 @@ $(function () {
                 dotSize: 2,
                 series: series
             });
-            x_axis = new Rickshaw.Graph.Axis.Time({
+            // Custom timescale with 15min "clicks"
+            new Rickshaw.Graph.Axis.Time({
                 element: $graph.$x_axis[0],
                 graph: graph,
                 timeUnit: time.unit('15 minute')
             });
-            y_axis = new Rickshaw.Graph.Axis.Y( {
+            new Rickshaw.Graph.Axis.Y( {
                 graph: graph,
                 orientation: 'left',
                 element: $graph.$y_axis[0],
@@ -308,22 +307,19 @@ $(function () {
                 graph: graph,
                 element: $graph.find('.timeline')[0]
             });
-
-            if (d.measures.length) {
-                $(d.measures).each(function(i,m){
+            if (data.length) {
+                $(data).each(function(i,m){
                     annotator.add(m.tstamp, m.direction);
                 });
             }
-
-            $graph.find('.scroll-window').scrollLeft(999999);
+            // Scroll to end of measures
+            // Browsers won´t allow scrolling beyond the width of the container anyways
+            $graph.find('.scroll-window').scrollLeft(99999999);
             graph.render();
             annotator.update();
-
         });
 
-        if ($graph.length) {
-            $graph.trigger('graph.data.load');
-        }
+
     }());
 });
 
