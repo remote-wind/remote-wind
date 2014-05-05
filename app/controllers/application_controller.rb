@@ -3,8 +3,6 @@ class ApplicationController < ActionController::Base
   include ActionView::Helpers::TextHelper
 
   protect_from_forgery with: :exception
-
-  before_filter :get_all_stations, if: -> { get_all_stations? }
   before_filter :get_notifications, if: -> { user_signed_in? }
 
   # OPT OUT security model
@@ -47,38 +45,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # since the stations are used by all
-  def get_all_stations
-
-    if user_signed_in? && current_user.has_role?(:admin)
-        @all_stations = Station.all.load
-    end
-
-    @all_stations ||= Station.where(show: true).load
-
-    measures = Measure.find_by_sql(%Q{
-      SELECT DISTINCT ON(m.station_id)
-        m.*
-      FROM measures m
-      ORDER BY m.station_id, m.created_at ASC
-    })
-
-    @all_stations.each do |station|
-      station.latest_measure = measures.bsearch { |m| m.station_id == station.id  }
-    end
-
-    # Add methods to search for station in collection
-    @all_stations.extend(Slugged)
-  end
-
-  def get_all_stations?
-
-    true unless \
-      ['json', 'xml', 'yaml'].include?(request['format'])
-
-  end
-
   # Get notifications
+  #@todo load with ajax instead
   def get_notifications
     count = Notification.where(user: current_user, read: false).count
     if count > 0
@@ -89,7 +57,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # Don´t emit root node by default when serializing
+  # ActiveRecord::Serializers
+  # Don´t emit node per default when serializing
+  # Example:
+  # @apple = Apple.new(type: 'Macintosh')
+  # render json: @apple
+  # Renders:
+  # {"type": "Macintosh"}
   def default_serializer_options
     {root: false}
   end

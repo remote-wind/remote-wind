@@ -1,11 +1,7 @@
 <nav class="left-off-canvas-menu" id="left-off-canvas-menu">
-  <% unless @all_stations.empty? %>
-      <ul class="off-canvas-list">
-        <li><label><%= link_to "Stations", stations_path %></label></li>
-        <% @all_stations.each do |station| %>
-            <li><%= link_to station.name, station %></li>
-        <% end %>
-      </ul>
-  <% end %>
+  <ul class="all-stations off-canvas-list" data-url="<%= stations_path %>.json">
+    <li><label><%= link_to "Stations", stations_path %></label></li>
+    <%# append stations with ajax %>
+  </ul>
   <%= yield :left_nav %>
 </nav>

@@ -28,7 +28,7 @@ feature "Stations", %{
   scenario "when I click on a station" do
     stations
     visit stations_path
-    Capybara.find("#left-off-canvas-menu a", :text => stations.first.name).click
+    click_link stations.first.name
     expect(current_path).to eq station_path(stations.first)
   end
 
@@ -114,26 +114,8 @@ feature "Stations", %{
       admin_session
       visit station_path station
       click_link "Clear all measures for this station"
-      expect(Measure.where("station_id = #{station.id}").count).to eq 0
+      expect(station.measures.count).to eq 0
     end
   end
 
-  scenario "when I visit station page map should have correct values" do
-    station
-    create(:measure, station: station, created_at: 15.minutes.ago)
-    create(:measure, station: station, created_at: 10.minutes.ago)
-    create(:measure, station: station, created_at: 5.minutes.ago, speed: 10, direction: 180)
-
-    expected = station.measures.order(created_at: :desc).first
-    visit station_path station
-    map_marker_path = '.map-canvas .measure'
-    table_path = 'table.measures .measure:first '
-
-    expect(page).to have_selector map_marker_path + "[data-uid='#{expected.id}']"
-    expect(page).to have_selector map_marker_path + "[data-speed='#{expected.speed}']"
-    expect(page).to have_selector map_marker_path + "[data-direction='#{expected.direction}']"
-    expect(page).to have_selector "table.measures .measure[data-uid='#{expected.id}']"
-    expect(page).to have_selector table_path + ".direction", text: "S (180°)"
-    expect(page).to have_selector table_path + ".speed", text: "10.0 (10.0-55.0)m/s"
-  end
 end

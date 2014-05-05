@@ -10,13 +10,53 @@ window.remotewind = {};
  * These are SVG (vector) path notations of icons used in the map
  */
 remotewind.icons = {};
-remotewind.icons.arrow = "M20,3.272c0,0,13.731,12.53,13.731,19.171S31.13,36.728,31.13,36.728S23.372,31.536,20,31.536 S8.87,36.728,8.87,36.728s-2.601-7.644-2.601-14.285S20,3.272,20,3.272z";
-remotewind.icons.station_down = "M42.143,34.055L30.611,22.523l11.531-11.531c-1.828-2.983-4.344-5.499-7.327-7.327L23.284,15.197L11.753,3.665 C8.77,5.493,6.254,8.009,4.426,10.992l11.531,11.531L4.426,34.055c1.828,2.983,4.344,5.499,7.327,7.327L23.284,29.85l11.531,11.531 C37.799,39.554,40.315,37.038,42.143,34.055z"
+
+/**
+ * Create object with parameters for offline station icon
+ * @returns object
+ */
+remotewind.icons.station_down = function(){
+    // Path in SVG notation
+    var path = "M42.143,34.055L30.611,22.523l11.531-11.531c-1.828-2.983-4.344-5.499-7.327-7.327L23.284,15.197L11.753,3.665 C8.77,5.493,6.254,8.009,4.426,10.992l11.531,11.531L4.426,34.055c1.828,2.983,4.344,5.499,7.327,7.327L23.284,29.85l11.531,11.531 C37.799,39.554,40.315,37.038,42.143,34.055z";
+    return {
+        size: new google.maps.Size(25, 25),
+        origin: new google.maps.Point(20, 20),
+        anchor: new google.maps.Point(23, 23),
+        path: path,
+        fillColor: 'white',
+        fillOpacity: 0.8,
+        strokeColor: 'black',
+        strokeWeight: 1.2
+    }
+}
+
+/**
+ * Create object with parameters for regular map icon
+ * @returns object
+ */
+remotewind.icons.station = function(measure) {
+    // Path in SVG notation
+    var path = "M20,3.272c0,0,13.731,12.53,13.731,19.171S31.13,36.728,31.13,36.728S23.372,31.536,20,31.536 S8.87,36.728,8.87,36.728s-2.601-7.644-2.601-14.285S20,3.272,20,3.272z";
+    var beaufort = remotewind.util.msToBeaufort(measure.speed || 0);
+
+    return {
+        size: new google.maps.Size(40, 40),
+        origin: new google.maps.Point(20,20),
+        anchor: new google.maps.Point(20, 20),
+        path: path,
+        fillColor: beaufort.color,
+        fillOpacity: 0.8,
+        strokeColor: 'black',
+        strokeWeight: 1.2,
+        rotation: 180.0 + measure.direction
+    }
+}
+
 
 
 remotewind.util = {};
 remotewind.reference = {};
-remotewind.reference.BEUFORT_SCALE = {
+remotewind.reference.BEAUFORT_SCALE = {
     1: {
         min: 0,
         max: 0.3,
@@ -100,7 +140,7 @@ remotewind.util.msToBeaufort = function(ms, meta){
     var i, bf, mode = mode || false;
 
     i = 1;
-    bf = remotewind.reference.BEUFORT_SCALE;
+    bf = remotewind.reference.BEAUFORT_SCALE;
 
     while (i <= 12) {
         if (ms < bf[i].max) {

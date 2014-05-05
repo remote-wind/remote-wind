@@ -7,8 +7,7 @@ class StationsController < ApplicationController
   authorize_resource except: DO_NOT_AUTHORIZE
   skip_authorization_check only: DO_NOT_AUTHORIZE
 
-  skip_before_filter :get_all_stations, except: [:index, :show, :new, :edit, :search]
-  before_action :set_station, except: [:new, :index, :create, :find]
+  before_action :set_station, except: [:new, :index, :create, :find, :search]
 
   # Skip CSRF protection since station does not send CSRF token.
   protect_from_forgery except: [:create, :update_balance]
@@ -17,7 +16,7 @@ class StationsController < ApplicationController
   # GET /stations.json
   def index
     @title = "Stations"
-    @stations = @all_stations || Station.all
+    @stations = all_with_latest_measure
 
     respond_to do |format|
       format.html
@@ -178,6 +177,43 @@ class StationsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+
+
+    # Get all stations with the latest measure preloaded
+    # @return array
+    def all_with_latest_measure
+      if user_signed_in? && current_user.has_role?(:admin)
+        stations = Station.all.load
+      end
+      stations ||= Station.where(show: true).load
+
+      if stations.size
+
+
+
+        ids = stations.map { |s| s.id }.join(',')
+        where = "WHERE m.station_id IN(#{ids})" unless ids.empty?
+        measures = Measure.find_by_sql(%Q{
+        SELECT DISTINCT ON(m.station_id)
+          m.*
+        FROM measures m
+        #{where}
+        ORDER BY m.station_id, m.created_at ASC
+      })
+
+        stations.each do |station|
+          # Setup has_many relationship between station and measure
+          # Prevents +1 queries
+          measure = measures.find { |m| m.station_id == station.id  }
+          if measure
+            measure.station = station
+            station.latest_measure = measure
+          end
+        end
+      end
+
+    end
+
     def set_station
       # Look in @all_stations for station to avoid query
       @station = @all_stations.select_by_slug_or_id(params[:id]) if defined? @all_stations

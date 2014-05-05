@@ -19,30 +19,4 @@ describe ApplicationController do
       expect(subject).to redirect_to root_path
     end
   end
-
-  describe ".get_all_stations" do
-
-    let!(:station) { create(:station) }
-    let!(:hidden_station) { create(:station, show: false) }
-
-    context "when not authorized" do
-      it "should return only visible stations" do
-        expect(@controller.get_all_stations).to eq [station]
-      end
-    end
-
-    context "when logged in as an admin" do
-      before :each do
-        sign_in create(:admin)
-      end
-
-      it "should return visible stations" do
-        expect(@controller.get_all_stations).to include station
-      end
-
-      it "should return hidden stations" do
-        expect(@controller.get_all_stations).to include hidden_station
-      end
-    end
-  end
 end

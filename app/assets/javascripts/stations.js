@@ -1,23 +1,60 @@
-$(function () {
+jQuery(function($){
+    var $doc = $(document), $map_canvas = $('#map_canvas'), $menu = $('#left-off-canvas-menu').find('.off-canvas-list');
+
+    $doc.on('load.stations', function(){
+        $.getJSON('/stations', function(data){
+            $menu.trigger('stations.loaded', [data]);
+            $map_canvas.trigger('stations.loaded', [data]);
+        });
+    });
+
+    if ($map_canvas.length) {
+        $doc.trigger('load.stations');
+    }
 
     /**
-     * Really generic google maps implementation that uses data attributes and good old html
-     * to place markers
+     * Load stations
      */
     (function(){
-        var $map_canvas = $('#map_canvas');
-        var map;
+        // Populate off-canvas menu with stations
+        $menu.one('stations.loaded', function(event, data){
+            $(data).each(function(i, obj){
+                $menu.append('<li><a href="'+ obj.href +'">'+obj.name+'</a></li>');
+            });
+        });
 
-        $(document).on('google.maps.apiloaded', function(){
+        $('.left-off-canvas-toggle').one('click', function(){
+            $doc.trigger('load.stations');
+        });
+    }());
+
+    /**
+     * Use JSON data to create station markers on google map
+     */
+    (function(){
+        var map, data_store;
+
+        $doc.on('google.maps.apiloaded', function(){
             if ($map_canvas.length){
                 $map_canvas.trigger('map.init');
             }
         });
 
-        $map_canvas.on('map.init', function(){
-            var $markers, $controls, map;
+        $doc.on('stations.loaded', function(e, data){
+            // Handle case when stations data is loaded before google maps api
+            if (!map) {
+                data_store = data;
+            } else if (data.length) {
+                $map_canvas.trigger('map.add_markers', [data]);
+            }
+        });
+
+        $map_canvas.on('map.init', function(e, stations){
+            var $controls = $map_canvas.find('.controls').clone();
+            $map_canvas.empty();
+
+            // poll for window size changes and resize map
             if ($map_canvas.hasClass("fullscreen")) {
-                // poll for window size changes and resize map
                 // cause binding a handler to window resize causes performance problems
                 $map_canvas.height($(window).innerHeight() - 45);
                 window.setInterval(function(){
@@ -26,39 +63,75 @@ $(function () {
 
             }
 
-            $markers = $map_canvas.find('.marker').clone();
-            $controls = $map_canvas.find('.controls').clone();
-            $map_canvas.empty();
             map = new google.maps.Map($map_canvas[0],{
-                    center: new google.maps.LatLng($map_canvas.data('lat'), $map_canvas.data('lon')),
-                    zoom: 10,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
-                });
+                center: new google.maps.LatLng(63.399313, 13.082236),
+                zoom: 10,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            if ($map_canvas.hasClass("cluster")) {
+                map.markerCluster = new MarkerClusterer(map);
+            }
 
             if ($controls.length) {
                 $map_canvas.trigger('map.add_controls', [map, $controls]);
             }
-            if ($markers.length) {
-                $map_canvas.trigger('map.add_markers', [map, $markers]);
+
+            // In case stations data was loaded before map is ready
+            if (data_store && data_store.length) {
+                $map_canvas.trigger('map.add_markers', [map, data_store]);
             }
+
         });
 
         $map_canvas.on('map.add_controls', function(event, map, $controls){
             map.controls[google.maps.ControlPosition.LEFT_TOP].push($controls[0]);
 
             google.maps.event.addDomListener($controls[0], 'click', function(e) {
-                map.fitBounds(map.all_markers_bounds);
+                map.fitBounds(map.stations_bounds);
                 e.preventDefault();
             });
         });
 
-        $map_canvas.on('map.add_markers', function(event, map, $markers){
+        $map_canvas.on('map.add_markers', function(event, map, stations){
+            if (map && stations.length) {
+                // Bounds fitting all the stations in view
+                map.stations_bounds = new google.maps.LatLngBounds();
 
-            if ($map_canvas.hasClass("cluster")) {
-                map.markerCluster = new MarkerClusterer(map);
+                $.each(stations, function(i, station){
+                    var marker, label;
+                    marker = stationMarkerFactory(station);
+                    label = labelFactory(map, station);
+
+                    if (map.markerCluster) {
+                        map.markerCluster.addMarker(marker);
+                    } else {
+                        marker.setMap(map);
+                    }
+                    map.stations_bounds.extend(marker.position);
+                    label.bindTo('position', marker, 'position');
+                });
+
+                if (stations.length > 1) {
+                    map.fitBounds(map.stations_bounds);
+                }
             }
+        });
 
-            // Define the overlay, derived from google.maps.OverlayView
+
+        /**
+         * Factory to create labels
+         * @param station Object
+         */
+        function labelFactory(map, station) {
+
+            var text;
+
+            /**
+             * Constructor for overlay, derived from google.maps.OverlayView
+             * @param opt_options
+             * @constructor
+             */
             function Label(opt_options) {
                 // Initialization
                 this.setValues(opt_options);
@@ -101,104 +174,46 @@ $(function () {
                 this.span_.innerHTML = this.get('text').toString();
             };
 
-            map.all_markers_bounds = new google.maps.LatLngBounds();
+            text = station.name + "<br>";
 
-            /**
-             * Loop through the HTML "markers", extract data and create google.maps.Markers
-             */
-            $markers.each(function(i, elem){
+            if (station.down) {
+                text += " Offline";
+            } else {
+                text += (function(m){
+                    return  m.speed + "(" + m.min_wind_speed + "-" + m.max_wind_speed + ")  m/s"
+                }(station.latest_measure.measure));
+            }
 
-                var station, measure, marker, label, label_text, beaufort, start_val, hue, $elem = $(elem);
+            return new Label({
+                map: map,
+                text: text
+            });
+        }
 
-                // Fetch all data attributes from station
-                station = $elem.data();
+        function stationMarkerFactory(station) {
 
-                // default attributes for marker
-                marker = {
-                    position: new google.maps.LatLng(station.lat, station.lon),
-                    title: $elem.find('.title').text(),
-                    content: $elem.html(),
-                    href: $elem.find('a').attr('href'),
-                    zIndex: 50
-                };
+            var marker, options = {
+                position: new google.maps.LatLng(station.latitude, station.longitude),
+                title: station.name,
+                href: station.path,
+                zIndex: 50
+            };
 
-                if (station.down) {
-                    // Configure marker
-                    marker = $.extend(marker, {
-                        icon: {
-                            size: new google.maps.Size(25, 25),
-                            origin: new google.maps.Point(20, 20),
-                            anchor: new google.maps.Point(23, 23),
-                            path: remotewind.icons.station_down,
-                            fillColor: 'white',
-                            fillOpacity: 0.8,
-                            strokeColor: 'black',
-                            strokeWeight: 1.2
-                        }
-                    });
+            if (station.down) {
+                options.icon = remotewind.icons.station_down();
+            } else {
+                options.icon = remotewind.icons.station(station.latest_measure.measure);
+            }
 
-                    label = new Label({
-                        map: map,
-                        text: marker.title + "<br> Offline"
-                    });
+            marker = new google.maps.Marker( options );
 
-                } else {
-                    // Fetch all data attributes from  measure
-                    measure = $elem.find('.measure').data() || {};
-                    measure.direction = parseInt($(this).find('.measure').data('direction'));
-                    beaufort = remotewind.util.msToBeaufort(measure.speed || 0);
-
-
-                    // Configure marker
-                    marker = $.extend(marker, {
-                        direction: measure.direction,
-                        speed: measure.speed,
-                        icon: {
-                            size: new google.maps.Size(40, 40),
-                            origin: new google.maps.Point(20,20),
-                            anchor: new google.maps.Point(20, 20),
-                            path: remotewind.icons.arrow,
-                            fillColor: beaufort.color,
-                            fillOpacity: 0.8,
-                            strokeColor: 'black',
-                            strokeWeight: 1.2,
-                            rotation: 180.0 + measure.direction
-                        }
-                    });
-
-                    label_text = function(m){
-                        return m.speed + "(" + m.minSpeed + "-" + m.maxSpeed + ")  m/s"
-                    }
-
-                    label = new Label({
-                        map: map,
-                        text: marker.title + "<br>" + label_text(measure)
-                    });
-                }
-
-                // Mutate marker args to google.maps.Marker
-                marker = new google.maps.Marker( marker );
-
-                // Add marker to map
-                if (map.markerCluster) {
-                    map.markerCluster.addMarker(marker);
-                } else {
-                    marker.setMap(map);
-                }
-
-                label.bindTo('position', marker, 'position');
-                map.all_markers_bounds.extend(marker.position);
-
-                google.maps.event.addListener(marker, 'click', function(){
-                    if (marker.href) window.location = marker.href;
-                    return false;
-                });
+            google.maps.event.addListener(marker, 'click', function(){
+                if (marker.href) window.location = marker.href;
+                return false;
             });
 
-            if ($markers.length > 1) {
-                map.fitBounds(map.all_markers_bounds);
-            }
-        });
+            return marker;
+        }
 
     }());
 
@@ -318,8 +333,6 @@ $(function () {
             graph.render();
             annotator.update();
         });
-
-
     }());
 });
 

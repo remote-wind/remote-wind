@@ -1,23 +1,11 @@
-<% if stations.length.nonzero?  %>
 <%
     classes = %w[map-canvas cluster small-12 large-12 columns]
     if !!defined? fullscreen and fullscreen
       classes.push("fullscreen")
     end
 %>
-<div class="<%= classes.join(' ') %>" id="map_canvas" data-lat="<%= stations.first.lat %>" data-lon="<%= stations.first.lon %>">
-  <% stations.each do |station| %>
-      <div class="marker hide" data-lat="<%= station.lat %>" data-lon="<%= station.lon %>" data-uid="<%= station.id %>" <% if station.down? %>data-down="true"<% end %>>
-        <h3 class="title"><%= link_to station.name, station %></h3>
-        <% measure = station.current_measure %>
-        <% if measure %>
-        <div class="measure" data-uid="<%= measure.id %>" data-direction="<%= measure.direction %>" data-speed="<%= measure.speed %>" data-min-speed="<%= measure.min_wind_speed %>" data-max-speed="<%= measure.max_wind_speed %>">
-        </div>
-        <% end %>
-      </div>
-  <% end %>
+<div class="<%= classes.join(' ') %>" id="map_canvas" data-lat="1" data-lon="1">
   <div class="controls">
     <button class="tiny" id="show-all-markers">Show all</button>
   </div>
 </div>
-<% end %>

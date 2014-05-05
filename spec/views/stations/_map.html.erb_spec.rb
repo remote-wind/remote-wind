@@ -13,12 +13,8 @@ describe "stations/_map" do
   end
 
   it "has the correct contents" do
-    expect(page).to have_selector "#map_canvas .marker .title", text: station.name
-    expect(page).to have_selector "#map_canvas .marker[data-lat='#{station.lat}']"
-    expect(page).to have_selector "#map_canvas .marker[data-lon='#{station.lon}']"
-    expect(page).to have_selector(".measure[data-min-speed='#{measure.min}']")
-    expect(page).to have_selector(".measure[data-max-speed='#{measure.max}']")
-    expect(page).to have_selector(".measure[data-direction='#{measure.direction}']")
+    expect(page).to have_selector "#map_canvas"
+    expect(page).to have_selector ".controls"
   end
 
 end
