@@ -188,9 +188,6 @@ class StationsController < ApplicationController
       stations ||= Station.where(show: true).load
 
       if stations.size
-
-
-
         ids = stations.map { |s| s.id }.join(',')
         where = "WHERE m.station_id IN(#{ids})" unless ids.empty?
         measures = Measure.find_by_sql(%Q{
@@ -215,14 +212,12 @@ class StationsController < ApplicationController
     end
 
     def set_station
-      # Look in @all_stations for station to avoid query
-      @station = @all_stations.select_by_slug_or_id(params[:id]) if defined? @all_stations
-      # Get station normally if no @all_stations
       @station = Station.friendly.find(params[:id]) unless defined? @station
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def station_params
-      params.require(:station).permit(:name, :hw_id, :latitude, :longitude, :user_id, :slug, :show, :speed_calibration)
+      params.require(:station).permit(:name, :hw_id, :latitude, :longitude,
+                                      :user_id, :slug, :show, :speed_calibration)
     end
 end

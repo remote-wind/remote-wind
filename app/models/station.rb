@@ -27,6 +27,7 @@ class Station < ActiveRecord::Base
   belongs_to :user, inverse_of: :stations
   has_many  :measures, inverse_of: :station, counter_cache: true
   has_many :recent_measures, -> { order('created_at ASC').limit(10) }, class_name: 'Measure'
+  has_one :current_measure, -> { order('created_at ASC').limit(1) }, class_name: 'Measure'
 
    # constraints
   validates_uniqueness_of :hw_id
