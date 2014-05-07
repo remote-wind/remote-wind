@@ -23,30 +23,29 @@ describe StationsHelper do
     it "has a data-confirm attibute" do
       expect(button).to match /data-confirm\=\"*.?\"/
     end
-
   end
 
   describe "#station_header" do
-
     subject(:heading) { helper.station_header(station) }
-
-
     it "contains the stations name" do
       expect(heading).to eq (station.name)
     end
 
-
     context "when station is down" do
-
       subject(:heading)  { helper.station_header(build_stubbed(:station, down: true)) }
-
       it "says 'offline'" do
         expect(heading).to have_selector 'em', text: 'offline'
       end
     end
-
-
   end
 
+  describe "#station_coordinates" do
 
+    let(:station) { build_stubbed(:station, lat: 50, lon: 40) }
+    subject(:data_attrs) { helper.station_coordinates(station) }
+
+    it { should match 'data-lat="50"' }
+    it { should match 'data-lng="40"' }
+
+  end
 end

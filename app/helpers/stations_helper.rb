@@ -22,4 +22,8 @@ module StationsHelper
     (station.down? ? station.name + "(#{content_tag(:em, 'offline')})" : station.name).html_safe
   end
 
+  def station_coordinates(station)
+    sprintf('data-lat="%d" data-lng="%d"', station.latitude, station.longitude).html_safe
+  end
+
 end

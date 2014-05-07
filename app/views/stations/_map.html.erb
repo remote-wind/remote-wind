@@ -1,10 +1,9 @@
 <%
     classes = %w[map-canvas cluster small-12 large-12 columns]
-    if !!defined? fullscreen and fullscreen
-      classes.push("fullscreen")
-    end
+    classes.push("fullscreen") if !!defined?(fullscreen) and fullscreen
+
 %>
-<div class="<%= classes.join(' ') %>" id="map_canvas" data-lat="1" data-lon="1">
+<div class="<%= classes.join(' ') %>" id="map_canvas" <%= station_coordinates(station) if defined?(station) %> >
   <div class="controls">
     <button class="tiny" id="show-all-markers">Show all</button>
   </div>

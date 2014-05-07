@@ -94,7 +94,10 @@ jQuery(function($){
         });
 
         $map_canvas.on('map.add_markers', function(event, map, stations){
-            if (map && stations.length) {
+
+            var lat_lng;
+
+            if (map && stations && stations.length) {
                 // Bounds fitting all the stations in view
                 map.stations_bounds = new google.maps.LatLngBounds();
 
@@ -112,7 +115,17 @@ jQuery(function($){
                     label.bindTo('position', marker, 'position');
                 });
 
-                if (stations.length > 1) {
+                // uses data on map to set position if available
+                lat_lng = (function(data){
+                    if (data.lat && data.lon) {
+                        return new google.maps.LatLng(data.lat, data.lon)
+                    }
+                }($map_canvas.data()));
+
+                if (lat_lng) {
+                    map.setCenter(lat_lng);
+                    map.setZoom(10);
+                } else {
                     map.fitBounds(map.stations_bounds);
                 }
             }
