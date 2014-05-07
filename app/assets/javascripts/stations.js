@@ -97,38 +97,43 @@ jQuery(function($){
 
             var lat_lng;
 
-            if (map && stations && stations.length) {
-                // Bounds fitting all the stations in view
-                map.stations_bounds = new google.maps.LatLngBounds();
+            try {
+                if (map && stations && stations.length) {
+                    // Bounds fitting all the stations in view
+                    map.stations_bounds = new google.maps.LatLngBounds();
 
-                $.each(stations, function(i, station){
-                    var marker, label;
-                    marker = stationMarkerFactory(station);
-                    label = labelFactory(map, station);
+                    $.each(stations, function(i, station){
+                        var marker, label;
+                        marker = stationMarkerFactory(station);
+                        label = labelFactory(map, station);
 
-                    if (map.markerCluster) {
-                        map.markerCluster.addMarker(marker);
+                        if (map.markerCluster) {
+                            map.markerCluster.addMarker(marker);
+                        } else {
+                            marker.setMap(map);
+                        }
+                        map.stations_bounds.extend(marker.position);
+                        label.bindTo('position', marker, 'position');
+                    });
+
+                    // uses data on map to set position if available
+                    lat_lng = (function(data){
+                        if (data.lat && data.lon) {
+                            return new google.maps.LatLng(data.lat, data.lon)
+                        }
+                    }($map_canvas.data()));
+
+                    if (lat_lng) {
+                        map.setCenter(lat_lng);
+                        map.setZoom(10);
                     } else {
-                        marker.setMap(map);
+                        map.fitBounds(map.stations_bounds);
                     }
-                    map.stations_bounds.extend(marker.position);
-                    label.bindTo('position', marker, 'position');
-                });
-
-                // uses data on map to set position if available
-                lat_lng = (function(data){
-                    if (data.lat && data.lon) {
-                        return new google.maps.LatLng(data.lat, data.lon)
-                    }
-                }($map_canvas.data()));
-
-                if (lat_lng) {
-                    map.setCenter(lat_lng);
-                    map.setZoom(10);
-                } else {
-                    map.fitBounds(map.stations_bounds);
                 }
+            } catch (e) {
+                console.error(e);
             }
+
         });
 
 
