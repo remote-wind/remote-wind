@@ -8,17 +8,13 @@ This open-source project is available under a [GNU GPL v3 license](http://www.gn
 See the [project wiki](https://github.com/remote-wind/remote-wind/wiki) for more detailed information.
 
 ### Requirements
-```
-RVM > 1.2
-Ruby >= 2.0.0
-Postgres > 9.3
-```
+- see Gemfile
+- mailcatcher: http://mailcatcher.me/
 
 ## Installation
-- set up RVM to use ruby 2.0.0 and create a gemset named remote-wind
 - clone the repo
+- If you are using RVM, it should autodetect the ruby version and gemset when you cd into directory
 - bundle install
-- install mailcatcher: http://mailcatcher.me/
 
 ### Set up enviromental vars
 You may need set some enviromental vars to get the app running on your system.
@@ -45,5 +41,5 @@ This application supports debugging in Google chrome via [the RailsPanel extensi
 ## Thanks to
 Norman Clarke
 Benedikt Deicke
-
+Thoughtbot
 
