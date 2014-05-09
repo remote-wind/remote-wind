@@ -150,12 +150,12 @@ class Station < ActiveRecord::Base
   end
 
   # do heuristics if station is down
-  def should_be_down?
+  def should_be_offline?
       Measure.where({station_id: id}).since(24.minutes.ago).order(created_at: :desc).count  < 3
   end
 
   def check_status!
-    if should_be_down?
+    if should_be_offline?
       unless offline?
         update_attribute('offline', true)
         notify_down

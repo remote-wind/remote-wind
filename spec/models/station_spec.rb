@@ -189,17 +189,16 @@ describe Station do
       expect(station.current_measure.speed).to eq 777
     end
 
-
   end
 
-  describe "should_be_down?" do
+  describe "#should_be_offline?" do
 
     let(:station) { create(:station, offline: true) }
 
     context "when station has three measures in last 24 min" do
       it "should not be down" do
         4.times { create(:measure, station: station) }
-        expect(station.should_be_down?).to be_false
+        expect(station.should_be_offline?).to be_false
       end
     end
 
@@ -213,9 +212,9 @@ describe Station do
         end
       end
 
-      it "should be down" do
+      it "should be offline" do
         create(:measure, station: station)
-        expect(station.should_be_down?).to be_true
+        expect(station.should_be_offline?).to be_true
       end
     end
   end
@@ -224,18 +223,18 @@ describe Station do
 
     let(:user) { build_stubbed(:user) }
 
-    context "when station was up" do
+    context "when station was online" do
 
       let(:station){ create(:station, offline: false, user: user) }
 
-      context "and station should be up" do
+      context "and station should be online" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_down?).and_return(false)
+          station.stub(:should_be_offline?).and_return(false)
         end
 
-        it "station not be down" do
+        it "station not be offline" do
           station.check_status!
           expect(station.offline).to be_false
         end
@@ -246,26 +245,26 @@ describe Station do
         end
       end
 
-      context "and station should be down" do
+      context "and station should be offline" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_down?).and_return(true)
+          station.stub(:should_be_offline?).and_return(true)
         end
 
-        specify "station should be down" do
+        specify "station should be offline" do
           station.check_status!
           expect(station.offline).to be_true
         end
 
-        it "should notify that station is down" do
+        it "should notify that station is offline" do
           station.should_receive("notify_down")
           station.check_status!
         end
       end
     end
 
-    context "when station was down" do
+    context "when station was offline" do
 
       let(:station){ create(:station, offline: true, user: user) }
 
@@ -273,10 +272,10 @@ describe Station do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_down?).and_return(false)
+          station.stub(:should_be_offline?).and_return(false)
         end
 
-        specify "station should not be offle" do
+        specify "station should not be offline" do
           station.check_status!
           expect(station.offline).to be_false
         end
@@ -291,7 +290,7 @@ describe Station do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_down?).and_return(true)
+          station.stub(:should_be_offline?).and_return(true)
         end
 
         it "should not send message" do
