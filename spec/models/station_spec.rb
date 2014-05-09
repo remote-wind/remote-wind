@@ -37,7 +37,7 @@ describe Station do
     it { should respond_to :latitude }
     it { should respond_to :longitude }
     it { should respond_to :timezone }
-    it { should respond_to :down }
+    it { should respond_to :offline }
     it { should respond_to :balance }
     it { should respond_to :zone }
     it { should respond_to :show }
@@ -194,7 +194,7 @@ describe Station do
 
   describe "should_be_down?" do
 
-    let(:station) { create(:station, down: true) }
+    let(:station) { create(:station, offline: true) }
 
     context "when station has three measures in last 24 min" do
       it "should not be down" do
@@ -226,7 +226,7 @@ describe Station do
 
     context "when station was up" do
 
-      let(:station){ create(:station, down: false, user: user) }
+      let(:station){ create(:station, offline: false, user: user) }
 
       context "and station should be up" do
         # Essentially nothing should happen here.
@@ -237,7 +237,7 @@ describe Station do
 
         it "station not be down" do
           station.check_status!
-          expect(station.down).to be_false
+          expect(station.offline).to be_false
         end
 
         it "should not notify" do
@@ -255,7 +255,7 @@ describe Station do
 
         specify "station should be down" do
           station.check_status!
-          expect(station.down).to be_true
+          expect(station.offline).to be_true
         end
 
         it "should notify that station is down" do
@@ -267,18 +267,18 @@ describe Station do
 
     context "when station was down" do
 
-      let(:station){ create(:station, down: true, user: user) }
+      let(:station){ create(:station, offline: true, user: user) }
 
-      context "and now should be up" do
+      context "and now should be online" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
           station.stub(:should_be_down?).and_return(false)
         end
 
-        specify "station should not be down" do
+        specify "station should not be offle" do
           station.check_status!
-          expect(station.down).to be_false
+          expect(station.offline).to be_false
         end
 
         it "should notify" do
@@ -287,7 +287,7 @@ describe Station do
         end
       end
 
-      context "and now should be down" do
+      context "and now should be offline" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
@@ -299,9 +299,9 @@ describe Station do
           station.check_status!
         end
 
-        specify "station not be down" do
+        specify "station not be offline" do
           station.check_status!
-          expect(station.down).to be_true
+          expect(station.offline).to be_true
         end
       end
     end

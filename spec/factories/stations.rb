@@ -32,7 +32,7 @@ FactoryGirl.define do
     latitude 51.478885
     longitude -0.010635
     balance 1
-    down nil
+    offline nil
     user nil
     speed_calibration 1
   end

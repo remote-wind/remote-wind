@@ -51,6 +51,9 @@ class Station < ActiveRecord::Base
   attr_accessor :zone
   attr_accessor :latest_measure
 
+
+  @offline
+
   # Scopes
   scope :visible, -> { where(show: true) }
 
@@ -153,13 +156,13 @@ class Station < ActiveRecord::Base
 
   def check_status!
     if should_be_down?
-      unless down?
-        update_attribute('down', true)
+      unless offline?
+        update_attribute('offline', true)
         notify_down
       end
     else
-      if down?
-        update_attribute('down', false)
+      if offline?
+        update_attribute('offline', false)
         notify_up
       end
     end
