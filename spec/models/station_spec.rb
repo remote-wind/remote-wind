@@ -240,7 +240,7 @@ describe Station do
         end
 
         it "should not notify" do
-          station.should_not_receive("notify_down")
+          station.should_not_receive("notify_offline")
           station.check_status!
         end
       end
@@ -258,7 +258,7 @@ describe Station do
         end
 
         it "should notify that station is offline" do
-          station.should_receive("notify_down")
+          station.should_receive("notify_offline")
           station.check_status!
         end
       end
@@ -281,7 +281,7 @@ describe Station do
         end
 
         it "should notify" do
-          station.should_receive(:notify_up)
+          station.should_receive(:notify_online)
           station.check_status!
         end
       end
@@ -294,7 +294,7 @@ describe Station do
         end
 
         it "should not send message" do
-          station.should_not_receive(:notify_up)
+          station.should_not_receive(:notify_online)
           station.check_status!
         end
 
@@ -306,19 +306,19 @@ describe Station do
     end
   end
 
-  describe "#notify_down" do
+  describe "#notify_offline" do
 
     let(:user) { build_stubbed(:user) }
     let(:station) { create(:station, user: user) }
 
     it "should log error" do
       Rails.logger.should_receive(:warn).with("Station alert: #{station.name} is now down")
-      station.notify_down
+      station.notify_offline
     end
 
     it "should create notification" do
       expect {
-        station.notify_down
+        station.notify_offline
       }.to change(Notification, :count).by(1)
     end
 
@@ -329,38 +329,38 @@ describe Station do
           message: "#{station.name} is down.",
           event: "station_down"
       )
-      station.notify_down
+      station.notify_offline
     end
 
     it "should send email" do
-      StationMailer.should_receive(:notify_about_station_down)
-      station.notify_down
+      StationMailer.should_receive(:notify_about_station_offline)
+      station.notify_offline
     end
 
     it "should send email if notified in last 12h" do
       create(:notification, message: "#{station.name} is down.")
-      StationMailer.should_receive(:notify_about_station_down)
-      station.notify_down
+      StationMailer.should_receive(:notify_about_station_offline)
+      station.notify_offline
     end
   end
 
-  describe "#notify_up" do
+  describe "#notify_online" do
     let(:user) { build_stubbed(:user) }
     let(:station) { create(:station, user: user) }
 
     it "should send message" do
-      StationMailer.should_receive(:notify_about_station_up)
-      station.notify_up
+      StationMailer.should_receive(:notify_about_station_online)
+      station.notify_online
     end
 
     it "should log" do
       Rails.logger.should_receive(:info).with("Station alert: #{station.name} is now up")
-      station.notify_up
+      station.notify_online
     end
 
     it "should create notification" do
       expect {
-        station.notify_up
+        station.notify_online
       }.to change(Notification, :count).by(1)
     end
 
@@ -371,18 +371,18 @@ describe Station do
           message: "#{station.name} is up.",
           event: "station_up"
       )
-      station.notify_up
+      station.notify_online
     end
 
     it "should send email if not notified in 12h" do
-      StationMailer.should_receive(:notify_about_station_down)
-      station.notify_down
+      StationMailer.should_receive(:notify_about_station_offline)
+      station.notify_offline
     end
 
     it "should send email if notified in last 12h" do
       create(:notification, message: "#{station.name} is down.")
-      StationMailer.should_receive(:notify_about_station_down)
-      station.notify_down
+      StationMailer.should_receive(:notify_about_station_offline)
+      station.notify_offline
     end
   end
 
