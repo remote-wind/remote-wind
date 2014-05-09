@@ -1,11 +1,19 @@
-require "rake"
+require "spec_helper"
 
-describe "scheduler:check_stations" do
+# Nothing fancy, just check that the right messages are sent.
+describe "scheduler:send_alerts_about_down_stations" do
+  include_context "rake"
+  it "invokes Station.check_all_stations" do
+    Station.should_receive(:check_all_stations)
+    subject.invoke
+  end
+end
 
-  let(:rake)      { Rake::Application.new }
-  let(:task_name) { self.class.top_level_description }
-
-   it "does something" do
-
-   end
+# Nothing fancy, just check that the right messages are sent.
+describe "scheduler:send_alerts_about_low_balance_stations" do
+  include_context "rake"
+  it "invokes Station.check_all_stations" do
+    Station.should_receive(:send_low_balance_alerts)
+    subject.invoke
+  end
 end

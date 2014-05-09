@@ -1,28 +1,34 @@
-jQuery(function($){
-    var $doc = $(document), $map_canvas = $('#map_canvas'), $menu = $('#left-off-canvas-menu').find('.off-canvas-list');
+jQuery(document).ready(function($){
 
+    var $doc = $(document),
+        $map_canvas = $('#map_canvas'),
+        $menu = $('#left-off-canvas-menu').find('.off-canvas-list');
+
+    // Load stations and notify listeners
     $doc.on('load.stations', function(){
         $.getJSON('/stations', function(data){
-            $menu.trigger('stations.loaded', [data]);
             $map_canvas.trigger('stations.loaded', [data]);
+            $menu.trigger('stations.loaded');
         });
     });
 
-    if ($map_canvas.length) {
-        $doc.trigger('load.stations');
-    }
-
     /**
-     * Load stations
+     * Load stations in off canvas menu
      */
     (function(){
         // Populate off-canvas menu with stations
         $menu.one('stations.loaded', function(event, data){
+
+            // Remove stations to ensure that we don´ for whatever reason add items twice
+            $menu.children('li').slice(1).remove();
+
+            // create LI with link to each station
             $(data).each(function(i, obj){
                 $menu.append('<li><a href="'+ obj.href +'">'+obj.name+'</a></li>');
             });
         });
 
+        // bind handler to menu toggle button
         $('.left-off-canvas-toggle').one('click', function(){
             $doc.trigger('load.stations');
         });
@@ -40,12 +46,14 @@ jQuery(function($){
             }
         });
 
-        $doc.on('stations.loaded', function(e, data){
+        $map_canvas.on('stations.loaded', function(e, data){
             // Handle case when stations data is loaded before google maps api
-            if (!map) {
-                data_store = data;
-            } else if (data.length) {
-                $map_canvas.trigger('map.add_markers', [data]);
+            if (data && data.length) {
+                if (map) {
+                    $map_canvas.trigger('map.add_markers', [map, data]);
+                } else {
+                    data_store = data;
+                }
             }
         });
 
@@ -129,12 +137,14 @@ jQuery(function($){
                     map.fitBounds(map.stations_bounds);
                 }
             }
-        });
 
+        });
 
         /**
          * Factory to create labels
+         * @param map google.maps.Map
          * @param station Object
+         * @return Label object
          */
         function labelFactory(map, station) {
 
@@ -203,6 +213,11 @@ jQuery(function($){
             });
         }
 
+        /**
+         * Factory to create station markers
+         * @param station
+         * @returns google.maps.Marker
+         */
         function stationMarkerFactory(station) {
 
             var marker, options = {
@@ -232,7 +247,8 @@ jQuery(function($){
 
 
     /**
-     * Station chart
+     * Chart showing station measures
+     * @see [rickshaw.js docs](http://code.shutterstock.com/rickshaw/) for more details
      */
     (function(){
 
@@ -347,5 +363,9 @@ jQuery(function($){
             annotator.update();
         });
     }());
+
+    if ($map_canvas.length) {
+        $doc.trigger('load.stations');
+    }
 });
 
