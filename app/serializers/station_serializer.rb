@@ -1,7 +1,11 @@
 class StationSerializer < ActiveModel::Serializer
-  attributes :id, :latitude, :longitude, :name, :slug, :url, :path, :latest_measure
+  attributes :id, :latitude, :longitude, :name, :slug, :url, :path, :latest_measure, :offline
 
   private
+
+  def offline
+    object.down?
+  end
 
   def url
     station_url(object)

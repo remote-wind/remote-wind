@@ -125,9 +125,7 @@ jQuery(document).ready(function($){
 
                 // uses data on map to set position if available
                 lat_lng = (function(data){
-                    if (data.lat && data.lon) {
-                        return new google.maps.LatLng(data.lat, data.lon)
-                    }
+                    return (data.lat && data.lon) ? new google.maps.LatLng(data.lat, data.lon) : false;
                 }($map_canvas.data()));
 
                 if (lat_lng) {
@@ -199,7 +197,7 @@ jQuery(document).ready(function($){
 
             text = station.name + "<br>";
 
-            if (station.down) {
+            if (station.offline) {
                 text += " Offline";
             } else {
                 text += (function(m){
@@ -227,7 +225,7 @@ jQuery(document).ready(function($){
                 zIndex: 50
             };
 
-            if (station.down) {
+            if (station.offline) {
                 options.icon = remotewind.icons.station_down();
             } else {
                 options.icon = remotewind.icons.station(station.latest_measure.measure);

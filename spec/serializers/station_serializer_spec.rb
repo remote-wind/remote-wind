@@ -4,11 +4,7 @@ describe StationSerializer do
 
   include Rails.application.routes.url_helpers
 
-  let(:resource) { build_stubbed(:station, slug: 'foo') }
-
-  before(:each) do
-    resource
-  end
+  let!(:resource) { build_stubbed(:station, slug: 'foo', down: true) }
 
   it_behaves_like 'a station'
 
