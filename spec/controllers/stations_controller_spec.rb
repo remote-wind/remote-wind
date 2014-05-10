@@ -18,6 +18,8 @@ describe StationsController do
 
     before :each do
       station
+      create(:observation, station: station, direction: 0)
+      create(:observation, station: station, direction: 90)
       get :index
     end
 
@@ -28,6 +30,11 @@ describe StationsController do
     it "renders the index template" do
       expect(response).to render_template :index
     end
+
+    it "gets the latest observation for station" do
+      expect(assigns(:stations).first.latest_observation.direction).to eq 90
+    end
+
   end
 
 
