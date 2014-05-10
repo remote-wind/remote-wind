@@ -386,12 +386,13 @@ jQuery(document).ready(function($){
                     graph.annotator.add(m.tstamp, m.direction);
                 });
             }
+
+            graph.render();
+            graph.annotator.update();
+
             // Scroll to end of observations
             // Browsers won´t allow scrolling beyond the width of the container anyways
             $graph.$scroll.scrollLeft(99999999);
-            graph.render();
-            graph.update();
-            graph.annotator.update();
         });
     }());
 
