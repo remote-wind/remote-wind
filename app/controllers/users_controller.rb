@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   # GET /users/:id
   def show
     @title = @user.nickname
-    @available_roles =  Role.all.keep_if do |role|
+    @available_roles =  Role.all.to_a.keep_if do |role|
       !@user.has_role?(role.name.to_sym)
     end
   end
