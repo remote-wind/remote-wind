@@ -98,6 +98,18 @@ describe ObservationsController do
         expect(assigns(:observations).first.speed).to eq 5
       end
     end
+
+    describe "caching" do
+
+      it "should set the proper max age" do
+        Station.any_instance
+                .stub(:last_observation_received_at)
+                .and_return(2.minutes.ago)
+
+        get :index, station_id: station.to_param, format: 'json'
+        expect(response.cache_control[:max_age]).to eq 180.seconds
+      end
+    end
   end
 
   describe "DELETE clear" do

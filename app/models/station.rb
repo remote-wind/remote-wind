@@ -241,4 +241,12 @@ class Station < ActiveRecord::Base
     time_to_local updated_at if last_observation_received_at.present?
   end
 
+  def next_observation_expected_in
+    if last_observation_received_at
+      eta = last_observation_received_at.minus_with_coercion(5.minutes.ago).round()
+      return eta.seconds if eta > 0
+    end
+    5.minutes
+  end
+
 end

@@ -135,7 +135,6 @@ jQuery(document).ready(function($){
                     map.fitBounds(map.stations_bounds);
                 }
             }
-
         });
 
         /**
@@ -296,19 +295,22 @@ jQuery(document).ready(function($){
                 url: $graph.data('path'),
                 type: 'GET',
                 dataType: 'JSON',
-                ifModified:true,
+                ifModified: true,
                 success: function(data, textStatus, jqXHR){
                     // Status is 200 OK
                     if (data) {
                         $graph.trigger('graph.render', [data]);
-                        //@todo use last observation received time to figure out when to load new observations
-                    } else {
-                        // Status is 304 not modified
-                        //@todo check for new observations in x seconds
                     }
-                    window.setTimeout(function(){
+
+                    // Read max_age from Cache-Control header
+                    var max_age = (function(cc) {
+                        return parseInt(cc.match(/max-age=(\d*),/).pop());
+                    }(jqXHR.getResponseHeader('Cache-Control') || refresh));
+
+                    // Fetch new observations when max_age has expired
+                    window.setTimeout(function() {
                         $graph.trigger('graph.data.load');
-                    }, refresh * 1000);
+                    }, max_age * 1000);
                 }
             });
         });
@@ -318,9 +320,6 @@ jQuery(document).ready(function($){
         }
 
         $graph.on('graph.render', function(e, data) {
-
-            console.log('graph.render');
-
             // These are the values drawn
             series = formatSeriesData([
                 {
@@ -340,7 +339,6 @@ jQuery(document).ready(function($){
                 }
             ], data);
 
-
             if (graph) {
                 // Replace graph data
                 $(graph.series).each(function(i){
@@ -359,8 +357,6 @@ jQuery(document).ready(function($){
                 dotSize: 2,
                 series: series
             });
-
-
 
             graph.time =  graph.time || new Rickshaw.Fixtures.Time();
 

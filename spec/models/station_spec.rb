@@ -453,4 +453,21 @@ describe Station do
       end
     end
   end
+
+  describe "#next_observation_expected_in" do
+
+    let(:station){ build_stubbed(:station) }
+
+    it "should give number of seconds until next observation" do
+      station.stub(:last_observation_received_at).and_return(2.minutes.ago)
+      expect(station.next_observation_expected_in).to eq 3.minutes
+    end
+
+    it "should never give more than 5 minutes" do
+      station.stub(:last_observation_received_at).and_return(10.minutes.ago)
+      expect(station.next_observation_expected_in).to eq 5.minutes
+    end
+
+  end
+
 end

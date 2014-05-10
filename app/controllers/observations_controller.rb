@@ -23,7 +23,9 @@ class ObservationsController < ApplicationController
 
   # GET /stations/:staton_id/observations
   def index
-    expires_in 2.minutes, public: true
+
+    expires_in @station.next_observation_expected_in,
+               public: true
 
     # Use E-tag cache in production to speed things up by avoiding re-rendering if there are no new observations
     stale = Rails.env.production? ?
