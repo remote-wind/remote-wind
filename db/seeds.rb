@@ -14,18 +14,18 @@ end
 
 class AdminMaker
   def initialize
-    unless User.find_by_email(ENV["REMOTE_WIND_EMAIL"])
 
-      admin = User.find_or_create_by_email(
-          email: ENV["REMOTE_WIND_EMAIL"],
-          password: ENV["REMOTE_WIND_PASSWORD"],
-          password_confirmation: ENV["REMOTE_WIND_PASSWORD"]
-      )
+    attrs = {
+        email: ENV["REMOTE_WIND_EMAIL"] || 'admin@example.com',
+        password: ENV["REMOTE_WIND_PASSWORD"] || 'password',
+        password_confirmation: ENV["REMOTE_WIND_PASSWORD"] || 'password',
+        confirmed_at: Time.now
+    }
+
+    unless User.find_by(email: attrs[:email])
+      admin = User.create_with(attrs).find_or_create_by(email: attrs[:email])
       admin.add_role(:admin)
-
-      puts "Hello my new master #{ENV['REMOTE_WIND_EMAIL']}, I have created an account just for you. The password in the one you set in REMOTE_WIND_PASSWORD
-     \n\n"
-
+      puts "Hello my new master #{attrs[:email]}, I have created an account just for you.\n\n"
     end
   end
 end
@@ -36,18 +36,18 @@ class RandomUsersMaker
     ln1 = %w[berg wall aker holm]
     ln2 = %w[gren kvist strom stedt]
 
-    email =  fn.sample + "." + ln1.sample + ln2.sample + "@example.com"
+    fn.sample + "." + ln1.sample + ln2.sample + "@example.com"
   end
 
   def initialize n
     puts "Spawing random users \n"
     n.times do
       print "."
-      User.find_or_create_by_email svenne_generator
+      User.create_with(confirmed_at: Time.now).find_or_create_by(email: svenne_generator)
+
     end
   end
 end
-
 
 class StationsMaker
 
@@ -55,9 +55,9 @@ class StationsMaker
     unless Station.any?
       puts "\nCreating stations\n"
       stations = [
-          {name: 'Tegefjäll', hw_id: '354476020409714', lat: '63.4017', lon:'12.97256'},
-          {name: 'Mullfjället', hw_id: '354476020409715', lat: '63.42258', lon: '12.95487'},
-          {name: 'Ullådalen', hw_id: '354476020409716', lat: '63.4321', lon: '13.00011'},
+          {name: 'Tegefjäll', hw_id: '354476020409714', lat: 63.4017, lon: 12.97256},
+          {name: 'Mullfjället', hw_id: '354476020409715', lat: 63.42258, lon: 12.95487},
+          {name: 'Ullådalen', hw_id: '354476020409716', lat: 63.4321, lon: 13.00011},
           {name: 'Frösön', hw_id: '3544760204324716', lat: 63.206557, lon: 14.446625},
           {name: 'Näsbokrok', hw_id: '123123123', lat: 57.336714, lon: 12.067055 },
           {name: 'Mörbylånga N', hw_id: '342376487234', lat: 56.603728, lon: 16.418273},
@@ -147,10 +147,9 @@ end
 
 class NotificationMaker
 
-
   def initialize (n)
 
-    user = User.find_by_email(ENV["REMOTE_WIND_EMAIL"])
+    user = User.find_by(email: ENV["REMOTE_WIND_EMAIL"])
     stations = Station.all()
 
     stations.each do |station|
@@ -194,4 +193,4 @@ AdminMaker.new
 RandomUsersMaker.new(25)
 StationsMaker.new
 RandomMeasureMaker.new(50)
-NotificationMaker.new(10)
+NotificationMaker.new(5)
