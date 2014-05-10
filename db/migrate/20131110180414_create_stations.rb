@@ -6,7 +6,7 @@ class CreateStations < ActiveRecord::Migration
       t.float :latitude
       t.float :longitude
       t.float :balance
-      t.boolean :down
+      t.boolean :offline
       t.string :timezone
       t.references :user, index: true
 

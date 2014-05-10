@@ -37,7 +37,7 @@ describe Station do
     it { should respond_to :latitude }
     it { should respond_to :longitude }
     it { should respond_to :timezone }
-    it { should respond_to :down }
+    it { should respond_to :offline }
     it { should respond_to :balance }
     it { should respond_to :zone }
     it { should respond_to :show }
@@ -189,17 +189,16 @@ describe Station do
       expect(station.current_measure.speed).to eq 777
     end
 
-
   end
 
-  describe "should_be_down?" do
+  describe "#should_be_offline?" do
 
-    let(:station) { create(:station, down: true) }
+    let(:station) { create(:station, offline: true) }
 
     context "when station has three measures in last 24 min" do
       it "should not be down" do
         4.times { create(:measure, station: station) }
-        expect(station.should_be_down?).to be_false
+        expect(station.should_be_offline?).to be_false
       end
     end
 
@@ -213,9 +212,9 @@ describe Station do
         end
       end
 
-      it "should be down" do
+      it "should be offline" do
         create(:measure, station: station)
-        expect(station.should_be_down?).to be_true
+        expect(station.should_be_offline?).to be_true
       end
     end
   end
@@ -224,102 +223,102 @@ describe Station do
 
     let(:user) { build_stubbed(:user) }
 
-    context "when station was up" do
+    context "when station was online" do
 
-      let(:station){ create(:station, down: false, user: user) }
+      let(:station){ create(:station, offline: false, user: user) }
 
-      context "and station should be up" do
+      context "and station should be online" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_down?).and_return(false)
+          station.stub(:should_be_offline?).and_return(false)
         end
 
-        it "station not be down" do
+        it "station not be offline" do
           station.check_status!
-          expect(station.down).to be_false
+          expect(station.offline).to be_false
         end
 
         it "should not notify" do
-          station.should_not_receive("notify_down")
+          station.should_not_receive("notify_offline")
           station.check_status!
         end
       end
 
-      context "and station should be down" do
+      context "and station should be offline" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_down?).and_return(true)
+          station.stub(:should_be_offline?).and_return(true)
         end
 
-        specify "station should be down" do
+        specify "station should be offline" do
           station.check_status!
-          expect(station.down).to be_true
+          expect(station.offline).to be_true
         end
 
-        it "should notify that station is down" do
-          station.should_receive("notify_down")
+        it "should notify that station is offline" do
+          station.should_receive("notify_offline")
           station.check_status!
         end
       end
     end
 
-    context "when station was down" do
+    context "when station was offline" do
 
-      let(:station){ create(:station, down: true, user: user) }
+      let(:station){ create(:station, offline: true, user: user) }
 
-      context "and now should be up" do
+      context "and now should be online" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_down?).and_return(false)
+          station.stub(:should_be_offline?).and_return(false)
         end
 
-        specify "station should not be down" do
+        specify "station should not be offline" do
           station.check_status!
-          expect(station.down).to be_false
+          expect(station.offline).to be_false
         end
 
         it "should notify" do
-          station.should_receive(:notify_up)
+          station.should_receive(:notify_online)
           station.check_status!
         end
       end
 
-      context "and now should be down" do
+      context "and now should be offline" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_down?).and_return(true)
+          station.stub(:should_be_offline?).and_return(true)
         end
 
         it "should not send message" do
-          station.should_not_receive(:notify_up)
+          station.should_not_receive(:notify_online)
           station.check_status!
         end
 
-        specify "station not be down" do
+        specify "station not be offline" do
           station.check_status!
-          expect(station.down).to be_true
+          expect(station.offline).to be_true
         end
       end
     end
   end
 
-  describe "#notify_down" do
+  describe "#notify_offline" do
 
     let(:user) { build_stubbed(:user) }
     let(:station) { create(:station, user: user) }
 
     it "should log error" do
       Rails.logger.should_receive(:warn).with("Station alert: #{station.name} is now down")
-      station.notify_down
+      station.notify_offline
     end
 
     it "should create notification" do
       expect {
-        station.notify_down
+        station.notify_offline
       }.to change(Notification, :count).by(1)
     end
 
@@ -330,38 +329,38 @@ describe Station do
           message: "#{station.name} is down.",
           event: "station_down"
       )
-      station.notify_down
+      station.notify_offline
     end
 
     it "should send email" do
-      StationMailer.should_receive(:notify_about_station_down)
-      station.notify_down
+      StationMailer.should_receive(:notify_about_station_offline)
+      station.notify_offline
     end
 
     it "should send email if notified in last 12h" do
       create(:notification, message: "#{station.name} is down.")
-      StationMailer.should_receive(:notify_about_station_down)
-      station.notify_down
+      StationMailer.should_receive(:notify_about_station_offline)
+      station.notify_offline
     end
   end
 
-  describe "#notify_up" do
+  describe "#notify_online" do
     let(:user) { build_stubbed(:user) }
     let(:station) { create(:station, user: user) }
 
     it "should send message" do
-      StationMailer.should_receive(:notify_about_station_up)
-      station.notify_up
+      StationMailer.should_receive(:notify_about_station_online)
+      station.notify_online
     end
 
     it "should log" do
       Rails.logger.should_receive(:info).with("Station alert: #{station.name} is now up")
-      station.notify_up
+      station.notify_online
     end
 
     it "should create notification" do
       expect {
-        station.notify_up
+        station.notify_online
       }.to change(Notification, :count).by(1)
     end
 
@@ -372,18 +371,18 @@ describe Station do
           message: "#{station.name} is up.",
           event: "station_up"
       )
-      station.notify_up
+      station.notify_online
     end
 
     it "should send email if not notified in 12h" do
-      StationMailer.should_receive(:notify_about_station_down)
-      station.notify_down
+      StationMailer.should_receive(:notify_about_station_offline)
+      station.notify_offline
     end
 
     it "should send email if notified in last 12h" do
       create(:notification, message: "#{station.name} is down.")
-      StationMailer.should_receive(:notify_about_station_down)
-      station.notify_down
+      StationMailer.should_receive(:notify_about_station_offline)
+      station.notify_offline
     end
   end
 

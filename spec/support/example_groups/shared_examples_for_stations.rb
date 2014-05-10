@@ -7,7 +7,7 @@ shared_examples "a station" do
     its(:slug)      { should eq attributes[:slug] }
     its(:url)       { should include station_url(attributes[:slug]) }
     its(:path)      { should eq station_path(attributes[:slug]) }
-    its(:offline) { should eq attributes[:down] }
+    its(:offline) { should eq attributes[:offline] }
   end
 end
 

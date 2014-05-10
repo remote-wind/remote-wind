@@ -32,7 +32,7 @@ describe StationsHelper do
     end
 
     context "when station is down" do
-      subject(:heading)  { helper.station_header(build_stubbed(:station, down: true)) }
+      subject(:heading)  { helper.station_header(build_stubbed(:station, offline: true)) }
       it "says 'offline'" do
         expect(heading).to have_selector 'em', text: 'offline'
       end

@@ -51,6 +51,9 @@ class Station < ActiveRecord::Base
   attr_accessor :zone
   attr_accessor :latest_measure
 
+
+  @offline
+
   # Scopes
   scope :visible, -> { where(show: true) }
 
@@ -147,31 +150,31 @@ class Station < ActiveRecord::Base
   end
 
   # do heuristics if station is down
-  def should_be_down?
+  def should_be_offline?
       Measure.where({station_id: id}).since(24.minutes.ago).order(created_at: :desc).count  < 3
   end
 
   def check_status!
-    if should_be_down?
-      unless down?
-        update_attribute('down', true)
-        notify_down
+    if should_be_offline?
+      unless offline?
+        update_attribute('offline', true)
+        notify_offline
       end
     else
-      if down?
-        update_attribute('down', false)
-        notify_up
+      if offline?
+        update_attribute('offline', false)
+        notify_online
       end
     end
   end
 
   # Log and send notifications that station is down
-  def notify_down
+  def notify_offline
 
     logger.warn "Station alert: #{name} is now down"
     # Allows tests without user
     if user.present?
-      StationMailer.notify_about_station_down(user, self)
+      StationMailer.notify_about_station_offline(self)
 
       # create UI notification.
       Notification.create(
@@ -184,12 +187,12 @@ class Station < ActiveRecord::Base
   end
 
   # Log and send notifications that station is up
-  def notify_up
+  def notify_online
     logger.info "Station alert: #{name} is now up"
 
     # Allows tests without user
     if user.present?
-      StationMailer.notify_about_station_up(user, self)
+      StationMailer.notify_about_station_online(self)
       Notification.create(
           user: self.user,
           level: :info,
@@ -213,7 +216,9 @@ class Station < ActiveRecord::Base
         .where("created_at >= ?", 12.hours.ago)
         .count > 0
 
-      StationMailer.notify_about_low_balance(user, self) unless notified
+      if user.presence && !notified
+        StationMailer.notify_about_low_balance(self)
+      end
 
       Notification.create(
           user: self.user,

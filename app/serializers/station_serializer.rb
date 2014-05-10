@@ -4,7 +4,7 @@ class StationSerializer < ActiveModel::Serializer
   private
 
   def offline
-    object.down?
+    object.offline?
   end
 
   def url

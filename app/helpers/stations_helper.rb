@@ -19,7 +19,7 @@ module StationsHelper
   #@param station Station
   #@return String station name + (offline)
   def station_header(station)
-    (station.down? ? station.name + "(#{content_tag(:em, 'offline')})" : station.name).html_safe
+    (station.offline? ? station.name + "(#{content_tag(:em, 'offline')})" : station.name).html_safe
   end
 
   def station_coordinates(station)
