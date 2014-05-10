@@ -16,7 +16,7 @@ class StationsController < ApplicationController
   # GET /stations.json
   def index
     @title = "Stations"
-    @stations = all_with_latest_measure
+    @stations = all_with_latest_observation
 
     respond_to do |format|
       format.html
@@ -29,11 +29,11 @@ class StationsController < ApplicationController
   # GET /stations/1.json
   def show
     @title = @station.name
-    @measures = @station.measures
+    @observations = @station.observations
       .limit(10)
       .order(created_at: :desc)
       .load
-    @station.latest_measure = @measures.first
+    @station.latest_observation = @observations.first
 
     respond_to do |format|
       format.html #show.html.erb
@@ -130,8 +130,8 @@ class StationsController < ApplicationController
 
   # GET /stations/:id/embed
   def embed
-    @measure = @station.current_measure
-    @measures = [@measure]
+    @observation = @station.current_observation
+    @observations = [@observation]
 
     @embed_options = {
       css: (params[:css].in?(['true', 'TRUE'])),
@@ -179,9 +179,9 @@ class StationsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
 
 
-    # Get all stations with the latest measure preloaded
+    # Get all stations with the latest observation preloaded
     # @return array
-    def all_with_latest_measure
+    def all_with_latest_observation
       if user_signed_in? && current_user.has_role?(:admin)
         stations = Station.all.load
       end
@@ -190,21 +190,21 @@ class StationsController < ApplicationController
       if stations.size
         ids = stations.map { |s| s.id }.join(',')
         where = "WHERE m.station_id IN(#{ids})" unless ids.empty?
-        measures = Measure.find_by_sql(%Q{
+        observations = Observation.find_by_sql(%Q{
         SELECT DISTINCT ON(m.station_id)
           m.*
-        FROM measures m
+        FROM observations m
         #{where}
         ORDER BY m.station_id, m.created_at ASC
       })
 
         stations.each do |station|
-          # Setup has_many relationship between station and measure
+          # Setup has_many relationship between station and observation
           # Prevents +1 queries
-          measure = measures.find { |m| m.station_id == station.id  }
-          if measure
-            measure.station = station
-            station.latest_measure = measure
+          observation = observations.find { |m| m.station_id == station.id  }
+          if observation
+            observation.station = station
+            station.latest_observation = observation
           end
         end
       end

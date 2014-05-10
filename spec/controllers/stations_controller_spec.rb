@@ -37,18 +37,18 @@ describe StationsController do
       expect(assigns(:station)).to eq(station)
     end
 
-    it "orders measures by creation in descending order" do
-      measure = create(:measure, station: station)
-      measure2 = create(:measure, station: station)
-      measure2.update_attribute('created_at', 1.hour.ago)
+    it "orders observations by creation in descending order" do
+      observation = create(:observation, station: station)
+      observation2 = create(:observation, station: station)
+      observation2.update_attribute('created_at', 1.hour.ago)
       get :show, {:id => station.to_param }
-      expect(assigns(:measures).first.created_at).to be > assigns(:measures).last.created_at
+      expect(assigns(:observations).first.created_at).to be > assigns(:observations).last.created_at
     end
 
-    it "calibrates measures" do
-      create(:measure, station: station, speed: 10)
+    it "calibrates observations" do
+      create(:observation, station: station, speed: 10)
       get :show, {:id => station.to_param }
-      expect(assigns(:measures)[0].speed).to eq 5
+      expect(assigns(:observations)[0].speed).to eq 5
     end
   end
 

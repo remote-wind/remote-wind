@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: measures
+# Table name: observations
 #
 #  id                :integer          not null, primary key
 #  station_id        :integer
@@ -16,11 +16,11 @@
 
 require 'spec_helper'
 
-describe Measure do
+describe Observation do
 
   before do
     # makes it possible to use stubbed stations
-    Measure.any_instance.stub(:update_station)
+    Observation.any_instance.stub(:update_station)
   end
 
 
@@ -49,28 +49,28 @@ describe Measure do
 
   describe "Ardiuno adapted setters should" do
     specify "normalize speed" do
-      m = Measure.new(s: 100)
+      m = Observation.new(s: 100)
       expect(m.speed).to eq 1
     end
 
     specify "normalize direction" do
-      m = Measure.new(d: 100)
+      m = Observation.new(d: 100)
       expect(m.direction).to eq 10
     end
 
     specify "round direction properly" do
-      m = Measure.new(d: "2838")
+      m = Observation.new(d: "2838")
       expect(m.direction).to eq 284
 
     end
 
     specify "normalize min" do
-      m = Measure.new(min: 100)
+      m = Observation.new(min: 100)
       expect(m.min).to eq 1
     end
 
     specify "normalize max" do
-      m = Measure.new(max: 100)
+      m = Observation.new(max: 100)
       expect(m.max).to eq 1
     end
   end
@@ -83,80 +83,80 @@ describe Measure do
         min_wind_speed: 10,
         max_wind_speed: 10
     }}
-    let(:measure) do
-      create(:measure, params)
+    let(:observation) do
+      create(:observation, params)
     end
 
-    it "calibrates measures after save" do
-      m = Measure.new(params)
+    it "calibrates observations after save" do
+      m = Observation.new(params)
       m.save!
       expect(m.calibrated).to be_true
     end
 
     it "multiplies speed" do
-      measure.calibrate!
-      expect(measure.speed).to eq 5
+      observation.calibrate!
+      expect(observation.speed).to eq 5
     end
 
     it "multiplies min speed" do
-      measure.calibrate!
-      expect(measure.min).to eq 5
+      observation.calibrate!
+      expect(observation.min).to eq 5
     end
 
     it "multiplies max speed" do
-      measure.calibrate!
-      expect(measure.max).to eq 5
+      observation.calibrate!
+      expect(observation.max).to eq 5
     end
 
     it "sets calibrated property" do
-      measure.calibrate!
-      expect(measure.calibrated).to be_true
+      observation.calibrate!
+      expect(observation.calibrated).to be_true
     end
 
     it "calibrates only once during object lifetime" do
-      measure.calibrate!
-      measure.calibrate!
-      expect(measure.max).to eq 5
+      observation.calibrate!
+      observation.calibrate!
+      expect(observation.max).to eq 5
     end
 
-    it "calibrates measure on find" do
-      create(:measure, station: build_stubbed(:station))
-      expect(Measure.last.calibrated?).to be_true
+    it "calibrates observation on find" do
+      create(:observation, station: build_stubbed(:station))
+      expect(Observation.last.calibrated?).to be_true
     end
 
-    it "does not allow saving a calibrated measure" do
-      measure.calibrate!
+    it "does not allow saving a calibrated observation" do
+      observation.calibrate!
       expect {
-        measure.save!
-      }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Speed calibration Calibrated measures cannot be saved!")
+        observation.save!
+      }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Speed calibration Calibrated observations cannot be saved!")
     end
   end
 
   describe "calibrated?" do
-    it "returns false if measure is not calibrated" do
-      measure = build_stubbed(:measure)
-      expect(measure.calibrated?).to be_false
+    it "returns false if observation is not calibrated" do
+      observation = build_stubbed(:observation)
+      expect(observation.calibrated?).to be_false
     end
-    it "returns true if measure is calibrated" do
-      measure = build_stubbed(:measure, calibrated: true)
-      expect(measure.calibrated?).to be_true
+    it "returns true if observation is calibrated" do
+      observation = build_stubbed(:observation, calibrated: true)
+      expect(observation.calibrated?).to be_true
     end
   end
 
   it "caches speed_calibration values" do
-    measure = create(:measure, station: create(:station, speed_calibration: 0.5))
-    expect(measure.speed_calibration).to eq 0.5
+    observation = create(:observation, station: create(:station, speed_calibration: 0.5))
+    expect(observation.speed_calibration).to eq 0.5
   end
 
 
-  it "updates station last measure recieved at time after saving" do
-    Measure.any_instance.unstub(:update_station)
+  it "updates station last observation recieved at time after saving" do
+    Observation.any_instance.unstub(:update_station)
     station = create(:station)
     expected = Time.new(2000)
     Time.stub(:now).and_return(expected)
-    measure = create(:measure, station: station)
+    observation = create(:observation, station: station)
 
-    expect(station.last_measure_received_at).to eq expected
+    expect(station.last_observation_received_at).to eq expected
 
   end
 

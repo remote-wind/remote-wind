@@ -4,16 +4,16 @@ describe StationsHelper do
 
   let(:station) { build_stubbed(:station) }
 
-  describe "#clear_measures_button" do
+  describe "#clear_observations_button" do
 
-    subject(:button) { helper.clear_measures_button(station) }
+    subject(:button) { helper.clear_observations_button(station) }
 
     it "should have the correct classes" do
       expect(button).to have_selector 'a.tiny.button.alert'
     end
 
     it "has the correct text" do
-      expect(button).to have_selector "a", text: "Clear all measures for this station?"
+      expect(button).to have_selector "a", text: "Clear all observations for this station?"
     end
 
     it 'has method=DELETE' do

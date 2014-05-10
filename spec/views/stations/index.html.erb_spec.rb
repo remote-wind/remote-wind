@@ -5,7 +5,7 @@ describe "stations/index" do
   let (:station) { build_stubbed(:station) }
 
   let :stations do
-    station.stub(:measures).and_return([build_stubbed(:measure)])
+    station.stub(:observations).and_return([build_stubbed(:observation)])
     [station]
   end 
 

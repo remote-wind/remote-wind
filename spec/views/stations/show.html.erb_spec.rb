@@ -7,7 +7,7 @@ describe "stations/show" do
                   speed_calibration: 0.5143,
                   user: build_stubbed(:user),
                   updated_at: Time.new(2000),
-                  last_measure_received_at: Time.new(2000)
+                  last_observation_received_at: Time.new(2000)
     )
   end
 
@@ -29,7 +29,7 @@ describe "stations/show" do
   context "when not an admin" do
     it "does not have any destructive buttons" do
       expect(page).to_not have_link 'Delete'
-      expect(page).to_not have_link 'Clear all measures for this station'
+      expect(page).to_not have_link 'Clear all observations for this station'
       
     end
   end
@@ -38,7 +38,7 @@ describe "stations/show" do
     before { @ability.can :manage, Station }
     it "has admin buttons" do
       expect(page).to have_link 'Edit'
-      expect(page).to have_link 'Clear all measures for this station'
+      expect(page).to have_link 'Clear all observations for this station'
     end
   end
 
@@ -55,7 +55,7 @@ describe "stations/show" do
       expect(page).to have_link 'j_random_user', href: user_path(station.user.to_param)
       expect(page).to have_selector ".station-meta .created-at td:last", text: "23:00"
       expect(page).to have_selector ".station-meta .updated-at td:last", text: "23:00"
-      expect(page).to have_selector ".station-meta .last-measure-received-at td:last", text: "23:00"
+      expect(page).to have_selector ".station-meta .last-observation-received-at td:last", text: "23:00"
       expect(page).to have_selector ".station-meta .latitude td:last", text: station.latitude
       expect(page).to have_selector ".station-meta .longitude td:last", text: station.longitude
       expect(page).to have_selector ".station-meta .timezone td:last", text: station.timezone

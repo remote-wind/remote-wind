@@ -72,7 +72,7 @@ class StationsMaker
   end
 end
 
-class RandomMeasureMaker
+class RandomObservationMaker
   @speed
   @measures
   @direction
@@ -126,7 +126,7 @@ class RandomMeasureMaker
       @speed += s_var
     end
 
-    measure = Measure.new({
+    measure = Observation.new({
         station: station,
         direction: Random.new.rand(0..360),
         speed: @speed,
@@ -192,5 +192,5 @@ end
 AdminMaker.new
 RandomUsersMaker.new(25)
 StationsMaker.new
-RandomMeasureMaker.new(50)
+RandomObservationMaker.new(50)
 NotificationMaker.new(5)

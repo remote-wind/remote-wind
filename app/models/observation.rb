@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: measures
+# Table name: observations
 #
 #  id                :integer          not null, primary key
 #  station_id        :integer
@@ -14,15 +14,16 @@
 #  speed_calibration :float
 #
 
-class Measure < ActiveRecord::Base
-  belongs_to :station, dependent: :destroy, inverse_of: :measures
+class Observation < ActiveRecord::Base
+
+  belongs_to :station, dependent: :destroy, inverse_of: :observations
   attr_accessor :timezone
 
   # constraints
   validates_presence_of :station
   validates :speed, :direction, :max_wind_speed, :min_wind_speed, :speed_calibration,
             :numericality => { :allow_blank => true }
-  validate :measure_cannot_be_calibrated
+  validate :observation_cannot_be_calibrated
 
   # degrees to cardinal
   def compass_point
@@ -84,9 +85,9 @@ class Measure < ActiveRecord::Base
     end
   end
 
-  def measure_cannot_be_calibrated
+  def observation_cannot_be_calibrated
     if self.calibrated
-      errors.add(:speed_calibration, "Calibrated measures cannot be saved!")
+      errors.add(:speed_calibration, "Calibrated observations cannot be saved!")
     end
   end
 
@@ -96,10 +97,10 @@ class Measure < ActiveRecord::Base
     end
   end
 
-  # Update station when saving measure
+  # Update station when saving observation
   def update_station
     unless station.nil?
-      station.update_attribute(:last_measure_received_at, created_at)
+      station.update_attribute(:last_observation_received_at, created_at)
     end
   end
 

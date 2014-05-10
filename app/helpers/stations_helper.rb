@@ -1,19 +1,19 @@
 module StationsHelper
 
-  # Create link to clear measures for station
+  # Create link to clear observations for station
   #@param station Station
   #@param options Hash
   #@return string
-  def clear_measures_button(station, options = {})
+  def clear_observations_button(station, options = {})
     options.merge!({
-        text: "Clear all measures for this station?",
+        text: "Clear all observations for this station?",
         data:  {
           confirm:   "Are you sure you want to delete all measues recorded by this station? This action cannot be undone!"
         },
         class: "tiny button alert",
         method:  :delete
     })
-    link_to options[:text], station_measures_path(station), options
+    link_to options[:text], station_observations_path(station), options
   end
 
   #@param station Station

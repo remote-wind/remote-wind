@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140509165722) do
+ActiveRecord::Schema.define(version: 20140510051941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,7 +37,17 @@ ActiveRecord::Schema.define(version: 20140509165722) do
   add_index "friendly_id_slugs", ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id", using: :btree
   add_index "friendly_id_slugs", ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type", using: :btree
 
-  create_table "measures", force: true do |t|
+  create_table "notifications", force: true do |t|
+    t.string   "event"
+    t.text     "message"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "read",       default: false
+    t.integer  "level"
+  end
+
+  create_table "observations", force: true do |t|
     t.integer  "station_id"
     t.float    "speed"
     t.float    "direction"
@@ -49,17 +59,7 @@ ActiveRecord::Schema.define(version: 20140509165722) do
     t.float    "speed_calibration"
   end
 
-  add_index "measures", ["station_id"], name: "index_measures_on_station_id", using: :btree
-
-  create_table "notifications", force: true do |t|
-    t.string   "event"
-    t.text     "message"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "read",       default: false
-    t.integer  "level"
-  end
+  add_index "observations", ["station_id"], name: "index_observations_on_station_id", using: :btree
 
   create_table "roles", force: true do |t|
     t.string   "name"
@@ -84,9 +84,9 @@ ActiveRecord::Schema.define(version: 20140509165722) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "slug"
-    t.boolean  "show",                     default: true
-    t.float    "speed_calibration",        default: 1.0
-    t.datetime "last_measure_received_at"
+    t.boolean  "show",                         default: true
+    t.float    "speed_calibration",            default: 1.0
+    t.datetime "last_observation_received_at"
   end
 
   add_index "stations", ["hw_id"], name: "index_stations_on_hw_id", unique: true, using: :btree

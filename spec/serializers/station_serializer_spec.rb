@@ -8,16 +8,16 @@ describe StationSerializer do
 
   it_behaves_like 'a station'
 
-  context "when station has latest_measure" do
+  context "when station has latest_observation" do
 
-    let(:measure) { build_stubbed(:measure) }
+    let(:observation) { build_stubbed(:observation) }
 
     before(:each) do
-      resource.latest_measure = measure
+      resource.latest_observation = observation
     end
 
-    it "includes latest_measure" do
-      expect(subject.latest_measure.id).to eq measure.id
+    it "includes latest_observation" do
+      expect(subject.latest_observation.id).to eq observation.id
     end
   end
 end

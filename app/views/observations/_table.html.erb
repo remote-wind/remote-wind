@@ -1,0 +1,13 @@
+<table class="observations small-12 columns">
+  <thead>
+  <th>Time</th>
+  <th>Direction</th>
+  <th>Wind Speed</th>
+  </thead>
+  <tbody>
+  <%= render partial: "observations/observation",
+             collection: observations,
+             locals: { station: station } if observations.any?
+  %>
+  </tbody>
+</table>

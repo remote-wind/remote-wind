@@ -8,7 +8,7 @@ feature "Stations", %{
   let(:stations) do
     [*1..3].map! do |i|
       station = create(:station, :name => "Station #{i+1}")
-      station.measures.create attributes_for(:measure)
+      station.observations.create attributes_for(:observation)
       station
     end
   end
@@ -38,11 +38,11 @@ feature "Stations", %{
   end
 
   scenario "when i click table" do
-    station.measures.create(attributes_for(:measure))
+    station.observations.create(attributes_for(:observation))
     visit station_path station
     click_link "Table"
-    expect(page).to have_selector "table.measures tr:first .speed", text: station.current_measure.speed
-    expect(page).to have_selector "table.measures tr:first .direction", text: "E (90°)"
+    expect(page).to have_selector "table.observations tr:first .speed", text: station.current_observation.speed
+    expect(page).to have_selector "table.observations tr:first .direction", text: "E (90°)"
   end
 
   describe "creating stations" do
@@ -101,11 +101,11 @@ feature "Stations", %{
     expect(page).to have_selector "a", text: station.name
   end
 
-  context "given a station with measures" do
+  context "given a station with observations" do
     let!(:station) do
       station = create(:station)
       3.times do
-        station.measures.create attributes_for(:measure)
+        station.observations.create attributes_for(:observation)
       end
       station
     end
@@ -113,8 +113,8 @@ feature "Stations", %{
     scenario "when i clear messures" do
       admin_session
       visit station_path station
-      click_link "Clear all measures for this station"
-      expect(station.measures.count).to eq 0
+      click_link "Clear all observations for this station"
+      expect(station.observations.count).to eq 0
     end
   end
 
