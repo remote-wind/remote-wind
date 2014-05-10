@@ -96,7 +96,7 @@ jQuery(document).ready(function($){
             }($map_canvas.data()));
 
             if (map.default_latlng) {
-                map.setCenter(lat_lng);
+                map.setCenter(map.default_latlng);
                 map.setZoom(10);
             }
 
@@ -138,7 +138,7 @@ jQuery(document).ready(function($){
                     return (data.lat && data.lon) ? new google.maps.LatLng(data.lat, data.lon) : false;
                 }($map_canvas.data()));
 
-                if (!map.map.default_latlng) {
+                if (!map.default_latlng) {
                     map.fitBounds(map.stations_bounds);
                 }
             }
