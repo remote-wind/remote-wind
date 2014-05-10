@@ -298,7 +298,7 @@ jQuery(document).ready(function($){
                 ifModified: true,
                 success: function(data, textStatus, jqXHR){
                     // Status is 200 OK
-                    if (data) {
+                    if (data && data.length) {
                         $graph.trigger('graph.render', [data]);
                     }
 
@@ -339,23 +339,33 @@ jQuery(document).ready(function($){
                 }
             ], data);
 
+            // If already initialized
             if (graph) {
-                // Replace graph data
+                // Refresh graph data
                 $(graph.series).each(function(i){
                     graph.series[i] = series[i];
+                    graph.configure({
+                        width: $graph.$chart.innerWidth() - 20,
+                        height: $graph.$chart.innerHeight() - 20
+                    });
                 });
             }
+
+            // Create graph and fixtures
+            graph = graph || new Rickshaw.Graph( {
+                element: $graph.$chart[0],
+                renderer: 'line',
+                dotSize: 2,
+                series: series
+            });
 
             // Scale the Scroll Container after the number of observations
             $graph.$scroll.width( data.length *  30 );
 
-            graph = graph || new Rickshaw.Graph( {
-                element: $graph.$chart[0],
+            // Scale chart after number of measures
+            graph.configure({
                 width: $graph.$chart.innerWidth() - 20,
-                height: $graph.$chart.innerHeight() - 20,
-                renderer: 'line',
-                dotSize: 2,
-                series: series
+                height: $graph.$chart.innerHeight() - 20
             });
 
             graph.time =  graph.time || new Rickshaw.Fixtures.Time();
@@ -381,18 +391,14 @@ jQuery(document).ready(function($){
                 graph: graph,
                 element: $graph.find('.timeline')[0]
             });
-            if (data.length) {
-                $(data).each(function(i,m){
-                    graph.annotator.add(m.tstamp, m.direction);
-                });
-            }
+            $(data).each(function(i,m){
+                graph.annotator.add(m.tstamp, m.direction);
+            });
 
             graph.render();
             graph.annotator.update();
-
-            // Scroll to end of observations
-            // Browsers won´t allow scrolling beyond the width of the container anyways
-            $graph.$scroll.scrollLeft(99999999);
+            // Scroll to latest observation
+            $graph.find('.scroll-window').scrollLeft(999999);
         });
     }());
 
