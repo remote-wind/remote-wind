@@ -275,7 +275,7 @@ describe StationsController do
     it 'takes a radius parameter' do
       # Minsk, Belarus, ca 700km from Moscow
       get :search, :lat => 53.884916, :lon => 27.53088, :radius => 1000
-      expect(assigns(:stations)).to_not be_empty
+      expect(assigns(:stations).count(:all)).to be > 0
     end
 
     it 'ranks stations by proximity' do
@@ -287,7 +287,7 @@ describe StationsController do
     it 'finds only stations within the radius' do
       # Ankor Wat in not whithin 1000 km of Moscow or Peru
       get :search, :lat => 13.412643, :lon => 103.861782, :radius => 1000
-      expect(assigns(:stations)).to be_empty
+      expect(assigns(:stations).count(:all)).to eq 0
     end
 
     it 'renders the correct template' do

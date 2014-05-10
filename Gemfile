@@ -59,7 +59,7 @@ group :test do
   # factory_girl provides a framework and DSL for defining and using factories.
   gem "factory_girl_rails", "~> 4.4.1"
   # Matchers to make model specs easy on the fingers and eyes
-  gem "shoulda-matchers", "~> 2.5.0"
+  gem "shoulda-matchers", "~> 2.6.1"
   # Capybara is an integration testing tool for rack based web applications.
   gem 'capybara', '~> 2.2.1'
   # A forking Drb spec server

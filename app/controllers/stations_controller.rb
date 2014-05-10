@@ -125,7 +125,7 @@ class StationsController < ApplicationController
   # GET /stations/search?lat=x&lon=x&radius
   def search
     radius = params[:radius] || 20
-    @stations = Station.near([params[:lat], params[:lon]], radius, units: :km)
+    @stations = Station.all.near([params[:lat], params[:lon]], radius, units: :km)
   end
 
   # GET /stations/:id/embed
