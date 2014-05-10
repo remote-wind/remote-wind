@@ -16,7 +16,7 @@
 #  slug                     :string(255)
 #  show                     :boolean          default(TRUE)
 #  speed_calibration        :float            default(1.0)
-#  last_measure_received_at :datetime
+#  last_observation_received_at :datetime
 #
 
 # NB! when getting a station use the Friendly ID method Station.friendly.find(params[:id])
@@ -25,9 +25,9 @@ class Station < ActiveRecord::Base
 
   # relations
   belongs_to :user, inverse_of: :stations
-  has_many  :measures, inverse_of: :station, counter_cache: true
-  has_many :recent_measures, -> { order('created_at ASC').limit(10) }, class_name: 'Measure'
-  has_one :current_measure, -> { order('created_at ASC').limit(1) }, class_name: 'Measure'
+  has_many  :observations, inverse_of: :station, counter_cache: true
+  has_many :recent_observations, -> { order('created_at ASC').limit(10) }, class_name: 'Observation'
+  has_one :current_observation, -> { order('created_at ASC').limit(1) }, class_name: 'Observation'
 
    # constraints
   validates_uniqueness_of :hw_id
@@ -49,27 +49,24 @@ class Station < ActiveRecord::Base
   alias_attribute :lng, :longitude
   alias_attribute :owner, :user
   attr_accessor :zone
-  attr_accessor :latest_measure
-
-
-  @offline
+  attr_accessor :latest_observation
 
   # Scopes
   scope :visible, -> { where(show: true) }
 
   # callbacks
-  after_save :update_measure_speed_calibration,
+  after_save :update_observation_speed_calibration,
              :if => lambda { |station| station.speed_calibration_changed? }
 
-  # Get measures since N time ago
-  # If no measures are found we fetch from last_measure_received_at
-  # Measures are then calibrated
-  def get_calibrated_measures(since = 12.hours.ago)
-     mrs = measures.where("created_at >= ?", since).order("measures.created_at ASC")
+  # Get observations since N time ago
+  # If no observations are found we fetch from last_observation_received_at
+  # Observations are then calibrated
+  def get_calibrated_observations(since = 12.hours.ago)
+     mrs = observations.where("created_at >= ?", since).order("observations.created_at ASC")
 
-     # If there are no recent measures we go back `since` time from last_measure_received_at to find measures
-     if mrs.length < 1 && self.last_measure_received_at?
-       mrs = measures.where("created_at >= ?", self.last_measure_received_at - (Time.now - since)).order("measures.created_at ASC")
+     # If there are no recent observations we go back `since` time from last_observation_received_at to find observations
+     if mrs.length < 1 && self.last_observation_received_at?
+       mrs = observations.where("created_at >= ?", self.last_observation_received_at - (Time.now - since)).order("observations.created_at ASC")
      end
 
      mrs.each do |m|
@@ -119,12 +116,12 @@ class Station < ActiveRecord::Base
     end
   end
 
-  def current_measure
-    latest_measure.presence || measures.last
+  def current_observation
+    latest_observation.presence || observations.last
   end
 
-  def measures?
-    self.measures.present?
+  def observations?
+    self.observations.present?
   end
 
   def self.send_low_balance_alerts stations = Station.all()
@@ -145,13 +142,13 @@ class Station < ActiveRecord::Base
     self.zone.nil? ? time : zone.time(time)
   end
 
-  def update_measure_speed_calibration
-    self.measures.update_all(speed_calibration: self.speed_calibration)
+  def update_observation_speed_calibration
+    self.observations.update_all(speed_calibration: self.speed_calibration)
   end
 
   # do heuristics if station is down
   def should_be_offline?
-      Measure.where({station_id: id}).since(24.minutes.ago).order(created_at: :desc).count  < 3
+      Observation.where({station_id: id}).since(24.minutes.ago).order(created_at: :desc).count  < 3
   end
 
   def check_status!
@@ -240,8 +237,8 @@ class Station < ActiveRecord::Base
     time_to_local updated_at if updated_at.present?
   end
 
-  def last_measure_received_at_local
-    time_to_local updated_at if last_measure_received_at.present?
+  def last_observation_received_at_local
+    time_to_local updated_at if last_observation_received_at.present?
   end
 
 end

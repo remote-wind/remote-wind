@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe MeasuresController do
+describe ObservationsController do
 
   let!(:station) {  create(:station) }
-  let(:measure) { create(:measure, :station => station) }
+  let(:observation) { create(:observation, :station => station) }
   let(:valid_attributes) {
-    attributes_for(:measure, station_id: station.id)
+    attributes_for(:observation, station_id: station.id)
 
   }
 
@@ -19,46 +19,46 @@ describe MeasuresController do
 
     it "does not accept any other format than yaml" do
      expect {
-       post :create, { measure: valid_attributes, format: 'html' }
+       post :create, { observation: valid_attributes, format: 'html' }
      }.to raise_exception(ActionController::UnknownFormat)
     end
 
     it "checks station status" do
       Station.any_instance().should_receive(:check_status!)
-      post :create, { measure: valid_attributes, format: "yaml" }
+      post :create, { observation: valid_attributes, format: "yaml" }
     end
 
     context "with valid attributes" do
-      it "should create a new measure" do
+      it "should create a new observation" do
         expect {
-          post :create, {measure: valid_attributes, format: "yaml"}
-        }.to change(Measure, :count).by(1)
+          post :create, {observation: valid_attributes, format: "yaml"}
+        }.to change(Observation, :count).by(1)
       end
     end
 
     context "with short form attributes" do
-      it "should create a new measure" do
+      it "should create a new observation" do
         expect {
           post :create, {m: {s: 1, d:  2, i: station.id, max: 4, min: 5}, format: "yaml"}
-        }.to change(Measure, :count).by(1)
+        }.to change(Observation, :count).by(1)
       end
     end
 
     context "with yaml format" do
       it "sends HTTP success" do
-        post :create, { measure: valid_attributes, format: "yaml"}
+        post :create, { observation: valid_attributes, format: "yaml"}
         expect(response.code).to eq "200"
       end
 
       it "does not render a template" do
-          post :create, { measure: valid_attributes, format: "yaml"}
+          post :create, { observation: valid_attributes, format: "yaml"}
           expect(response).to render_template nil
       end
     end
 
-    it "updates station last_measure_received_at" do
-      post :create, { measure: valid_attributes, format: "yaml"}
-      expect(assigns(:station).last_measure_received_at).to eq assigns(:measure).created_at
+    it "updates station last_observation_received_at" do
+      post :create, { observation: valid_attributes, format: "yaml"}
+      expect(assigns(:station).last_observation_received_at).to eq assigns(:observation).created_at
     end
 
   end
@@ -66,16 +66,16 @@ describe MeasuresController do
   describe "GET index" do
 
     let(:station) { create(:station, speed_calibration: 0.5) }
-    let!(:measures) { [ create(:measure, station: station, speed: 10) ] }
+    let!(:observations) { [ create(:observation, station: station, speed: 10) ] }
 
     context "when request is HTML" do
 
-      it "uses the page param to paginate measures" do
+      it "uses the page param to paginate observations" do
         # Stub the chain to set up expection
-        Station.any_instance.stub(:measures).and_return(Measure)
-        Measure.stub(:order).and_return(Measure)
+        Station.any_instance.stub(:observations).and_return(Observation)
+        Observation.stub(:order).and_return(Observation)
 
-        Measure.should_receive(:paginate).with(page: "2").and_return([].paginate)
+        Observation.should_receive(:paginate).with(page: "2").and_return([].paginate)
         get :index, station_id: station.to_param, page: "2"
       end
     end
@@ -90,12 +90,12 @@ describe MeasuresController do
         expect(assigns(:station)).to be_a(Station)
       end
 
-      it "assigns measures" do
-        expect(assigns(:measures).to_a).to include measures.first
+      it "assigns observations" do
+        expect(assigns(:observations).to_a).to include observations.first
       end
 
-      it "calibrates measures" do
-        expect(assigns(:measures).first.speed).to eq 5
+      it "calibrates observations" do
+        expect(assigns(:observations).first.speed).to eq 5
       end
     end
   end
@@ -104,20 +104,20 @@ describe MeasuresController do
 
     before :each do
       3.times do
-        station.measures.create attributes_for(:measure)
+        station.observations.create attributes_for(:observation)
       end
     end
 
     context "when an unpriveleged user" do
       before { sign_in create(:user) }
-      it "does not allow measures to be destoyed" do
+      it "does not allow observations to be destoyed" do
         expect do
           delete :clear, {:station_id => station.to_param}
-        end.to_not change(Measure, :count)
+        end.to_not change(Observation, :count)
         bypass_rescue
       end
 
-      it "does not allow measures to be destoyed" do
+      it "does not allow observations to be destoyed" do
         expect do
           bypass_rescue
           delete :clear, {:station_id => station.to_param}
@@ -129,9 +129,9 @@ describe MeasuresController do
     context "when an admin" do
       before { sign_in create(:admin) }
 
-      it "destroys the related measures" do
+      it "destroys the related observations" do
         delete :clear, {:station_id => station.to_param}
-        expect(Measure.where("station_id = #{station.id}").count).to eq 0
+        expect(Observation.where("station_id = #{station.id}").count).to eq 0
       end
 
       it "redirects to the station" do
@@ -144,30 +144,30 @@ describe MeasuresController do
   describe "DELETE 'destroy'" do
 
     before do
-      measure #lazy load measure
+      observation #lazy load observation
     end
 
     context "as unpriveleged user" do
       before { sign_in create(:user) }
-      it "should not allow measures to be destoyed without authorization" do
+      it "should not allow observations to be destoyed without authorization" do
         expect do
-          delete :destroy, {id: measure.to_param, station_id:  measure.station.to_param}
-        end.to_not change(Measure, :count)
+          delete :destroy, {id: observation.to_param, station_id:  observation.station.to_param}
+        end.to_not change(Observation, :count)
       end
     end
 
     context "as admin" do
       before { sign_in create(:admin) }
 
-      it "destroys the requested measure" do
+      it "destroys the requested observation" do
         expect {
-          delete :destroy, { id: measure.to_param, station_id: measure.station.to_param}
-        }.to change(Measure, :count).by(-1)
+          delete :destroy, { id: observation.to_param, station_id: observation.station.to_param}
+        }.to change(Observation, :count).by(-1)
       end
 
-      it "redirects to the measure list" do
-        delete :destroy, { id: measure.to_param, station_id: measure.station.to_param}
-        expect(response).to redirect_to(measures_url)
+      it "redirects to the observation list" do
+        delete :destroy, { id: observation.to_param, station_id: observation.station.to_param}
+        expect(response).to redirect_to(station_observations_url(observation.station))
       end
     end
   end

@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: measures
+# Table name: observations
 #
 #  id                :integer          not null, primary key
 #  station_id        :integer
@@ -14,14 +14,15 @@
 #  speed_calibration :float
 #
 
-class MeasureSerializer < ActiveModel::Serializer
-  attributes :id, :station_id, :speed, :direction, :max_wind_speed, :min_wind_speed
+# Read about factories at https://github.com/thoughtbot/factory_girl
 
-  def attributes
-    data = super
-    data[:created_at] = object.created_at.iso8601
-    data[:tstamp] = object.created_at.to_i
-    data
+FactoryGirl.define do
+  factory :observation do
+    station_id 1
+    speed 30
+    direction 90
+    max_wind_speed 55
+    min_wind_speed 10
+    temperature 1.5
   end
-
 end

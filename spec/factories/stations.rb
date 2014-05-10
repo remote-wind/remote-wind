@@ -16,7 +16,7 @@
 #  slug                     :string(255)
 #  show                     :boolean          default(TRUE)
 #  speed_calibration        :float            default(1.0)
-#  last_measure_received_at :datetime
+#  last_observation_received_at :datetime
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl

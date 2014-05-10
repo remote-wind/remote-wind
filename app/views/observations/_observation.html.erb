@@ -1,0 +1,13 @@
+<% cache observation do %>
+<tr class="observation" data-uid="<%= observation.id %>">
+  <td class="created_at">
+    <%= time_date_hours_seconds(station.time_to_local(observation.created_at)) %>
+  </td>
+  <td class="direction">
+    <%= degrees_and_cardinal(observation.direction) %>
+  </td>
+  <td class="speed">
+    <%= observation.speed %> (<%= observation.min %>-<%= observation.max %>)m/s
+  </td>
+</tr>
+<% end %>

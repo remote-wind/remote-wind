@@ -8,8 +8,8 @@
 </head>
 <body>
     <div class="remote-wind-widget" width="<%= @embed_options[:width] %>" height="<%= @embed_options[:height] %>">
-      <%= render partial: 'measures/table',
-                 locals: { measures: @measures, station: @station }
+      <%= render partial: 'observations/table',
+                 locals: { observations: @observations, station: @station }
       %>
     </div>
 </body>

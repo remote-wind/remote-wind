@@ -3,11 +3,11 @@ require 'spec_helper'
 describe 'stations/embeds/table' do
 
   let(:station) { build_stubbed(:station) }
-  let(:measures) {[build_stubbed(:measure)] }
+  let(:observations) {[build_stubbed(:observation)] }
 
   before(:each) do
     assign(:station, station)
-    assign(:measures, measures)
+    assign(:observations, observations)
     assign(:embed_options, {})
   end
 
@@ -16,8 +16,8 @@ describe 'stations/embeds/table' do
     rendered
   end
 
-  it "renders measures" do
-    expect(table).to have_selector '.measure', exact: measures.size
+  it "renders observations" do
+    expect(table).to have_selector '.observation', exact: observations.size
   end
 
 end

@@ -202,7 +202,7 @@ jQuery(document).ready(function($){
             } else {
                 text += (function(m){
                     return  m.speed + "(" + m.min_wind_speed + "-" + m.max_wind_speed + ")  m/s"
-                }(station.latest_measure.measure));
+                }(station.latest_observation.observation));
             }
 
             return new Label({
@@ -228,7 +228,7 @@ jQuery(document).ready(function($){
             if (station.offline) {
                 options.icon = remotewind.icons.station_down();
             } else {
-                options.icon = remotewind.icons.station(station.latest_measure.measure);
+                options.icon = remotewind.icons.station(station.latest_observation.observation);
             }
 
             marker = new google.maps.Marker( options );
@@ -245,18 +245,18 @@ jQuery(document).ready(function($){
 
 
     /**
-     * Chart showing station measures
+     * Chart showing station observations
      * @see [rickshaw.js docs](http://code.shutterstock.com/rickshaw/) for more details
      */
     (function(){
 
-        var $graph = $('#station_measures_chart');
+        var $graph = $('#station_observations_chart');
         $graph.$chart = $graph.find('.chart');
         $graph.$y_axis = $graph.find('.y-axis');
         $graph.$x_axis = $graph.find('.x-axis');
 
         /**
-         * Format measures into stacks for Rickshaw
+         * Format observations into stacks for Rickshaw
          * @param series array
          * @param data object
          * @returns array
@@ -318,7 +318,7 @@ jQuery(document).ready(function($){
 
             time = new Rickshaw.Fixtures.Time();
 
-            // Scale the Scroll Container after the number of measures
+            // Scale the Scroll Container after the number of observations
             $graph.find('.scroll-contents').width( data.length *  30 );
 
             graph = new Rickshaw.Graph( {
@@ -354,7 +354,7 @@ jQuery(document).ready(function($){
                     annotator.add(m.tstamp, m.direction);
                 });
             }
-            // Scroll to end of measures
+            // Scroll to end of observations
             // Browsers won´t allow scrolling beyond the width of the container anyways
             $graph.find('.scroll-window').scrollLeft(99999999);
             graph.render();

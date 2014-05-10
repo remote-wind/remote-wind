@@ -1,4 +1,4 @@
-module MeasuresHelper
+module ObservationsHelper
 
   def degrees_and_cardinal degrees
     if degrees
@@ -6,14 +6,14 @@ module MeasuresHelper
     end
   end
 
-  def speed_min_max(measure)
+  def speed_min_max(observation)
 
-    unless measure.is_a? Hash
-      measure = HashWithIndifferentAccess.new(measure.attributes)
+    unless observation.is_a? Hash
+      observation = HashWithIndifferentAccess.new(observation.attributes)
     end
 
-    if measure
-      "%{speed} (%{min_wind_speed}-%{max_wind_speed})m/s" % measure
+    if observation
+      "%{speed} (%{min_wind_speed}-%{max_wind_speed})m/s" % observation
     end
   end
 

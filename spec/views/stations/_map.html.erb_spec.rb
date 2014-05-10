@@ -3,10 +3,10 @@ require 'spec_helper'
 describe "stations/_map" do
 
   let(:station) { build_stubbed(:station, lat: 10, lon: 15) }
-  let(:measure) { build_stubbed(:measure, station: station) }
+  let(:observation) { build_stubbed(:observation, station: station) }
 
   let!(:page) do
-    station.latest_measure = measure
+    station.latest_observation = observation
     stub_user_for_view_test
     render "stations/map", station: station
     rendered  

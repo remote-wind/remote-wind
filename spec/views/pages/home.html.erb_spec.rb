@@ -8,15 +8,15 @@ describe "pages/home" do
       stations << create(:station)
     end
     stations.each do |s|
-      s.measures.push(create(:measure))
+      s.observations.push(create(:observation))
     end
 
     assign(:stations, stations)
     stations
   end
 
-  let :measure do
-    stations[0].current_measure
+  let :observation do
+    stations[0].current_observation
   end
 
   before(:each) do

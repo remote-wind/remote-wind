@@ -9,17 +9,17 @@
   </thead>
   <tbody>
   <% @stations.each do |station| %>
-      <% measure = station.measures.last.presence %>
+      <% observation = station.observations.last.presence %>
       <tr class="station" id="station-<%= station.id %>">
         <td class="name"><%= link_to station.name, station %></td>
         <td class="speed">
-          <% if measure %>
-              <%= measure.speed %> (<%=  measure.min_wind_speed %> - <%= measure.max_wind_speed %>)
+          <% if observation %>
+              <%= observation.speed %> (<%=  observation.min_wind_speed %> - <%= observation.max_wind_speed %>)
           <% end %>
         </td>
         <td class="direction">
-          <% if measure %>
-              <%= degrees_and_cardinal(measure.direction) %>
+          <% if observation %>
+              <%= degrees_and_cardinal(observation.direction) %>
           <% end %>
         </td>
         <td>

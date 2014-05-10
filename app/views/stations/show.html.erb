@@ -12,21 +12,21 @@
 <article class="station">
 
   <dl class="accordion" data-accordion>
-    <% if @measures %>
+    <% if @observations %>
     <dd id="chart">
       <a href="#chart-panel">Chart</a>
       <div class="content chart-wrapper active clearfix" id="chart-panel">
-        <%= render partial: 'measures/chart', object: @measures %>
+        <%= render partial: 'observations/chart', object: @observations %>
       </div>
     </dd>
 
     <dd id="table">
       <a href="#table-panel">Table</a>
       <div class="content clearfix" id="table-panel">
-        <%= render partial: 'measures/table',
-                   locals: { measures: @measures, station: @station }
+        <%= render partial: 'observations/table',
+                   locals: { observations: @observations, station: @station }
         %>
-        <p><%= link_to("More", station_measures_path(@station), class: 'button tiny radius') %></p>
+        <p><%= link_to("More", station_observations_path(@station), class: 'button tiny radius') %></p>
       </div>
     </dd>
     <% end %>
@@ -53,7 +53,7 @@
       <div class="content clearfix" id="admin-panel">
         <div class="admin-only btn-group">
           <%= link_to 'Edit', edit_station_path(@station), class: "button tiny" %>
-          <%= clear_measures_button(@station) %>
+          <%= clear_observations_button(@station) %>
         </div>
       </div>
     </dd>

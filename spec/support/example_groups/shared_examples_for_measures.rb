@@ -1,4 +1,4 @@
-shared_examples "a measure" do
+shared_examples "a observation" do
   describe "attributes" do
     its(:id)              { should eq attributes[:id] }
     its(:station_id)      { should eq attributes[:station_id] }

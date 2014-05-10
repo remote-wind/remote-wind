@@ -34,10 +34,10 @@ remotewind.icons.station_down = function(){
  * Create object with parameters for regular map icon
  * @returns object
  */
-remotewind.icons.station = function(measure) {
+remotewind.icons.station = function(observation) {
     // Path in SVG notation
     var path = "M20,3.272c0,0,13.731,12.53,13.731,19.171S31.13,36.728,31.13,36.728S23.372,31.536,20,31.536 S8.87,36.728,8.87,36.728s-2.601-7.644-2.601-14.285S20,3.272,20,3.272z";
-    var beaufort = remotewind.util.msToBeaufort(measure.speed || 0);
+    var beaufort = remotewind.util.msToBeaufort(observation.speed || 0);
 
     return {
         size: new google.maps.Size(40, 40),
@@ -48,7 +48,7 @@ remotewind.icons.station = function(measure) {
         fillOpacity: 0.8,
         strokeColor: 'black',
         strokeWeight: 1.2,
-        rotation: 180.0 + measure.direction
+        rotation: 180.0 + observation.direction
     }
 }
 

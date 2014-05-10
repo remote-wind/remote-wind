@@ -15,11 +15,11 @@ feature "Station Embeds", %q[
   context "with type = chart" do
     scenario "when parameters contain height" do
       visit embed_station_path(station,  height: 300, type: "chart")
-      expect(page).to have_selector "#station_measures_chart[height='300']"
+      expect(page).to have_selector "#station_observations_chart[height='300']"
     end
     scenario "when parameters contain width"do
       visit embed_station_path(station, width: 250, type: "chart")
-      expect(page).to have_selector "#station_measures_chart[width='250']"
+      expect(page).to have_selector "#station_observations_chart[width='250']"
     end
   end
 

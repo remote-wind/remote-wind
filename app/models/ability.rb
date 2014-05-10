@@ -14,7 +14,7 @@ class Ability
       can :read, Station do |s|
         s.show?
       end
-      can :read, Measure do |m|
+      can :read, Observation do |m|
         m.show?
       end
       can :manage, Notification do |n|

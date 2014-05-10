@@ -1,0 +1,14 @@
+<h1>Latest observations for <%= @station.name.capitalize %></h1>
+<p>Latest observation received at <%= time_date_hours_seconds(@observations.last.created_at) %></p>
+<%= render partial: 'observations/table',
+           locals: { observations: @observations, station: @station }
+%>
+<nav class="row">
+  <%= foundation_paginate(@observations) %>
+</nav>
+
+<ul class="breadcrumbs" role="navigation">
+  <li class="root"><a href="<%= root_path %>">Home</a></li>
+  <li><a href="<%= station_path(@station) %>"><%= @station.name.capitalize %></a></li>
+  <li class="current"><a href="#" disabled="disabled">Latest observations for <%= @station.name.capitalize %></li>
+</ul>

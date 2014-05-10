@@ -16,7 +16,7 @@
 #  slug                     :string(255)
 #  show                     :boolean          default(TRUE)
 #  speed_calibration        :float            default(1.0)
-#  last_measure_received_at :datetime
+#  last_observation_received_at :datetime
 #
 
 require 'spec_helper'
@@ -27,7 +27,7 @@ describe Station do
   let(:station) { create(:station) }
 
   describe "relations" do
-    it { should have_many :measures }
+    it { should have_many :observations }
     it { should belong_to :user }
   end
 
@@ -42,7 +42,7 @@ describe Station do
     it { should respond_to :zone }
     it { should respond_to :show }
     it { should respond_to :speed_calibration }
-    it { should respond_to :last_measure_received_at }
+    it { should respond_to :last_observation_received_at }
 
     describe "attribute aliases" do
       it { should respond_to :lon }
@@ -131,62 +131,62 @@ describe Station do
     end
   end
 
-  describe "#get_calibrated_measures" do
+  describe "#get_calibrated_observations" do
 
     let(:station) { create(:station) }
 
-    context "when there are measures in the last 12h" do
+    context "when there are observations in the last 12h" do
 
-      let!(:measures) do
+      let!(:observations) do
         [*1..3].map! do |i|
-          measure = create(:measure, station: station)
-          measure.update_attribute(:created_at, (i - 1).hours.ago )
-          measure
+          observation = create(:observation, station: station)
+          observation.update_attribute(:created_at, (i - 1).hours.ago )
+          observation
         end
       end
 
-      it "gets measures only within the limit" do
-        expect(station.get_calibrated_measures(Time.now - 2.hours).count).to eq 2
+      it "gets observations only within the limit" do
+        expect(station.get_calibrated_observations(Time.now - 2.hours).count).to eq 2
       end
 
       it "defaults to 12 hours ago" do
-        old_measure = create(:measure, station: station)
-        old_measure.update_attribute(:created_at, 14.hours.ago )
-        expect(station.get_calibrated_measures()).to_not include old_measure
+        old_observation = create(:observation, station: station)
+        old_observation.update_attribute(:created_at, 14.hours.ago )
+        expect(station.get_calibrated_observations()).to_not include old_observation
       end
 
-      it "calibrates measures" do
-        expect(station.get_calibrated_measures().first.calibrated).to be true
+      it "calibrates observations" do
+        expect(station.get_calibrated_observations().first.calibrated).to be true
       end
     end
 
-    it "attempts to get measures N hours before last_measure_received if there are no measures in the last N h" do
-      station.last_measure_received_at = 12.hours.ago
-      measure = create(:measure, station: station)
-      measure.update_attribute( :created_at, 14.hours.ago )
-      expect(station.get_calibrated_measures()).to include measure
+    it "attempts to get observations N hours before last_observation_received if there are no observations in the last N h" do
+      station.last_observation_received_at = 12.hours.ago
+      observation = create(:observation, station: station)
+      observation.update_attribute( :created_at, 14.hours.ago )
+      expect(station.get_calibrated_observations()).to include observation
     end
   end
 
-  describe "#current_measure" do
+  describe "#current_observation" do
 
-    let!(:measure) do
-      create(:measure, station: station, speed: 777)
+    let!(:observation) do
+      create(:observation, station: station, speed: 777)
     end
 
-    it "returns cached measure" do
-      station.latest_measure = build_stubbed(:measure, speed: 999)
-      expect(station.current_measure.speed).to eq 999
+    it "returns cached observation" do
+      station.latest_observation = build_stubbed(:observation, speed: 999)
+      expect(station.current_observation.speed).to eq 999
     end
 
-    it "does not issue query if cached measure available" do
-      station.latest_measure = build_stubbed(:measure, speed: 999)
-      station.measures.should_not_receive(:last)
-      station.current_measure
+    it "does not issue query if cached observation available" do
+      station.latest_observation = build_stubbed(:observation, speed: 999)
+      station.observations.should_not_receive(:last)
+      station.current_observation
     end
 
-    it "returns latest measure if none cached" do
-      expect(station.current_measure.speed).to eq 777
+    it "returns latest observation if none cached" do
+      expect(station.current_observation.speed).to eq 777
     end
 
   end
@@ -195,25 +195,25 @@ describe Station do
 
     let(:station) { create(:station, offline: true) }
 
-    context "when station has three measures in last 24 min" do
+    context "when station has three observations in last 24 min" do
       it "should not be down" do
-        4.times { create(:measure, station: station) }
+        4.times { create(:observation, station: station) }
         expect(station.should_be_offline?).to be_false
       end
     end
 
-    context "when station has less than three measures in last 24 min" do
+    context "when station has less than three observations in last 24 min" do
 
-      let(:measures) { [*1..4].map! { create(:measure, station: station) } }
+      let(:observations) { [*1..4].map! { create(:observation, station: station) } }
 
       before :each do
-        measures.each do |m, index|
+        observations.each do |m, index|
           m.update_attribute(:created_at, 1.hours.ago )
         end
       end
 
       it "should be offline" do
-        create(:measure, station: station)
+        create(:observation, station: station)
         expect(station.should_be_offline?).to be_true
       end
     end
