@@ -90,6 +90,16 @@ jQuery(document).ready(function($){
                 $map_canvas.trigger('map.add_markers', [map, data_store]);
             }
 
+            // uses data on map to set position if available
+            map.default_latlng = (function(data){
+                return (data.lat && data.lon) ? new google.maps.LatLng(data.lat, data.lon) : false;
+            }($map_canvas.data()));
+
+            if (map.default_latlng) {
+                map.setCenter(lat_lng);
+                map.setZoom(10);
+            }
+
         });
 
         $map_canvas.on('map.add_controls', function(event, map, $controls){
@@ -128,10 +138,7 @@ jQuery(document).ready(function($){
                     return (data.lat && data.lon) ? new google.maps.LatLng(data.lat, data.lon) : false;
                 }($map_canvas.data()));
 
-                if (lat_lng) {
-                    map.setCenter(lat_lng);
-                    map.setZoom(10);
-                } else {
+                if (!map.map.default_latlng) {
                     map.fitBounds(map.stations_bounds);
                 }
             }
