@@ -280,7 +280,7 @@ jQuery(document).ready(function($){
                     });
                     series[1].data.push({
                         x : m.tstamp,
-                        y : m.speed + Math.random() * 10
+                        y : m.speed
                     });
                     series[2].data.push({
                         x : m.tstamp,
