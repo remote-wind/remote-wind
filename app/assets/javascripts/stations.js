@@ -249,11 +249,20 @@ jQuery(document).ready(function($){
      * @see [rickshaw.js docs](http://code.shutterstock.com/rickshaw/) for more details
      */
     (function(){
+        // The actual rickshaw.js graph
+        var graph, refresh, $graph, series;
 
-        var $graph = $('#station_observations_chart');
-        $graph.$chart = $graph.find('.chart');
-        $graph.$y_axis = $graph.find('.y-axis');
-        $graph.$x_axis = $graph.find('.x-axis');
+        // Simple implementation that just checks for measures every x seconds
+        // time in seconds to check for new observations
+        refresh = 60;
+
+        // Cached jQuery selectors
+        $graph = $('#station_observations_chart');
+        $graph.$chart =     $graph.find('.chart');
+        $graph.$y_axis =    $graph.find('.y-axis');
+        $graph.$x_axis =    $graph.find('.x-axis');
+        $graph.$scroll =    $graph.find('.scroll-contents');
+        $graph.$timeline =  $graph.find('.timeline');
 
         /**
          * Format observations into stacks for Rickshaw
@@ -271,7 +280,7 @@ jQuery(document).ready(function($){
                     });
                     series[1].data.push({
                         x : m.tstamp,
-                        y : m.speed
+                        y : m.speed + Math.random() * 10
                     });
                     series[2].data.push({
                         x : m.tstamp,
@@ -283,8 +292,24 @@ jQuery(document).ready(function($){
         }
 
         $graph.on('graph.data.load', function(){
-            $.getJSON($graph.data('path') + '.json', function(data){
-                $graph.trigger('graph.render', [data]);
+            $.ajax({
+                url: $graph.data('path'),
+                type: 'GET',
+                dataType: 'JSON',
+                ifModified:true,
+                success: function(data, textStatus, jqXHR){
+                    // Status is 200 OK
+                    if (data) {
+                        $graph.trigger('graph.render', [data]);
+                        //@todo use last observation received time to figure out when to load new observations
+                    } else {
+                        // Status is 304 not modified
+                        //@todo check for new observations in x seconds
+                    }
+                    window.setTimeout(function(){
+                        $graph.trigger('graph.data.load');
+                    }, refresh * 1000);
+                }
             });
         });
 
@@ -293,7 +318,8 @@ jQuery(document).ready(function($){
         }
 
         $graph.on('graph.render', function(e, data) {
-            var graph, time, series, annotator;
+
+            console.log('graph.render');
 
             // These are the values drawn
             series = formatSeriesData([
@@ -314,28 +340,38 @@ jQuery(document).ready(function($){
                 }
             ], data);
 
-            $chart_div = $graph.find('.chart');
 
-            time = new Rickshaw.Fixtures.Time();
+            if (graph) {
+                // Replace graph data
+                $(graph.series).each(function(i){
+                    graph.series[i] = series[i];
+                });
+            }
 
             // Scale the Scroll Container after the number of observations
-            $graph.find('.scroll-contents').width( data.length *  30 );
+            $graph.$scroll.width( data.length *  30 );
 
-            graph = new Rickshaw.Graph( {
+            graph = graph || new Rickshaw.Graph( {
                 element: $graph.$chart[0],
-                width: $chart_div.innerWidth() - 20,
-                height: $chart_div.innerHeight() - 20,
+                width: $graph.$chart.innerWidth() - 20,
+                height: $graph.$chart.innerHeight() - 20,
                 renderer: 'line',
                 dotSize: 2,
                 series: series
             });
+
+
+
+            graph.time =  graph.time || new Rickshaw.Fixtures.Time();
+
             // Custom timescale with 15min "clicks"
-            new Rickshaw.Graph.Axis.Time({
+            graph.x_axis = graph.x_axis || new Rickshaw.Graph.Axis.Time({
                 element: $graph.$x_axis[0],
                 graph: graph,
-                timeUnit: time.unit('15 minute')
+                timeUnit: graph.time.unit('15 minute')
             });
-            new Rickshaw.Graph.Axis.Y( {
+
+            graph.y_axis = graph.y_axis || new Rickshaw.Graph.Axis.Y( {
                 graph: graph,
                 orientation: 'left',
                 element: $graph.$y_axis[0],
@@ -345,20 +381,21 @@ jQuery(document).ready(function($){
             });
 
             // Add direction arrows under x-axis
-            annotator = new Rickshaw.Graph.DirectionAnnotate({
+            graph.annotator = graph.annotator || new Rickshaw.Graph.DirectionAnnotate({
                 graph: graph,
                 element: $graph.find('.timeline')[0]
             });
             if (data.length) {
                 $(data).each(function(i,m){
-                    annotator.add(m.tstamp, m.direction);
+                    graph.annotator.add(m.tstamp, m.direction);
                 });
             }
             // Scroll to end of observations
             // Browsers won´t allow scrolling beyond the width of the container anyways
-            $graph.find('.scroll-window').scrollLeft(99999999);
+            $graph.$scroll.scrollLeft(99999999);
             graph.render();
-            annotator.update();
+            graph.update();
+            graph.annotator.update();
         });
     }());
 
