@@ -104,4 +104,8 @@ class Observation < ActiveRecord::Base
     end
   end
 
+  def created_at_local
+    station.time_to_local(created_at)
+  end
+
 end

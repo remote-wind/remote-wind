@@ -19,8 +19,8 @@ class ObservationSerializer < ActiveModel::Serializer
 
   def attributes
     data = super
-    data[:created_at] = object.created_at.iso8601
-    data[:tstamp] = object.created_at.to_i
+    data[:created_at] = object.created_at_local.iso8601
+    data[:tstamp] = object.created_at_local.to_i
     data
   end
 

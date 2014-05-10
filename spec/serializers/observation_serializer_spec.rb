@@ -16,7 +16,7 @@ require 'spec_helper'
 
 describe ObservationSerializer do
 
-  let(:resource) { build_stubbed(:observation, created_at: Time.new(2000)) }
+  let(:resource) { build_stubbed(:observation, created_at: Time.new(2000), station: build_stubbed(:station)) }
   it_behaves_like 'a observation'
 
 end
