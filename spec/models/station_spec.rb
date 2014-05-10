@@ -2,20 +2,20 @@
 #
 # Table name: stations
 #
-#  id                       :integer          not null, primary key
-#  name                     :string(255)
-#  hw_id                    :string(255)
-#  latitude                 :float
-#  longitude                :float
-#  balance                  :float
-#  down                     :boolean
-#  timezone                 :string(255)
-#  user_id                  :integer
-#  created_at               :datetime
-#  updated_at               :datetime
-#  slug                     :string(255)
-#  show                     :boolean          default(TRUE)
-#  speed_calibration        :float            default(1.0)
+#  id                           :integer          not null, primary key
+#  name                         :string(255)
+#  hw_id                        :string(255)
+#  latitude                     :float
+#  longitude                    :float
+#  balance                      :float
+#  offline                      :boolean
+#  timezone                     :string(255)
+#  user_id                      :integer
+#  created_at                   :datetime
+#  updated_at                   :datetime
+#  slug                         :string(255)
+#  show                         :boolean          default(TRUE)
+#  speed_calibration            :float            default(1.0)
 #  last_observation_received_at :datetime
 #
 

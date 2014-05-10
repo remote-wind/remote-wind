@@ -51,6 +51,7 @@ group :development do
   gem 'better_errors' # better error pages
   gem 'binding_of_caller' # REPL on error pages
   gem 'meta_request' # used for RailsPanel in Google Chrome
+  gem 'annotate'
 end
 
 group :test do
