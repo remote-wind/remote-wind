@@ -32,6 +32,8 @@ gem 'will_paginate', '~> 3.0.5' #Pagination
 gem 'cache_digests', '~> 0.3.1' #Cache invalidation
 gem 'active_model_serializers', '~> 0.8.1' # object serialization
 
+gem 'minitest'
+
 #= BDD Tools =========================================================
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -42,7 +44,6 @@ group :development, :test do
   gem "dotenv-rails", "~> 0.10.0" # load local config from .env file
   gem 'therubyracer', platforms: :ruby # V8 Javascript runtime
   gem 'thin'  # use Thin as web server instead of webbrick
-  gem 'zeus', '0.13.4.pre2', require: false # Zeus is a process forker that quickstarts rSpec and server
 end
 
 group :development do
@@ -53,14 +54,23 @@ group :development do
 end
 
 group :test do
-  gem 'rspec-rails', '>=1.14'
+  gem 'rspec-rails', '~> 2.14.2'
   gem 'database_cleaner' # cleans test database between specs
-  gem 'factory_girl_rails' # Replaces fixtures with object factories
-  gem 'shoulda-matchers' # Matchers for common ActiveRecord patterns.
-  gem 'simplecov', :require => false # Used to generate test coverage reports
-  gem 'guard-rspec', '>=2.5.0', require: false # Continuus testing tool
-  gem 'capybara' # Web crawler
-  gem 'guard-zeus', require: false # Use guard with zeus
+  # factory_girl provides a framework and DSL for defining and using factories.
+  gem "factory_girl_rails", "~> 4.4.1"
+  # Matchers to make model specs easy on the fingers and eyes
+  gem "shoulda-matchers", "~> 2.5.0"
+  # Capybara is an integration testing tool for rack based web applications.
+  gem 'capybara', '~> 2.2.1'
+  # A forking Drb spec server
+  gem "spork-rails", "~> 4.0.0", require: false
+  # Guard is a command line tool to easily handle events on file system modifications.
+  gem "guard-spork", "~> 1.5.1", require: false
+  gem "guard-rspec", "~> 4.2.8", require: false
+  # Show test status indicators on Mac OS X
+  gem "terminal-notifier-guard", "~> 1.5.3", require: false
+  # Used to generate test coverage reports
+  gem 'simplecov', require: false
 end
 
 #= Heroku Dependencies =========================================================
