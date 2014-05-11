@@ -35,27 +35,110 @@ describe StationsController do
       expect(assigns(:stations).first.latest_observation.direction).to eq 90
     end
 
-  end
+    context 'http-caching' do
 
+      subject(:last_response) do
+        get :index
+        response
+      end
+
+      context "given a station" do
+        context "on the first request" do
+          its(:code) { should eq '200' }
+          its(:headers) { should have_key 'ETag' }
+          its(:headers) { should have_key 'Last-Modified' }
+        end
+
+        context "on a subsequent request" do
+
+          before do
+            get :index
+            @etag = response.headers['ETag']
+            @last_modified = response.headers['Last-Modified']
+          end
+
+          context "if it is not stale" do
+            before do
+              request.env['HTTP_IF_NONE_MATCH'] = @etag
+              request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+            end
+
+            its(:code) { should eq '304' }
+          end
+          context "if station has been updated" do
+            before do
+              station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+              request.env['HTTP_IF_NONE_MATCH'] = @etag
+              request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+            end
+            its(:code) { should eq '200' }
+          end
+        end
+      end
+    end
+
+  end
 
   describe "GET show" do
     it "assigns the requested station as @station" do
-      get :show, {:id => station.to_param }
+      get :show, id: station.to_param
       expect(assigns(:station)).to eq(station)
     end
 
-    it "orders observations by creation in descending order" do
-      observation = create(:observation, station: station)
-      observation2 = create(:observation, station: station)
-      observation2.update_attribute('created_at', 1.hour.ago)
-      get :show, {:id => station.to_param }
-      expect(assigns(:observations).first.created_at).to be > assigns(:observations).last.created_at
+    context 'given station has several measures' do
+      before do
+        observation = create(:observation, station: station)
+        observation2 = create(:observation, station: station)
+        observation2.update_attribute('created_at', 1.hour.ago)
+      end
+
+      it "orders observations by creation in descending order" do
+        get :show, id: station.to_param
+        expect(assigns(:observations).first.created_at).to be > assigns(:observations).last.created_at
+      end
     end
 
-    it "calibrates observations" do
-      create(:observation, station: station, speed: 10)
-      get :show, {:id => station.to_param }
-      expect(assigns(:observations)[0].speed).to eq 5
+    context 'http-caching' do
+
+      subject(:last_response) do
+        get :show, id: station.to_param
+        response
+      end
+
+      context "on the first request" do
+        its(:code) { should eq '200' }
+        its(:headers) { should have_key 'ETag' }
+        its(:headers) { should have_key 'Last-Modified' }
+      end
+      context "on a subsequent request" do
+        before do
+          get :show, id: station.to_param
+          @etag = response.headers['ETag']
+          @last_modified = response.headers['Last-Modified']
+        end
+        context "if it is not stale" do
+          before do
+            request.env['HTTP_IF_NONE_MATCH'] = @etag
+            request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+          end
+
+          its(:code) { should eq '304' }
+        end
+        context "if station has been updated" do
+          before do
+            station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+            request.env['HTTP_IF_NONE_MATCH'] = @etag
+            request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+            get :show, id: station.to_param
+          end
+
+          it "should return 200/OK" do
+            expect(response.code).to eq '200'
+          end
+
+
+        end
+      end
     end
   end
 

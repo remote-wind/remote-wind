@@ -4,14 +4,10 @@ describe ObservationsController do
 
   let!(:station) {  create(:station) }
   let(:observation) { create(:observation, :station => station) }
-  let(:valid_attributes) {
-    attributes_for(:observation, station_id: station.id)
+  let(:valid_attributes) { attributes_for(:observation, station_id: station.id) }
 
-  }
+  before(:each) { sign_out :user }
 
-  before :each do
-    sign_out :user
-  end
 
   describe "POST 'create'" do
 
@@ -99,15 +95,47 @@ describe ObservationsController do
       end
     end
 
-    describe "caching" do
+    describe "http caching" do
+
+      subject(:last_response) do
+        get :index, station_id: station.to_param, format: 'json'
+        response
+      end
 
       it "should set the proper max age" do
         Station.any_instance
                 .stub(:last_observation_received_at)
                 .and_return(2.minutes.ago)
+        expect(last_response.cache_control[:max_age]).to eq 180.seconds
+      end
 
-        get :index, station_id: station.to_param, format: 'json'
-        expect(response.cache_control[:max_age]).to eq 180.seconds
+      context "on the first request" do
+        its(:code) { should eq '200' }
+        its(:headers) { should have_key 'ETag' }
+        its(:headers) { should have_key 'Last-Modified' }
+      end
+      context "on a subsequent request" do
+        before do
+          get :index, station_id: station.to_param, format: 'json'
+          @etag = response.headers['ETag']
+          @last_modified = response.headers['Last-Modified']
+        end
+        context "if it is not stale" do
+          before do
+            request.env['HTTP_IF_NONE_MATCH'] = @etag
+            request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+          end
+
+          its(:code) { should eq '304' }
+        end
+        context "if station has been updated" do
+          before do
+            station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+            request.env['HTTP_IF_NONE_MATCH'] = @etag
+            request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+          end
+          its(:code) { should eq '200' }
+        end
       end
     end
   end
@@ -120,22 +148,19 @@ describe ObservationsController do
       end
     end
 
-    context "when an unpriveleged user" do
+    context "an unpriveleged user" do
       before { sign_in create(:user) }
       it "does not allow observations to be destoyed" do
         expect do
           delete :clear, {:station_id => station.to_param}
         end.to_not change(Observation, :count)
-        bypass_rescue
       end
-
       it "does not allow observations to be destoyed" do
         expect do
           bypass_rescue
           delete :clear, {:station_id => station.to_param}
         end.to raise_error CanCan::AccessDenied
       end
-
     end
 
     context "when an admin" do
@@ -145,7 +170,6 @@ describe ObservationsController do
         delete :clear, {:station_id => station.to_param}
         expect(Observation.where("station_id = #{station.id}").count).to eq 0
       end
-
       it "redirects to the station" do
         delete :clear, {:station_id => station.to_param}
         expect(response).to redirect_to(station_url(station.to_param))

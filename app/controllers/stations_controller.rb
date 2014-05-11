@@ -18,9 +18,11 @@ class StationsController < ApplicationController
     @title = "Stations"
     @stations = all_with_latest_observation
 
-    respond_to do |format|
-      format.html
-      format.json { render json: @stations }
+    if stale?(@stations, last_modified: Station.order("created_at asc").last.try(:updated_at))
+      respond_to do |format|
+        format.html
+        format.json { render json: @stations }
+      end
     end
 
   end
@@ -29,15 +31,18 @@ class StationsController < ApplicationController
   # GET /stations/1.json
   def show
     @title = @station.name
-    @observations = @station.observations
+
+    if stale?(@station, last_modified: @station.updated_at)
+      @observations = @station.observations
       .limit(10)
       .order(created_at: :desc)
       .load
-    @station.latest_observation = @observations.first
+      @station.latest_observation = @observations.first
 
-    respond_to do |format|
-      format.html #show.html.erb
-      format.json { render json: @station }
+      respond_to do |format|
+        format.html #show.html.erb
+        format.json { render json: @station }
+      end
     end
   end
 
@@ -63,7 +68,7 @@ class StationsController < ApplicationController
     respond_to do |format|
       if @station.save
         #expire_fragment('all_stations')
-        format.html { redirect_to @station, notice: 'Station was successfully created.' }
+        format.html { redirect_to station_path(@station), notice: 'Station was successfully created.' }
         format.json { render action: 'show', status: :created, location: @station }
       else
         format.html { render action: 'new' }
@@ -176,9 +181,6 @@ class StationsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-
-
     # Get all stations with the latest observation preloaded
     # @return array
     def all_with_latest_observation
@@ -208,11 +210,10 @@ class StationsController < ApplicationController
           end
         end
       end
-
     end
 
     def set_station
-      @station = Station.friendly.find(params[:id]) unless defined? @station
+      @station = Station.friendly.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

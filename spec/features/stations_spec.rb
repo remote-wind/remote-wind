@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 feature "Stations", %{
   the application should have weather stations that are viewable by users
   and  editable by admins
@@ -45,23 +47,20 @@ feature "Stations", %{
     expect(page).to have_selector "table.observations tr:first .direction", text: "E (90°)"
   end
 
-  describe "creating stations" do
+  scenario "when I create a new station with valid input" do
+    admin_session
+    visit stations_path
+    click_link "New Station"
+    fill_in "Name", with: "Sample Station"
+    fill_in "Hardware ID", with: "123456789"
 
-    background do
-      admin_session
-      visit stations_path
-      click_link "New Station"
-      fill_in "Name", with: "Sample Station"
-      fill_in "Hardware ID", with: "123456789"
-    end
-
-    scenario "when I create a new station with valid input" do
+    expect {
       click_button "Create Station"
-      expect(current_path).to eq station_path("sample-station")
-      expect(page).to have_content "Station was successfully created."
-      expect(page).to have_selector "h1", text: "Sample Station"
-    end
+    }.to change(Station, :count).by(1)
 
+    expect(current_path).to eq station_path("sample-station")
+    expect(page).to have_content "Station was successfully created."
+    expect(page).to have_selector "h1", text: "Sample Station"
   end
 
   scenario "when I click edit on a station" do
