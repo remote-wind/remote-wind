@@ -27,11 +27,7 @@ class ObservationsController < ApplicationController
     expires_in @station.next_observation_expected_in,
                public: true
 
-    # Use E-tag cache in production to speed things up by avoiding re-rendering if there are no new observations
-    stale = Rails.env.production? ?
-        stale?(etag: @station, last_modified: @station.last_observation_received_at) : true
-
-    if stale
+    if stale?(@station, last_modified: @station.last_observation_received_at)
       respond_to do |format|
         format.html { @observations = @station.observations.order(created_at: :desc).paginate(page: params[:page]) }
         format.json do

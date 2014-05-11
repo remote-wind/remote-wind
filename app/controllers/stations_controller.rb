@@ -16,9 +16,10 @@ class StationsController < ApplicationController
   # GET /stations.json
   def index
     @title = "Stations"
-    @stations = all_with_latest_observation
+    @last_updated = Station.order("updated_at asc").last
 
-    if stale?(@stations, last_modified: Station.order("created_at asc").last.try(:updated_at))
+    if stale?(@last_updated, last_modified: @last_updated.try(:updated_at))
+      @stations = all_with_latest_observation
       respond_to do |format|
         format.html
         format.json { render json: @stations }
