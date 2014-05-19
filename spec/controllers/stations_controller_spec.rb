@@ -136,7 +136,6 @@ describe StationsController do
             expect(response.code).to eq '200'
           end
 
-
         end
       end
     end
@@ -434,6 +433,12 @@ describe StationsController do
       get :embed, params.merge!( width: 250 )
       expect(assigns(:embed_options)[:width]).to eq "250"
     end
+
+    it "sends X-Frame-Options header" do
+      get :embed, params.merge!( width: 250 )
+      expect(response.headers['X-Frame-Options']).to eq 'ALLOW-FROM http://www.gotlandssurfcenter.se'
+    end
+
   end
 
   describe "GET find" do
@@ -458,13 +463,9 @@ describe StationsController do
       station
     end
 
-
-
-
     context 'with valid params' do
 
       let(:params) { { id: station.id, s: { b: 90 } } }
-
 
       it "should take b (balance) parameter" do
         put :update_balance, params
@@ -486,10 +487,7 @@ describe StationsController do
         Station.any_instance.should_receive(:check_balance)
         put :update_balance, params
       end
-
     end
-
-
 
     it "should return 422 - Unprocessable Entity when given an invalid balance" do
       put :update_balance, id: station.id, s: { b: "nan" }
@@ -500,8 +498,5 @@ describe StationsController do
       Rails.logger.should_receive(:error).with("Someone attemped to update #{station.name} balance with invalid data ('nan') from 0.0.0.0")
       put :update_balance, id: station.id, s: { b: "nan" }
     end
-
-
-
   end
 end

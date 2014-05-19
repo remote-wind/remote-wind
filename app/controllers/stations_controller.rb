@@ -151,6 +151,9 @@ class StationsController < ApplicationController
       @embed_options[:type] = 'error'
     end
 
+    # Temporary fix to allow iframe from http://www.gotlandssurfcenter.se
+    response.headers['X-Frame-Options'] = 'ALLOW-FROM http://www.gotlandssurfcenter.se'
+
     respond_to do |format|
       format.html { render "/stations/embeds/#{@embed_options[:type]}", layout: false }
     end
