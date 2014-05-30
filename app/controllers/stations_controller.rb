@@ -197,11 +197,10 @@ class StationsController < ApplicationController
         ids = stations.map { |s| s.id }.join(',')
         where = "WHERE m.station_id IN(#{ids})" unless ids.empty?
         observations = Observation.find_by_sql(%Q{
-        SELECT DISTINCT ON(m.station_id, m.created_at)
+        SELECT DISTINCT ON(m.station_id)
           m.*
         FROM observations m
-        #{where}
-        ORDER BY m.created_at DESC
+        ORDER BY m.station_id, m.created_at DESC
       })
 
         stations.each do |station|
