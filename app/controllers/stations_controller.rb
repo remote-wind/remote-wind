@@ -140,10 +140,10 @@ class StationsController < ApplicationController
     @observations = [@observation]
 
     @embed_options = {
-      css: (params[:css].in?(['true', 'TRUE'])),
-      type: params[:type] || 'table',
-      height: params[:height] || 350,
-      width: params[:width] || 500
+        css: (params[:css].in?(['true', 'TRUE'])),
+        type: params[:type] || 'table',
+        height: params[:height] || 350,
+        width: params[:width] || 500
     }
 
     unless @embed_options[:type].in? ['chart','table']
@@ -178,50 +178,48 @@ class StationsController < ApplicationController
             id:    @station.id,
             hw_id: @station.hw_id
         },
-            content_type: 'text/x-yaml'
+                            content_type: 'text/x-yaml'
         }
       end
     end
   end
 
   private
-    # Get all stations with the latest observation preloaded
-    # @return array
-    def all_with_latest_observation
-      if user_signed_in? && current_user.has_role?(:admin)
-        stations = Station.all.load
-      end
-      stations ||= Station.where(show: true).load
+  # Get all stations with the latest observation preloaded
+  # @return array
+  def all_with_latest_observation
+    if user_signed_in? && current_user.has_role?(:admin)
+      stations = Station.all.load
+    end
+    stations ||= Station.where(show: true).load
 
-      if stations.size
-        ids = stations.map { |s| s.id }.join(',')
-        where = "WHERE m.station_id IN(#{ids})" unless ids.empty?
-        observations = Observation.find_by_sql(%Q{
+    if stations.size
+      observations = Observation.find_by_sql(%Q{
         SELECT DISTINCT ON(m.station_id)
           m.*
         FROM observations m
         ORDER BY m.station_id, m.created_at DESC
       })
 
-        stations.each do |station|
-          # Setup has_many relationship between station and observation
-          # Prevents +1 queries
-          observation = observations.find { |m| m.station_id == station.id  }
-          if observation
-            observation.station = station
-            station.latest_observation = observation
-          end
+      stations.each do |station|
+        # Setup has_one relationship between station and observation
+        # Prevents +1 queries
+        observation = observations.find { |m| m.station_id == station.id  }
+        if observation
+          observation.station = station
+          station.latest_observation = observation
         end
       end
     end
+  end
 
-    def set_station
-      @station = Station.friendly.find(params[:id])
-    end
+  def set_station
+    @station = Station.friendly.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def station_params
-      params.require(:station).permit(:name, :hw_id, :latitude, :longitude,
-                                      :user_id, :slug, :show, :speed_calibration)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def station_params
+    params.require(:station).permit(:name, :hw_id, :latitude, :longitude,
+                                    :user_id, :slug, :show, :speed_calibration)
+  end
 end
