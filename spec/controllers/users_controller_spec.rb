@@ -25,6 +25,6 @@ describe UsersController do
     subject { response }
 
       it { should be_successful }
-      it { render_template :index }
+      it { should render_template :index }
   end
 end
