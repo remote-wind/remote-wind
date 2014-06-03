@@ -25,17 +25,12 @@ class Observation < ActiveRecord::Base
             :numericality => { :allow_blank => true }
   validate :observation_cannot_be_calibrated
 
-  # degrees to cardinal
-  def compass_point
-    Geocoder::Calculations.compass_point(self.direction)
-  end
 
   alias_attribute :i, :station_id
   alias_attribute :s, :speed
   alias_attribute :d, :direction
   alias_attribute :max, :max_wind_speed
   alias_attribute :min, :min_wind_speed
-
   attr_accessor :calibrated
   after_validation :set_calibration_value!
   after_find :calibrate!
@@ -107,5 +102,11 @@ class Observation < ActiveRecord::Base
   def created_at_local
     station.time_to_local(created_at)
   end
+
+  # degrees to cardinal
+  def compass_point
+    Geocoder::Calculations.compass_point(self.direction)
+  end
+  alias_method :cardinal, :compass_point
 
 end

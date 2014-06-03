@@ -1,5 +1,6 @@
 shared_examples "a observation" do
   describe "attributes" do
+    its(:id)              { should_not be_nil } # indicates a false postive!
     its(:id)              { should eq attributes[:id] }
     its(:station_id)      { should eq attributes[:station_id] }
     its(:speed)           { should eq attributes[:speed] }
