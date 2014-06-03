@@ -5,6 +5,7 @@ class ObservationsController < ApplicationController
   protect_from_forgery :only => [:destroy]
   skip_authorization_check only: [:create]
   before_action :set_station, only: [:index, :clear]
+  before_action :make_public, only: [:index]
 
   # POST /observations
   def create

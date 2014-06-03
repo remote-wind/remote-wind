@@ -35,6 +35,10 @@ describe StationsController do
       expect(assigns(:stations).first.latest_observation.direction).to eq 90
     end
 
+    it "enables CORS" do
+      expect(response.headers['Access-Control-Allow-Origin']).to eq "*"
+    end
+
     context 'http-caching' do
 
       subject(:last_response) do
@@ -76,13 +80,17 @@ describe StationsController do
         end
       end
     end
-
   end
 
   describe "GET show" do
     it "assigns the requested station as @station" do
       get :show, id: station.to_param
       expect(assigns(:station)).to eq(station)
+    end
+
+    it "enables CORS" do
+      get :show, id: station.to_param
+      expect(response.headers['Access-Control-Allow-Origin']).to eq "*"
     end
 
     context 'given station has several measures' do

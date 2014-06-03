@@ -64,6 +64,11 @@ describe ObservationsController do
     let(:station) { create(:station, speed_calibration: 0.5) }
     let!(:observations) { [ create(:observation, station: station, speed: 10) ] }
 
+    it "enables CORS" do
+      get :index, station_id: station.to_param
+      expect(response.headers['Access-Control-Allow-Origin']).to eq "*"
+    end
+
     context "when request is HTML" do
 
       it "uses the page param to paginate observations" do

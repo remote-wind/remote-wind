@@ -8,6 +8,7 @@ class StationsController < ApplicationController
   skip_authorization_check only: DO_NOT_AUTHORIZE
 
   before_action :set_station, except: [:new, :index, :create, :find, :search]
+  before_action :make_public, only: [:show, :index]
 
   # Skip CSRF protection since station does not send CSRF token.
   protect_from_forgery except: [:create, :update_balance]
@@ -213,6 +214,7 @@ class StationsController < ApplicationController
     end
   end
 
+  # before_action
   def set_station
     @station = Station.friendly.find(params[:id])
   end
@@ -222,4 +224,7 @@ class StationsController < ApplicationController
     params.require(:station).permit(:name, :hw_id, :latitude, :longitude,
                                     :user_id, :slug, :show, :speed_calibration)
   end
+
+
+
 end

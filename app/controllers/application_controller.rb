@@ -68,4 +68,15 @@ class ApplicationController < ActionController::Base
     {root: false}
   end
 
+  protected
+
+  # before_action
+  # Enables cross-origin resource sharing for action.
+  # @see http://enable-cors.org/index.html
+  # @see https://github.com/remote-wind/remote-wind/issues/94
+  def make_public
+    headers['Access-Control-Allow-Origin'] = '*'
+    headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  end
 end
