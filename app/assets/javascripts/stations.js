@@ -77,6 +77,9 @@ jQuery(document).ready(function($){
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             });
 
+            // Bounds fitting all the stations in view
+            map.stations_bounds = new google.maps.LatLngBounds();
+
             if ($map_canvas.hasClass("cluster")) {
                 map.markerCluster = new MarkerClusterer(map);
             }
@@ -116,8 +119,7 @@ jQuery(document).ready(function($){
             var lat_lng;
 
             if (map && stations && stations.length) {
-                // Bounds fitting all the stations in view
-                map.stations_bounds = new google.maps.LatLngBounds();
+
 
                 $.each(stations, function(i, station){
                     var marker, label;
