@@ -48,17 +48,13 @@ class StationMailer < ActionMailer::Base
   # @return Mail::Message | nil returns nil if mail could not be created
   def send_mail(station, options)
     @station = station
-
     options.merge!(
         to: station.try(:user).try(:email)
     )
-
     message = mail(options) do |format|
       format.html
     end
-
     options[:message_handler] = "StationMailer##{options[:message_handler].to_s}"
-
     if message
       unless message.deliver
         Rails.logger.error("#{options[:message_handler]}: Email could not be delivered")
@@ -67,10 +63,6 @@ class StationMailer < ActionMailer::Base
       Rails.logger.error("#{options[:message_handler]}: Mail could not be created")
     end
 
-    return message
+    message
   end
-
-
-
-
 end

@@ -11,7 +11,6 @@
 #  read       :boolean          default(FALSE)
 #  level      :integer
 #
-
 class Notification < ActiveRecord::Base
   belongs_to :user
 
@@ -46,7 +45,4 @@ class Notification < ActiveRecord::Base
   def level_to_s
     LEVELS_RFC_5424.key(level).to_s
   end
-
-
-
 end

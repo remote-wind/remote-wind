@@ -8,7 +8,6 @@ class NotificationsController < ApplicationController
   # Display notifications belonging to the currently logged in user.
   # GET /notifications
   def index
-
     @notifications = @user.notifications
             .order(created_at: :desc)
             .paginate(page: params[:page])
@@ -26,9 +25,7 @@ class NotificationsController < ApplicationController
 
   # PATCH /notifications
   def update_all
-
     @notifications = @user.notifications.where(read: false)
-
     if @notifications.update_all(read: true) > 0
       flash[:success] = 'All notifications have been marked as read.'
       redirect_to action: :index
@@ -49,10 +46,8 @@ class NotificationsController < ApplicationController
 
   # DESTROY /notifications
   def destroy_all
-
     @notifications = @user.notifications
     @notifications = @notifications.where(read: true) if params[:condition] == 'read'
-
     # Use time input to limit chonographically
     if (!params[:time].nil? && !params[:time_unit].nil?)
       time = params[:time].to_i

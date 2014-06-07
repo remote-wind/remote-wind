@@ -7,7 +7,6 @@
 #  created_at :datetime
 #  updated_at :datetime
 #
-
 class AuthenticationProvider < ActiveRecord::Base
   has_many :users
   has_many :user_authentications

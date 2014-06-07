@@ -4,7 +4,6 @@
  */
 
 Rickshaw.namespace('Rickshaw.Graph.DirectionAnnotate');
-
 Rickshaw.Graph.DirectionAnnotate = function(args) {
 
     var graph = this.graph = args.graph;
