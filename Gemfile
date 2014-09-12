@@ -15,8 +15,8 @@ gem 'rickshaw_rails', '~> 1.4.5' # Javascript toolkit for graphs
 #= Authentication ====================================================
 gem 'devise', '~> 3.2.4'
 gem 'devise_invitable', '~> 1.3.5'
-gem 'cancan', '~> 1.6.10'
-gem 'rolify', github: 'EppO/rolify'
+gem 'cancancan', '~> 1.9.2'
+gem 'rolify', '~> 3.4.1'
 gem 'omniauth', '~> 1.2.1'
 gem 'omniauth-facebook', '~> 1.6.0'
 
