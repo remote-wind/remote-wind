@@ -47,37 +47,39 @@ describe StationsController do
       end
 
       context "given a station" do
-        context "on the first request" do
-          its(:code) { should eq '200' }
-          its(:headers) { should have_key 'ETag' }
-          its(:headers) { should have_key 'Last-Modified' }
-        end
-
-        context "on a subsequent request" do
-
-          before do
-            get :index
-            @etag = response.headers['ETag']
-            @last_modified = response.headers['Last-Modified']
-          end
-
-          context "if it is not stale" do
-            before do
-              request.env['HTTP_IF_NONE_MATCH'] = @etag
-              request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
-            end
-
-            its(:code) { should eq '304' }
-          end
-          context "if station has been updated" do
-            before do
-              station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
-              request.env['HTTP_IF_NONE_MATCH'] = @etag
-              request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
-            end
-            its(:code) { should eq '200' }
-          end
-        end
+        pending "Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved"
+        # context "on the first request" do
+        #   its(:code) { should eq '200' }
+        #   its(:headers) { should have_key 'ETag' }
+        #   its(:headers) { should have_key 'Last-Modified' }
+        # end
+        #
+        #
+        # context "on a subsequent request" do
+        #
+        #   before do
+        #     get :index
+        #     @etag = response.headers['ETag']
+        #     @last_modified = response.headers['Last-Modified']
+        #   end
+        #
+        #   context "if it is not stale" do
+        #     before do
+        #       request.env['HTTP_IF_NONE_MATCH'] = @etag
+        #       request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+        #     end
+        #
+        #     its(:code) { should eq '304' }
+        #   end
+        #   context "if station has been updated" do
+        #     before do
+        #       station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+        #       request.env['HTTP_IF_NONE_MATCH'] = @etag
+        #       request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+        #     end
+        #     its(:code) { should eq '200' }
+        #   end
+        # end
       end
     end
   end
@@ -113,39 +115,41 @@ describe StationsController do
         response
       end
 
-      context "on the first request" do
-        its(:code) { should eq '200' }
-        its(:headers) { should have_key 'ETag' }
-        its(:headers) { should have_key 'Last-Modified' }
-      end
-      context "on a subsequent request" do
-        before do
-          get :show, id: station.to_param
-          @etag = response.headers['ETag']
-          @last_modified = response.headers['Last-Modified']
-        end
-        context "if it is not stale" do
-          before do
-            request.env['HTTP_IF_NONE_MATCH'] = @etag
-            request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
-          end
+      pending "Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved"
 
-          its(:code) { should eq '304' }
-        end
-        context "if station has been updated" do
-          before do
-            station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
-            request.env['HTTP_IF_NONE_MATCH'] = @etag
-            request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
-            get :show, id: station.to_param
-          end
-
-          it "should return 200/OK" do
-            expect(response.code).to eq '200'
-          end
-
-        end
-      end
+      # context "on the first request" do
+      #   its(:code) { should eq '200' }
+      #   its(:headers) { should have_key 'ETag' }
+      #   its(:headers) { should have_key 'Last-Modified' }
+      # end
+      # context "on a subsequent request" do
+      #   before do
+      #     get :show, id: station.to_param
+      #     @etag = response.headers['ETag']
+      #     @last_modified = response.headers['Last-Modified']
+      #   end
+      #   context "if it is not stale" do
+      #     before do
+      #       request.env['HTTP_IF_NONE_MATCH'] = @etag
+      #       request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+      #     end
+      #
+      #     its(:code) { should eq '304' }
+      #   end
+      #   context "if station has been updated" do
+      #     before do
+      #       station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+      #       request.env['HTTP_IF_NONE_MATCH'] = @etag
+      #       request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+      #       get :show, id: station.to_param
+      #     end
+      #
+      #     it "should return 200/OK" do
+      #       expect(response.code).to eq '200'
+      #     end
+      #
+      #   end
+      # end
     end
   end
 
