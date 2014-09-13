@@ -7,15 +7,15 @@ class Ability
     # Use crud alias instead of manage since it can grant invitation access for example.
     alias_action :create, :read, :update, :destroy,
                  :destroy_multiple, :destroy_all, :update_multiple, :update_all,
+                 :search,
                  to: :crud
 
     can :read, User
     can :read, Role
-    can :find, Station
     can :read, Station do |s|
       s.show?
     end
-
+    can [:update_balance, :find, :embed, :search], Station
     can [:read, :create], Observation
     can :crud, Notification do |note|
       note.user_id == user.id

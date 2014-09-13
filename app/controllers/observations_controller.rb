@@ -1,9 +1,8 @@
 class ObservationsController < ApplicationController
 
   skip_before_filter :authenticate_user!, :only => [:create, :index]
-  load_and_authorize_resource :only => [:destroy, :index, :clear]
-  protect_from_forgery :only => [:destroy]
-  skip_authorization_check only: [:create]
+  load_and_authorize_resource
+  protect_from_forgery :only => [:destroy, :clear]
   before_action :set_station, only: [:index, :clear]
   before_action :make_public, only: [:index]
 
@@ -24,7 +23,6 @@ class ObservationsController < ApplicationController
 
   # GET /stations/:staton_id/observations
   def index
-
     expires_in @station.next_observation_expected_in,
                public: true
 
@@ -70,7 +68,6 @@ class ObservationsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
       ## Handle short form params
-
       if params[:m]
         return params.require(:m).permit(:i,:s,:d,:min,:max)
       end

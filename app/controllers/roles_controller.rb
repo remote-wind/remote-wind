@@ -1,7 +1,6 @@
 class RolesController < ApplicationController
 
   authorize_resource
-
   before_filter :set_user, :set_role
 
   def create
