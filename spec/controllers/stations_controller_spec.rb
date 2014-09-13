@@ -465,7 +465,7 @@ describe StationsController do
     end
   end
 
-  describe "PUT edit_balance" do
+  describe "PUT update_balance" do
 
     before :each do
       station

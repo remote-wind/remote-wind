@@ -1,11 +1,8 @@
 class StationsController < ApplicationController
 
-  # Security exceptions:
-  DO_NOT_AUTHORIZE =  [:show, :index, :measures, :search, :embed, :find, :update_balance]
-
-  skip_before_filter :authenticate_user!, only: DO_NOT_AUTHORIZE
-  authorize_resource except: DO_NOT_AUTHORIZE
-  skip_authorization_check only: DO_NOT_AUTHORIZE
+  skip_before_filter :authenticate_user!,
+                     only: [:show, :index, :search, :embed, :find, :update_balance]
+  authorize_resource
 
   before_action :set_station, except: [:new, :index, :create, :find, :search]
   before_action :make_public, only: [:show, :index]
@@ -18,7 +15,6 @@ class StationsController < ApplicationController
   def index
     @title = "Stations"
     @last_updated = Station.order("updated_at asc").last
-
     if stale?(@last_updated, last_modified: @last_updated.try(:updated_at))
       @stations = all_with_latest_observation
       respond_to do |format|
@@ -26,7 +22,6 @@ class StationsController < ApplicationController
         format.json { render json: @stations }
       end
     end
-
   end
 
   # GET /stations/1
@@ -139,7 +134,6 @@ class StationsController < ApplicationController
   def embed
     @observation = @station.current_observation
     @observations = [@observation]
-
     @embed_options = {
         css: (params[:css].in?(['true', 'TRUE'])),
         type: params[:type] || 'table',
@@ -217,6 +211,8 @@ class StationsController < ApplicationController
   # before_action
   def set_station
     @station = Station.friendly.find(params[:id])
+    # @todo why does this mess up ETag caching?
+    authorize! @station, action_name.to_sym unless [:embed, :show, :update_balance].include?(action_name.to_sym)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
