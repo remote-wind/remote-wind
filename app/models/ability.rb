@@ -4,7 +4,10 @@ class Ability
   def initialize(user)
     user ||= User.new
 
-    alias_action :create, :read, :update, :destroy, :destroy_multiple, to: :crud
+    # Use crud alias instead of manage since it can grant invitation access for example.
+    alias_action :create, :read, :update, :destroy,
+                 :destroy_multiple, :destroy_all, :update_multiple, :update_all,
+                 to: :crud
 
     can :read, User
     can :read, Role
