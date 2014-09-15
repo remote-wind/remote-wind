@@ -139,6 +139,7 @@ GEM
     json (1.8.1)
     jwt (0.1.13)
       multi_json (>= 1.5)
+    kramdown (1.4.1)
     libv8 (3.16.14.3)
     listen (2.7.4)
       celluloid (>= 0.15.2)
@@ -149,6 +150,8 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    markerb (1.0.2)
+      redcarpet (>= 2.0)
     meta_request (0.3.0)
       callsite
       rack-contrib
@@ -217,6 +220,7 @@ GEM
       ffi (>= 0.5.0)
     rdoc (4.1.1)
       json (~> 1.4)
+    redcarpet (3.1.2)
     ref (1.0.5)
     rickshaw_rails (1.4.5)
       railties (>= 3.1.0)
@@ -319,6 +323,8 @@ DEPENDENCIES
   guard-spork (~> 1.5.1)
   jbuilder (~> 1.2)
   jquery-rails (~> 3.1.0)
+  kramdown (~> 1.4.1)
+  markerb (~> 1.0.2)
   meta_request
   minitest
   nokogiri (~> 1.6.1)

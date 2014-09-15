@@ -32,6 +32,10 @@ gem 'will_paginate', '~> 3.0.5' #Pagination
 gem 'cache_digests', '~> 0.3.1' #Cache invalidation
 gem 'active_model_serializers', '~> 0.8.1' # object serialization
 
+#= Email ===============================================================
+gem 'markerb', '~> 1.0.2' # Multipart templates made easy with Markdown + ERb: https://github.com/plataformatec/markerb
+gem 'kramdown', '~> 1.4.1' # Markdown parser
+
 gem 'minitest'
 
 #= BDD Tools =========================================================

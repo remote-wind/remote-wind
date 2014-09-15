@@ -5,14 +5,22 @@ describe UserMailer do
     let(:user) { create(:user) }
     let(:mail) { UserMailer.test(user) }
 
+    include_context "multipart email"
+
     it "renders the headers" do
-      mail.subject.should eq("Test")
-      mail.to.should eq([user.email])
-      mail.from.should eq([ENV['REMOTE_WIND_DEFAULT_FROM_EMAIL']])
+      expect(mail.subject).to eq("Test")
+      expect(mail.to).to eq([user.email])
+      expect(mail.from).to eq([ENV['REMOTE_WIND_DEFAULT_FROM_EMAIL']])
+    end
+
+    it "generates a multipart message (plain text and html)" do
+      expect(mail.body.parts.length).to eq 2
+      expect(mail.body.parts.collect(&:content_type)).to eq ["text/plain; charset=utf-8", "text/html; charset=utf-8"]
     end
 
     it "renders the body" do
-      mail.body.encoded.should match("Hi")
+      expect(text).to match 'Hello'
+      expect(html).to have_selector('h1', text: 'Hello')
     end
   end
 
