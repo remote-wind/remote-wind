@@ -67,7 +67,7 @@ RemoteWind::Application.configure do
   # Disable delivery errors, bad email addresses will be ignored
   config.action_mailer.raise_delivery_errors = true
   # ActionMailer Config
-  config.action_mailer.default_url_options = { :host => 'www.blast.nu' }
+  config.action_mailer.default_url_options = { host: 'www.blast.nu' }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found).
@@ -81,4 +81,15 @@ RemoteWind::Application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
+
+  # Send emails with Mailcatcher
+  ActionMailer::Base.smtp_settings = {
+    port:             ENV['MAILGUN_SMTP_PORT'],
+    address:          ENV['MAILGUN_SMTP_SERVER'],
+    user_name:        ENV['MAILGUN_SMTP_LOGIN'],
+    password:         ENV['MAILGUN_SMTP_PASSWORD'],
+    domain:           'www.blast.nu',
+    authentication:   :plain,
+  }
+
 end

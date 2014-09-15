@@ -29,4 +29,10 @@ RemoteWind::Application.configure do
 
   Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 
+  # Use Mailcatcher (https://github.com/sj26/mailcatcher) to catch mails in development
+  ActionMailer::Base.smtp_settings = {
+      address: ENV['MAILCATCHER_ADDRESS'] || 'localhost',
+      port: ENV['MAILCATCHER_PORT'] || 102
+  }
+
 end
