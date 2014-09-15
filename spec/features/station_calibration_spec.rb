@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 feature "Station calibration" do
 
   let!(:station) { create(:station) }

@@ -11,16 +11,17 @@ en:
     error_notification:
       default_message: "Please review the problems below:"
     # Labels and hints examples
-    # labels:
-    #   defaults:
-    #     password: 'Password'
-    #   user:
-    #     new:
-    #       email: 'E-mail to sign in.'
-    #     edit:
-    #       email: 'E-mail.'
-    # hints:
-    #   defaults:
-    #     username: 'User name to sign in.'
-    #     password: 'No special characters, please.'
-
+    labels:
+      station:
+        hw_id: Hardware ID
+        speed_calibration: Speed Calibration
+    hints:
+      station:
+         name: A human readable name for the station. All utf-8 characters ok!
+         slug: Used to create human friendly urls
+         hw_id: A unique identifier used by station. Most likely the IMEI number
+         latitude: Lat. in degrees decimal
+         longitude: Long. in degress decimal
+         speed_calibration: Multiplier which can be used to adjust the wind speed input from the station
+         user: Invite a new user
+         show: Should station be shown in indexes? Uncheck if station is not yet deployed or not active

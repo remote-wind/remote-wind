@@ -1,8 +1,9 @@
 <div class="auth-providers">
   <%- resource_class.omniauth_providers.each do |provider| %>
-      <%= link_to "Sign in with #{provider.to_s.titleize}",
+      <%= link_to "#{ t('.sign_in_with') } #{provider.to_s.titleize}",
                   user_omniauth_authorize_path(provider),
-                  class: "auth-provider #{provider.to_s}"
+                  class: "auth-provider #{provider.to_s}",
+                  title: provider.to_s.titleize
       %>
   <% end -%>
 </div>

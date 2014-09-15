@@ -15,8 +15,8 @@ describe "stations/_map" do
   it "has the correct contents" do
     expect(page).to have_selector "#map_canvas"
     expect(page).to have_selector ".controls"
-    expect(page).to match /data-lat="10"/
-    expect(page).to match /data-lng="15"/
+    expect(page).to match 'data-lat="10"'
+    expect(page).to match 'data-lng="15"'
   end
 
 end

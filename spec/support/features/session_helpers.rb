@@ -4,8 +4,8 @@ module Features
     def sign_up_with hash
       visit new_user_registration_path
       fill_in 'Email', :with => hash[:email]
-      fill_in 'Password', :with => hash[:password]
-      fill_in 'Password confirmation', :with => hash[:password_confirmation]
+      fill_in 'user_password', :with => hash[:password]
+      fill_in 'user_password_confirmation', :with => hash[:password_confirmation]
       click_button 'Sign up'
     end
 

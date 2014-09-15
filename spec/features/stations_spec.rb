@@ -53,7 +53,6 @@ feature "Stations", %{
     click_link "New Station"
     fill_in "Name", with: "Sample Station"
     fill_in "Hardware ID", with: "123456789"
-
     expect {
       click_button "Create Station"
     }.to change(Station, :count).by(1)

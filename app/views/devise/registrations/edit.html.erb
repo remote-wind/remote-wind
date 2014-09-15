@@ -1,35 +1,26 @@
-<hgroup class="row">
-  <h1>Edit Profile</h1>
-</hgroup>
+<h2><%= t('.edit_account') %></h2>
 
-<div class="row">
+<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+  <%= f.error_notification %>
 
-    <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
-      <%= devise_error_messages! %>
-      <%= f.div_field_with_label(:nickname, autofocus: true ) %>
-      <%= f.div_field_with_label(:email, type: :email ) %>
-      <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-        <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-      <% end %>
-      <%= f.div_field_with_label(:timezone, label: "Time Zone") do
-         f.time_zone_select(:timezone, /Stockholm/, default: "Stockholm")
-      end %>
-
-      <%= f.div_field_with_label(:password,
-                                 label: "New password (leave blank if you don't want to change it)",
-                                 autocomplete: "off",
-                                 type: :password
-
-          )%>
-
-      <%= f.div_field_with_label(:password_confirmation, autocomplete: "off", type: :password ) %>
-      <%#= f.div_field_with_label(:current_password, label: "Current password", type: :password ) %>
-      <div><%= f.submit "Update" %></div>
+  <div class="form-inputs">
+    <%= f.input :email, required: true, autofocus: true %>
+    <%= f.input :nickname %>
+    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+      <p><%= t '.currently_awaiting_confirmation', email: resource.unconfirmed_email %></p>
     <% end %>
+    <%= f.input :password, autocomplete: "off", hint: t('.leave_blank_if_no_change'), required: false %>
+    <%= f.input :password_confirmation, required: false %>
+    <%= f.input(:timezone, label: "Time Zone") do %>
+        <% f.time_zone_select :timezone %>
+    <% end %>
+  </div>
 
-    <h3>Cancel my account</h3>
+  <div class="form-actions">
+    <%= f.button :submit, t('.update') %>
+  </div>
+<% end %>
 
-    <p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %></p>
+<h3><%= t('.unhappy') %></h3>
+<p><%= link_to t('.cancel_my_account'), registration_path(resource_name), data: { confirm: t('.are_you_sure') }, method: :delete %></p>
 
-    <%= link_to "Back", :back %>
-</div>
