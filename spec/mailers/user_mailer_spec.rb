@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe UserMailer do
   describe "test" do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:mail) { UserMailer.test(user) }
 
     include_context "multipart email"

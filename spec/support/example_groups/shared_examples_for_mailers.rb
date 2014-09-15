@@ -5,7 +5,6 @@ shared_examples "a mailer" do
     include_context 'multipart email'
 
     it "has the correct headers" do
-      expect(mail.subject).to eq subject_line
       expect(mail.to).to eq([user.email])
     end
 
@@ -14,7 +13,7 @@ shared_examples "a mailer" do
     end
 
     it "logs error if message is not delivered" do
-      full_method_name = described_class.name + '#' + method_name.to_s
+      full_method_name = described_class.name + '#' + example.metadata[:method_name].to_s
       Mail::Message.any_instance.stub(:deliver).and_return(false)
       Rails.logger.should_receive(:error)
       .with("#{full_method_name}: Email could not be delivered")

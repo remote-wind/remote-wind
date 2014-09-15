@@ -8,9 +8,7 @@
       <ul class="notifications">
         <% @notifications.each do |note| %>
             <li class="<%= notification_classes(note).join(" ") %>" id="notification-<%= note.id %>">
-              <time class="created-at" datetime="<%= notification_timestamp(note) %>">
-                <%= note.created_at.strftime("%F %R") %>
-              </time>
+              <%= time_tag(note.created_at, class: "created_at") %>
               <div class="message"><%= note.message %></div>
               <%= link_to_destroy_notification(note) %>
             </li>
