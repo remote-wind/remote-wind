@@ -5,8 +5,8 @@ class UserMailer < ActionMailer::Base
   #
   #   en.user_mailer.test.subject
   #
-  def test(user)
-    @greeting = "Hi"
-    mail to: user.email
+  # @param [User|String] recipient - can be used with a email address or a User
+  def test(recipient)
+    mail to: recipient.is_a?(User) ? recipient.email : recipient
   end
 end
