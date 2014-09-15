@@ -333,13 +333,13 @@ describe Station do
     end
 
     it "should send email" do
-      StationMailer.should_receive(:notify_about_station_offline)
+      StationMailer.should_receive(:offline)
       station.notify_offline
     end
 
     it "should send email if notified in last 12h" do
       create(:notification, message: "#{station.name} is down.")
-      StationMailer.should_receive(:notify_about_station_offline)
+      StationMailer.should_receive(:offline)
       station.notify_offline
     end
   end
@@ -349,7 +349,7 @@ describe Station do
     let(:station) { create(:station, user: user) }
 
     it "should send message" do
-      StationMailer.should_receive(:notify_about_station_online)
+      StationMailer.should_receive(:online)
       station.notify_online
     end
 
@@ -375,13 +375,13 @@ describe Station do
     end
 
     it "should send email if not notified in 12h" do
-      StationMailer.should_receive(:notify_about_station_offline)
+      StationMailer.should_receive(:offline)
       station.notify_offline
     end
 
     it "should send email if notified in last 12h" do
       create(:notification, message: "#{station.name} is down.")
-      StationMailer.should_receive(:notify_about_station_offline)
+      StationMailer.should_receive(:offline)
       station.notify_offline
     end
   end
@@ -403,13 +403,13 @@ describe Station do
       end
 
       it "should send email" do
-        StationMailer.should_receive(:notify_about_low_balance)
+        StationMailer.should_receive(:low_balance)
         station.check_balance
       end
 
       it "should only create email if not yet notified" do
         create(:notification, message: "#{station.name} has a low balance, only 10.0 kr left.")
-        StationMailer.should_not_receive(:notify_about_low_balance)
+        StationMailer.should_not_receive(:low_balance)
         station.check_balance
       end
 
@@ -442,7 +442,7 @@ describe Station do
       end
 
       it "should not send email" do
-        StationMailer.should_not_receive(:notify_about_low_balance)
+        StationMailer.should_not_receive(:low_balance)
         station.check_balance
       end
 

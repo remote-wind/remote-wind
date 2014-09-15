@@ -26,4 +26,6 @@ module StationsHelper
     sprintf('data-lat="%d" data-lng="%d"', station.latitude, station.longitude).html_safe
   end
 
+
+
 end

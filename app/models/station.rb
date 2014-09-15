@@ -171,7 +171,7 @@ class Station < ActiveRecord::Base
     logger.warn "Station alert: #{name} is now down"
     # Allows tests without user
     if user.present?
-      StationMailer.notify_about_station_offline(self)
+      StationMailer.offline(self)
 
       # create UI notification.
       Notification.create(
@@ -189,7 +189,7 @@ class Station < ActiveRecord::Base
 
     # Allows tests without user
     if user.present?
-      StationMailer.notify_about_station_online(self)
+      StationMailer.online(self)
       Notification.create(
           user: self.user,
           level: :info,
@@ -214,7 +214,7 @@ class Station < ActiveRecord::Base
         .count > 0
 
       if user.presence && !notified
-        StationMailer.notify_about_low_balance(self)
+        StationMailer.low_balance(self)
       end
 
       Notification.create(

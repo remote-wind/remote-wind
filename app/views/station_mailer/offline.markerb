@@ -1,0 +1,8 @@
+Hi!
+===
+
+Your station <%= @link %> has not reported data for at least 15 minutes. 
+Please check it's power supply or balance on the SIM-card.
+
+*Fair winds*
+Remote-Wind

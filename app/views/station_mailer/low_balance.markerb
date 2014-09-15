@@ -1,0 +1,8 @@
+Hi!
+===
+
+The balance on the pre-paid card in your station <%= @link %> is below 15 SEK. 
+Currently at <%= @balance %> SEK. Please get a refill.
+
+*Fair winds*
+/Remote Wind

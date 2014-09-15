@@ -1,0 +1,7 @@
+Hi!
+===
+
+Your station <%= @link %> is back online again and reporting wind observations!
+
+*Fair winds*
+Remote-Wind
