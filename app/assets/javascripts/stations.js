@@ -115,11 +115,15 @@ jQuery(document).ready(function($){
             if (map && stations && stations.length) {
                 // Remove old markers from map.
                 if (map.markers) {
+                    if ( map.markerCluster ) {
+                        map.markerCluster.removeMarkers();
+                    }
                     $.each(map.markers, function(){
                         this.setMap ? this.setMap(null) : null
                     });
                 }
-                map.markers = $.each(stations, function(i, station){
+                map.markers = [];
+                $.each(stations, function(i, station){
                     var marker, label;
                     marker = stationMarkerFactory(station);
                     label = labelFactory(map, station);
@@ -131,6 +135,8 @@ jQuery(document).ready(function($){
                     }
                     map.stations_bounds.extend(marker.position);
                     label.bindTo('position', marker, 'position');
+
+                    map.markers.push(marker);
                 });
 
                 if (!map.default_latlng) {
