@@ -12,30 +12,24 @@
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
 <body>
-<div class="off-canvas-wrap">
-  <div class="inner-wrap">
 
-    <!-- Bar at top -->
+<div class="off-canvas-wrap" data-offcanvas>
+  <div class="inner-wrap">
     <nav class="tab-bar">
       <section class="left-small">
-        <a class="left-off-canvas-toggle menu-icon" title="Stations"><span></span></a>
+        <a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
       </section>
+
       <section class="middle tab-bar-section">
         <h1 class="title"><%= link_to "Remote Wind", root_path %></h1>
       </section>
+
       <section class="right-small">
-        <a class="right-off-canvas-toggle menu-icon" ><span></span></a>
+        <a class="right-off-canvas-toggle menu-icon" href="#"><span></span></a>
       </section>
     </nav>
 
-    <!-- Application notifications -->
     <%= render 'layouts/flash' %>
-
-    <!-- pull in navigation -->
-    <%= render 'layouts/left_menu' %>
-
-    <!-- pull in navigation -->
-    <%= render 'layouts/right_menu' %>
 
     <section class="main-section" id="main-section">
       <%= yield :map %>
@@ -43,9 +37,15 @@
         <%= yield %>
       </div>
     </section>
+
+    <%= render 'layouts/left_menu' %>
+    <%= render 'layouts/right_menu' %>
+
     <a class="exit-off-canvas"></a>
+
   </div>
 </div>
+
   <%= javascript_include_tag "application" %>
 </body>
 </html>

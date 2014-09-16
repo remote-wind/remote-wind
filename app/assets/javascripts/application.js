@@ -25,6 +25,7 @@ window.console = window.console ||{
     info: function(){},
     error: function(){}
 };
+
 // dependencies loaded with Google loader
 google.load("maps", "3", { other_params: "sensor=true", callback : function(){
     $(document).trigger('google.maps.apiloaded');

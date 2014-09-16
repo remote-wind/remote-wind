@@ -6,9 +6,9 @@ jQuery(document).ready(function($){
 
     // Load stations and notify listeners
     $doc.on('load.stations', function(){
-        $.getJSON('/stations', function(data){
-            $map_canvas.trigger('stations.loaded', [data]);
-            $menu.trigger('stations.loaded');
+        $.getJSON('/stations', function(stations){
+            $map_canvas.trigger('stations.loaded', [stations]);
+            $menu.trigger('stations.loaded', [stations]);
         });
     });
 
@@ -16,15 +16,14 @@ jQuery(document).ready(function($){
      * Load stations in off canvas menu
      */
     (function(){
-        // Populate off-canvas menu with stations
-        $menu.one('stations.loaded', function(event, data){
+        // Populate off-canvas menu with stations"
+        $menu.one('stations.loaded', function(event, stations){
 
             // Remove stations to ensure that we don´ for whatever reason add items twice
             $menu.children('li').slice(1).remove();
-
             // create LI with link to each station
-            $(data).each(function(i, obj){
-                $menu.append('<li><a href="'+ obj.href +'">'+obj.name+'</a></li>');
+            $(stations).each(function(i, station){
+                $menu.append('<li><a href="'+ station.path +'">'+station.name+'</a></li>');
             });
         });
 
@@ -102,12 +101,10 @@ jQuery(document).ready(function($){
                 map.setCenter(map.default_latlng);
                 map.setZoom(10);
             }
-
         });
 
         $map_canvas.on('map.add_controls', function(event, map, $controls){
             map.controls[google.maps.ControlPosition.LEFT_TOP].push($controls[0]);
-
             google.maps.event.addDomListener($controls[0], 'click', function(e) {
                 map.fitBounds(map.stations_bounds);
                 e.preventDefault();
@@ -115,13 +112,14 @@ jQuery(document).ready(function($){
         });
 
         $map_canvas.on('map.add_markers', function(event, map, stations){
-
-            var lat_lng;
-
             if (map && stations && stations.length) {
-
-
-                $.each(stations, function(i, station){
+                // Remove old markers from map.
+                if (map.markers) {
+                    $.each(map.markers, function(){
+                        this.setMap ? this.setMap(null) : null
+                    });
+                }
+                map.markers = $.each(stations, function(i, station){
                     var marker, label;
                     marker = stationMarkerFactory(station);
                     label = labelFactory(map, station);
@@ -134,11 +132,6 @@ jQuery(document).ready(function($){
                     map.stations_bounds.extend(marker.position);
                     label.bindTo('position', marker, 'position');
                 });
-
-                // uses data on map to set position if available
-                lat_lng = (function(data){
-                    return (data.lat && data.lon) ? new google.maps.LatLng(data.lat, data.lon) : false;
-                }($map_canvas.data()));
 
                 if (!map.default_latlng) {
                     map.fitBounds(map.stations_bounds);
@@ -153,9 +146,6 @@ jQuery(document).ready(function($){
          * @return Label object
          */
         function labelFactory(map, station) {
-
-            var text;
-
             /**
              * Constructor for overlay, derived from google.maps.OverlayView
              * @param opt_options
@@ -172,50 +162,47 @@ jQuery(document).ready(function($){
                 this.div_.appendChild(this.span_);
                 this.div_.style.cssText = 'position: absolute; display: none';
             }
-            Label.prototype = new google.maps.OverlayView;
 
-            Label.prototype.onAdd = function() {
-                var label = this;
-                this.getPanes().overlayLayer.appendChild(this.div_);
+            Label.prototype = jQuery.extend(new google.maps.OverlayView, {
+                onAdd : function() {
+                    var label = this;
+                    this.getPanes().overlayLayer.appendChild(this.div_);
+                    // Ensures the label is redrawn if the text or position is changed.
+                    this.listeners_ = [
+                        google.maps.event.addListener(this, 'position_changed',
+                            function() { label.draw(); }),
+                        google.maps.event.addListener(this, 'text_changed',
+                            function() { label.draw(); })
+                    ];
+                },
+                onRemove : function() {
+                    this.div_.parentNode.removeChild(this.div_);
 
-                // Ensures the label is redrawn if the text or position is changed.
-                this.listeners_ = [
-                    google.maps.event.addListener(this, 'position_changed',
-                        function() { label.draw(); }),
-                    google.maps.event.addListener(this, 'text_changed',
-                        function() { label.draw(); })
-                ];
-            };
-
-            Label.prototype.onRemove = function() {
-                this.div_.parentNode.removeChild(this.div_);
-
-                for (var i = 0, I = this.listeners_.length; i < I; ++i) {
-                    google.maps.event.removeListener(this.listeners_[i]);
+                    for (var i = 0, I = this.listeners_.length; i < I; ++i) {
+                        google.maps.event.removeListener(this.listeners_[i]);
+                    }
+                },
+                draw : function() {
+                    var position = this.getProjection().fromLatLngToDivPixel(this.get('position'));
+                    this.div_.style.left = position.x + 'px';
+                    this.div_.style.top = position.y + 'px';
+                    this.div_.style.display = 'block';
+                    this.span_.innerHTML = this.get('text').toString();
                 }
-            };
-
-            Label.prototype.draw = function() {
-                var position = this.getProjection().fromLatLngToDivPixel(this.get('position'));
-                this.div_.style.left = position.x + 'px';
-                this.div_.style.top = position.y + 'px';
-                this.div_.style.display = 'block';
-                this.span_.innerHTML = this.get('text').toString();
-            };
-
-            text = station.name + "<br>";
-
-            if (station.offline) {
-                text += " Offline";
-            } else {
-                text += (function(m){
-                    return  m.speed + "(" + m.min_wind_speed + "-" + m.max_wind_speed + ")  m/s"
-                }(station.latest_observation.observation));
-            }
+            });
 
             return new Label({
                 map: map,
-                text: text
+                text: (function(station){
+                    var str = station.name + "<br>";
+                    var obs = station.latest_observation.observation;
+                    if (station.offline) {
+                        str += " Offline";
+                    } else {
+                        str += obs.speed + "(" + obs.min_wind_speed + "-" + obs.max_wind_speed + ")  m/s";
+                    }
+                    return str;
+                }(station))
             });
         }
 
@@ -225,32 +212,25 @@ jQuery(document).ready(function($){
          * @returns google.maps.Marker
          */
         function stationMarkerFactory(station) {
-
             var marker, options = {
                 position: new google.maps.LatLng(station.latitude, station.longitude),
                 title: station.name,
                 href: station.path,
                 zIndex: 50
             };
-
             if (station.offline) {
                 options.icon = remotewind.icons.station_down();
             } else {
                 options.icon = remotewind.icons.station(station.latest_observation.observation);
             }
-
             marker = new google.maps.Marker( options );
-
             google.maps.event.addListener(marker, 'click', function(){
                 if (marker.href) window.location = marker.href;
                 return false;
             });
-
             return marker;
         }
-
     }());
-
 
     /**
      * Chart showing station observations
@@ -415,4 +395,3 @@ jQuery(document).ready(function($){
         $doc.trigger('load.stations');
     }
 });
-
