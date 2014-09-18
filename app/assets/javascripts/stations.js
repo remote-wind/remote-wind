@@ -6,7 +6,7 @@ jQuery(document).ready(function($){
 
     // Load stations and notify listeners
     $doc.on('load.stations', function(){
-        $.getJSON('/stations', function(stations){
+        $.getJSON('/stations.json', function(stations){
             $map_canvas.trigger('stations.loaded', [stations]);
             $menu.trigger('stations.loaded', [stations]);
         });
