@@ -15,14 +15,14 @@ class StationsController < ApplicationController
   def index
     @title = "Stations"
     # Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved
-    #@last_updated = Station.order("updated_at asc").last
-    #if stale?(@last_updated, last_modified: @last_updated.try(:updated_at))
+    @last_updated = Station.order("updated_at asc").last
+    if stale?(etag: @last_updated, last_modified: @last_updated.updated_at)
       @stations = all_with_latest_observation
       respond_to do |format|
         format.html
         format.json { render json: @stations }
       end
-    #end
+    end
   end
 
   # GET /stations/1
@@ -30,7 +30,7 @@ class StationsController < ApplicationController
   def show
     @title = @station.name
     # Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved
-    #if stale?(@station, last_modified: @station.updated_at)
+    if stale?(etag: @station, last_modified: @station.updated_at)
       @observations = @station.observations
       .limit(10)
       .order(created_at: :desc)
@@ -38,10 +38,10 @@ class StationsController < ApplicationController
       @station.latest_observation = @observations.first
 
       respond_to do |format|
-        format.html #show.html.erb
+        format.html
         format.json { render json: @station }
       end
-    #end
+    end
   end
 
   # GET /stations/new
