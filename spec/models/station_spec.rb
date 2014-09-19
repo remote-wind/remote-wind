@@ -470,4 +470,16 @@ describe Station do
 
   end
 
+  describe ".all_with_latest_observations" do
+    before(:each) do
+      3.times { station.observations.create(attributes_for :observation) }
+    end
+
+    it "eager loads the latest N number of observations" do
+      stations = Station.all_with_observations(observations_limit: 2)
+      observations = stations.last.observations
+      expect(observations.size).to eq 2
+      expect(observations.loaded?).to be true
+    end
+  end
 end

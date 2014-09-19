@@ -249,4 +249,22 @@ class Station < ActiveRecord::Base
     5.minutes
   end
 
+  # Get all stations and eager load a limited number of associated observations
+  #   This should allow it to be used on large sets of observations without exhausting memory.
+  #   And also avoid those pesky n+1 queries
+  # @param [Integer] observations_limit
+  # @param [String|Object] where
+  #   @see http://api.rubyonrails.org/classes/ActiveRecord/QueryMethods.html#method-i-where
+  #   conditions for where clause applied to the station
+  def self.all_with_observations(observations_limit: 1, where: nil)
+    self.where(where)
+        .eager_load(:observations)
+        .where(%Q{
+        #{observations_limit} > ( select count(*) from observations a2
+                        where observations.station_id = a2.station_id
+                        and observations.created_at < a2.created_at
+                      )
+         })
+        .load
+  end
 end
