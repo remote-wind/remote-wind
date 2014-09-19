@@ -20,7 +20,6 @@ describe "observations/_table" do
 
   it "should have the correct contents" do
     expect(table).to have_selector ".observation", exact: observations.length
-    expect(table).to have_selector ".observation:first .created_at", text: time_date_hours_seconds(station.time_to_local(observations.first.created_at))
     expect(table).to have_selector '.speed',  text: "#{observation.speed} (#{observation.min}-#{observation.max})m/s"
     expect(table).to have_selector '.direction', text: degrees_and_cardinal(observation.direction)
   end
