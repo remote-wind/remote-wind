@@ -1,13 +1,13 @@
 require "spec_helper"
 describe StationMailer do
 
+  let(:user) { build_stubbed :user }
   let(:station) { build_stubbed(:station, name: 'Monkey Island', user: user) }
-  let(:args){ station }
+  let(:mail) { StationMailer.send(example.metadata[:action], station) }
 
   include_context 'multipart email'
 
-  describe "#low_balance" do
-    let(:method_name) { :low_balance }
+  describe "#low_balance", action: :low_balance do
     let(:subject_line) { "Low balance for your station Monkey Island" }
     it_behaves_like "a mailer"
     it "should have a link to station" do
@@ -16,21 +16,27 @@ describe StationMailer do
     it "contains the current balance" do
       expect(text).to have_content('Currently at 1.0 SEK')
     end
+
+    context "when mail is not delivered" do
+      before { Mail::Message.any_instance.stub(:deliver).and_return(false)}
+
+      it "logs error if message is not delivered" do
+        Rails.logger.should_receive(:error)
+          .with("StationMailer#low_balance: Email could not be delivered")
+        StationMailer.low_balance(station)
+      end
+    end
   end
 
-  describe "#online" do
-    let(:method_name) { :offline }
+  describe "#online", action: :online do
     let(:subject_line) { "Your station Monkey Island has not responded for 15 minutes." }
-    it_behaves_like "a mailer"
     it "should have a link to station" do
       expect(html).to have_link(station.name, station_url(station))
     end
   end
 
-  describe "#offline" do
-    let(:method_name) { :offline }
+  describe "#offline", action: :offline do
     let(:subject_line) { "Your station Monkey Island has not responded for 15 minutes." }
-    it_behaves_like "a mailer"
     it "should have a link to station" do
       expect(html).to have_link(station.name, station_url(station))
     end
