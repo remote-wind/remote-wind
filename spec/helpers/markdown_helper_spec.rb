@@ -12,6 +12,8 @@ require 'spec_helper'
 # end
 describe MarkdownHelper do
   describe ".link_to" do
-     expect(MarkdownHelper.link_to('Example', 'http://example.com')).to eq '[Example](http://example.com)'
+    it "creates a link" do
+      expect(MarkdownHelper.link_to('Example', 'http://example.com')).to eq '[Example](http://example.com)'
+    end
   end
 end
