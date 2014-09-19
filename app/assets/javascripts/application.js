@@ -26,11 +26,6 @@ window.console = window.console ||{
     error: function(){}
 };
 
-// dependencies loaded with Google loader
-google.load("maps", "3", { other_params: "sensor=true", callback : function(){
-    $(document).trigger('google.maps.apiloaded');
-}});
-
 // Init foundation.js (UI toolkit)
 $(document).ready(function(){
   $(document).foundation();

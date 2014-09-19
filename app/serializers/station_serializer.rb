@@ -1,5 +1,7 @@
 class StationSerializer < ActiveModel::Serializer
-  attributes :id, :latitude, :longitude, :name, :slug, :url, :path, :latest_observation, :offline
+  attributes :id, :latitude, :longitude, :name, :slug, :url, :path, :offline, :observations
+
+  has_many :observations
 
   private
 
@@ -13,10 +15,6 @@ class StationSerializer < ActiveModel::Serializer
 
   def path
     station_path(object)
-  end
-
-  def latest_observation
-    ObservationSerializer.new(object.latest_observation) if object.latest_observation
   end
 
 end

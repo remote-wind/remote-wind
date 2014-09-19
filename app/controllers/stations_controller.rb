@@ -184,29 +184,9 @@ class StationsController < ApplicationController
   # Get all stations with the latest observation preloaded
   # @return array
   def all_with_latest_observation
-    if user_signed_in? && current_user.has_role?(:admin)
-      stations = Station.all.load
-    end
-    stations ||= Station.where(show: true).load
-
-    if stations.size
-      observations = Observation.find_by_sql(%Q{
-        SELECT DISTINCT ON(m.station_id)
-          m.*
-        FROM observations m
-        ORDER BY m.station_id, m.created_at DESC
-      })
-
-      stations.each do |station|
-        # Setup has_one relationship between station and observation
-        # Prevents +1 queries
-        observation = observations.find { |m| m.station_id == station.id  }
-        if observation
-          observation.station = station
-          station.latest_observation = observation
-        end
-      end
-    end
+    Station.all_with_observations(
+        where: ( user_signed_in? && current_user.has_role?(:admin) ) ? { show: true } : nil
+    )
   end
 
   # before_action
