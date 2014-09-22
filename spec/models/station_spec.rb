@@ -476,7 +476,7 @@ describe Station do
     end
 
     it "eager loads the latest N number of observations" do
-      stations = Station.all_with_observations(observations_limit: 2)
+      stations = Station.all_with_observations(limit: 2)
       observations = stations.last.observations
       expect(observations.size).to eq 2
       expect(observations.loaded?).to be true

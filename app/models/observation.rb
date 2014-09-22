@@ -25,7 +25,6 @@ class Observation < ActiveRecord::Base
             :numericality => { :allow_blank => true }
   validate :observation_cannot_be_calibrated
 
-
   alias_attribute :i, :station_id
   alias_attribute :s, :speed
   alias_attribute :d, :direction
@@ -38,7 +37,7 @@ class Observation < ActiveRecord::Base
   after_save :update_station
 
   # Scopes
-  #default_scope { order("created_at DESC").limit(144) }
+  # default_scope { order("created_at DESC").limit(144) }
   scope :since, ->(time) { where("created_at > ?", time) }
 
   # when writing from the ardiuno params short form
@@ -109,4 +108,21 @@ class Observation < ActiveRecord::Base
   end
   alias_method :cardinal, :compass_point
 
+  # Plucks the IDs of the N latest observations from each station
+  # @param [Integer] limit
+  # @return [Array]
+  def self.pluck_from_each_station(limit = 1)
+    ActiveRecord::Base.connection.execute(%Q{
+      SELECT o.id
+      FROM   stations s
+      JOIN   LATERAL (
+         SELECT id, created_at
+         FROM   observations
+         WHERE  station_id = s.id  -- lateral reference
+         ORDER  BY created_at DESC
+         LIMIT  #{limit}
+         ) o ON TRUE
+      ORDER  BY s.id, o.created_at DESC;
+    }).field_values('id')
+  end
 end

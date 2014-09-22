@@ -98,10 +98,8 @@ class StationsController < ApplicationController
   # @throws ActiveRecord::RecordNotFound if no station
   # PUT /s/:station_id
   def update_balance
-
     sp = params.require(:s).permit(:b)
     @station.balance = sp[:b] if sp[:b].present?
-
     respond_to do |format|
       if @station.balance_changed? && @station.save
         format.any { render nothing: true, status: :ok }
