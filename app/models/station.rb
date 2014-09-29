@@ -52,7 +52,19 @@ class Station < ActiveRecord::Base
   attr_accessor :latest_observation
 
   # Scopes
-  scope :visible, -> { where(show: true) }
+  scope :visible, -> { where( show: true ) }
+
+  # Eager load the latest observation.
+  scope :with_latest_observation, -> do
+    eager_load(:observations).where(observations: { id: Observation.pluck_one_from_each_station } )
+  end
+
+  # Eager load the latest N number of observations.
+  # @note requires Postgres 9.3+
+  # @param [Integer] limit - the number of observations to eager load
+  scope :with_observations, ->(limit = 1) do
+    eager_load(:observations).where(observations: { id: Observation.pluck_from_each_station(limit) })
+  end
 
   # callbacks
   after_save :update_observation_speed_calibration,
@@ -249,17 +261,4 @@ class Station < ActiveRecord::Base
     5.minutes
   end
 
-  # Get all stations and eager load a limited number of associated observations
-  #   This should allow it to be used on large sets of observations without exhausting memory.
-  #   And also avoid those pesky n+1 queries
-  # @param [Integer] limit
-  # @param [String|Object] where
-  #   @see http://api.rubyonrails.org/classes/ActiveRecord/QueryMethods.html#method-i-where
-  #   conditions for where clause applied to the station
-  def self.all_with_observations(limit: 1, where: nil)
-    self.where(where)
-        .eager_load(:observations)
-        .where(observations: { id: Observation.pluck_from_each_station(limit) })
-        .load
-  end
 end

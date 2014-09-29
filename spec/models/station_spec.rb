@@ -455,31 +455,41 @@ describe Station do
   end
 
   describe "#next_observation_expected_in" do
-
     let(:station){ build_stubbed(:station) }
-
     it "should give number of seconds until next observation" do
       station.stub(:last_observation_received_at).and_return(2.minutes.ago)
       expect(station.next_observation_expected_in).to eq 3.minutes
     end
-
     it "should never give more than 5 minutes" do
       station.stub(:last_observation_received_at).and_return(10.minutes.ago)
       expect(station.next_observation_expected_in).to eq 5.minutes
     end
-
   end
 
-  describe ".all_with_latest_observations" do
-    before(:each) do
-      3.times { station.observations.create(attributes_for :observation) }
-    end
+  describe "scopes" do
+    describe ".with_latest_observation" do
+      before(:each) do
+        3.times { station.observations.create(attributes_for :observation) }
+      end
 
-    it "eager loads the latest N number of observations" do
-      stations = Station.all_with_observations(limit: 2)
-      observations = stations.last.observations
-      expect(observations.size).to eq 2
-      expect(observations.loaded?).to be true
+      it "eager loads the latest observation" do
+        stations = Station.with_latest_observation.load
+        observations = stations.last.observations
+        expect(observations.size).to eq 1
+        expect(observations.loaded?).to be true
+      end
+    end
+    describe ".with_observations" do
+      before(:each) do
+        3.times { station.observations.create(attributes_for :observation) }
+      end
+
+      it "eager loads the latest observation" do
+        stations = Station.with_observations(2).load
+        observations = stations.last.observations
+        expect(observations.size).to eq 2
+        expect(observations.loaded?).to be true
+      end
     end
   end
 end

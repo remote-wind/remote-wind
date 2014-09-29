@@ -109,6 +109,8 @@ class Observation < ActiveRecord::Base
   alias_method :cardinal, :compass_point
 
   # Plucks the IDs of the N latest observations from each station
+  # @note requires Postgres 9.3
+  # @see https://github.com/remote-wind/remote-wind/issues/112
   # @param [Integer] limit
   # @return [Array]
   def self.pluck_from_each_station(limit = 1)
@@ -125,4 +127,17 @@ class Observation < ActiveRecord::Base
       ORDER  BY s.id, o.created_at DESC;
     }).field_values('id')
   end
+
+  # Plucks the IDs of the latest observation from each station
+  # @note Compatibility method for Postgres 9.1. Is kind of slow compared to `pluck_from_each_station`
+  # @param [Integer] limit
+  # @return [Array]
+  def self.pluck_one_from_each_station()
+    ActiveRecord::Base.connection.execute(%Q{
+      SELECT DISTINCT ON(station_id) id
+      FROM observations
+      ORDER BY station_id, created_at
+    }).field_values('id')
+  end
+
 end

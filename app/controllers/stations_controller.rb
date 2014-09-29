@@ -182,10 +182,11 @@ class StationsController < ApplicationController
   # Get all stations with the latest observation preloaded
   # @return array
   def all_with_latest_observation
-    stations = Station.all_with_observations
-    #@todo fix so that where clasue is properly added.
-    return stations if user_signed_in? && current_user.has_role?(:admin)
-    stations.to_a.select(&:show)
+    stations = Station.all.with_latest_observation
+    unless user_signed_in? && current_user.has_role?(:admin)
+      stations = stations.visible
+    end
+    stations.load
   end
 
   # before_action
