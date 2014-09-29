@@ -15,14 +15,14 @@ class StationsController < ApplicationController
   def index
     @title = "Stations"
     # Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved
-    #@last_updated = Station.order("updated_at asc").last
-    #if stale?(@last_updated, last_modified: @last_updated.try(:updated_at))
+    @last_updated = Station.order("updated_at asc").last
+    if stale?(etag: @last_updated, last_modified: @last_updated.try(:updated_at))
       @stations = all_with_latest_observation
       respond_to do |format|
         format.html
         format.json { render json: @stations }
       end
-    #end
+    end
   end
 
   # GET /stations/1
@@ -30,7 +30,7 @@ class StationsController < ApplicationController
   def show
     @title = @station.name
     # Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved
-    #if stale?(@station, last_modified: @station.updated_at)
+    if stale?(etag: @station, last_modified: @station.try(:updated_at))
       @observations = @station.observations
       .limit(10)
       .order(created_at: :desc)
@@ -38,10 +38,10 @@ class StationsController < ApplicationController
       @station.latest_observation = @observations.first
 
       respond_to do |format|
-        format.html #show.html.erb
+        format.html
         format.json { render json: @station }
       end
-    #end
+    end
   end
 
   # GET /stations/new
@@ -98,10 +98,8 @@ class StationsController < ApplicationController
   # @throws ActiveRecord::RecordNotFound if no station
   # PUT /s/:station_id
   def update_balance
-
     sp = params.require(:s).permit(:b)
     @station.balance = sp[:b] if sp[:b].present?
-
     respond_to do |format|
       if @station.balance_changed? && @station.save
         format.any { render nothing: true, status: :ok }
@@ -184,29 +182,11 @@ class StationsController < ApplicationController
   # Get all stations with the latest observation preloaded
   # @return array
   def all_with_latest_observation
-    if user_signed_in? && current_user.has_role?(:admin)
-      stations = Station.all.load
+    stations = Station.all.with_latest_observation
+    unless user_signed_in? && current_user.has_role?(:admin)
+      stations = stations.visible
     end
-    stations ||= Station.where(show: true).load
-
-    if stations.size
-      observations = Observation.find_by_sql(%Q{
-        SELECT DISTINCT ON(m.station_id)
-          m.*
-        FROM observations m
-        ORDER BY m.station_id, m.created_at DESC
-      })
-
-      stations.each do |station|
-        # Setup has_one relationship between station and observation
-        # Prevents +1 queries
-        observation = observations.find { |m| m.station_id == station.id  }
-        if observation
-          observation.station = station
-          station.latest_observation = observation
-        end
-      end
-    end
+    stations.load
   end
 
   # before_action

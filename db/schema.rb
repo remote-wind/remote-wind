@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140512130303) do
+ActiveRecord::Schema.define(version: 20140922221657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 20140512130303) do
   end
 
   create_table "observations", force: true do |t|
-    t.integer  "station_id"
+    t.integer  "station_id",        null: false
     t.float    "speed"
     t.float    "direction"
     t.float    "max_wind_speed"
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 20140512130303) do
   end
 
   add_index "observations", ["created_at"], name: "index_observations_on_created_at", using: :btree
+  add_index "observations", ["station_id", "created_at"], name: "observations_special_idx", using: :btree
   add_index "observations", ["station_id"], name: "index_observations_on_station_id", using: :btree
 
   create_table "roles", force: true do |t|

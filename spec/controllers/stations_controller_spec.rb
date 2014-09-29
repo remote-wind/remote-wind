@@ -32,7 +32,7 @@ describe StationsController do
     end
 
     it "gets the latest observation for station" do
-      expect(assigns(:stations).first.latest_observation.direction).to eq 90
+      expect(assigns(:stations).first.observations.loaded?).to be_true
     end
 
     it "enables CORS" do

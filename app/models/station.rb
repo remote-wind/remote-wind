@@ -52,7 +52,19 @@ class Station < ActiveRecord::Base
   attr_accessor :latest_observation
 
   # Scopes
-  scope :visible, -> { where(show: true) }
+  scope :visible, -> { where( show: true ) }
+
+  # Eager load the latest observation.
+  scope :with_latest_observation, -> do
+    eager_load(:observations).where(observations: { id: Observation.pluck_one_from_each_station } )
+  end
+
+  # Eager load the latest N number of observations.
+  # @note requires Postgres 9.3+
+  # @param [Integer] limit - the number of observations to eager load
+  scope :with_observations, ->(limit = 1) do
+    eager_load(:observations).where(observations: { id: Observation.pluck_from_each_station(limit) })
+  end
 
   # callbacks
   after_save :update_observation_speed_calibration,

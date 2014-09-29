@@ -25,7 +25,6 @@ class Observation < ActiveRecord::Base
             :numericality => { :allow_blank => true }
   validate :observation_cannot_be_calibrated
 
-
   alias_attribute :i, :station_id
   alias_attribute :s, :speed
   alias_attribute :d, :direction
@@ -38,7 +37,7 @@ class Observation < ActiveRecord::Base
   after_save :update_station
 
   # Scopes
-  #default_scope { order("created_at DESC").limit(144) }
+  # default_scope { order("created_at DESC").limit(144) }
   scope :since, ->(time) { where("created_at > ?", time) }
 
   # when writing from the ardiuno params short form
@@ -108,5 +107,37 @@ class Observation < ActiveRecord::Base
     Geocoder::Calculations.compass_point(self.direction)
   end
   alias_method :cardinal, :compass_point
+
+  # Plucks the IDs of the N latest observations from each station
+  # @note requires Postgres 9.3
+  # @see https://github.com/remote-wind/remote-wind/issues/112
+  # @param [Integer] limit
+  # @return [Array]
+  def self.pluck_from_each_station(limit = 1)
+    ActiveRecord::Base.connection.execute(%Q{
+      SELECT o.id
+      FROM   stations s
+      JOIN   LATERAL (
+         SELECT id, created_at
+         FROM   observations
+         WHERE  station_id = s.id  -- lateral reference
+         ORDER  BY created_at DESC
+         LIMIT  #{limit}
+         ) o ON TRUE
+      ORDER  BY s.id, o.created_at DESC;
+    }).field_values('id')
+  end
+
+  # Plucks the IDs of the latest observation from each station
+  # @note Compatibility method for Postgres 9.1. Is kind of slow compared to `pluck_from_each_station`
+  # @param [Integer] limit
+  # @return [Array]
+  def self.pluck_one_from_each_station()
+    ActiveRecord::Base.connection.execute(%Q{
+      SELECT DISTINCT ON(station_id) id
+      FROM observations
+      ORDER BY station_id, created_at
+    }).field_values('id')
+  end
 
 end
