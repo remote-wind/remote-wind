@@ -6,8 +6,8 @@ describe StationsController do
   # Station. As you add validations to Station, be sure to
   # adjust the attributes here as well.
 
-  let(:valid_attributes) { FactoryGirl.attributes_for(:station) }
-  let(:invalid_attributes) { { :name => 'foo' } }
+  let(:valid_params) { FactoryGirl.attributes_for(:station) }
+  let(:invalid_params) { { name: 'foo' } }
   let(:station) { create(:station, slug: 'xxx', speed_calibration: 0.5) }
 
   before :each do
@@ -40,46 +40,41 @@ describe StationsController do
     end
 
     context 'http-caching' do
-
       subject(:last_response) do
         get :index
         response
       end
-
       context "given a station" do
-        pending "Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved"
-        # context "on the first request" do
-        #   its(:code) { should eq '200' }
-        #   its(:headers) { should have_key 'ETag' }
-        #   its(:headers) { should have_key 'Last-Modified' }
-        # end
-        #
-        #
-        # context "on a subsequent request" do
-        #
-        #   before do
-        #     get :index
-        #     @etag = response.headers['ETag']
-        #     @last_modified = response.headers['Last-Modified']
-        #   end
-        #
-        #   context "if it is not stale" do
-        #     before do
-        #       request.env['HTTP_IF_NONE_MATCH'] = @etag
-        #       request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
-        #     end
-        #
-        #     its(:code) { should eq '304' }
-        #   end
-        #   context "if station has been updated" do
-        #     before do
-        #       station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
-        #       request.env['HTTP_IF_NONE_MATCH'] = @etag
-        #       request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
-        #     end
-        #     its(:code) { should eq '200' }
-        #   end
-        # end
+        context "on the first request" do
+          its(:code) { should eq '200' }
+          its(:headers) { should have_key 'ETag' }
+          its(:headers) { should have_key 'Last-Modified' }
+        end
+        context "on a subsequent request" do
+
+          before do
+            get :index
+            @etag = response.headers['ETag']
+            @last_modified = response.headers['Last-Modified']
+          end
+
+          context "if it is not stale" do
+            before do
+              request.env['HTTP_IF_NONE_MATCH'] = @etag
+              request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+            end
+
+            its(:code) { should eq '304' }
+          end
+          context "if station has been updated" do
+            before do
+              station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+              request.env['HTTP_IF_NONE_MATCH'] = @etag
+              request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+            end
+            its(:code) { should eq '200' }
+          end
+        end
       end
     end
   end
@@ -109,64 +104,62 @@ describe StationsController do
     end
 
     context 'http-caching' do
-
       subject(:last_response) do
         get :show, id: station.to_param
         response
       end
 
-      pending "Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved"
+      context "on the first request" do
+        its(:code) { should eq '200' }
+        its(:headers) { should have_key 'ETag' }
+        its(:headers) { should have_key 'Last-Modified' }
+      end
+      context "on a subsequent request" do
+        before do
+          get :show, id: station.to_param
+          @etag = response.headers['ETag']
+          @last_modified = response.headers['Last-Modified']
+        end
+        context "if it is not stale" do
+          before do
+            request.env['HTTP_IF_NONE_MATCH'] = @etag
+            request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+          end
 
-      # context "on the first request" do
-      #   its(:code) { should eq '200' }
-      #   its(:headers) { should have_key 'ETag' }
-      #   its(:headers) { should have_key 'Last-Modified' }
-      # end
-      # context "on a subsequent request" do
-      #   before do
-      #     get :show, id: station.to_param
-      #     @etag = response.headers['ETag']
-      #     @last_modified = response.headers['Last-Modified']
-      #   end
-      #   context "if it is not stale" do
-      #     before do
-      #       request.env['HTTP_IF_NONE_MATCH'] = @etag
-      #       request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
-      #     end
-      #
-      #     its(:code) { should eq '304' }
-      #   end
-      #   context "if station has been updated" do
-      #     before do
-      #       station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
-      #       request.env['HTTP_IF_NONE_MATCH'] = @etag
-      #       request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
-      #       get :show, id: station.to_param
-      #     end
-      #
-      #     it "should return 200/OK" do
-      #       expect(response.code).to eq '200'
-      #     end
-      #
-      #   end
-      # end
+          its(:code) { should eq '304' }
+        end
+        context "if station has been updated" do
+          before do
+            station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+            request.env['HTTP_IF_NONE_MATCH'] = @etag
+            request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
+            get :show, id: station.to_param
+          end
+
+          it "should return 200/OK" do
+            expect(response.code).to eq '200'
+          end
+
+        end
+      end
     end
   end
 
   describe "POST create" do
+
     context "as unpriveleged user" do
       before { sign_in create(:user) }
 
       it "does not create station" do
         expect do
-          post :create, {:station => valid_attributes}
+          post :create, {station: valid_params}
         end.to_not change(Station, :count)
       end
 
       it "should not allow stations to be created without authorization" do
         bypass_rescue
         expect do
-          post :create, {:station => valid_attributes}
+          post :create, {station: valid_params}
         end.to raise_error CanCan::AccessDenied
       end
     end
@@ -175,56 +168,47 @@ describe StationsController do
       before { sign_in create(:admin) }
 
       describe "with valid params" do
-        it "creates a new Station" do
-          expect {
-            post :create, {:station => valid_attributes}
-          }.to change(Station, :count).by(1)
+
+        let(:params) {
+          valid_params.merge(example.metadata[:params] || {})
+        }
+        before do
+          post :create, {station: params} unless example.metadata[:skip_request]
         end
 
-        it "assigns a newly created station as @station" do
-          post :create, {:station => valid_attributes}
-          expect(assigns(:station)).to be_a(Station)
-          expect(assigns(:station)).to be_persisted
+        it "creates a new Station" do
+          expect(Station.count).to eq 1
         end
 
         it "redirects to the created station" do
-          post :create, {:station => valid_attributes}
           expect(response).to redirect_to(Station.last)
         end
 
-        it "creates a station with a custom slug" do
-          valid_attributes[:slug] = 'custom_slug'
-          post :create, {:station => valid_attributes}
-          get :show, id: 'custom_slug'
-          expect(response).to be_success
+        it "creates a station with a custom slug", params: { slug: 'custom_slug' } do
+          expect(assigns(:station).slug).to eq 'custom_slug'
         end
 
-        it "creates a visible station" do
-          valid_attributes[:show] = "yes"
-          post :create, {:station => valid_attributes}
+        it "creates a visible station when show checkbox is checked", params: { show: '1' } do
           expect(assigns(:station).show).to be_true
         end
 
-        it "creates a hidden station" do
-          valid_attributes[:show] = "no"
-          post :create, {:station => valid_attributes}
+        it "creates a hidden station show checkbox is unchecked", params: { show: '0' } do
           expect(assigns(:station).show).to be_false
         end
-
       end
 
       describe "with invalid params" do
         it "assigns a newly created but unsaved station as @station" do
           # Trigger the behavior that occurs when invalid params are submitted
           Station.any_instance.stub(:save).and_return(false)
-          post :create, {:station => invalid_attributes}
+          post :create, {station: invalid_params}
           expect(assigns(:station)).to be_a_new(Station)
         end
 
         it "re-renders the 'new' template" do
           # Trigger the behavior that occurs when invalid params are submitted
           Station.any_instance.stub(:save).and_return(false)
-          post :create, {:station => invalid_attributes}
+          post :create, {station: invalid_params}
           expect(assigns(:station)).to render_template("new")
         end
       end
@@ -233,20 +217,21 @@ describe StationsController do
 
   describe "PUT update" do
 
+
+    let!(:station) { create(:station) }
+
     context "as unpriveleged user, it" do
       before { sign_in create(:user) }
 
       it "does not change station" do
-        station = Station.create(attributes_for(:station))
-        put :update, {:id => station.to_param, :station => { "name" => "foo" }}
+        put :update, {id: station.to_param, station: { "name" => "foo" }}
         expect(station.reload.name).to_not eq "foo"
       end
 
       it "does not allow stations to be updated" do
         bypass_rescue
-        station = Station.create(attributes_for(:station))
         expect do
-          put :update, {:id => station.to_param, :station => { "name" => "foo" }}
+          put :update, {id: station.to_param, station: { "name" => "foo" }}
         end.to raise_error CanCan::AccessDenied
       end
     end
@@ -256,63 +241,42 @@ describe StationsController do
 
       describe "with valid params, it" do
 
-        it "updates the requested station" do
-          Station.any_instance.should_receive(:update).with({ "name" => "foo" })
-          put :update, {:id => station.to_param, :station => { "name" => "foo" }}
-        end
+        let(:params) { {id: station.to_param, station: { latitude: 999 }.merge(example.metadata[:params] || {}) }}
 
-        it "assigns the requested station as @station" do
-          put :update, {:id => station.to_param, :station => { latitude: 999 }}
-          assigns(:station).should eq(station)
+        before(:each) {
+          put :update, params
+        }
+
+        it "updates the requested station", params: { name: 'foo' } do
+          expect(assigns(:station).name).to eq 'foo'
         end
 
         it "redirects to the station" do
-          put :update, {:id => station.to_param, :station => { latitude: 999 }}
           response.should redirect_to(station)
         end
 
         it "updates the assigned station" do
-          put :update, {:id => station.to_param, :station => { latitude: 999 }}
           expect(assigns(:station).lat).to eq 999
         end
 
-        it "updates the slug" do
-          put :update, {:id => station.to_param, :station => { slug: 'custom_slug' }}
+        it "updates the slug", params: { slug: 'custom_slug' } do
           get :show, id: 'custom_slug'
           expect(response).to be_success
         end
-
-        it "makes station hidden when show = no" do
-          station.show = true
-          station.save!
-          put :update, {:id => station.to_param, :station => { show: 'no' }}
-          expect(assigns(:station).show).to be_false
-        end
-
-        it "makes station visible when show = yes" do
-          station.show = false
-          station.save!
-          put :update, {:id => station.to_param, :station => { show: 'yes' }}
-          expect(assigns(:station).show).to be_true
-        end
-
       end
 
       describe "with invalid params, it" do
-        it "assigns the station as @station" do
-          station = Station.create! valid_attributes
-          # Trigger the behavior that occurs when invalid params are submitted
+        before(:each) do
           Station.any_instance.stub(:save).and_return(false)
-          put :update, {:id => station.to_param, :station => invalid_attributes}
+          put :update, {id: station.to_param, station: invalid_params}
+        end
+
+        it "assigns the station as @station" do
           assigns(:station).should eq(station)
         end
 
         it "re-renders the 'edit' template" do
-          station = Station.create! valid_attributes
-          # Trigger the behavior that occurs when invalid params are submitted
-          Station.any_instance.stub(:save).and_return(false)
-          put :update, {:id => station.to_param, :station => invalid_attributes}
-          response.should render_template("edit")
+          expect(response).to render_template "edit"
         end
       end
 
@@ -321,45 +285,32 @@ describe StationsController do
 
   describe "DELETE destroy" do
 
+    let!(:station) { create(:station) }
+
     context "when an unpriveleged user" do
       before { sign_in create(:user) }
 
       it "does not destroy station" do
-        station = Station.create! valid_attributes
-        expect do
-          delete :destroy, {:id => station.to_param}
-        end.to_not change(Station, :count)
+        expect { delete :destroy, {id: station.to_param} }.to_not change(Station, :count)
       end
 
       it "should not allow stations to be destoyed" do
         bypass_rescue
-        station = Station.create! valid_attributes
-        expect do
-          delete :destroy, {:id => station.to_param}
-        end.to raise_error CanCan::AccessDenied
+        expect { delete :destroy, {id: station.to_param} }.to raise_error CanCan::AccessDenied
       end
     end
 
     context "when an admin" do
-
-      let!(:station) { create(:station) }
-
-      before(:each) do
-        sign_in create(:admin)
-
-      end
+      before(:each) { sign_in create(:admin) }
 
       it "destroys the requested station" do
-        expect {
-          delete :destroy, {:id => station.to_param}
-        }.to change(Station, :count).by(-1)
+        expect { delete :destroy, {id: station.to_param} }.to change(Station, :count).by(-1)
       end
 
       it "redirects to the stations list" do
-        delete :destroy, {:id => station.to_param}
-        response.should redirect_to(stations_url)
+        delete :destroy, {id: station.to_param}
+        expect(response).to redirect_to(stations_url)
       end
-
     end
   end
 
@@ -369,30 +320,30 @@ describe StationsController do
     let!(:chernobyl)    { create(:station, name: 'Chernobyl',    lat:  51.38737,   lon: 30.094887) }
 
     it 'finds Machu Pichu given a position 20km away' do
-      get :search, :lat => -13.10924, :lon => -72.602146
+      get :search, lat: -13.10924, lon: -72.602146
       expect(assigns(:stations)[0].name).to eq 'Machu Pichu'
     end
 
     it 'takes a radius parameter' do
       # Minsk, Belarus, ca 700km from Moscow
-      get :search, :lat => 53.884916, :lon => 27.53088, :radius => 1000
+      get :search, lat: 53.884916, lon: 27.53088, radius: 1000
       expect(assigns(:stations).count(:all)).to be > 0
     end
 
     it 'ranks stations by proximity' do
       # Minsk, Belarus, ca 700km from Moscow
-      get :search, :lat => 53.884916, :lon => 27.53088, :radius => 1000
+      get :search, lat: 53.884916, lon: 27.53088, radius: 1000
       expect(assigns(:stations)[0].name).to eq 'Chernobyl'
     end
 
     it 'finds only stations within the radius' do
       # Ankor Wat in not whithin 1000 km of Moscow or Peru
-      get :search, :lat => 13.412643, :lon => 103.861782, :radius => 1000
+      get :search, lat: 13.412643, lon: 103.861782, radius: 1000
       expect(assigns(:stations).count(:all)).to eq 0
     end
 
     it 'renders the correct template' do
-      get :search, :lat => 53.884916, :lon => 27.53088, :radius => 1000
+      get :search, lat: 53.884916, lon: 27.53088, radius: 1000
       expect(response).to render_template :search
     end
   end
@@ -456,15 +407,14 @@ describe StationsController do
   describe "GET find" do
     before do
       station
+      get :find, hw_id: station.hw_id, format: "yaml"
     end
 
     it "should return HTTP success" do
-      get :find, hw_id: station.hw_id, format: "yaml"
       expect(response).to be_success
     end
 
     it "should not render a template" do
-      get :find, hw_id: station.hw_id, format: "yaml"
       expect(response).to render_template nil
     end
   end
@@ -476,18 +426,11 @@ describe StationsController do
     end
 
     context 'with valid params' do
-
       let(:params) { { id: station.id, s: { b: 90 } } }
-
-      it "should take b (balance) parameter" do
-        put :update_balance, params
-        expect(assigns(:station).balance).to eq 90
-      end
 
       it "should update balance" do
         put :update_balance, params
-        station.reload
-        expect(station.balance).to eq 90
+        expect( assigns(:station).balance ).to eq 90
       end
 
       it "should return 200/OK with valid input" do
@@ -502,13 +445,13 @@ describe StationsController do
     end
 
     it "should return 422 - Unprocessable Entity when given an invalid balance" do
-      put :update_balance, id: station.id, s: { b: "nan" }
+      put :update_balance, id: station.id, s: { b: "NaN" }
       expect(response.status).to eq 422
     end
 
     it "should log error if given an invalid balance" do
-      Rails.logger.should_receive(:error).with("Someone attemped to update #{station.name} balance with invalid data ('nan') from 0.0.0.0")
-      put :update_balance, id: station.id, s: { b: "nan" }
+      Rails.logger.should_receive(:error).with("Someone attemped to update #{station.name} balance with invalid data ('NaN') from 0.0.0.0")
+      put :update_balance, id: station.id, s: { b: "NaN" }
     end
   end
 end

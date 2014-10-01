@@ -26,7 +26,7 @@
         <%= render partial: 'observations/table',
                    locals: { observations: @observations, station: @station }
         %>
-        <p><%= link_to("More", station_observations_path(@station), class: 'button tiny radius') %></p>
+        <p><%= link_to("More", station_observations_path(@station), _format: 'html' , class: 'button tiny radius') %></p>
       </div>
     </dd>
     <% end %>

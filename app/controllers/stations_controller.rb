@@ -58,14 +58,8 @@ class StationsController < ApplicationController
   # POST /stations.json
   def create
     @station = Station.new(station_params)
-
-    unless params[:station][:show].nil?
-      @station.show = params[:station][:show] == 'yes'
-    end
-
     respond_to do |format|
       if @station.save
-        #expire_fragment('all_stations')
         format.html { redirect_to station_path(@station), notice: 'Station was successfully created.' }
         format.json { render action: 'show', status: :created, location: @station }
       else
@@ -78,14 +72,8 @@ class StationsController < ApplicationController
   # PATCH/PUT /stations/1
   # PATCH/PUT /stations/1.json
   def update
-    @station = Station.friendly.find(params[:id])
-    unless params[:station][:show].nil?
-      params[:station][:show] = params[:station][:show] == 'yes'
-    end
-
     respond_to do |format|
       if @station.update(station_params)
-        expire_fragment('all_stations')
         format.html { redirect_to @station, notice: 'Station was successfully updated.' }
         format.json { head :no_content }
       else
@@ -157,7 +145,6 @@ class StationsController < ApplicationController
   # GET /stations/search?lat&lon&(radius)
   def find
     @station = Station.find_by(hw_id: params[:hw_id])
-
     if(@station.nil?)
       respond_to do |format|
         format.html { head :not_found }
@@ -168,11 +155,11 @@ class StationsController < ApplicationController
       respond_to do |format|
         format.html { redirect_to action: :show, status: :found }
         format.json  { render json: @station, status: :found }
-        format.yaml {render json:  {
+        format.yaml { render json:  {
             id:    @station.id,
             hw_id: @station.hw_id
         },
-                            content_type: 'text/x-yaml'
+          content_type: 'text/x-yaml'
         }
       end
     end
@@ -198,10 +185,8 @@ class StationsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def station_params
-    params.require(:station).permit(:name, :hw_id, :latitude, :longitude,
-                                    :user_id, :slug, :show, :speed_calibration)
+    params.require(:station).permit(
+      :name, :hw_id, :latitude, :longitude, :user_id, :slug, :show, :speed_calibration
+    )
   end
-
-
-
 end

@@ -492,4 +492,5 @@ describe Station do
       end
     end
   end
+
 end

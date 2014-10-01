@@ -23,5 +23,4 @@ describe "observations/_table" do
     expect(table).to have_selector '.speed',  text: "#{observation.speed} (#{observation.min}-#{observation.max})m/s"
     expect(table).to have_selector '.direction', text: degrees_and_cardinal(observation.direction)
   end
-
 end
