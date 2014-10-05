@@ -28,11 +28,17 @@ Spork.prefork do
     #     --seed 1234
     config.order = 'random'
 
+    config.use_transactional_fixtures = false
+
+
     # clean database before running tests
     config.before(:suite) do
       DatabaseCleaner.strategy = :truncation
     end
     config.before(:each) do
+      # Use really fast transaction strategy for all
+      # examples except `js: true` capybara specs
+      DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
       DatabaseCleaner.start
     end
     config.after(:each) do

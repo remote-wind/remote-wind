@@ -7,8 +7,9 @@ class StationsController < ApplicationController
   before_action :set_station, except: [:new, :index, :create, :find, :search]
   before_action :make_public, only: [:show, :index]
 
-                # Skip CSRF protection since station does not send CSRF token.
+  # Skip CSRF protection since station does not send CSRF token.
   protect_from_forgery except: [:create, :update_balance]
+
 
   # GET /stations
   # GET /stations.json
@@ -106,8 +107,13 @@ class StationsController < ApplicationController
     @station.destroy
     expire_fragment('all_stations')
     respond_to do |format|
-      format.html { redirect_to stations_url }
-      format.json { head :no_content }
+      if @station.destroyed?
+        format.html { redirect_to stations_url }
+        format.json { head :no_content, status: :ok }
+      else
+        format.html { redirect_to @stations, flash: "Station could not be deleted." }
+        format.json { head :no_content, status: :ok }
+      end
     end
   end
 
@@ -179,8 +185,7 @@ class StationsController < ApplicationController
   # before_action
   def set_station
     @station = Station.friendly.find(params[:id])
-    # @todo why does this mess up ETag caching?
-    authorize! @station, action_name.to_sym unless [:embed, :show, :update_balance].include?(action_name.to_sym)
+    authorize! @station, action_name.to_sym unless (action_name.to_sym).in?([:embed, :show, :update_balance])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

@@ -15,6 +15,9 @@ class ApplicationController < ActionController::Base
   # Ensures that different types of representations of a resource are NOT given the same etag.
   # @see https://github.com/rails/rails/issues/17129
   etag { request.format }
+  # Avoid cache issues when a user is either given a cached page she is no longer allowed to view (after logging out)
+  # or a page with authorized features missing.
+  etag { user_signed_in? ? current_user.id : 0 }
 
 
   # Tell devise to redirect to root instead of user#show
@@ -36,12 +39,14 @@ class ApplicationController < ActionController::Base
     html_tag.html_safe
   end
 
+  # Generally just used for test and catching malicious users.
   # GET /honeypot
   def honeypot
     raise CanCan::AccessDenied and return
   end
 
   # Handle authentication errors
+  # @todo store original request url in session and redirect after sign in.
   rescue_from CanCan::AccessDenied do |exception|
     if user_signed_in?
       redirect_to root_url
@@ -75,13 +80,19 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  # before_action
   # Enables cross-origin resource sharing for action.
   # @see http://enable-cors.org/index.html
   # @see https://github.com/remote-wind/remote-wind/issues/94
-  def make_public
-    headers['Access-Control-Allow-Origin'] = '*'
-    headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
-    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  # @param allow_origin [String]
+  # @param allow_methods [String]
+  # @param allow_headers [String]
+  def make_public(
+    origin: '*',
+    methods: 'GET, OPTIONS',
+    headers: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  )
+    self.headers['Access-Control-Allow-Origin'] = origin
+    self.headers['Access-Control-Allow-Methods'] = methods
+    self.headers['Access-Control-Allow-Headers'] = headers
   end
 end
