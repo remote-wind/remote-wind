@@ -32,25 +32,12 @@ describe Station do
   end
 
   describe "attributes" do
-    it { should respond_to :name }
-    it { should respond_to :hw_id }
-    it { should respond_to :latitude }
-    it { should respond_to :longitude }
-    it { should respond_to :timezone }
-    it { should respond_to :offline }
-    it { should respond_to :balance }
-    it { should respond_to :zone }
-    it { should respond_to :show }
-    it { should respond_to :speed_calibration }
-    it { should respond_to :last_observation_received_at }
-
     describe "attribute aliases" do
       it { should respond_to :lon }
       it { should respond_to :lng }
       it { should respond_to :lat }
       it { should respond_to :owner }
     end
-
   end
 
   describe "validations" do
@@ -61,7 +48,6 @@ describe Station do
   end
 
   describe "#set_timezone!" do
-
     before :each do
       Station.any_instance.unstub(:lookup_timezone)
       @zone = double(Timezone::Zone)
@@ -82,7 +68,6 @@ describe Station do
     it "should set the zone attribute after initialization" do
       expect(Station.find(station.id).zone).to eq @zone
     end
-
   end
 
   describe "slugging" do
@@ -131,43 +116,6 @@ describe Station do
     end
   end
 
-  describe "#get_calibrated_observations" do
-
-    let(:station) { create(:station) }
-
-    context "when there are observations in the last 12h" do
-
-      let!(:observations) do
-        [*1..3].map! do |i|
-          observation = create(:observation, station: station)
-          observation.update_attribute(:created_at, (i - 1).hours.ago )
-          observation
-        end
-      end
-
-      it "gets observations only within the limit" do
-        expect(station.get_calibrated_observations(Time.now - 2.hours).count).to eq 2
-      end
-
-      it "defaults to 12 hours ago" do
-        old_observation = create(:observation, station: station)
-        old_observation.update_attribute(:created_at, 14.hours.ago )
-        expect(station.get_calibrated_observations()).to_not include old_observation
-      end
-
-      it "calibrates observations" do
-        expect(station.get_calibrated_observations().first.calibrated).to be true
-      end
-    end
-
-    it "attempts to get observations N hours before last_observation_received if there are no observations in the last N h" do
-      station.last_observation_received_at = 12.hours.ago
-      observation = create(:observation, station: station)
-      observation.update_attribute( :created_at, 14.hours.ago )
-      expect(station.get_calibrated_observations()).to include observation
-    end
-  end
-
   describe "#current_observation" do
 
     let!(:observation) do
@@ -188,7 +136,6 @@ describe Station do
     it "returns latest observation if none cached" do
       expect(station.current_observation.speed).to eq 777
     end
-
   end
 
   describe "#should_be_offline?" do
@@ -391,28 +338,23 @@ describe Station do
     context "when balance is low" do
       let(:station){ build_stubbed(:station, balance: 10, user: build_stubbed(:user)) }
 
-
       it "should return false" do
         expect(station.check_balance).to be_false
       end
-
       it "should log notice" do
         Rails.logger.should_receive(:info)
             .with("#{station.name} has a low balance, only 10.0 kr left.")
         station.check_balance
       end
-
       it "should send email" do
         StationMailer.should_receive(:low_balance)
         station.check_balance
       end
-
       it "should only create email if not yet notified" do
         create(:notification, message: "#{station.name} has a low balance, only 10.0 kr left.")
         StationMailer.should_not_receive(:low_balance)
         station.check_balance
       end
-
       it "should create a notification" do
         expect {
           station.check_balance
@@ -429,23 +371,19 @@ describe Station do
     end
 
     context "when balance is high" do
-
       let(:station){ build_stubbed(:station, balance: 999, user: build_stubbed(:user)) }
 
       it "should return true" do
         expect(station.check_balance).to be_true
       end
-
       it "should not log notice" do
         Rails.logger.should_not_receive(:info)
         station.check_balance
       end
-
       it "should not send email" do
         StationMailer.should_not_receive(:low_balance)
         station.check_balance
       end
-
       it "should not create a notification" do
         expect {
           station.check_balance
@@ -467,11 +405,8 @@ describe Station do
   end
 
   describe "scopes" do
+    before(:each) { 3.times { station.observations.create(attributes_for :observation) } }
     describe ".with_latest_observation" do
-      before(:each) do
-        3.times { station.observations.create(attributes_for :observation) }
-      end
-
       it "eager loads the latest observation" do
         stations = Station.with_latest_observation.load
         observations = stations.last.observations
@@ -480,10 +415,6 @@ describe Station do
       end
     end
     describe ".with_observations" do
-      before(:each) do
-        3.times { station.observations.create(attributes_for :observation) }
-      end
-
       it "eager loads the latest observation" do
         stations = Station.with_observations(2).load
         observations = stations.last.observations
@@ -493,4 +424,12 @@ describe Station do
     end
   end
 
+  describe "changing calibration" do
+    before { station.observations.create(attributes_for :observation, speed: 2) }
+    it "should cascade to observations" do
+      station.update(speed_calibration: 1.5)
+      expect(station.observations.last.speed_calibration).to eq 1.5
+      expect(station.observations.last.speed).to eq 3
+    end
+  end
 end

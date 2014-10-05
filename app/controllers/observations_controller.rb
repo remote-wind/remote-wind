@@ -29,13 +29,13 @@ class ObservationsController < ApplicationController
     expires_in @station.next_observation_expected_in, public: true
     if stale?(@station, last_modified: @station.last_observation_received_at)
       respond_to do |format|
+        @observations = @station.observations
         format.html do
-          @observations = @station.observations
           @observations.order(created_at: :desc)
                        .paginate(page: params[:page])
         end
         format.json do
-          @observations = @station.get_calibrated_observations
+          @observations = @observations.desc.since(@station.last_observation_received_at - 24.hours)
           render json: @observations
         end
       end

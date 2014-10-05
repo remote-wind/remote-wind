@@ -67,25 +67,9 @@ class Station < ActiveRecord::Base
   end
 
   # callbacks
-  after_save :update_observation_speed_calibration,
-             :if => lambda { |station| station.speed_calibration_changed? }
-
-  # Get observations since N time ago
-  # If no observations are found we fetch from last_observation_received_at
-  # Observations are then calibrated
-  def get_calibrated_observations(since = 12.hours.ago)
-     mrs = observations.where("created_at >= ?", since).order("observations.created_at ASC")
-
-     # If there are no recent observations we go back `since` time from last_observation_received_at to find observations
-     if mrs.length < 1 && self.last_observation_received_at?
-       mrs = observations.where("created_at >= ?", self.last_observation_received_at - (Time.now - since)).order("observations.created_at ASC")
-     end
-
-     mrs.each do |m|
-       m.calibrate!
-     end
-     mrs
-  end
+  after_save -> do
+    self.observations.update_all(speed_calibration: self.speed_calibration)
+  end, if: lambda { |station| station.speed_calibration_changed? }
 
   # Setup default values for new records
   after_initialize do
@@ -154,10 +138,6 @@ class Station < ActiveRecord::Base
     self.zone.nil? ? time : zone.time(time)
   end
 
-  def update_observation_speed_calibration
-    self.observations.update_all(speed_calibration: self.speed_calibration)
-  end
-
   # do heuristics if station is down
   def should_be_offline?
       Observation.where({station_id: id}).since(24.minutes.ago).order(created_at: :desc).count  < 3
@@ -198,7 +178,6 @@ class Station < ActiveRecord::Base
   # Log and send notifications that station is up
   def notify_online
     logger.info "Station alert: #{name} is now up"
-
     # Allows tests without user
     if user.present?
       StationMailer.online(self)
@@ -216,19 +195,15 @@ class Station < ActiveRecord::Base
   def check_balance
     if balance < 15
       Rails.logger.info "#{name} has a low balance, only #{balance} kr left."
-
       message = "#{name} has a low balance, only #{balance} kr left."
-
       # Check if there have been notifications of this event
       notified = Notification
         .where(message: message)
         .where("created_at >= ?", 12.hours.ago)
         .count > 0
-
       if user.presence && !notified
         StationMailer.low_balance(self)
       end
-
       Notification.create(
           user: self.user,
           level: :info,

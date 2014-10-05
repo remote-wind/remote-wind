@@ -20,7 +20,6 @@ describe Notification do
   it { should respond_to :event }
   it { should respond_to :message }
   it { should respond_to :read }
-  it { should respond_to :level }
 
   describe "level" do
     it "should not validate a value not in LEVELS_RFC_5424" do
@@ -49,5 +48,4 @@ describe Notification do
       expect(subject.level_to_s).to eq "warning"
     end
   end
-
 end

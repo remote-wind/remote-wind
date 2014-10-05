@@ -39,6 +39,7 @@ class Observation < ActiveRecord::Base
   # Scopes
   # default_scope { order("created_at DESC").limit(144) }
   scope :since, ->(time) { where("created_at > ?", time) }
+  scope :desc, -> { order('created_at DESC') }
 
   # when writing from the ardiuno params short form
   def s= val

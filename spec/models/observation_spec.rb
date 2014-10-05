@@ -23,10 +23,7 @@ describe Observation do
     Observation.any_instance.stub(:update_station)
   end
 
-
-
   describe "attributes" do
-
     describe "validations" do
       it { should validate_presence_of :station }
       it { should validate_numericality_of :speed }
@@ -44,8 +41,6 @@ describe Observation do
       it { should respond_to :min }
     end
   end
-
-
 
   describe "Ardiuno adapted setters should" do
     specify "normalize speed" do
@@ -77,44 +72,38 @@ describe Observation do
 
   describe "#calibrate!" do
     let(:station) { create(:station, speed_calibration: 0.5) }
-    let(:params){{
+    let(:params) do
+      {
         station: station,
         speed: 10,
         min_wind_speed: 10,
         max_wind_speed: 10
-    }}
-    let(:observation) do
-      create(:observation, params)
+      }
     end
+    let(:observation) { create(:observation, params) }
+
 
     it "calibrates observations after save" do
-      m = Observation.new(params)
-      m.save!
-      expect(m.calibrated).to be_true
+      expect(observation.calibrated).to be_true
     end
 
     it "multiplies speed" do
-      observation.calibrate!
       expect(observation.speed).to eq 5
     end
 
     it "multiplies min speed" do
-      observation.calibrate!
       expect(observation.min).to eq 5
     end
 
     it "multiplies max speed" do
-      observation.calibrate!
       expect(observation.max).to eq 5
     end
 
     it "sets calibrated property" do
-      observation.calibrate!
       expect(observation.calibrated).to be_true
     end
 
     it "calibrates only once during object lifetime" do
-      observation.calibrate!
       observation.calibrate!
       expect(observation.max).to eq 5
     end
@@ -126,9 +115,9 @@ describe Observation do
 
     it "does not allow saving a calibrated observation" do
       observation.calibrate!
-      expect {
-        observation.save!
-      }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Speed calibration Calibrated observations cannot be saved!")
+      observation.save
+      expect(observation.valid?).to be_false
+      expect(observation.errors[:speed_calibration].to_s).to match("Calibrated observations cannot be saved!")
     end
   end
 
@@ -143,21 +132,12 @@ describe Observation do
     end
   end
 
-  it "caches speed_calibration values" do
-    observation = create(:observation, station: create(:station, speed_calibration: 0.5))
-    expect(observation.speed_calibration).to eq 0.5
-  end
-
-
   it "updates station last observation recieved at time after saving" do
     Observation.any_instance.unstub(:update_station)
     station = create(:station)
     expected = Time.new(2000)
     Time.stub(:now).and_return(expected)
     observation = create(:observation, station: station)
-
     expect(station.last_observation_received_at).to eq expected
-
   end
-
 end
