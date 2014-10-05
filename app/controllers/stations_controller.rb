@@ -7,7 +7,7 @@ class StationsController < ApplicationController
   before_action :set_station, except: [:new, :index, :create, :find, :search]
   before_action :make_public, only: [:show, :index]
 
-  # Skip CSRF protection since station does not send CSRF token.
+                # Skip CSRF protection since station does not send CSRF token.
   protect_from_forgery except: [:create, :update_balance]
 
   # GET /stations

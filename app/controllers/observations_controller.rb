@@ -1,10 +1,14 @@
 class ObservationsController < ApplicationController
 
-  skip_before_filter :authenticate_user!, :only => [:create, :index]
+  skip_before_filter :authenticate_user!, only: [:create, :index] # Ardiuno needs to be able to post without auth.
   load_and_authorize_resource
-  protect_from_forgery :only => [:destroy, :clear]
+
+  protect_from_forgery        only: [:destroy, :clear]
   before_action :set_station, only: [:index, :clear]
-  before_action :make_public, only: [:index]
+  before_action :make_public, only: [:index] # Sets CORS headers to allow cross-site sharing
+
+  # Send response first when creating an observation.
+  after_action ->{ @station.check_status! }, only: :create
 
   # POST /observations
   def create
@@ -13,7 +17,6 @@ class ObservationsController < ApplicationController
     respond_to do |format|
       if @observation.save
         @station = @observation.station
-        @station.check_status!
         format.yaml { render nothing: true, status: :ok }
       else
         format.yaml { render nothing: true, status: :unprocessable_entity }
@@ -23,12 +26,14 @@ class ObservationsController < ApplicationController
 
   # GET /stations/:staton_id/observations
   def index
-    expires_in @station.next_observation_expected_in,
-               public: true
-
+    expires_in @station.next_observation_expected_in, public: true
     if stale?(@station, last_modified: @station.last_observation_received_at)
       respond_to do |format|
-        format.html { @observations = @station.observations.order(created_at: :desc).paginate(page: params[:page]) }
+        format.html do
+          @observations = @station.observations
+          @observations.order(created_at: :desc)
+                       .paginate(page: params[:page])
+        end
         format.json do
           @observations = @station.get_calibrated_observations
           render json: @observations

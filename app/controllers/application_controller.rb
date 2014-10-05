@@ -12,6 +12,11 @@ class ApplicationController < ActionController::Base
   # https://github.com/ryanb/cancan/wiki/Ensure-Authorization
   check_authorization unless: :devise_controller?
 
+  # Ensures that different types of representations of a resource are NOT given the same etag.
+  # @see https://github.com/rails/rails/issues/17129
+  etag { request.format }
+
+
   # Tell devise to redirect to root instead of user#show
   def after_sign_in_path_for(resource)
     root_path

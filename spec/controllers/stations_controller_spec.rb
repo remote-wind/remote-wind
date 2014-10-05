@@ -14,7 +14,19 @@ describe StationsController do
     sign_out :user
   end
 
+
   describe "GET index" do
+
+    describe "ETag" do
+      before { get :index, format: 'json' }
+
+      it "should not use the same ETag for different content types" do
+        get :index, format: 'json'
+        first_response = response.headers.clone
+        get :index, format: 'html'
+        expect(first_response['ETag']).to_not eq (response.headers['ETag'])
+      end
+    end
 
     before :each do
       station
