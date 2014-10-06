@@ -63,7 +63,7 @@ end
 
 group :test do
   gem 'launchy', require: false
-  gem 'rspec-rails', '~> 2.14.2'
+  gem 'rspec-rails', '~> 2.99'
   gem 'database_cleaner' # cleans test database between specs
   # factory_girl provides a framework and DSL for defining and using factories.
   gem "factory_girl_rails", "~> 4.4.1"
