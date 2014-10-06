@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StationsHelper do
+describe StationsHelper, :type => :helper do
 
   let(:station) { build_stubbed(:station) }
 
@@ -44,8 +44,8 @@ describe StationsHelper do
     let(:station) { build_stubbed(:station, lat: 50, lon: 40) }
     subject(:data_attrs) { helper.station_coordinates(station) }
 
-    it { should match 'data-lat="50"' }
-    it { should match 'data-lng="40"' }
+    it { is_expected.to match 'data-lat="50"' }
+    it { is_expected.to match 'data-lng="40"' }
 
   end
 end

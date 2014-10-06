@@ -16,17 +16,17 @@
 
 require 'spec_helper'
 
-describe UserAuthentication do
+describe UserAuthentication, :type => :model do
 
   let(:user) {
     user = create(:user)
     user.authentications.create(attributes_for(:user_authentication))
   }
 
-  it { should belong_to :user }
-  it { should belong_to :authentication_provider }
-  it { should respond_to :uid }
-  it { should respond_to :token }
+  it { is_expected.to belong_to :user }
+  it { is_expected.to belong_to :authentication_provider }
+  it { is_expected.to respond_to :uid }
+  it { is_expected.to respond_to :token }
 
   specify "destroying user should remove authentications" do
     user

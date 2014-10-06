@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe NotificationsController do
+describe NotificationsController, :type => :controller do
 
   let(:user) { user = create(:user) }
   let(:note) { create(:notification, user: user) }
@@ -45,7 +45,7 @@ describe NotificationsController do
     it "sets notifications as read after render" do
       create(:notification, user_id: user.id)
       get :index, params
-      expect(assigns(:notifications).first.read).to be_true
+      expect(assigns(:notifications).first.read).to be_truthy
     end
 
     it "sorts notifications in descending order" do
@@ -57,9 +57,8 @@ describe NotificationsController do
     end
 
     it "uses page parameter to paginate notifications" do
-      ActiveRecord::Relation
-                    .any_instance
-                    .should_receive(:paginate)
+      expect_any_instance_of(ActiveRecord::Relation)
+                    .to receive(:paginate)
                     .with(page: "4")
                     .and_return(Notification)
       #Notification
@@ -84,7 +83,7 @@ describe NotificationsController do
         patch :update_all, params
       end
 
-      it { should redirect_to notifications_url }
+      it { is_expected.to redirect_to notifications_url }
 
       it "should flash error" do
         expect(flash[:error]).to match /no unread notifications found/i
@@ -99,14 +98,14 @@ describe NotificationsController do
          patch :update_all, params
       end
 
-      it { should redirect_to notifications_url }
+      it { is_expected.to redirect_to notifications_url }
 
       it "should redirect to notifications" do
         expect(flash[:success]).to match /all notifications have been marked as read/i
       end
 
       it "set all notifications as read" do
-        expect(note.reload.read).to be_true
+        expect(note.reload.read).to be_truthy
       end
 
     end
@@ -114,7 +113,7 @@ describe NotificationsController do
     it "should not change notifications that do not belong to current user" do
       private = create(:notification, user_id: 999)
       patch :update_all, params
-      expect(private.reload.read).to be_false
+      expect(private.reload.read).to be_falsey
     end
 
   end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StationsController do
+describe StationsController, :type => :controller do
 
   # This should return the minimal set of attributes required to create a valid
   # Station. As you add validations to Station, be sure to
@@ -44,7 +44,7 @@ describe StationsController do
     end
 
     it "gets the latest observation for station" do
-      expect(assigns(:stations).first.observations.loaded?).to be_true
+      expect(assigns(:stations).first.observations.loaded?).to be_truthy
     end
 
     it "enables CORS" do
@@ -58,9 +58,20 @@ describe StationsController do
       end
       context "given a station" do
         context "on the first request" do
-          its(:code) { should eq '200' }
-          its(:headers) { should have_key 'ETag' }
-          its(:headers) { should have_key 'Last-Modified' }
+          describe '#code' do
+            subject { super().code }
+            it { is_expected.to eq '200' }
+          end
+
+          describe '#headers' do
+            subject { super().headers }
+            it { is_expected.to have_key 'ETag' }
+          end
+
+          describe '#headers' do
+            subject { super().headers }
+            it { is_expected.to have_key 'Last-Modified' }
+          end
         end
         context "on a subsequent request" do
 
@@ -76,7 +87,10 @@ describe StationsController do
               request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
             end
 
-            its(:code) { should eq '304' }
+            describe '#code' do
+              subject { super().code }
+              it { is_expected.to eq '304' }
+            end
           end
           context "if station has been updated" do
             before do
@@ -84,7 +98,11 @@ describe StationsController do
               request.env['HTTP_IF_NONE_MATCH'] = @etag
               request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
             end
-            its(:code) { should eq '200' }
+
+            describe '#code' do
+              subject { super().code }
+              it { is_expected.to eq '200' }
+            end
           end
         end
       end
@@ -122,9 +140,20 @@ describe StationsController do
       end
 
       context "on the first request" do
-        its(:code) { should eq '200' }
-        its(:headers) { should have_key 'ETag' }
-        its(:headers) { should have_key 'Last-Modified' }
+        describe '#code' do
+          subject { super().code }
+          it { is_expected.to eq '200' }
+        end
+
+        describe '#headers' do
+          subject { super().headers }
+          it { is_expected.to have_key 'ETag' }
+        end
+
+        describe '#headers' do
+          subject { super().headers }
+          it { is_expected.to have_key 'Last-Modified' }
+        end
       end
       context "on a subsequent request" do
         before do
@@ -138,7 +167,10 @@ describe StationsController do
             request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
           end
 
-          its(:code) { should eq '304' }
+          describe '#code' do
+            subject { super().code }
+            it { is_expected.to eq '304' }
+          end
         end
         context "if station has been updated" do
           before do
@@ -181,10 +213,10 @@ describe StationsController do
 
       describe "with valid params" do
 
-        let(:params) {
+        let(:params) { |example|
           valid_params.merge(example.metadata[:params] || {})
         }
-        before do
+        before do |example|
           post :create, {station: params} unless example.metadata[:skip_request]
         end
 
@@ -201,25 +233,25 @@ describe StationsController do
         end
 
         it "creates a visible station when show checkbox is checked", params: { show: '1' } do
-          expect(assigns(:station).show).to be_true
+          expect(assigns(:station).show).to be_truthy
         end
 
         it "creates a hidden station show checkbox is unchecked", params: { show: '0' } do
-          expect(assigns(:station).show).to be_false
+          expect(assigns(:station).show).to be_falsey
         end
       end
 
       describe "with invalid params" do
         it "assigns a newly created but unsaved station as @station" do
           # Trigger the behavior that occurs when invalid params are submitted
-          Station.any_instance.stub(:save).and_return(false)
+          allow_any_instance_of(Station).to receive(:save).and_return(false)
           post :create, {station: invalid_params}
           expect(assigns(:station)).to be_a_new(Station)
         end
 
         it "re-renders the 'new' template" do
           # Trigger the behavior that occurs when invalid params are submitted
-          Station.any_instance.stub(:save).and_return(false)
+          allow_any_instance_of(Station).to receive(:save).and_return(false)
           post :create, {station: invalid_params}
           expect(assigns(:station)).to render_template("new")
         end
@@ -253,7 +285,7 @@ describe StationsController do
 
       describe "with valid params, it" do
 
-        let(:params) { {id: station.to_param, station: { latitude: 999 }.merge(example.metadata[:params] || {}) }}
+        let(:params) { |example| {id: station.to_param, station: { latitude: 999 }.merge(example.metadata[:params] || {}) }}
 
         before(:each) {
           put :update, params
@@ -264,7 +296,7 @@ describe StationsController do
         end
 
         it "redirects to the station" do
-          response.should redirect_to(station)
+          expect(response).to redirect_to(station)
         end
 
         it "updates the assigned station" do
@@ -279,12 +311,12 @@ describe StationsController do
 
       describe "with invalid params, it" do
         before(:each) do
-          Station.any_instance.stub(:save).and_return(false)
+          allow_any_instance_of(Station).to receive(:save).and_return(false)
           put :update, {id: station.to_param, station: invalid_params}
         end
 
         it "assigns the station as @station" do
-          assigns(:station).should eq(station)
+          expect(assigns(:station)).to eq(station)
         end
 
         it "re-renders the 'edit' template" do
@@ -376,7 +408,7 @@ describe StationsController do
 
     it "takes a css param" do
       get :embed, params.merge!( css: "true" )
-      expect(assigns(:embed_options)[:css]).to be_true
+      expect(assigns(:embed_options)[:css]).to be_truthy
     end
 
     it "defaults to table type" do
@@ -451,7 +483,7 @@ describe StationsController do
       end
 
       it "should check station balance" do
-        Station.any_instance.should_receive(:check_balance)
+        expect_any_instance_of(Station).to receive(:check_balance)
         put :update_balance, params
       end
     end
@@ -462,7 +494,7 @@ describe StationsController do
     end
 
     it "should log error if given an invalid balance" do
-      Rails.logger.should_receive(:error).with("Someone attemped to update #{station.name} balance with invalid data ('NaN') from 0.0.0.0")
+      expect(Rails.logger).to receive(:error).with("Someone attemped to update #{station.name} balance with invalid data ('NaN') from 0.0.0.0")
       put :update_balance, id: station.id, s: { b: "NaN" }
     end
   end

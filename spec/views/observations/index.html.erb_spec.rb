@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "observations/index" do
+describe "observations/index", :type => :view do
 
   let!(:station) { build_stubbed(:station) }
 
@@ -13,13 +13,13 @@ describe "observations/index" do
 
 
   let!(:rendered_view) do
-    Observation.stub(:last).and_return(observations.last)
-    Observation.stub(:created_at).and_return(Time.new(2000))
+    allow(Observation).to receive(:last).and_return(observations.last)
+    allow(Observation).to receive(:created_at).and_return(Time.new(2000))
 
     assign(:station, station)
     assign(:observations, observations)
     stub_user_for_view_test
-    view.stub(:url_for)
+    allow(view).to receive(:url_for)
     render
     rendered
   end

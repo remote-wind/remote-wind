@@ -4,7 +4,7 @@ require "spec_helper"
 describe "scheduler:send_alerts_about_down_stations" do
   include_context "rake"
   it "invokes Station.check_all_stations" do
-    Station.should_receive(:check_all_stations)
+    expect(Station).to receive(:check_all_stations)
     subject.invoke
   end
 end
@@ -13,7 +13,7 @@ end
 describe "scheduler:send_alerts_about_low_balance_stations" do
   include_context "rake"
   it "invokes Station.check_all_stations" do
-    Station.should_receive(:send_low_balance_alerts)
+    expect(Station).to receive(:send_low_balance_alerts)
     subject.invoke
   end
 end

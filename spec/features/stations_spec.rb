@@ -83,7 +83,7 @@ feature "Stations", %{
   end
 
   scenario "when I am signed in as an admin and view index I should see hidden stations" do
-    pending %Q{
+    skip %Q{
       This works when I manually check in browser but for some reason capybara gets a document without any
       stations at all. I must be missing something
     }

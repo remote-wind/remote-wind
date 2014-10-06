@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe "stations/index" do
+describe "stations/index", :type => :view do
 
   let (:station) { build_stubbed(:station) }
 
   let :stations do
-    station.stub(:observations).and_return([build_stubbed(:observation)])
+    allow(station).to receive(:observations).and_return([build_stubbed(:observation)])
     [station]
   end 
 

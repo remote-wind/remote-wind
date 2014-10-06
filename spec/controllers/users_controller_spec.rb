@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UsersController do
+describe UsersController, :type => :controller do
 
   let!(:user) do
     user = FactoryGirl.create(:user)
@@ -12,8 +12,8 @@ describe UsersController do
     before { get :show, id: user.to_param}
     subject { response }
 
-    it { should be_successful }
-    it { should render_template :show }
+    it { is_expected.to be_successful }
+    it { is_expected.to render_template :show }
 
     it "should find the right user" do
       expect(assigns(:user).id) == user.id
@@ -24,7 +24,7 @@ describe UsersController do
     before {  get 'index' }
     subject { response }
 
-      it { should be_successful }
-      it { should render_template :index }
+      it { is_expected.to be_successful }
+      it { is_expected.to render_template :index }
   end
 end

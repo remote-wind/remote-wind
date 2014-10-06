@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe "devise/sessions/new" do
+describe "devise/sessions/new", :type => :view do
 
   before do
-    view.stub(:resource).and_return(User.new)
-    view.stub(:resource_name).and_return(:user)
-    view.stub(:resource_class).and_return(Devise.mappings[:user].to)
-    view.stub(:devise_mapping).and_return(Devise.mappings[:user])
+    allow(view).to receive(:resource).and_return(User.new)
+    allow(view).to receive(:resource_name).and_return(:user)
+    allow(view).to receive(:resource_class).and_return(Devise.mappings[:user].to)
+    allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
   end
 
   let(:page) do

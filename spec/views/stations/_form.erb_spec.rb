@@ -1,4 +1,4 @@
-describe "stations/_form" do
+describe "stations/_form", :type => :view do
 
   before(:each) do
     stub_user_for_view_test

@@ -1,9 +1,9 @@
 require "spec_helper"
-describe StationMailer do
+describe StationMailer, :type => :mailer do
 
   let(:user) { build_stubbed :user }
   let(:station) { build_stubbed(:station, name: 'Monkey Island', user: user) }
-  let(:mail) { StationMailer.send(example.metadata[:action], station) }
+  let(:mail) { |example| StationMailer.send(example.metadata[:action], station) }
 
   include_context 'multipart email'
 
@@ -18,10 +18,10 @@ describe StationMailer do
     end
 
     context "when mail is not delivered" do
-      before { Mail::Message.any_instance.stub(:deliver).and_return(false)}
+      before { allow_any_instance_of(Mail::Message).to receive(:deliver).and_return(false)}
 
       it "logs error if message is not delivered" do
-        Rails.logger.should_receive(:error)
+        expect(Rails.logger).to receive(:error)
           .with("StationMailer#low_balance: Email could not be delivered")
         StationMailer.low_balance(station)
       end

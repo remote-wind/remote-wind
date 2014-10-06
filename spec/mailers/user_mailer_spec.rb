@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe UserMailer do
+describe UserMailer, :type => :mailer do
   describe "test" do
     let(:user) { build_stubbed(:user) }
     let(:mail) { UserMailer.test(user) }

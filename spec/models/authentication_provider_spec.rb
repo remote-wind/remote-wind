@@ -10,7 +10,7 @@
 
 require 'spec_helper'
 
-describe AuthenticationProvider do
-  it { should have_many :user_authentications }
-  it { should validate_uniqueness_of :name }
+describe AuthenticationProvider, :type => :model do
+  it { is_expected.to have_many :user_authentications }
+  it { is_expected.to validate_uniqueness_of :name }
 end

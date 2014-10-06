@@ -31,7 +31,7 @@ module Features
       assign(:user, @user)
       @ability = Object.new
       @ability.extend(CanCan::Ability)
-      controller.stub(:current_ability) { @ability }
+      allow(controller).to receive(:current_ability) { @ability }
       assign(:ability, @ability)
     end
 

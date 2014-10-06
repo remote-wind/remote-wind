@@ -14,17 +14,17 @@
 
 require "spec_helper"
 
-describe Notification do
+describe Notification, :type => :model do
 
-  it { should belong_to :user }
-  it { should respond_to :event }
-  it { should respond_to :message }
-  it { should respond_to :read }
+  it { is_expected.to belong_to :user }
+  it { is_expected.to respond_to :event }
+  it { is_expected.to respond_to :message }
+  it { is_expected.to respond_to :read }
 
   describe "level" do
     it "should not validate a value not in LEVELS_RFC_5424" do
       subject.level = 52
-      expect(subject.valid?).to be_false
+      expect(subject.valid?).to be_falsey
     end
   end
 

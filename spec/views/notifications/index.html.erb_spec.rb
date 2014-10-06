@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "notifications/index" do
+describe "notifications/index", :type => :view do
 
   let(:user) { build_stubbed(:user) }
   let(:notifications) do

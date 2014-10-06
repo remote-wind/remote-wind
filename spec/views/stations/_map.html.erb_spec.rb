@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "stations/_map" do
+describe "stations/_map", :type => :view do
 
   let(:station) { build_stubbed(:station, lat: 10, lon: 15) }
   let(:observation) { build_stubbed(:observation, station: station) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "stations/show" do
+describe "stations/show", :type => :view do
 
   let (:station) do
     build_stubbed(:station,
@@ -12,7 +12,7 @@ describe "stations/show" do
   end
 
   before(:each) do
-    Time.stub(:now).and_return(Time.new(2000))
+    allow(Time).to receive(:now).and_return(Time.new(2000))
     stub_user_for_view_test
     assign(:station, station)
   end

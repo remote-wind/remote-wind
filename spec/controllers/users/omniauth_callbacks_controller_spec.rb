@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Users::OmniauthCallbacksController do
+describe Users::OmniauthCallbacksController, :type => :controller do
 
   before :each do
     @request.env["devise.mapping"] = Devise.mappings[:user]
@@ -32,9 +32,9 @@ describe Users::OmniauthCallbacksController do
     }
 
     it "assigns image to user" do
-      @controller.stub(:user_signed_in?).and_return nil
-      @controller.stub(:sign_in_and_redirect).and_return nil
-      @controller.stub(:current_user).and_return(User.new)
+      allow(@controller).to receive(:user_signed_in?).and_return nil
+      allow(@controller).to receive(:sign_in_and_redirect).and_return nil
+      allow(@controller).to receive(:current_user).and_return(User.new)
       request.env["omniauth.auth"] = valid_auth_response
       expect { get :facebook, { provider: 'facebook' } }.to raise_error
       expect(assigns(:current_user).image).to eq "http://example.com/image.jpg"

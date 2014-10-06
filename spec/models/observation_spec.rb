@@ -16,57 +16,51 @@
 
 require 'spec_helper'
 
-describe Observation do
+describe Observation, :type => :model do
 
   before do
     # makes it possible to use stubbed stations
-    Observation.any_instance.stub(:update_station)
+    allow_any_instance_of(Observation).to receive(:update_station)
   end
 
   describe "attributes" do
     describe "validations" do
-      it { should validate_presence_of :station }
-      it { should validate_numericality_of :speed }
-      it { should validate_numericality_of :direction }
-      it { should validate_numericality_of :max_wind_speed }
-      it { should validate_numericality_of :min_wind_speed }
-      it { should validate_numericality_of :speed_calibration }
+      it { is_expected.to validate_presence_of :station }
+      it { is_expected.to validate_numericality_of :speed }
+      it { is_expected.to validate_numericality_of :direction }
+      it { is_expected.to validate_numericality_of :max_wind_speed }
+      it { is_expected.to validate_numericality_of :min_wind_speed }
+      it { is_expected.to validate_numericality_of :speed_calibration }
     end
 
     describe "aliases" do
-      it { should respond_to :i }
-      it { should respond_to :s }
-      it { should respond_to :d }
-      it { should respond_to :max }
-      it { should respond_to :min }
+      it { is_expected.to respond_to :i }
+      it { is_expected.to respond_to :s }
+      it { is_expected.to respond_to :d }
+      it { is_expected.to respond_to :max }
+      it { is_expected.to respond_to :min }
     end
   end
 
   describe "Ardiuno adapted setters should" do
     specify "normalize speed" do
-      m = Observation.new(s: 100)
-      expect(m.speed).to eq 1
+      expect(Observation.new(s: 100).speed).to eq 1
     end
 
     specify "normalize direction" do
-      m = Observation.new(d: 100)
-      expect(m.direction).to eq 10
+      expect(Observation.new(d: 100).direction).to eq 10
     end
 
     specify "round direction properly" do
-      m = Observation.new(d: "2838")
-      expect(m.direction).to eq 284
-
+      expect(Observation.new(d: "2838").direction).to eq 284
     end
 
     specify "normalize min" do
-      m = Observation.new(min: 100)
-      expect(m.min).to eq 1
+      expect(Observation.new(min: 100).min).to eq 1
     end
 
     specify "normalize max" do
-      m = Observation.new(max: 100)
-      expect(m.max).to eq 1
+      expect(Observation.new(max: 100).max).to eq 1
     end
   end
 
@@ -84,7 +78,7 @@ describe Observation do
 
 
     it "calibrates observations after save" do
-      expect(observation.calibrated).to be_true
+      expect(observation.calibrated).to be_truthy
     end
 
     it "multiplies speed" do
@@ -100,7 +94,7 @@ describe Observation do
     end
 
     it "sets calibrated property" do
-      expect(observation.calibrated).to be_true
+      expect(observation.calibrated).to be_truthy
     end
 
     it "calibrates only once during object lifetime" do
@@ -110,13 +104,13 @@ describe Observation do
 
     it "calibrates observation on find" do
       create(:observation, station: build_stubbed(:station))
-      expect(Observation.last.calibrated?).to be_true
+      expect(Observation.last.calibrated?).to be_truthy
     end
 
     it "does not allow saving a calibrated observation" do
       observation.calibrate!
       observation.save
-      expect(observation.valid?).to be_false
+      expect(observation.valid?).to be_falsey
       expect(observation.errors[:speed_calibration].to_s).to match("Calibrated observations cannot be saved!")
     end
   end
@@ -124,20 +118,19 @@ describe Observation do
   describe "calibrated?" do
     it "returns false if observation is not calibrated" do
       observation = build_stubbed(:observation)
-      expect(observation.calibrated?).to be_false
+      expect(observation.calibrated?).to be_falsey
     end
     it "returns true if observation is calibrated" do
       observation = build_stubbed(:observation, calibrated: true)
-      expect(observation.calibrated?).to be_true
+      expect(observation.calibrated?).to be_truthy
     end
   end
 
-  it "updates station last observation recieved at time after saving" do
+  it "updates station last observation received at time after saving" do
     Observation.any_instance.unstub(:update_station)
     station = create(:station)
-    expected = Time.new(2000)
-    Time.stub(:now).and_return(expected)
+    Time.stub(:now).and_return(Time.new(2000))
     observation = create(:observation, station: station)
-    expect(station.last_observation_received_at).to eq expected
+    expect(station.last_observation_received_at).to eq Time.new(2000)
   end
 end

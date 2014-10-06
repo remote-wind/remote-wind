@@ -35,7 +35,7 @@ Spork.prefork do
     config.before(:suite) do
       DatabaseCleaner.strategy = :truncation
     end
-    config.before(:each) do
+    config.before(:each) do |example|
       # Use really fast transaction strategy for all
       # examples except `js: true` capybara specs
       DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
@@ -52,7 +52,7 @@ Spork.prefork do
     include Features::SessionHelpers
 
     config.before(:each) do
-      Station.any_instance.stub(:lookup_timezone).and_return("Europe/London")
+      allow_any_instance_of(Station).to receive(:lookup_timezone).and_return("Europe/London")
     end
 
     OmniAuth.config.test_mode = true

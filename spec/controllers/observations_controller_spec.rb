@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ObservationsController do
+describe ObservationsController, :type => :controller do
 
   let!(:station) {  create(:station) }
   let(:observation) { create(:observation, :station => station) }
@@ -20,7 +20,7 @@ describe ObservationsController do
     end
 
     it "checks station status" do
-      Station.any_instance().should_receive(:check_status!)
+      expect_any_instance_of(Station).to receive(:check_status!)
       post :create, { observation: valid_attributes, format: "yaml" }
     end
 
@@ -73,10 +73,10 @@ describe ObservationsController do
 
       it "uses the page param to paginate observations" do
         # Stub the chain to set up expection
-        Station.any_instance.stub(:observations).and_return(Observation)
-        Observation.stub(:order).and_return(Observation)
+        allow_any_instance_of(Station).to receive(:observations).and_return(Observation)
+        allow(Observation).to receive(:order).and_return(Observation)
 
-        Observation.should_receive(:paginate).with(page: "2").and_return([].paginate)
+        expect(Observation).to receive(:paginate).with(page: "2").and_return([].paginate)
         get :index, station_id: station.to_param, page: "2"
       end
     end
@@ -108,16 +108,27 @@ describe ObservationsController do
       end
 
       it "should set the proper max age" do
-        Station.any_instance
-                .stub(:last_observation_received_at)
+        allow_any_instance_of(Station)
+                .to receive(:last_observation_received_at)
                 .and_return(2.minutes.ago)
         expect(last_response.cache_control[:max_age]).to eq 180.seconds
       end
 
       context "on the first request" do
-        its(:code) { should eq '200' }
-        its(:headers) { should have_key 'ETag' }
-        its(:headers) { should have_key 'Last-Modified' }
+        describe '#code' do
+          subject { super().code }
+          it { is_expected.to eq '200' }
+        end
+
+        describe '#headers' do
+          subject { super().headers }
+          it { is_expected.to have_key 'ETag' }
+        end
+
+        describe '#headers' do
+          subject { super().headers }
+          it { is_expected.to have_key 'Last-Modified' }
+        end
       end
       context "on a subsequent request" do
         before do
@@ -131,7 +142,10 @@ describe ObservationsController do
             request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
           end
 
-          its(:code) { should eq '304' }
+          describe '#code' do
+            subject { super().code }
+            it { is_expected.to eq '304' }
+          end
         end
         context "if station has been updated" do
           before do
@@ -139,7 +153,11 @@ describe ObservationsController do
             request.env['HTTP_IF_NONE_MATCH'] = @etag
             request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
           end
-          its(:code) { should eq '200' }
+
+          describe '#code' do
+            subject { super().code }
+            it { is_expected.to eq '200' }
+          end
         end
       end
     end

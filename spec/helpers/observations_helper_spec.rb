@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe ObservationsHelper do
+describe ObservationsHelper, :type => :helper do
 
   describe "#degrees_and_cardinal" do
     subject do
       degrees_and_cardinal(5)
     end
 
-    it { should eq "N (5°)" }
+    it { is_expected.to eq "N (5°)" }
   end
 
   describe "speed_min_max" do

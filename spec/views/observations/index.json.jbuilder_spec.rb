@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe 'observations/index.json.jbuilder' do
+describe 'observations/index.json.jbuilder', :type => :view do
 
   let(:station) { build_stubbed(:station) }
   let(:observation) { build_stubbed(:observation, created_at: Time.new(2000)) }

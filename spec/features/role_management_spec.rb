@@ -18,7 +18,7 @@ feature "roles" do
       end
 
       it "adds a role to user" do
-        expect(user.has_role? :admin).to be_true
+        expect(user.has_role? :admin).to be_truthy
       end
 
       it "redirects back to user page" do
@@ -41,7 +41,7 @@ feature "roles" do
       end
 
       it "removes a role to user" do
-        expect(user.has_role? :admin).to be_false
+        expect(user.has_role? :admin).to be_falsey
       end
 
       it "redirects back to user page" do
@@ -51,7 +51,6 @@ feature "roles" do
       it "displays a flash message" do
         expect(page).to have_content "Role was revoked."
       end
-
     end
   end
 end

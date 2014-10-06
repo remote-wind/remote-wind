@@ -43,37 +43,30 @@ feature "Notifications", %{
 
     scenario "when I click mark all as read" do
       click_link "Mark all as read"
-      expect(note.reload.read).to be_true
+      expect(note.reload.read).to be_truthy
     end
-
   end
 
   describe "deleting a notification" do
-
     before :each do
       sign_in! user
       note
     end
-
     scenario "when I click delete" do
       visit notifications_path
       expect {
         click_link "delete"
       }.to change(Notification, :count).by(-1)
     end
-
   end
 
   describe "deleting all notifications" do
-
     before :each do
       sign_in! user
       note
     end
-
     scenario "when I click delete all" do
       visit notifications_path
-
       expect {
         within('#delete-notifications-form') do
           fill_in :time, with: 0
@@ -81,9 +74,5 @@ feature "Notifications", %{
         end
       }.to change(Notification, :count).by(-1)
     end
-
-
   end
-
-
 end

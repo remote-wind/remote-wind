@@ -19,6 +19,9 @@ describe ObservationSerializer do
   let(:resource) { build_stubbed(:observation, created_at: Time.new(2000), station: build_stubbed(:station), direction: 5) }
   it_behaves_like 'a observation'
 
-  its(:cardinal) { should eq "N" }
+  describe '#cardinal' do
+    subject { resource.cardinal }
+    it { is_expected.to eq "N" }
+  end
 
 end

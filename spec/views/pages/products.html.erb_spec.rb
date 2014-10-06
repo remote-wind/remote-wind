@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "pages/products" do
+describe "pages/products", :type => :view do
 
   subject { render; rendered }
 

@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'cancan/matchers'
 
 # @see https://github.com/CanCanCommunity/cancancan/wiki/Testing-Abilities
-describe Ability do
+describe Ability, :type => :model do
 
   subject { Ability.new(user) }
 
@@ -19,22 +19,22 @@ describe Ability do
       expect(subject).to_not be_able_to(:manage, User)
     end
 
-    it { should be_able_to(:crud, auth) }
-    it { should_not be_able_to(:crud, build_stubbed(:user_authentication, user: build_stubbed(:user))) }
-    it { should be_able_to(:read, Station) }
-    it { should be_able_to(:find, Station) }
-    it { should be_able_to(:read, Observation) }
-    it { should be_able_to(:create, Observation) }
-    it { should be_able_to(:read, notification) }
-    it { should be_able_to(:destroy, notification) }
+    it { is_expected.to be_able_to(:crud, auth) }
+    it { is_expected.not_to be_able_to(:crud, build_stubbed(:user_authentication, user: build_stubbed(:user))) }
+    it { is_expected.to be_able_to(:read, Station) }
+    it { is_expected.to be_able_to(:find, Station) }
+    it { is_expected.to be_able_to(:read, Observation) }
+    it { is_expected.to be_able_to(:create, Observation) }
+    it { is_expected.to be_able_to(:read, notification) }
+    it { is_expected.to be_able_to(:destroy, notification) }
   end
 
   context "an admin" do
     before do
-      User.any_instance.stub(:has_role?).with(:admin).and_return(true)
+      allow_any_instance_of(User).to receive(:has_role?).with(:admin).and_return(true)
     end
-    it { should be_able_to(:manage, User) }
-    it { should be_able_to(:manage, UserAuthentication) }
-    it { should be_able_to(:manage, Station) }
+    it { is_expected.to be_able_to(:manage, User) }
+    it { is_expected.to be_able_to(:manage, UserAuthentication) }
+    it { is_expected.to be_able_to(:manage, Station) }
   end
 end

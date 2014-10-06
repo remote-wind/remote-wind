@@ -22,46 +22,46 @@
 require 'spec_helper'
 require 'timezone/error'
 
-describe Station do
+describe Station, :type => :model do
 
   let(:station) { create(:station) }
 
   describe "relations" do
-    it { should have_many :observations }
-    it { should belong_to :user }
+    it { is_expected.to have_many :observations }
+    it { is_expected.to belong_to :user }
   end
 
   describe "attributes" do
     describe "attribute aliases" do
-      it { should respond_to :lon }
-      it { should respond_to :lng }
-      it { should respond_to :lat }
-      it { should respond_to :owner }
+      it { is_expected.to respond_to :lon }
+      it { is_expected.to respond_to :lng }
+      it { is_expected.to respond_to :lat }
+      it { is_expected.to respond_to :owner }
     end
   end
 
   describe "validations" do
-    it { should validate_uniqueness_of :hw_id }
-    it { should validate_presence_of :hw_id }
-    it { should validate_numericality_of :speed_calibration }
-    it { should validate_numericality_of :balance }
+    it { is_expected.to validate_uniqueness_of :hw_id }
+    it { is_expected.to validate_presence_of :hw_id }
+    it { is_expected.to validate_numericality_of :speed_calibration }
+    it { is_expected.to validate_numericality_of :balance }
   end
 
   describe "#set_timezone!" do
     before :each do
-      Station.any_instance.unstub(:lookup_timezone)
+      allow_any_instance_of(Station).to receive(:lookup_timezone).and_call_original
       @zone = double(Timezone::Zone)
-      @zone.stub(:zone).and_return("Europe/London")
-      Timezone::Zone.stub(:new).and_return(@zone)
+      allow(@zone).to receive(:zone).and_return("Europe/London")
+      allow(Timezone::Zone).to receive(:new).and_return(@zone)
     end
 
     it "should set timezone on object creation given lat and lon" do
-      Timezone::Zone.should_receive(:new).with(:latlon => [35.6148800, 139.5813000])
+      expect(Timezone::Zone).to receive(:new).with(:latlon => [35.6148800, 139.5813000])
       expect(create(:station, lat: 35.6148800, lon: 139.5813000).timezone).to eq "Europe/London"
     end
 
     it "handles exceptions from Timezone" do
-      Station.any_instance.stub(:lookup_timezone).and_raise(Timezone::Error::Base)
+      allow_any_instance_of(Station).to receive(:lookup_timezone).and_raise(Timezone::Error::Base)
       expect{expect(create(:station, lat: 35.6148800, lon: 139.5813000))}.to_not raise_error
     end
 
@@ -85,9 +85,9 @@ describe Station do
   describe ".send_low_balance_alerts" do
     it "checks all the stations" do
       # prevents no user error
-      Station.any_instance.stub(:check_balance)
+      allow_any_instance_of(Station).to receive(:check_balance)
       stations = [*1..3].map! { build_stubbed(:station) }
-      stations.last.should_receive(:check_balance)
+      expect(stations.last).to receive(:check_balance)
       Station.send_low_balance_alerts(stations)
     end
   end
@@ -95,8 +95,8 @@ describe Station do
   describe ".check_all_stations" do
     let!(:stations) { [*1..3].map! { build_stubbed(:station) } }
     it "should check each station" do
-      Station.any_instance.stub(:check_status!)
-      stations.last.should_receive(:check_status!)
+      allow_any_instance_of(Station).to receive(:check_status!)
+      expect(stations.last).to receive(:check_status!)
       Station.check_all_stations(stations)
     end
   end
@@ -129,7 +129,7 @@ describe Station do
 
     it "does not issue query if cached observation available" do
       station.latest_observation = build_stubbed(:observation, speed: 999)
-      station.observations.should_not_receive(:last)
+      expect(station.observations).not_to receive(:last)
       station.current_observation
     end
 
@@ -145,7 +145,7 @@ describe Station do
     context "when station has three observations in last 24 min" do
       it "should not be down" do
         4.times { create(:observation, station: station) }
-        expect(station.should_be_offline?).to be_false
+        expect(station.should_be_offline?).to be_falsey
       end
     end
 
@@ -161,7 +161,7 @@ describe Station do
 
       it "should be offline" do
         create(:observation, station: station)
-        expect(station.should_be_offline?).to be_true
+        expect(station.should_be_offline?).to be_truthy
       end
     end
   end
@@ -178,16 +178,16 @@ describe Station do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_offline?).and_return(false)
+          allow(station).to receive(:should_be_offline?).and_return(false)
         end
 
         it "station not be offline" do
           station.check_status!
-          expect(station.offline).to be_false
+          expect(station.offline).to be_falsey
         end
 
         it "should not notify" do
-          station.should_not_receive("notify_offline")
+          expect(station).not_to receive("notify_offline")
           station.check_status!
         end
       end
@@ -196,16 +196,16 @@ describe Station do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_offline?).and_return(true)
+          allow(station).to receive(:should_be_offline?).and_return(true)
         end
 
         specify "station should be offline" do
           station.check_status!
-          expect(station.offline).to be_true
+          expect(station.offline).to be_truthy
         end
 
         it "should notify that station is offline" do
-          station.should_receive("notify_offline")
+          expect(station).to receive("notify_offline")
           station.check_status!
         end
       end
@@ -219,16 +219,16 @@ describe Station do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_offline?).and_return(false)
+          allow(station).to receive(:should_be_offline?).and_return(false)
         end
 
         specify "station should not be offline" do
           station.check_status!
-          expect(station.offline).to be_false
+          expect(station.offline).to be_falsey
         end
 
         it "should notify" do
-          station.should_receive(:notify_online)
+          expect(station).to receive(:notify_online)
           station.check_status!
         end
       end
@@ -237,17 +237,17 @@ describe Station do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          station.stub(:should_be_offline?).and_return(true)
+          allow(station).to receive(:should_be_offline?).and_return(true)
         end
 
         it "should not send message" do
-          station.should_not_receive(:notify_online)
+          expect(station).not_to receive(:notify_online)
           station.check_status!
         end
 
         specify "station not be offline" do
           station.check_status!
-          expect(station.offline).to be_true
+          expect(station.offline).to be_truthy
         end
       end
     end
@@ -259,7 +259,7 @@ describe Station do
     let(:station) { create(:station, user: user) }
 
     it "should log error" do
-      Rails.logger.should_receive(:warn).with("Station alert: #{station.name} is now down")
+      expect(Rails.logger).to receive(:warn).with("Station alert: #{station.name} is now down")
       station.notify_offline
     end
 
@@ -270,7 +270,7 @@ describe Station do
     end
 
     it "should create notification with correct attributes" do
-      Notification.should_receive(:create).with(
+      expect(Notification).to receive(:create).with(
           user: user,
           level: :warn,
           message: "#{station.name} is down.",
@@ -280,13 +280,13 @@ describe Station do
     end
 
     it "should send email" do
-      StationMailer.should_receive(:offline)
+      expect(StationMailer).to receive(:offline)
       station.notify_offline
     end
 
     it "should send email if notified in last 12h" do
       create(:notification, message: "#{station.name} is down.")
-      StationMailer.should_receive(:offline)
+      expect(StationMailer).to receive(:offline)
       station.notify_offline
     end
   end
@@ -296,12 +296,12 @@ describe Station do
     let(:station) { create(:station, user: user) }
 
     it "should send message" do
-      StationMailer.should_receive(:online)
+      expect(StationMailer).to receive(:online)
       station.notify_online
     end
 
     it "should log" do
-      Rails.logger.should_receive(:info).with("Station alert: #{station.name} is now up")
+      expect(Rails.logger).to receive(:info).with("Station alert: #{station.name} is now up")
       station.notify_online
     end
 
@@ -312,7 +312,7 @@ describe Station do
     end
 
     it "should create notification with correct attributes" do
-      Notification.should_receive(:create).with(
+      expect(Notification).to receive(:create).with(
           user: user,
           level: :info,
           message: "#{station.name} is up.",
@@ -322,13 +322,13 @@ describe Station do
     end
 
     it "should send email if not notified in 12h" do
-      StationMailer.should_receive(:offline)
+      expect(StationMailer).to receive(:offline)
       station.notify_offline
     end
 
     it "should send email if notified in last 12h" do
       create(:notification, message: "#{station.name} is down.")
-      StationMailer.should_receive(:offline)
+      expect(StationMailer).to receive(:offline)
       station.notify_offline
     end
   end
@@ -339,20 +339,20 @@ describe Station do
       let(:station){ build_stubbed(:station, balance: 10, user: build_stubbed(:user)) }
 
       it "should return false" do
-        expect(station.check_balance).to be_false
+        expect(station.check_balance).to be_falsey
       end
       it "should log notice" do
-        Rails.logger.should_receive(:info)
+        expect(Rails.logger).to receive(:info)
             .with("#{station.name} has a low balance, only 10.0 kr left.")
         station.check_balance
       end
       it "should send email" do
-        StationMailer.should_receive(:low_balance)
+        expect(StationMailer).to receive(:low_balance)
         station.check_balance
       end
       it "should only create email if not yet notified" do
         create(:notification, message: "#{station.name} has a low balance, only 10.0 kr left.")
-        StationMailer.should_not_receive(:low_balance)
+        expect(StationMailer).not_to receive(:low_balance)
         station.check_balance
       end
       it "should create a notification" do
@@ -374,14 +374,14 @@ describe Station do
       let(:station){ build_stubbed(:station, balance: 999, user: build_stubbed(:user)) }
 
       it "should return true" do
-        expect(station.check_balance).to be_true
+        expect(station.check_balance).to be_truthy
       end
       it "should not log notice" do
-        Rails.logger.should_not_receive(:info)
+        expect(Rails.logger).not_to receive(:info)
         station.check_balance
       end
       it "should not send email" do
-        StationMailer.should_not_receive(:low_balance)
+        expect(StationMailer).not_to receive(:low_balance)
         station.check_balance
       end
       it "should not create a notification" do
@@ -395,11 +395,11 @@ describe Station do
   describe "#next_observation_expected_in" do
     let(:station){ build_stubbed(:station) }
     it "should give number of seconds until next observation" do
-      station.stub(:last_observation_received_at).and_return(2.minutes.ago)
+      allow(station).to receive(:last_observation_received_at).and_return(2.minutes.ago)
       expect(station.next_observation_expected_in).to eq 3.minutes
     end
     it "should never give more than 5 minutes" do
-      station.stub(:last_observation_received_at).and_return(10.minutes.ago)
+      allow(station).to receive(:last_observation_received_at).and_return(10.minutes.ago)
       expect(station.next_observation_expected_in).to eq 5.minutes
     end
   end

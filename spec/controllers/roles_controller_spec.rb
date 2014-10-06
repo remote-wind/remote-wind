@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RolesController do
+describe RolesController, :type => :controller do
 
 
   describe "POST users/:user_id/roles" do
@@ -11,7 +11,7 @@ describe RolesController do
 
       it "does not create role" do
         post :create, { :user_id =>  user.to_param, :user => { :roles => wizard.id }}
-        expect(user.has_role? :admin).to be_false
+        expect(user.has_role? :admin).to be_falsey
       end
 
       it "denies access" do
@@ -29,7 +29,7 @@ describe RolesController do
 
       it "adds role to user" do
         post :create, { :user_id =>  user.to_param, :user => { :roles => wizard.id }}
-        expect(user.has_role? :wizard).to be_true
+        expect(user.has_role? :wizard).to be_truthy
       end
     end
   end
@@ -46,7 +46,7 @@ describe RolesController do
 
       it "does not remove role" do
         delete :destroy, { user_id:  user.to_param, id: wizard.to_param }
-        expect(user.has_role? :wizard).to be_true
+        expect(user.has_role? :wizard).to be_truthy
       end
 
       it "denies access" do
@@ -67,7 +67,7 @@ describe RolesController do
 
       it "revokes a role" do
         delete :destroy, { user_id:  user.to_param, user: { roles: wizard.to_param }}
-        expect(user.has_role? :wizard).to be_false
+        expect(user.has_role? :wizard).to be_falsey
       end
 
       it "redirects back to user" do

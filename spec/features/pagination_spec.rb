@@ -9,7 +9,7 @@ feature "Pagination" do
 
     before :each do
       visit station_path(station)
-      station.observations.stub(:count).and_return(50)
+      allow(station.observations).to receive(:count).and_return(50)
     end
 
     it "links to more observations" do

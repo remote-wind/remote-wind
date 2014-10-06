@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'stations/embeds/table' do
+describe 'stations/embeds/table', :type => :view do
 
   let(:station) { build_stubbed(:station) }
   let(:observations) {[build_stubbed(:observation)] }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "pages/home" do
+describe "pages/home", :type => :view do
 
   let! :stations do
     stations = []
