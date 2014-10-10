@@ -30,14 +30,9 @@ class StationsController < ApplicationController
   # GET /stations/1.json
   def show
     @title = @station.name
+    @observations = @station.load_observations!(10)
     # Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved
     if stale?(etag: @station, last_modified: @station.try(:updated_at))
-      @observations = @station.observations
-      .limit(10)
-      .order(created_at: :desc)
-      .load
-      @station.latest_observation = @observations.first
-
       respond_to do |format|
         format.html
         format.json { render json: @station }
