@@ -432,4 +432,18 @@ describe Station, :type => :model do
       expect(station.observations.last.speed).to eq 3
     end
   end
+
+
+  describe "load_observations!" do
+
+    let(:station) { create(:station) }
+    before(:each) {
+      station.observations.create(attributes_for :observation)
+    }
+
+    it "loads observations" do
+      observations = station.load_observations!(50)
+      expect(observations.loaded?).to be_true
+    end
+  end
 end
