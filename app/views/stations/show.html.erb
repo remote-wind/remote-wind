@@ -12,11 +12,11 @@
 <article class="station">
 
   <dl class="accordion" data-accordion>
-    <% if @observations %>
+    <% if @station.observations? %>
     <dd id="chart">
       <a href="#chart-panel">Chart</a>
       <div class="content chart-wrapper active clearfix" id="chart-panel">
-        <%= render partial: 'observations/chart', object: @observations %>
+        <%= render partial: 'observations/chart'%>
       </div>
     </dd>
 
@@ -24,7 +24,7 @@
       <a href="#table-panel">Table</a>
       <div class="content clearfix" id="table-panel">
         <%= render partial: 'observations/table',
-                   locals: { observations: @observations, station: @station }
+                   locals: { observations: @station.observations, station: @station }
         %>
         <p><%= link_to("More", station_observations_path(@station), _format: 'html' , class: 'button tiny radius') %></p>
       </div>
