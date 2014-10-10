@@ -90,6 +90,8 @@ $(function(){
             }
         ], data);
 
+        console.log(series);
+
         // If already initialized
         if (graph) {
             // Refresh graph data
