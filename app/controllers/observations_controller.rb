@@ -35,7 +35,10 @@ class ObservationsController < ApplicationController
                        .paginate(page: params[:page])
         end
         format.json do
-          @observations = @observations.desc.since(@station.last_observation_received_at - 24.hours)
+          @observations = @station.load_observations!(
+              288,
+              query: Observation.desc.since(@station.last_observation_received_at - 24.hours)
+          )
           render json: @observations
         end
       end

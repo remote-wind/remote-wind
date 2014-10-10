@@ -240,14 +240,14 @@ class Station < ActiveRecord::Base
   # and memory issues when Rails tries to eager load the association without a limit.
   # @see http://mrbrdo.wordpress.com/2013/09/25/manually-preloading-associations-in-rails-using-custom-scopessql/
   # @param [Integer] limit
+  # @param [ActiveRecord::Relation] query
   # @return [ActiveRecord::Associations::CollectionProxy]
-  def load_observations!(limit = 1)
-    observations = Observation.limit(limit).desc.where(station: self)
+  def load_observations!(limit = 1, query: Observation.desc)
+    observations = query.merge(Observation.where(station: self).limit(limit))
     association = self.association(:observations)
     association.loaded!
     association.target.concat(observations)
     observations.each { |observation| association.set_inverse_instance(observation) }
     self.observations
   end
-
 end
