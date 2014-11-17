@@ -9,7 +9,7 @@ gem 'sass-rails', '~> 4.0.3' # Use SCSS for stylesheets
 gem 'uglifier', '~> 2.5.0' # Use Uglifier as compressor for JavaScript assets
 gem 'coffee-rails', '~> 4.0.0' # Use CoffeeScript for .js.coffee assets and views
 gem 'jquery-rails', '~> 3.1.0' # Use jquery as the JavaScript library
-gem 'foundation-rails', '~> 5.4.3.0' # Responsive front-end framework
+gem 'foundation-rails', '~> 5.4.5.0' # Responsive front-end framework
 gem 'rickshaw_rails', '~> 1.4.5' # Javascript toolkit for graphs
 
 #= Views  ============================================================

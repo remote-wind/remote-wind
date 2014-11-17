@@ -1171,8 +1171,8 @@ $tabs-navigation-bg-color: #efefef;
 @import "foundation";
 @import "notifications";
 @import "table";
-
-
+//
+//
 input[type='submit'] {
   @include button;
   @include radius;
