@@ -197,7 +197,7 @@ class Station < ActiveRecord::Base
   # Send notifications if station balance is low
   # @return boolean true for ok balance, false if balance is low
   def check_balance
-    if balance < 15
+    if balance && balance < 15
       Rails.logger.info "#{name} has a low balance, only #{balance} kr left."
       message = "#{name} has a low balance, only #{balance} kr left."
       # Check if there have been notifications of this event
