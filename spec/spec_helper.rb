@@ -29,7 +29,7 @@ Spork.prefork do
     config.order = 'random'
 
     config.use_transactional_fixtures = false
-
+    config.infer_spec_type_from_file_location!
 
     # clean database before running tests
     config.before(:suite) do
