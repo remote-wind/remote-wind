@@ -449,6 +449,11 @@ describe StationsController, :type => :controller do
   end
 
   describe "GET find" do
+
+    render_views
+
+    let(:yaml) { JSON.parse(response.body) }
+
     before do
       station
       get :find, hw_id: station.hw_id, format: "yaml"
@@ -460,6 +465,10 @@ describe StationsController, :type => :controller do
 
     it "should not render a template" do
       expect(response).to render_template nil
+    end
+
+    it "contains the id" do
+      expect(yaml["id"]).to eq station.id
     end
   end
 

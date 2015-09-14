@@ -33,12 +33,12 @@ RemoteWind::Application.routes.draw do
   put '/s/:id' => 'stations#update_balance', constraints: { format: :yaml }
   post '/measures' => 'observations#create', constraints: { format: :yaml }
 
+
+  get 'stations/find/:hw_id', to: "stations#find", as: :find_station
+
   resources :stations do
     collection do
       # Used by Ardiuno station to lookup ID
-      get '/find/:hw_id',
-          to: 'stations#find',
-          as: :find
       # Proximity search - not in use
       get '/search/(:lon)(/:lat)(/:radius)',
           to: 'stations#search',
