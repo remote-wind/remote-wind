@@ -435,15 +435,21 @@ describe Station, :type => :model do
 
 
   describe "load_observations!" do
-
     let(:station) { create(:station) }
     before(:each) {
       station.observations.create(attributes_for :observation)
     }
-
     it "loads observations" do
       observations = station.load_observations!(50)
       expect(observations.loaded?).to be_truthy
+    end
+  end
+
+  describe 'observations callbacks' do
+    it 'updates last_observation_received_at when observation is added' do
+      expect {
+        station.observations.create(attributes_for :observation)
+      }.to change(station, :last_observation_received_at)
     end
   end
 end

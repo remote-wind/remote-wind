@@ -34,7 +34,6 @@ class Observation < ActiveRecord::Base
   after_validation :set_calibration_value!
   after_find :calibrate!
   after_save :calibrate!
-  after_save :update_station
 
   # Scopes
   # default_scope { order("created_at DESC").limit(144) }
@@ -89,13 +88,6 @@ class Observation < ActiveRecord::Base
   def set_calibration_value!
     if self.station.present?
       self.speed_calibration = station.speed_calibration
-    end
-  end
-
-  # Update station when saving observation
-  def update_station
-    unless station.nil?
-      station.update_attribute(:last_observation_received_at, created_at)
     end
   end
 

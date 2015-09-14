@@ -25,7 +25,9 @@ class Station < ActiveRecord::Base
 
   # relations
   belongs_to :user, inverse_of: :stations
-  has_many  :observations, inverse_of: :station, counter_cache: true
+  has_many  :observations,
+    inverse_of: :station,
+    counter_cache: true
   has_many :recent_observations, -> { order('created_at ASC').limit(10) }, class_name: 'Observation'
   has_one :current_observation, -> { order('created_at ASC').limit(1) }, class_name: 'Observation'
 
@@ -218,6 +220,10 @@ class Station < ActiveRecord::Base
     else
       true
     end
+  end
+
+  def last_observation_received_at
+    observations.last.try(:created_at)
   end
 
   def created_at_local

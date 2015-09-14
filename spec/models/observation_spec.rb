@@ -127,9 +127,4 @@ describe Observation, :type => :model do
       expect(observation.calibrated?).to be_truthy
     end
   end
-
-  it "updates station last observation received at time after saving" do
-    skip('test is broken and should be done on station side')
-  end
-
 end

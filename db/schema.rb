@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140922221657) do
+ActiveRecord::Schema.define(version: 20150914222423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,13 +85,11 @@ ActiveRecord::Schema.define(version: 20140922221657) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "slug"
-    t.boolean  "show",                         default: true
-    t.float    "speed_calibration",            default: 1.0
-    t.datetime "last_observation_received_at"
+    t.boolean  "show",              default: true
+    t.float    "speed_calibration", default: 1.0
   end
 
   add_index "stations", ["hw_id"], name: "index_stations_on_hw_id", unique: true, using: :btree
-  add_index "stations", ["last_observation_received_at"], name: "index_stations_on_last_observation_received_at", using: :btree
   add_index "stations", ["offline"], name: "index_stations_on_offline", using: :btree
   add_index "stations", ["show"], name: "index_stations_on_show", using: :btree
   add_index "stations", ["slug"], name: "index_stations_on_slug", unique: true, using: :btree

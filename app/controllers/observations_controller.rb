@@ -13,10 +13,10 @@ class ObservationsController < ApplicationController
   # POST /observations
   def create
     # Find station via ID or SLUG
-    @observation = Observation.new(observation_params)
+    @station = Station.find( params[:m].try(:[], :i) || params[:observation].try(:[], :station_id) )
+    @observation = @station.observations.new(observation_params)
     respond_to do |format|
       if @observation.save
-        @station = @observation.station
         format.yaml { render nothing: true, status: :ok }
       else
         format.yaml { render nothing: true, status: :unprocessable_entity }

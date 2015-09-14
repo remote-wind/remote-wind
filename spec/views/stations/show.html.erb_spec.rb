@@ -7,7 +7,7 @@ describe "stations/show", :type => :view do
                   speed_calibration: 0.5143,
                   user: build_stubbed(:user),
                   updated_at: Time.new(2000),
-                  last_observation_received_at: Time.new(2000)
+                  observations: [ build_stubbed(:observation, created_at: Time.new(2000) ) ]
     )
   end
 
@@ -16,12 +16,12 @@ describe "stations/show", :type => :view do
     stub_user_for_view_test
     assign(:station, station)
   end
-  
+
   let(:page) do
     render
     rendered
   end
-  
+
   it "has the correct content" do
     expect(page).to have_selector('h1', text: station.name)
   end
@@ -30,7 +30,7 @@ describe "stations/show", :type => :view do
     it "does not have any destructive buttons" do
       expect(page).to_not have_link 'Delete'
       expect(page).to_not have_link 'Clear all observations for this station'
-      
+
     end
   end
 
