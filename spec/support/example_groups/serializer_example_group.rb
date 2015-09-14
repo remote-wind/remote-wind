@@ -3,23 +3,26 @@
 # sets subject to an OpenStruct
 # Borrowed from Benedikt Deicke
 # http://benediktdeicke.com/2013/01/custom-rspec-example-groups/
+
+require 'factory_girl'
+require 'ostruct'
+
 module SerializerExampleGroup
+
   extend ActiveSupport::Concern
 
   included do
-    metadata[:type] = :serializer
-
-    let(:attributes) do
-      resource.attributes.with_indifferent_access
+    let(:resource_name) do
+      described_class.name.demodulize.underscore[0..-12].to_sym
     end
+    let(:resource) { build_stubbed resource_name }
     let(:serializer) { described_class.new(resource) }
-
-    subject { OpenStruct.new(serializer.serializable_hash) }
+    subject { OpenStruct.new(serializer.attributes) }
   end
 
   RSpec.configure do |config|
     config.include self,
       type: :serializer,
-      example_group: { :file_path => %r(spec/serializers) }
+      file_path: %r(spec/serializers)
   end
 end

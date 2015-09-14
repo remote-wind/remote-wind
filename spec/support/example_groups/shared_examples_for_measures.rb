@@ -1,5 +1,5 @@
 shared_examples "a observation" do
-  describe "attributes" do
+  describe "resource" do
     describe '#id' do
       subject { super().id }
       it { is_expected.not_to be_nil }
@@ -7,32 +7,32 @@ shared_examples "a observation" do
 
     describe '#id' do
       subject { super().id }
-      it { is_expected.to eq attributes[:id] }
+      it { is_expected.to eq resource[:id] }
     end
 
     describe '#station_id' do
       subject { super().station_id }
-      it { is_expected.to eq attributes[:station_id] }
+      it { is_expected.to eq resource[:station_id] }
     end
 
     describe '#speed' do
       subject { super().speed }
-      it { is_expected.to eq attributes[:speed] }
+      it { is_expected.to eq resource[:speed] }
     end
 
     describe '#direction' do
       subject { super().direction }
-      it { is_expected.to eq attributes[:direction] }
+      it { is_expected.to eq resource[:direction] }
     end
 
     describe '#max_wind_speed' do
       subject { super().max_wind_speed }
-      it { is_expected.to eq attributes[:max_wind_speed] }
+      it { is_expected.to eq resource[:max_wind_speed] }
     end
 
     describe '#min_wind_speed' do
       subject { super().min_wind_speed }
-      it { is_expected.to eq attributes[:min_wind_speed] }
+      it { is_expected.to eq resource[:min_wind_speed] }
     end
 
     describe '#created_at' do

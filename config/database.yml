@@ -10,7 +10,7 @@ common: &common
   password: <%= ENV["REMOTE_WIND_POSTGRES_PASSWORD"] %>
   <% end %>
   <% if ENV["REMOTE_WIND_POSTGRES_HOST"] %>
-  host: <%= ENV["REMOTE_WIND_POSTGRES_HOST"] %>
+  host: <%= ENV["REMOTE_WIND_POSTGRES_HOST"] || 'localhost' %>
   <% end %>
 
 development:

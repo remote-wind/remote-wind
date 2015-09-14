@@ -32,7 +32,6 @@ gem 'jbuilder', '~> 1.2' # Build JSON APIs with ease. Read more: https://github.
 gem 'friendly_id', '~> 5.0.3' # Slugging
 gem 'nokogiri', '~> 1.6.1' # XML/SAX parser.
 gem 'will_paginate', '~> 3.0.5' #Pagination
-gem 'cache_digests', '~> 0.3.1' #Cache invalidation
 gem 'active_model_serializers', '~> 0.8.1' # object serialization
 
 #= Email ===============================================================
@@ -58,26 +57,25 @@ group :development do
   gem 'better_errors' # better error pages
   gem 'binding_of_caller' # REPL on error pages
   gem 'meta_request' # used for RailsPanel in Google Chrome
-  gem 'annotate'
 end
 
 group :test do
-  gem 'launchy', require: false
-  gem 'rspec-rails', '~> 2.99'
+  gem 'rspec-rails', '~> 3.3.3'
   gem 'database_cleaner' # cleans test database between specs
   # factory_girl provides a framework and DSL for defining and using factories.
   gem "factory_girl_rails", "~> 4.4.1"
   # Matchers to make model specs easy on the fingers and eyes
   gem "shoulda-matchers", "~> 2.6.1"
   # Capybara is an integration testing tool for rack based web applications.
-  gem 'capybara', '~> 2.2.1'
+  gem 'capybara', '~> 2.5.0'
   # A forking Drb spec server
-  gem "spork-rails", "~> 4.0.0", require: false
+  gem "spork-rails", "~> 4.0.0"
   # Guard is a command line tool to easily handle events on file system modifications.
-  gem "guard-spork", "~> 1.5.1", require: false
-  gem "guard-rspec", "~> 4.2.8", require: false
+  gem "guard-spork", "~> 2.1.0"
+  gem "guard-rspec", "~> 4.6.4"
+  gem 'launchy', require: false
   # Show test status indicators on Mac OS X
-  gem "terminal-notifier-guard", "~> 1.5.3", require: false
+  gem "terminal-notifier-guard", "~> 1.6.4", require: false
   # Used to generate test coverage reports
   gem 'simplecov', require: false
 end

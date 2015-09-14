@@ -443,7 +443,7 @@ describe Station, :type => :model do
 
     it "loads observations" do
       observations = station.load_observations!(50)
-      expect(observations.loaded?).to be_true
+      expect(observations.loaded?).to be_truthy
     end
   end
 end
