@@ -2,12 +2,11 @@ source 'http://rubygems.org'
 ruby '2.1.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.1.1'
+gem 'rails', '~> 4.2.4'
 
 #= ASSETS ============================================================
 gem 'sass-rails', '~> 4.0.3' # Use SCSS for stylesheets
 gem 'uglifier', '~> 2.5.0' # Use Uglifier as compressor for JavaScript assets
-gem 'coffee-rails', '~> 4.0.0' # Use CoffeeScript for .js.coffee assets and views
 gem 'jquery-rails', '~> 3.1.0' # Use jquery as the JavaScript library
 gem 'foundation-rails', '~> 5.4.5.0' # Responsive front-end framework
 gem 'rickshaw_rails', '~> 1.4.5' # Javascript toolkit for graphs
@@ -16,23 +15,21 @@ gem 'rickshaw_rails', '~> 1.4.5' # Javascript toolkit for graphs
 gem 'simple_form', '~> 3.0.2' # Forms made easy for Rails!: https://github.com/plataformatec/simple_form
 
 #= Authentication ====================================================
-gem 'devise', '~> 3.2.4'
+gem 'devise', '~> 3.5.2'
 gem 'devise_invitable', '~> 1.3.5'
-gem 'cancancan', '~> 1.9.2'
-gem 'rolify', '~> 3.4.1'
-gem 'omniauth', '~> 1.2.1'
-gem 'omniauth-facebook', '~> 1.6.0'
+gem 'cancancan', '~> 1.12.0'
+gem 'rolify', '~> 4.1.1'
+gem 'omniauth', '~> 1.2.2'
+gem 'omniauth-facebook', '~> 2.0.1'
 
 #= Geolocation =======================================================
-gem 'geocoder', '~> 1.2.0' # https://github.com/alexreisner/geocoder
-gem 'timezone', '~> 0.3.2' # Timezone lookup via lat / lon
+gem 'geocoder', '~> 1.2.11' # https://github.com/alexreisner/geocoder
+gem 'timezone', '~> 0.4.2' # Timezone lookup via lat / lon
 
 #= Misc ===============================================================
-gem 'jbuilder', '~> 1.2' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'friendly_id', '~> 5.0.3' # Slugging
-gem 'nokogiri', '~> 1.6.1' # XML/SAX parser.
-gem 'will_paginate', '~> 3.0.5' #Pagination
-gem 'active_model_serializers', '~> 0.8.1' # object serialization
+gem 'friendly_id', '~> 5.1.0' # Slugging
+gem 'will_paginate', '~> 3.0.7' #Pagination
+gem 'active_model_serializers', '~> 0.9.3' # object serialization
 
 #= Email ===============================================================
 gem 'markerb', '~> 1.0.2' # Multipart templates made easy with Markdown + ERb: https://github.com/plataformatec/markerb
@@ -82,6 +79,6 @@ end
 
 #= Heroku Dependencies =========================================================
 group :production do
-  gem 'pg', '~> 0.17.1' # postgres
+  gem 'pg', '~> 0.18.3' # postgres
   gem 'rails_12factor', '0.0.2'
 end
