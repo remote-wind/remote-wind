@@ -48,4 +48,15 @@ describe Notification, :type => :model do
       expect(subject.level_to_s).to eq "warning"
     end
   end
+
+  describe ".since" do
+    it "does not return records older than the given time" do
+      note = create(:notification, created_at: 1.day.ago)
+      expect(Notification.since(1.hour.ago)).to_not include(note)
+    end
+    it "returns records in the correct span" do
+      note = create(:notification, created_at: 1.minute.ago)
+      expect(Notification.since(1.hour.ago)).to include(note)
+    end
+  end
 end

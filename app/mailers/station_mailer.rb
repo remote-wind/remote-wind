@@ -7,9 +7,7 @@ class StationMailer < ActionMailer::Base
   # @param options Hash (optional)
   # @return Mail::Message | nil returns nil if mail could not be created
   def low_balance station, options = {}
-
     @balance = station.balance
-
     send_mail(station, options.merge!(
         message_handler: __method__,
         subject: "Low balance for your station #{station.name}"
@@ -52,7 +50,6 @@ class StationMailer < ActionMailer::Base
   def send_mail(station, options)
     @station = station
     @link = MarkdownHelper.link_to(@station.name, station_url(@station.id))
-
     options.merge!(
         to: station.try(:user).try(:email)
     )
@@ -68,7 +65,6 @@ class StationMailer < ActionMailer::Base
     else
       Rails.logger.error("#{options[:message_handler]}: Mail could not be created")
     end
-
     message
   end
 end

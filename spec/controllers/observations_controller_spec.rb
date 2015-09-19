@@ -2,16 +2,14 @@ require 'spec_helper'
 
 describe ObservationsController, :type => :controller do
 
-  let!(:station) {  create(:station) }
-  let(:observation) { create(:observation, :station => station) }
+  let(:user) { create(:user) }
+  let(:station) {  create(:station, user: user ) }
+  let(:observation) { create(:observation, station: station) }
   let(:valid_attributes) { attributes_for(:observation, station_id: station.id) }
 
   before(:each) { sign_out :user }
 
-
   describe "POST 'create'" do
-
-    let!(:station) { create(:station, user: build_stubbed(:user)) }
 
     it "does not accept any other format than yaml" do
      expect {
@@ -44,11 +42,6 @@ describe ObservationsController, :type => :controller do
       it "sends HTTP success" do
         post :create, { observation: valid_attributes, format: "yaml"}
         expect(response.code).to eq "200"
-      end
-
-      it "does not render a template" do
-          post :create, { observation: valid_attributes, format: "yaml"}
-          expect(response).to render_template nil
       end
     end
 
@@ -172,7 +165,7 @@ describe ObservationsController, :type => :controller do
     end
 
     context "an unpriveleged user" do
-      before { sign_in create(:user) }
+      before { sign_in user }
       it "does not allow observations to be destoyed" do
         expect do
           delete :clear, {:station_id => station.to_param}
@@ -207,7 +200,7 @@ describe ObservationsController, :type => :controller do
     end
 
     context "as unpriveleged user" do
-      before { sign_in create(:user) }
+      before { sign_in user }
       it "should not allow observations to be destoyed without authorization" do
         expect do
           delete :destroy, {id: observation.to_param, station_id:  observation.station.to_param}

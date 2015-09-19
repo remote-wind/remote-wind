@@ -12,7 +12,7 @@ gem 'foundation-rails', '~> 5.4.5.0' # Responsive front-end framework
 gem 'rickshaw_rails', '~> 1.4.5' # Javascript toolkit for graphs
 
 #= Views  ============================================================
-gem 'simple_form', '~> 3.0.2' # Forms made easy for Rails!: https://github.com/plataformatec/simple_form
+gem 'simple_form', '~> 3.1.1' # Forms made easy for Rails!: https://github.com/plataformatec/simple_form
 
 #= Authentication ====================================================
 gem 'devise', '~> 3.5.2'
@@ -47,6 +47,7 @@ group :development, :test do
   gem "dotenv-rails", "~> 0.10.0" # load local config from .env file
   gem 'therubyracer', platforms: :ruby # V8 Javascript runtime
   gem 'thin'  # use Thin as web server instead of webbrick
+  gem 'ffaker'
 end
 
 group :development do

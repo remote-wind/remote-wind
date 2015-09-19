@@ -22,7 +22,7 @@ describe NotificationsController, :type => :controller do
       sign_out user
       expect {
         get :index, params
-      }.to raise_error
+      }.to raise_error ArgumentError, 'uncaught throw :warden' # @smells
     end
 
     it "assigns current user as @user" do

@@ -13,6 +13,13 @@ Bundler.require(:default, Rails.env)
 
 module RemoteWind
   class Application < Rails::Application
+
+    # By default, Rails expects app/services/users/delete.rb to define Users::Delete,
+    # but we want it to expect Services::Users::Delete.
+    # To make this work, we add the app folder to the autoload path
+    # @see https://github.com/krautcomputing/services
+    config.autoload_paths += [config.root.join('app')]
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

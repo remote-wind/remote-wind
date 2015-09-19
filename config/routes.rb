@@ -23,8 +23,8 @@ RemoteWind::Application.routes.draw do
     end
     resources :notifications, only: [:index, :destroy] do
       collection do
-        patch '/', to: :update_all
-        delete '/', to: :destroy_all
+        patch '/', action: :update_all
+        delete '/', action: :destroy_all
       end
     end
   end
@@ -59,5 +59,4 @@ RemoteWind::Application.routes.draw do
       end
     end
   end
-
 end

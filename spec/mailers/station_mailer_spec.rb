@@ -16,16 +16,6 @@ describe StationMailer, :type => :mailer do
     it "contains the current balance" do
       expect(text).to have_content('Currently at 1.0 SEK')
     end
-
-    context "when mail is not delivered" do
-      before { allow_any_instance_of(Mail::Message).to receive(:deliver).and_return(false)}
-
-      it "logs error if message is not delivered" do
-        expect(Rails.logger).to receive(:error)
-          .with("StationMailer#low_balance: Email could not be delivered")
-        StationMailer.low_balance(station)
-      end
-    end
   end
 
   describe "#online", action: :online do
