@@ -7,6 +7,8 @@ describe NotificationsController, :type => :controller do
   let(:params) { { user_id: user } }
   let(:notifications_url) { user_notifications_url(user_id: user) }
 
+  subject { response }
+
   describe "GET 'index'" do
 
     before :each do
@@ -22,7 +24,7 @@ describe NotificationsController, :type => :controller do
       sign_out user
       expect {
         get :index, params
-      }.to raise_error ArgumentError, 'uncaught throw :warden' # @smells
+      }.to raise_error 'uncaught throw :warden'
     end
 
     it "assigns current user as @user" do
@@ -75,20 +77,13 @@ describe NotificationsController, :type => :controller do
   describe "PATCH 'update_all'" do
 
     before(:each) { sign_in user }
-    subject { response }
 
     context "when user has no unread notifications" do
-
-      before(:each) do
-        patch :update_all, params
-      end
-
+      before(:each) { patch :update_all, params }
       it { is_expected.to redirect_to notifications_url }
-
       it "should flash error" do
         expect(flash[:error]).to match /no unread notifications found/i
       end
-
     end
 
     context "when user has notifications" do
@@ -163,24 +158,19 @@ describe NotificationsController, :type => :controller do
     end
 
     context "when there are notifications" do
-
-      before(:each) do
+      before do
         note
         delete :destroy_all, params
       end
-
       it "should delete all notifications" do
         expect(Notification.count).to eq 0
       end
-
       it "should flash success" do
         expect(flash[:success]).to match /all notifications have been deleted/i
       end
-
       it "should redirect to index" do
         expect(response).to redirect_to notifications_url
       end
-
     end
 
     it "should delete only read posts if condition is selected" do
@@ -198,8 +188,5 @@ describe NotificationsController, :type => :controller do
         delete :destroy_all, params.merge( time_unit: "days", time: 1 )
       }.to change(Notification, :count).by(-1)
     end
-
   end
-
-
 end

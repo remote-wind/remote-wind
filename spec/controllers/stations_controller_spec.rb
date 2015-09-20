@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StationsController, :type => :controller do
+describe StationsController, type: :controller do
 
   # This should return the minimal set of attributes required to create a valid
   # Station. As you add validations to Station, be sure to

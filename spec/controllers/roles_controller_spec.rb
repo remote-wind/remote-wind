@@ -2,42 +2,41 @@ require 'spec_helper'
 
 describe RolesController, :type => :controller do
 
+  let(:user){ create(:user) }
+  let(:role) { Role.create(name: :wizard) }
 
   describe "POST users/:user_id/roles" do
+
+
+    let(:action) {  post :create, { user_id:  user.to_param, user: { roles: role }} }
+
     context "when not authorized" do
-      let(:user){ create(:user) }
       before { sign_in user }
-      let!(:wizard) { Role.create(:name => :wizard) }
 
       it "does not create role" do
-        post :create, { :user_id =>  user.to_param, :user => { :roles => wizard.id }}
         expect(user.has_role? :admin).to be_falsey
       end
 
       it "denies access" do
         bypass_rescue
-        expect do
-          post :create, { :user_id =>  user.to_param, :user => { :roles => wizard.id }}
-        end.to raise_error CanCan::AccessDenied
+        expect { action }.to raise_error CanCan::AccessDenied
       end
     end
 
     context "when a user who can manage roles" do
-      let(:user) { create(:user) }
-      let!(:wizard) { Role.create(:name => :wizard) }
-      let!(:admin) { sign_in create(:admin) }
-
+      before { sign_in create(:admin) }
       it "adds role to user" do
-        post :create, { :user_id =>  user.to_param, :user => { :roles => wizard.id }}
-        expect(user.has_role? :wizard).to be_truthy
+        action
+        expect(user.has_role?(:wizard)).to be_truthy
       end
     end
   end
 
   describe "DELETE users/:user_id/roles" do
+
+    let(:action) { delete :destroy, { user_id:  user, user: { roles: role }} }
+
     context "when not authorized" do
-      let(:user){ create(:user) }
-      let!(:wizard) { Role.create(:name => :wizard) }
 
       before {
         sign_in user
@@ -45,33 +44,31 @@ describe RolesController, :type => :controller do
       }
 
       it "does not remove role" do
-        delete :destroy, { user_id:  user.to_param, id: wizard.to_param }
+        action
         expect(user.has_role? :wizard).to be_truthy
       end
 
       it "denies access" do
         bypass_rescue
         expect do
-          delete :destroy, { user_id:  user.to_param, user: { roles: wizard.to_param }}
+          action
         end.to raise_error CanCan::AccessDenied
       end
     end
 
     context "when a user who can manage roles" do
 
-      let(:user) { create(:user) }
-      let!(:admin) { sign_in create(:admin) }
-      let!(:wizard) { Role.create(:name => :wizard) }
-
-      before { user.add_role(:wizard) }
+      before do
+        user.add_role(:wizard)
+        sign_in create(:admin)
+        action
+      end
 
       it "revokes a role" do
-        delete :destroy, { user_id:  user.to_param, user: { roles: wizard.to_param }}
         expect(user.has_role? :wizard).to be_falsey
       end
 
       it "redirects back to user" do
-        delete :destroy, { user_id:  user.to_param, user: { roles: wizard.to_param }}
         expect(response).to redirect_to user_path user
       end
     end

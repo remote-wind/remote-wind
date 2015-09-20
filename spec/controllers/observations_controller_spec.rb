@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe ObservationsController, :type => :controller do
 
-  let(:user) { create(:user) }
-  let(:station) {  create(:station, user: user ) }
+  let(:station) {  create(:station) }
   let(:observation) { create(:observation, station: station) }
   let(:valid_attributes) { attributes_for(:observation, station_id: station.id) }
 
@@ -158,6 +157,9 @@ describe ObservationsController, :type => :controller do
 
   describe "DELETE clear" do
 
+
+    let(:action) { delete :clear, { station_id: station.to_param} }
+
     before :each do
       3.times do
         station.observations.create attributes_for(:observation)
@@ -165,16 +167,16 @@ describe ObservationsController, :type => :controller do
     end
 
     context "an unpriveleged user" do
-      before { sign_in user }
+      before { sign_in create(:user) }
       it "does not allow observations to be destoyed" do
         expect do
-          delete :clear, {:station_id => station.to_param}
+          action
         end.to_not change(Observation, :count)
       end
       it "does not allow observations to be destoyed" do
         expect do
           bypass_rescue
-          delete :clear, {:station_id => station.to_param}
+          action
         end.to raise_error CanCan::AccessDenied
       end
     end
@@ -183,11 +185,11 @@ describe ObservationsController, :type => :controller do
       before { sign_in create(:admin) }
 
       it "destroys the related observations" do
-        delete :clear, {:station_id => station.to_param}
+        action
         expect(Observation.where("station_id = #{station.id}").count).to eq 0
       end
       it "redirects to the station" do
-        delete :clear, {:station_id => station.to_param}
+        action
         expect(response).to redirect_to(station_url(station.to_param))
       end
     end
@@ -195,15 +197,17 @@ describe ObservationsController, :type => :controller do
 
   describe "DELETE 'destroy'" do
 
+    let(:action) {  delete :destroy, {id: observation.to_param, station_id:  observation.station.to_param} }
+
     before do
       observation #lazy load observation
     end
 
     context "as unpriveleged user" do
-      before { sign_in user }
+      before { sign_in create(:user) }
       it "should not allow observations to be destoyed without authorization" do
         expect do
-          delete :destroy, {id: observation.to_param, station_id:  observation.station.to_param}
+          action
         end.to_not change(Observation, :count)
       end
     end
@@ -213,12 +217,12 @@ describe ObservationsController, :type => :controller do
 
       it "destroys the requested observation" do
         expect {
-          delete :destroy, { id: observation.to_param, station_id: observation.station.to_param}
+          action
         }.to change(Observation, :count).by(-1)
       end
 
       it "redirects to the observation list" do
-        delete :destroy, { id: observation.to_param, station_id: observation.station.to_param}
+        action
         expect(response).to redirect_to(station_observations_url(observation.station))
       end
     end

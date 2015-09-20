@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe "stations/show", :type => :view do
+  let(:user) { build_stubbed(:user) }
+  let(:observation) { build_stubbed(:observation, created_at: Time.new(2000) ) }
 
   let (:station) do
     build_stubbed(:station,
                   speed_calibration: 0.5143,
-                  user: build_stubbed(:user),
+                  user: user,
                   updated_at: Time.new(2000),
                   observations: [ build_stubbed(:observation, created_at: Time.new(2000) ) ]
     )
@@ -52,7 +54,7 @@ describe "stations/show", :type => :view do
 
   describe "meta" do
     it "has the correct metadata" do
-      expect(page).to have_link 'j_random_user', href: user_path(station.user.to_param)
+      expect(page).to have_link user.nickname, href: user_path(station.user.to_param)
       expect(page).to have_selector ".station-meta .created-at td:last", text: "23:00"
       expect(page).to have_selector ".station-meta .updated-at td:last", text: "23:00"
       expect(page).to have_selector ".station-meta .last-observation-received-at td:last", text: "23:00"
