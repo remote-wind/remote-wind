@@ -18,9 +18,6 @@ describe StationSerializer do
   it "has the correct slug" do
     expect(subject.slug).to eq resource[:slug]
   end
-  it "has the correct url" do
-    expect(subject.url).to eq station_url(resource)
-  end
   it "has the correct path" do
     expect(subject.path).to eq station_path(resource)
   end
