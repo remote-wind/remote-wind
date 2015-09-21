@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'cancan/matchers'
 
 # @see https://github.com/CanCanCommunity/cancancan/wiki/Testing-Abilities
-describe Ability, :type => :model do
+describe Ability, type: :model do
 
   subject { Ability.new(user) }
 

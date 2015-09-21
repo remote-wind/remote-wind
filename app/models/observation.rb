@@ -22,7 +22,7 @@ class Observation < ActiveRecord::Base
   # constraints
   validates_presence_of :station
   validates :speed, :direction, :max_wind_speed, :min_wind_speed, :speed_calibration,
-            :numericality => { :allow_blank => true }
+            numericality: { allow_blank: true }
   validate :observation_cannot_be_calibrated
 
   alias_attribute :i, :station_id

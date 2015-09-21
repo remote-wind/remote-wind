@@ -150,7 +150,7 @@ class StationsController < ApplicationController
       respond_to do |format|
         format.html { head :not_found }
         format.json { head :not_found }
-        format.yaml { head :not_found, :content_type => 'text/x-yaml'}
+        format.yaml { head :not_found, content_type: 'text/x-yaml'}
       end
     else
       respond_to do |format|

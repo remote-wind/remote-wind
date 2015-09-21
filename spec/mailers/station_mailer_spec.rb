@@ -1,5 +1,5 @@
 require "spec_helper"
-describe StationMailer, :type => :mailer do
+describe StationMailer, type: :mailer do
 
   let(:user) { build_stubbed :user }
   let(:station) { build_stubbed(:station, name: 'Monkey Island', user: user) }

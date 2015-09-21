@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe NotificationsController, :type => :controller do
+describe NotificationsController, type: :controller do
 
   let(:user) { user = create(:user) }
   let(:note) { create(:notification, user: user) }

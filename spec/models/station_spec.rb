@@ -22,7 +22,7 @@
 require 'spec_helper'
 require 'timezone/error'
 
-describe Station, :type => :model do
+describe Station, type: :model do
 
   let(:station) { create(:station) }
 
@@ -56,7 +56,7 @@ describe Station, :type => :model do
     end
 
     it "should set timezone on object creation given lat and lon" do
-      expect(Timezone::Zone).to receive(:new).with(:latlon => [35.6148800, 139.5813000])
+      expect(Timezone::Zone).to receive(:new).with(latlon: [35.6148800, 139.5813000])
       expect(create(:station, lat: 35.6148800, lon: 139.5813000).timezone).to eq "Europe/London"
     end
 
@@ -105,7 +105,7 @@ describe Station, :type => :model do
 
     it "converts a Time to local offset" do
       t = Time.new(2013)
-      station.zone = Timezone::Zone.new :zone => "Europe/Stockholm"
+      station.zone = Timezone::Zone.new zone: "Europe/Stockholm"
       expect(station.time_to_local(t)).to eq t + 1.hours
     end
 

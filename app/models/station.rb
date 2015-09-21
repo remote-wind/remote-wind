@@ -82,7 +82,7 @@ class Station < ActiveRecord::Base
 
   # Lookup timezone via lat/lng
   def lookup_timezone
-    self.zone = Timezone::Zone.new(:latlon => [self.lat, self.lon])
+    self.zone = Timezone::Zone.new(latlon: [self.lat, self.lon])
     self.zone.zone
   end
 
@@ -103,7 +103,7 @@ class Station < ActiveRecord::Base
 
   # Use FriendlyId to create easily "pretty urls"
   extend FriendlyId
-  friendly_id :name, :use => [:slugged, :history]
+  friendly_id :name, use: [:slugged, :history]
 
   # Generate a slug from name if none is given when creating station
   def should_generate_new_friendly_id?

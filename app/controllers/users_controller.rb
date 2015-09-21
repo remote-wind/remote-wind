@@ -20,11 +20,11 @@ class UsersController < ApplicationController
   # DESTROY /users/:id
   def destroy
     if @user == current_user
-      return redirect_to users_path, :flash => { :alert => "You cannot delete your own accout!" }
+      return redirect_to users_path, flash: { alert: "You cannot delete your own accout!" }
     end
 
     @user.destroy!
-    redirect_to users_path, :flash => { :success => "User deleted." }
+    redirect_to users_path, flash: { success: "User deleted." }
   end
 
   # GET /users/:id/edit

@@ -16,7 +16,7 @@
 
 require 'spec_helper'
 
-describe Observation, :type => :model do
+describe Observation, type: :model do
 
   let(:station) { create(:station) }
 

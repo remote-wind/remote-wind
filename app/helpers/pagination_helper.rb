@@ -19,15 +19,15 @@ module PaginationHelper
     protected
 
     def gap
-      tag :li, link(super, '#'), :class => 'unavailable'
+      tag :li, link(super, '#'), class: 'unavailable'
     end
 
     def page_number(page)
-      tag :li, link(page, page, :rel => rel_value(page)), :class => ('current' if page == current_page)
+      tag :li, link(page, page, rel: rel_value(page)), class: ('current' if page == current_page)
     end
 
     def previous_or_next_page(page, text, classname)
-      tag :li, link(text, page || '#'), :class => [classname[0..3], classname, ('unavailable' unless page)].join(' ')
+      tag :li, link(text, page || '#'), class: [classname[0..3], classname, ('unavailable' unless page)].join(' ')
     end
 
     def html_container(html)
@@ -35,7 +35,7 @@ module PaginationHelper
     end
 
     def gap
-      tag :li, link(super, '#'), :class => 'unavailable'
+      tag :li, link(super, '#'), class: 'unavailable'
     end
 
   end

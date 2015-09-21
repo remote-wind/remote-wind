@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :invitable, :omniauthable, :database_authenticatable, :registerable,
          :confirmable, :recoverable, :rememberable, :trackable, :validatable,
-         :omniauth_providers => [:facebook]
+         omniauth_providers: [:facebook]
 
   has_many :authentications, class_name: 'UserAuthentication'
   has_many :stations, inverse_of: :user

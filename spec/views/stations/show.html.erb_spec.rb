@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "stations/show", :type => :view do
+describe "stations/show", type: :view do
   let(:user) { build_stubbed(:user) }
   let(:observation) { build_stubbed(:observation, created_at: Time.new(2000) ) }
 

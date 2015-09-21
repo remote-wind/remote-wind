@@ -67,7 +67,7 @@ feature 'Facebook Authentiation' do
   end
 
   context "when a previously registered user adds FB authentication" do
-    let!(:user) { create(:user, :email => 'test@example.com') }
+    let!(:user) { create(:user, email: 'test@example.com') }
     before :each do
       visit new_user_registration_path
       valid_auth_response

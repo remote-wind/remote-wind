@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NotificationsHelper, :type => :helper do
+describe NotificationsHelper, type: :helper do
 
   let(:user) { build_stubbed(:user) }
 

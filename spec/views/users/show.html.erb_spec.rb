@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'users/show.html.erb', :type => :view do
+describe 'users/show.html.erb', type: :view do
 
 
   let(:user) { create(:user) }

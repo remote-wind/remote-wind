@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ObservationsController, :type => :controller do
+describe ObservationsController, type: :controller do
 
   let(:station) {  create(:station) }
   let(:observation) { create(:observation, station: station) }

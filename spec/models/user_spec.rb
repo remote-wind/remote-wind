@@ -34,7 +34,7 @@
 
 require 'spec_helper'
 
-describe User, :type => :model do
+describe User, type: :model do
 
   subject { build_stubbed(:user) }
 
