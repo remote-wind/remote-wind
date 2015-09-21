@@ -1,8 +1,7 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :index]
-  before_filter :set_user, only: [:show, :destroy]
-  authorize_resource only: [:destroy]
-  skip_authorization_check only: [:show, :index]
+  before_filter :set_user, except: [:index]
+  load_and_authorize_resource
 
   # GET /users/:id
   def show
@@ -28,10 +27,30 @@ class UsersController < ApplicationController
     redirect_to users_path, :flash => { :success => "User deleted." }
   end
 
+  # GET /users/:id/edit
+  def edit
+    Role::AVAILABLE_ROLES.each do |role|
+      # This adds an unsaved role to the user if it does not exist
+      @user.roles.build(name: role) unless @user.has_role?(role)
+    end
+  end
+
+  # PATCH /users/:id
+  def update
+    if @user.update(update_params)
+      redirect_to @user, notice: 'User updated.'
+    else
+      render :edit
+    end
+  end
+
   protected
 
   def set_user
     @user = User.friendly.find(params[:id])
   end
 
+  def update_params
+    params.require(:user).permit(:email, role_ids: [])
+  end
 end

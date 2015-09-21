@@ -1,0 +1,11 @@
+<%= simple_form_for @user do |f| %>
+  <div class="form-inputs">
+    <%= f.input :email, autofocus: true %>
+    <%= f.input :nickname %>
+    <%= f.association :roles, as: :check_boxes %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

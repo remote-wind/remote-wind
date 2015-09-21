@@ -27,13 +27,7 @@ describe 'users/show.html.erb', :type => :view do
 
     context 'when an admin' do
       before { @ability.can :manage, User }
-      it { is_expected.to have_content "Add role to #{ user.nickname }"}
-      it { is_expected.to have_selector '.add-role' }
-      it { is_expected.to have_selector('.add-role select', text: 'developer') }
-      it { is_expected.not_to have_selector('.add-role select', text: 'spammer') }
-      it { is_expected.to have_content "Remove role from #{ user.nickname }"}
-      it { is_expected.to have_selector('.remove-role select', text: 'spammer') }
-      it { is_expected.not_to have_selector('.remove-role select', text: 'developer') }
+      it { is_expected.to have_link "Edit user" }
     end
   end
 

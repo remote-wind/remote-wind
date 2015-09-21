@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
 
   # Use FriendlyId to create "pretty urls"
   extend FriendlyId
-  friendly_id :nickname, :use => [:slugged]
+  friendly_id :nickname, use: [:slugged]
 
   # Setup default values for new records
   after_initialize do
@@ -77,6 +77,7 @@ class User < ActiveRecord::Base
     end
   end
 
+  # @return [boolean]
   def should_generate_new_friendly_id?
     if !slug?
       nickname_changed?

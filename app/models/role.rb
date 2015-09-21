@@ -15,6 +15,8 @@ class Role < ActiveRecord::Base
   belongs_to :user, :polymorphic => true
   scopify
 
+  AVAILABLE_ROLES = [:admin]
+
   def display_name
     @name.capitalize
   end

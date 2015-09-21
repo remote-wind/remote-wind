@@ -6,26 +6,7 @@
   <p>Email: <a href="mailto:<%= @user.email %>"><%= @user.email %></a></p>
   <% end %>
 
-  <%- if can? :manage, @user and @available_roles.any?  -%>
-      <%= simple_form_for(@user, :url => user_roles_path(@user), :html => { :method => :post, :class => 'add-role row' }) do |f| %>
-          <fieldset>
-            <legend>Add role to <%= @user.nickname %></legend>
-            <%= f.input(:roles, label: "Role") do |key|
-              f.select(:roles, options_from_collection_for_select(@available_roles, :id, :name))
-            end %>
-            <%= f.submit "Add role" %>
-          </fieldset>
-      <% end %>
-  <%- end -%>
-  <%- if can? :manage, @user and @user.roles.any? -%>
-      <%= simple_form_for(@user, :url => destroy_user_role_path(@user), :html => { :method => :delete, :class => 'remove-role row' }) do |f| %>
-          <fieldset>
-            <legend>Remove role from <%= @user.nickname %></legend>
-            <%= f.input(:roles, label: "Role") do |key|
-              f.select(:roles, options_from_collection_for_select(@user.roles, :id, :name))
-            end %>
-            <%= f.submit "Remove role" %>
-          </fieldset>
-      <% end %>
-  <%- end -%>
+  <% if can? :edit, @user %>
+  <p><%= link_to("Edit user", edit_user_path(@user)) %></p>
+  <% end %>
 </article>
