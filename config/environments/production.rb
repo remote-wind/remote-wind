@@ -92,4 +92,5 @@ RemoteWind::Application.configure do
     authentication:   :plain,
   }
 
+  config.action_controller.default_url_options = { host: 'www.blast.nu' }
 end
