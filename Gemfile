@@ -3,6 +3,7 @@ ruby '2.1.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2.4'
+gem 'puma'
 
 #= ASSETS ============================================================
 gem 'sass-rails', '~> 4.0.3' # Use SCSS for stylesheets
@@ -46,8 +47,8 @@ end
 group :development, :test do
   gem "dotenv-rails", "~> 0.10.0" # load local config from .env file
   gem 'therubyracer', platforms: :ruby # V8 Javascript runtime
-  gem 'thin'  # use Thin as web server instead of webbrick
   gem 'ffaker'
+  gem 'foreman' # launches server from procfile
 end
 
 group :development do
