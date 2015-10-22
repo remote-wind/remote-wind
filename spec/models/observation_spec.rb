@@ -28,11 +28,6 @@ describe Observation, type: :model do
   describe "attributes" do
     describe "validations" do
       it { is_expected.to validate_presence_of :station }
-      it { is_expected.to validate_numericality_of :speed }
-      it { is_expected.to validate_numericality_of :direction }
-      it { is_expected.to validate_numericality_of :max_wind_speed }
-      it { is_expected.to validate_numericality_of :min_wind_speed }
-      it { is_expected.to validate_numericality_of :speed_calibration }
     end
 
     describe "aliases" do

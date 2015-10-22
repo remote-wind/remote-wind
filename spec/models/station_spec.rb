@@ -38,13 +38,18 @@ describe Station, type: :model do
       it { is_expected.to respond_to :lat }
       it { is_expected.to respond_to :owner }
     end
+
+=begin
+    it {
+      should define_enum_for(:status)
+               .with([:not_initialized, :deactivated, :unresponsive, :active])
+    }
+=end
   end
 
   describe "validations" do
     it { is_expected.to validate_uniqueness_of :hw_id }
     it { is_expected.to validate_presence_of :hw_id }
-    it { is_expected.to validate_numericality_of :speed_calibration }
-    it { is_expected.to validate_numericality_of :balance }
   end
 
   describe "#set_timezone!" do
