@@ -244,6 +244,9 @@ GEM
     rspec-expectations (3.3.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.3.0)
+    rspec-its (1.2.0)
+      rspec-core (>= 3.0.0)
+      rspec-expectations (>= 3.0.0)
     rspec-mocks (3.3.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.3.0)
@@ -345,6 +348,7 @@ DEPENDENCIES
   rails_12factor (= 0.0.2)
   rickshaw_rails (~> 1.4.5)
   rolify (~> 4.1.1)
+  rspec-its
   rspec-rails (~> 3.3.3)
   sass-rails (~> 4.0.3)
   sdoc
