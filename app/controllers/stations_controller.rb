@@ -143,25 +143,15 @@ class StationsController < ApplicationController
   end
 
   # Used by Ardiuno to lookup station ID
-  # GET /stations/search?lat&lon&(radius)
   def find
     @station = Station.find_by(hw_id: params[:hw_id])
     if(@station.nil?)
       respond_to do |format|
-        format.html { head :not_found }
         format.json { head :not_found }
-        format.yaml { head :not_found, :content_type => 'text/x-yaml'}
       end
     else
       respond_to do |format|
-        format.html { redirect_to action: :show, status: :found }
-        format.json  { render json: @station, status: :found }
-        format.yaml { render json:  {
-            id:    @station.id,
-            hw_id: @station.hw_id
-        },
-          content_type: 'text/x-yaml'
-        }
+        format.json { render json: { id: @station.id }}
       end
     end
   end

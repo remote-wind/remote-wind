@@ -24,21 +24,6 @@ ActiveRecord::Schema.define(version: 20140922221657) do
 
   add_index "authentication_providers", ["name"], name: "index_name_on_authentication_providers", using: :btree
 
-  create_table "cows", force: true do |t|
-    t.string   "name"
-    t.integer  "farm_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cows", ["farm_id"], name: "index_cows_on_farm_id", using: :btree
-
-  create_table "farms", force: true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "friendly_id_slugs", force: true do |t|
     t.string   "slug",                      null: false
     t.integer  "sluggable_id",              null: false
@@ -87,16 +72,6 @@ ActiveRecord::Schema.define(version: 20140922221657) do
 
   add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
   add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
-
-  create_table "sims", force: true do |t|
-    t.integer  "phone_number"
-    t.integer  "pin"
-    t.integer  "puk"
-    t.integer  "puk2"
-    t.integer  "station_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "stations", force: true do |t|
     t.string   "name"

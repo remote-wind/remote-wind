@@ -1,5 +1,5 @@
 source 'http://rubygems.org'
-ruby '2.1.2'
+ruby '2.1.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.1.1'
@@ -32,7 +32,6 @@ gem 'jbuilder', '~> 1.2' # Build JSON APIs with ease. Read more: https://github.
 gem 'friendly_id', '~> 5.0.3' # Slugging
 gem 'nokogiri', '~> 1.6.1' # XML/SAX parser.
 gem 'will_paginate', '~> 3.0.5' #Pagination
-gem 'cache_digests', '~> 0.3.1' #Cache invalidation
 gem 'active_model_serializers', '~> 0.8.1' # object serialization
 
 #= Email ===============================================================

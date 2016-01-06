@@ -8,19 +8,17 @@ class ObservationsController < ApplicationController
   before_action :make_public, only: [:index] # Sets CORS headers to allow cross-site sharing
 
   # Send response first when creating an observation.
-  after_action ->{ @station.check_status! }, only: :create
+  after_action ->{ @station.check_status! unless @station.nil? }, only: :create
 
   # POST /observations
   def create
     # Find station via ID or SLUG
     @observation = Observation.new(observation_params)
-    respond_to do |format|
-      if @observation.save
-        @station = @observation.station
-        format.yaml { render nothing: true, status: :ok }
-      else
-        format.yaml { render nothing: true, status: :unprocessable_entity }
-      end
+    @station = @observation.station
+    if @observation.save
+      render nothing: true, status: :ok
+    else
+      render nothing: true, status: :unprocessable_entity
     end
   end
 
@@ -75,6 +73,7 @@ class ObservationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
+          logger.info "Observation Controller with params: " + params.to_s
       ## Handle short form params
       if params[:m]
         return params.require(:m).permit(:i,:s,:d,:min,:max)

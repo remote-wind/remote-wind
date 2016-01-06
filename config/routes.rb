@@ -32,6 +32,7 @@ RemoteWind::Application.routes.draw do
   # Legacy routes to support Ardiuno stations
   put '/s/:id' => 'stations#update_balance', constraints: { format: :yaml }
   post '/measures' => 'observations#create', constraints: { format: :yaml }
+  post '/observations' => 'observations#create'
 
   resources :stations do
     collection do
@@ -51,7 +52,7 @@ RemoteWind::Application.routes.draw do
           as: :embed
     end
 
-    resources :observations, only: [:index, :create, :destroy] do |measure|
+    resources :observations, only: [:index, :create, :destroy] do
       collection do
         delete '/',
           to: "observations#clear",
