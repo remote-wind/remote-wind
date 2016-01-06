@@ -14,6 +14,8 @@
 class Notification < ActiveRecord::Base
   belongs_to :user
 
+  scope :since, -> (time) { where("created_at >= ?", time) }
+
   # 8 log levels according to RFC 5424 (http://tools.ietf.org/html/rfc5424)
   LEVELS_RFC_5424 = {
       debug:  100 ,    # Detailed debug information.

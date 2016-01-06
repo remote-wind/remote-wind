@@ -16,7 +16,9 @@
 
 require 'spec_helper'
 
-describe Observation, :type => :model do
+describe Observation, type: :model do
+
+  let(:station) { create(:station) }
 
   before do
     # makes it possible to use stubbed stations
@@ -26,11 +28,6 @@ describe Observation, :type => :model do
   describe "attributes" do
     describe "validations" do
       it { is_expected.to validate_presence_of :station }
-      it { is_expected.to validate_numericality_of :speed }
-      it { is_expected.to validate_numericality_of :direction }
-      it { is_expected.to validate_numericality_of :max_wind_speed }
-      it { is_expected.to validate_numericality_of :min_wind_speed }
-      it { is_expected.to validate_numericality_of :speed_calibration }
     end
 
     describe "aliases" do
@@ -124,13 +121,5 @@ describe Observation, :type => :model do
       observation = build_stubbed(:observation, calibrated: true)
       expect(observation.calibrated?).to be_truthy
     end
-  end
-
-  it "updates station last observation received at time after saving" do
-    Observation.any_instance.unstub(:update_station)
-    station = create(:station)
-    Time.stub(:now).and_return(Time.new(2000))
-    observation = create(:observation, station: station)
-    expect(station.last_observation_received_at).to eq Time.new(2000)
   end
 end

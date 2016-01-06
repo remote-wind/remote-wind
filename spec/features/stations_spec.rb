@@ -10,7 +10,7 @@ feature "Stations", %{
 
   let(:stations) do
     [*1..3].map! do |i|
-      station = create(:station, :name => "Station #{i+1}")
+      station = create(:station, name: "Station #{i+1}")
       station.observations.create attributes_for(:observation)
       station
     end
@@ -22,7 +22,7 @@ feature "Stations", %{
   scenario "when I view the index page" do
     stations
     visit root_path
-    Capybara.find("#left-off-canvas-menu a", :text => "Stations").click
+    Capybara.find("#left-off-canvas-menu a", text: "Stations").click
     expect(page).to have_selector '.station', count: 3
     expect(page).to have_content stations.first.name
     expect(page).to have_title "Stations | Remote Wind"

@@ -16,7 +16,7 @@
 
 require 'spec_helper'
 
-describe UserAuthentication, :type => :model do
+describe UserAuthentication, type: :model do
 
   let(:user) {
     user = create(:user)

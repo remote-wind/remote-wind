@@ -1,5 +1,5 @@
 class StationSerializer < ActiveModel::Serializer
-  attributes :id, :latitude, :longitude, :name, :slug, :url, :path, :offline, :observations
+  attributes :id, :latitude, :longitude, :name, :slug, :path, :offline, :observations
   private
 
   # Prevents memory issues if observations have not been preloaded
@@ -13,10 +13,6 @@ class StationSerializer < ActiveModel::Serializer
 
   def offline
     object.offline?
-  end
-
-  def url
-    station_url(object)
   end
 
   def path

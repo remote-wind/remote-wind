@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :invitable, :omniauthable, :database_authenticatable, :registerable,
          :confirmable, :recoverable, :rememberable, :trackable, :validatable,
-         :omniauth_providers => [:facebook]
+         omniauth_providers: [:facebook]
 
   has_many :authentications, class_name: 'UserAuthentication'
   has_many :stations, inverse_of: :user
@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
 
   # Use FriendlyId to create "pretty urls"
   extend FriendlyId
-  friendly_id :nickname, :use => [:slugged]
+  friendly_id :nickname, use: [:slugged]
 
   # Setup default values for new records
   after_initialize do
@@ -77,6 +77,7 @@ class User < ActiveRecord::Base
     end
   end
 
+  # @return [boolean]
   def should_generate_new_friendly_id?
     if !slug?
       nickname_changed?

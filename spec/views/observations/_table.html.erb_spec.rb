@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "observations/_table", :type => :view do
+describe "observations/_table", type: :view do
 
   let(:station){ create(:station) }
   let(:observations) do

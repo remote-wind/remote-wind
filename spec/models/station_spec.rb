@@ -22,7 +22,7 @@
 require 'spec_helper'
 require 'timezone/error'
 
-describe Station, :type => :model do
+describe Station, type: :model do
 
   let(:station) { create(:station) }
 
@@ -38,13 +38,18 @@ describe Station, :type => :model do
       it { is_expected.to respond_to :lat }
       it { is_expected.to respond_to :owner }
     end
+
+=begin
+    it {
+      should define_enum_for(:status)
+               .with([:not_initialized, :deactivated, :unresponsive, :active])
+    }
+=end
   end
 
   describe "validations" do
     it { is_expected.to validate_uniqueness_of :hw_id }
     it { is_expected.to validate_presence_of :hw_id }
-    it { is_expected.to validate_numericality_of :speed_calibration }
-    it { is_expected.to validate_numericality_of :balance }
   end
 
   describe "#set_timezone!" do
@@ -56,7 +61,7 @@ describe Station, :type => :model do
     end
 
     it "should set timezone on object creation given lat and lon" do
-      expect(Timezone::Zone).to receive(:new).with(:latlon => [35.6148800, 139.5813000])
+      expect(Timezone::Zone).to receive(:new).with(latlon: [35.6148800, 139.5813000])
       expect(create(:station, lat: 35.6148800, lon: 139.5813000).timezone).to eq "Europe/London"
     end
 
@@ -105,7 +110,7 @@ describe Station, :type => :model do
 
     it "converts a Time to local offset" do
       t = Time.new(2013)
-      station.zone = Timezone::Zone.new :zone => "Europe/Stockholm"
+      station.zone = Timezone::Zone.new zone: "Europe/Stockholm"
       expect(station.time_to_local(t)).to eq t + 1.hours
     end
 
@@ -205,7 +210,7 @@ describe Station, :type => :model do
         end
 
         it "should notify that station is offline" do
-          expect(station).to receive("notify_offline")
+          expect(Services::Notifiers::StationOffline).to receive(:call).with(station)
           station.check_status!
         end
       end
@@ -228,7 +233,7 @@ describe Station, :type => :model do
         end
 
         it "should notify" do
-          expect(station).to receive(:notify_online)
+          expect(Services::Notifiers::StationOnline).to receive(:call).with(station)
           station.check_status!
         end
       end
@@ -241,7 +246,7 @@ describe Station, :type => :model do
         end
 
         it "should not send message" do
-          expect(station).not_to receive(:notify_online)
+          expect(Services::Notifiers::StationOnline).to_not receive(:call).with(station)
           station.check_status!
         end
 
@@ -253,86 +258,6 @@ describe Station, :type => :model do
     end
   end
 
-  describe "#notify_offline" do
-
-    let(:user) { build_stubbed(:user) }
-    let(:station) { create(:station, user: user) }
-
-    it "should log error" do
-      expect(Rails.logger).to receive(:warn).with("Station alert: #{station.name} is now down")
-      station.notify_offline
-    end
-
-    it "should create notification" do
-      expect {
-        station.notify_offline
-      }.to change(Notification, :count).by(1)
-    end
-
-    it "should create notification with correct attributes" do
-      expect(Notification).to receive(:create).with(
-          user: user,
-          level: :warn,
-          message: "#{station.name} is down.",
-          event: "station_down"
-      )
-      station.notify_offline
-    end
-
-    it "should send email" do
-      expect(StationMailer).to receive(:offline)
-      station.notify_offline
-    end
-
-    it "should send email if notified in last 12h" do
-      create(:notification, message: "#{station.name} is down.")
-      expect(StationMailer).to receive(:offline)
-      station.notify_offline
-    end
-  end
-
-  describe "#notify_online" do
-    let(:user) { build_stubbed(:user) }
-    let(:station) { create(:station, user: user) }
-
-    it "should send message" do
-      expect(StationMailer).to receive(:online)
-      station.notify_online
-    end
-
-    it "should log" do
-      expect(Rails.logger).to receive(:info).with("Station alert: #{station.name} is now up")
-      station.notify_online
-    end
-
-    it "should create notification" do
-      expect {
-        station.notify_online
-      }.to change(Notification, :count).by(1)
-    end
-
-    it "should create notification with correct attributes" do
-      expect(Notification).to receive(:create).with(
-          user: user,
-          level: :info,
-          message: "#{station.name} is up.",
-          event: "station_up"
-      )
-      station.notify_online
-    end
-
-    it "should send email if not notified in 12h" do
-      expect(StationMailer).to receive(:offline)
-      station.notify_offline
-    end
-
-    it "should send email if notified in last 12h" do
-      create(:notification, message: "#{station.name} is down.")
-      expect(StationMailer).to receive(:offline)
-      station.notify_offline
-    end
-  end
-
   describe "#check_balance" do
 
     context "when balance is low" do
@@ -341,33 +266,11 @@ describe Station, :type => :model do
       it "should return false" do
         expect(station.check_balance).to be_falsey
       end
-      it "should log notice" do
-        expect(Rails.logger).to receive(:info)
-            .with("#{station.name} has a low balance, only 10.0 kr left.")
-        station.check_balance
-      end
-      it "should send email" do
-        expect(StationMailer).to receive(:low_balance)
-        station.check_balance
-      end
-      it "should only create email if not yet notified" do
-        create(:notification, message: "#{station.name} has a low balance, only 10.0 kr left.")
-        expect(StationMailer).not_to receive(:low_balance)
-        station.check_balance
-      end
-      it "should create a notification" do
-        expect {
-          station.check_balance
-        }.to change(Notification, :count).by(1)
-      end
 
-      it "should create a notification with the correct attributes" do
+      it "notifies the user" do
+        expect(Services::Notifiers::LowBalance).to receive(:call).with(station)
         station.check_balance
-        note = Notification.last
-        expect(note.message).to eq "#{station.name} has a low balance, only 10.0 kr left."
-        expect(note.event).to eq "station_low_balance"
       end
-
     end
 
     context "when balance is high" do
@@ -375,19 +278,6 @@ describe Station, :type => :model do
 
       it "should return true" do
         expect(station.check_balance).to be_truthy
-      end
-      it "should not log notice" do
-        expect(Rails.logger).not_to receive(:info)
-        station.check_balance
-      end
-      it "should not send email" do
-        expect(StationMailer).not_to receive(:low_balance)
-        station.check_balance
-      end
-      it "should not create a notification" do
-        expect {
-          station.check_balance
-        }.to_not change(Notification, :count)
       end
     end
   end
@@ -435,15 +325,35 @@ describe Station, :type => :model do
 
 
   describe "load_observations!" do
-
     let(:station) { create(:station) }
     before(:each) {
       station.observations.create(attributes_for :observation)
     }
-
     it "loads observations" do
       observations = station.load_observations!(50)
-      expect(observations.loaded?).to be_true
+      expect(observations.loaded?).to be_truthy
     end
   end
+
+  describe 'observations callbacks' do
+    it 'updates last_observation_received_at when observation is added' do
+      expect {
+        station.observations.create(attributes_for :observation)
+      }.to change(station, :last_observation_received_at)
+    end
+  end
+
+  describe "low_balance?" do
+
+    it 'returns false if the balance is above 15 sek' do
+      station = build_stubbed(:station, balance: 30)
+      expect(station.low_balance?).to be_falsy
+    end
+
+    it 'returns true if the balance is below 15 sek' do
+      station = build_stubbed(:station, balance: 5)
+      expect(station.low_balance?).to be_truthy
+    end
+  end
+
 end

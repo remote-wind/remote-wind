@@ -1,33 +1,19 @@
 require 'spec_helper'
 
-describe PagesController, :type => :controller do
+RSpec.describe PagesController do
 
-  before :each do
-    sign_out :user
-  end
+  before { sign_out :user }
+  subject { response }
 
   describe "GET 'home'" do
-    it "returns http success" do
-      get :home
-      expect(response).to be_success
-    end
-
-    it "renders the home template" do
-      get :home
-      expect(response).to render_template :home
-    end
+    before { get :home }
+    it { should have_http_status :success }
+    it { should render_template :home }
   end
 
   describe "GET 'products'" do
-    it "returns http success" do
-      get :products
-      expect(response).to be_success
-    end
-
-    it "renders the products template" do
-      get :products
-      expect(response).to render_template :products
-    end
+    before { get :products }
+    it { should have_http_status :success }
+    it { should render_template :products }
   end
-
 end

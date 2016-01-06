@@ -25,7 +25,9 @@ class Station < ActiveRecord::Base
 
   # relations
   belongs_to :user, inverse_of: :stations
-  has_many  :observations, inverse_of: :station, counter_cache: true
+  has_many  :observations,
+    inverse_of: :station,
+    counter_cache: true
   has_many :recent_observations, -> { order('created_at ASC').limit(10) }, class_name: 'Observation'
   has_one :current_observation, -> { order('created_at ASC').limit(1) }, class_name: 'Observation'
 
@@ -80,7 +82,7 @@ class Station < ActiveRecord::Base
 
   # Lookup timezone via lat/lng
   def lookup_timezone
-    self.zone = Timezone::Zone.new(:latlon => [self.lat, self.lon])
+    self.zone = Timezone::Zone.new(latlon: [self.lat, self.lon])
     self.zone.zone
   end
 
@@ -101,7 +103,7 @@ class Station < ActiveRecord::Base
 
   # Use FriendlyId to create easily "pretty urls"
   extend FriendlyId
-  friendly_id :name, :use => [:slugged, :history]
+  friendly_id :name, use: [:slugged, :history]
 
   # Generate a slug from name if none is given when creating station
   def should_generate_new_friendly_id?
@@ -151,73 +153,31 @@ class Station < ActiveRecord::Base
     if should_be_offline?
       unless offline?
         update_attribute('offline', true)
-        notify_offline
+        Services::Notifiers::StationOffline.call(self)
       end
     else
       if offline?
         update_attribute('offline', false)
-        notify_online
+        Services::Notifiers::StationOnline.call(self)
       end
-    end
-  end
-
-  # Log and send notifications that station is down
-  def notify_offline
-
-    logger.warn "Station alert: #{name} is now down"
-    # Allows tests without user
-    if user.present?
-      StationMailer.offline(self)
-
-      # create UI notification.
-      Notification.create(
-          user: self.user,
-          level: :warn,
-          message: "#{name} is down.",
-          event: "station_down"
-      )
-    end
-  end
-
-  # Log and send notifications that station is up
-  def notify_online
-    logger.info "Station alert: #{name} is now up"
-    # Allows tests without user
-    if user.present?
-      StationMailer.online(self)
-      Notification.create(
-          user: self.user,
-          level: :info,
-          message: "#{name} is up.",
-          event: "station_up"
-      )
     end
   end
 
   # Send notifications if station balance is low
   # @return boolean true for ok balance, false if balance is low
   def check_balance
-    if balance && balance < 15
-      Rails.logger.info "#{name} has a low balance, only #{balance} kr left."
-      message = "#{name} has a low balance, only #{balance} kr left."
-      # Check if there have been notifications of this event
-      notified = Notification
-        .where(message: message)
-        .where("created_at >= ?", 12.hours.ago)
-        .count > 0
-      if user.presence && !notified
-        StationMailer.low_balance(self)
-      end
-      Notification.create(
-          user: self.user,
-          level: :info,
-          message: message,
-          event: "station_low_balance"
-      )
-      false
-    else
-      true
+    if low_balance?
+      Services::Notifiers::LowBalance.call(self)
     end
+    !low_balance?
+  end
+
+  def low_balance?
+    balance < 15
+  end
+
+  def last_observation_received_at
+    observations.last.try(:created_at)
   end
 
   def created_at_local

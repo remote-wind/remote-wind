@@ -1,7 +1,6 @@
 RemoteWind::Application.routes.draw do
 
   root 'pages#home'
-  get '/honeypot', to: "application#honeypot", as: :honeypot
   get '/products', to: "pages#products", as: :products
 
   delete '/users/:user_id/roles(/:id)', to: 'roles#destroy', as: :destroy_user_role
@@ -18,13 +17,11 @@ RemoteWind::Application.routes.draw do
           via: [:GET, :DELETE]
   end
 
-  resources :users do
-    resources :roles, only: [:create, :destroy] do
-    end
+  resources :users, except: [:new] do
     resources :notifications, only: [:index, :destroy] do
       collection do
-        patch '/', to: :update_all
-        delete '/', to: :destroy_all
+        patch '/', action: :update_all
+        delete '/', action: :destroy_all
       end
     end
   end
@@ -34,18 +31,16 @@ RemoteWind::Application.routes.draw do
   post '/measures' => 'observations#create', constraints: { format: :yaml }
   post '/observations' => 'observations#create'
 
+  get 'stations/find/:hw_id', to: "stations#find", as: :find_station
+
   resources :stations do
     collection do
       # Used by Ardiuno station to lookup ID
-      get '/find/:hw_id',
-          to: 'stations#find',
-          as: :find
       # Proximity search - not in use
       get '/search/(:lon)(/:lat)(/:radius)',
           to: 'stations#search',
           as: :search
     end
-
     member do
       get '/embed(/:css)',
           to: 'stations#embed',
@@ -60,5 +55,4 @@ RemoteWind::Application.routes.draw do
       end
     end
   end
-
 end

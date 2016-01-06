@@ -22,7 +22,7 @@ class ObservationsController < ApplicationController
     end
   end
 
-  # GET /stations/:staton_id/observations
+  # GET /stations/:station_id/observations
   def index
     expires_in @station.next_observation_expected_in, public: true
     if stale?(@station, last_modified: @station.last_observation_received_at)
@@ -54,7 +54,7 @@ class ObservationsController < ApplicationController
     end
   end
 
-  # DELETE /stations/:staton_id/observations
+  # DELETE /stations/:station_id/observations
   def clear
     # get station with Friendly Id, params[:id] can either be id or slug
     Observation.delete_all("station_id = #{@station.id}")

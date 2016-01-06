@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ObservationsController, :type => :routing do
+describe ObservationsController, type: :routing do
   describe 'routing' do
 
     it 'routes to observations#clear' do

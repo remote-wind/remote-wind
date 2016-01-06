@@ -10,7 +10,7 @@ require 'spec_helper'
 #     end
 #   end
 # end
-describe MarkdownHelper, :type => :helper do
+describe MarkdownHelper, type: :helper do
   describe ".link_to" do
     it "creates a link" do
       expect(MarkdownHelper.link_to('Example', 'http://example.com')).to eq '[Example](http://example.com)'

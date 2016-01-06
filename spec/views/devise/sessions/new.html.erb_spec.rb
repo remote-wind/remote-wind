@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "devise/sessions/new", :type => :view do
+describe "devise/sessions/new", type: :view do
 
   before do
     allow(view).to receive(:resource).and_return(User.new)

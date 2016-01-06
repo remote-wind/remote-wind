@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StationsController, :type => :controller do
+describe StationsController, type: :controller do
 
   # This should return the minimal set of attributes required to create a valid
   # Station. As you add validations to Station, be sure to
@@ -14,9 +14,8 @@ describe StationsController, :type => :controller do
     sign_out :user
   end
 
-
   describe "GET index" do
-
+    subject { response }
     describe "ETag" do
       before { get :index, format: 'json' }
 
@@ -58,20 +57,10 @@ describe StationsController, :type => :controller do
       end
       context "given a station" do
         context "on the first request" do
-          describe '#code' do
-            subject { super().code }
-            it { is_expected.to eq '200' }
-          end
+          it { should have_http_status :ok }
+          its(:headers) { should have_key 'ETag' }
+          its(:headers) { should have_key 'Last-Modified' }
 
-          describe '#headers' do
-            subject { super().headers }
-            it { is_expected.to have_key 'ETag' }
-          end
-
-          describe '#headers' do
-            subject { super().headers }
-            it { is_expected.to have_key 'Last-Modified' }
-          end
         end
         context "on a subsequent request" do
 
@@ -87,10 +76,8 @@ describe StationsController, :type => :controller do
               request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
             end
 
-            describe '#code' do
-              subject { super().code }
-              it { is_expected.to eq '304' }
-            end
+            it { should have_http_status :not_modified }
+
           end
           context "if station has been updated" do
             before do
@@ -99,10 +86,7 @@ describe StationsController, :type => :controller do
               request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
             end
 
-            describe '#code' do
-              subject { super().code }
-              it { is_expected.to eq '200' }
-            end
+            it { should have_http_status :ok }
           end
         end
       end
@@ -140,20 +124,9 @@ describe StationsController, :type => :controller do
       end
 
       context "on the first request" do
-        describe '#code' do
-          subject { super().code }
-          it { is_expected.to eq '200' }
-        end
-
-        describe '#headers' do
-          subject { super().headers }
-          it { is_expected.to have_key 'ETag' }
-        end
-
-        describe '#headers' do
-          subject { super().headers }
-          it { is_expected.to have_key 'Last-Modified' }
-        end
+        it { should have_http_status :ok }
+        its(:headers) { should have_key 'ETag' }
+        its(:headers) { should have_key 'Last-Modified' }
       end
       context "on a subsequent request" do
         before do
@@ -166,11 +139,7 @@ describe StationsController, :type => :controller do
             request.env['HTTP_IF_NONE_MATCH'] = @etag
             request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
           end
-
-          describe '#code' do
-            subject { super().code }
-            it { is_expected.to eq '304' }
-          end
+          it { should have_http_status :not_modified }
         end
         context "if station has been updated" do
           before do
@@ -179,11 +148,7 @@ describe StationsController, :type => :controller do
             request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
             get :show, id: station.to_param
           end
-
-          it "should return 200/OK" do
-            expect(response.code).to eq '200'
-          end
-
+          it { should have_http_status :ok }
         end
       end
     end
@@ -449,6 +414,11 @@ describe StationsController, :type => :controller do
   end
 
   describe "GET find" do
+
+    render_views
+
+    let(:yaml) { JSON.parse(response.body) }
+
     before do
       station
       get :find, hw_id: station.hw_id, format: "yaml"
@@ -460,6 +430,10 @@ describe StationsController, :type => :controller do
 
     it "should not render a template" do
       expect(response).to render_template nil
+    end
+
+    it "contains the id" do
+      expect(yaml["id"]).to eq station.id
     end
   end
 

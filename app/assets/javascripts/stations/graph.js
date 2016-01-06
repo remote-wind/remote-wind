@@ -25,7 +25,6 @@ $(function(){
      * @returns array
      */
     function formatSeriesData(series, data) {
-
         if (data.length) {
             $(data).each(function(k,m){
                 series[0].data.push({
@@ -88,9 +87,7 @@ $(function(){
                 color: "#91B4ED",
                 data: []
             }
-        ], data);
-
-        console.log(series);
+        ], data.reverse() );
 
         // If already initialized
         if (graph) {
@@ -103,7 +100,6 @@ $(function(){
                 });
             });
         }
-
         // Create graph and fixtures
         graph = graph || new Rickshaw.Graph( {
             element: $graph.$chart[0],
@@ -111,16 +107,13 @@ $(function(){
             dotSize: 2,
             series: series
         });
-
         // Scale the Scroll Container after the number of observations
         $graph.$scroll.width( data.length *  30 );
-
         // Scale chart after number of measures
         graph.configure({
             width: $graph.$chart.innerWidth() - 20,
             height: $graph.$chart.innerHeight() - 20
         });
-
         graph.time =  graph.time || new Rickshaw.Fixtures.Time();
 
         // Custom timescale with 15min "clicks"

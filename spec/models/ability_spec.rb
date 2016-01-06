@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'cancan/matchers'
 
 # @see https://github.com/CanCanCommunity/cancancan/wiki/Testing-Abilities
-describe Ability, :type => :model do
+describe Ability, type: :model do
 
   subject { Ability.new(user) }
 
@@ -14,11 +14,9 @@ describe Ability, :type => :model do
     it "should be able to manage self" do
       expect(subject).to be_able_to(:crud, user)
     end
-
     it "should not be able to manage others" do
       expect(subject).to_not be_able_to(:manage, User)
     end
-
     it { is_expected.to be_able_to(:crud, auth) }
     it { is_expected.not_to be_able_to(:crud, build_stubbed(:user_authentication, user: build_stubbed(:user))) }
     it { is_expected.to be_able_to(:read, Station) }

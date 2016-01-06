@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StationsHelper, :type => :helper do
+describe StationsHelper, type: :helper do
 
   let(:station) { build_stubbed(:station) }
 

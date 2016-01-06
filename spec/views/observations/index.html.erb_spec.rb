@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "observations/index", :type => :view do
+describe "observations/index", type: :view do
 
   let!(:station) { build_stubbed(:station) }
 
