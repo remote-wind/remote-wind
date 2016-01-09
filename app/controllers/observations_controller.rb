@@ -4,7 +4,7 @@ class ObservationsController < ApplicationController
   load_and_authorize_resource
 
   protect_from_forgery        only: [:destroy, :clear]
-  before_action :set_station, only: [:index, :clear]
+  before_action :set_station, only: [:index, :clear, :create]
   before_action :make_public, only: [:index] # Sets CORS headers to allow cross-site sharing
 
   # Send response first when creating an observation.
@@ -14,7 +14,9 @@ class ObservationsController < ApplicationController
   def create
     # Find station via ID or SLUG
     @observation = Observation.new(observation_params)
-    @station = @observation.station
+    if @observation.station.nil? && !@station.nil?
+      @observation.station = @station
+    end 
     if @observation.save
       render nothing: true, status: :ok
     else
@@ -73,11 +75,7 @@ class ObservationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
-          logger.info "Observation Controller with params: " + params.to_s
-      ## Handle short form params
-      if params[:m]
-        return params.require(:m).permit(:i,:s,:d,:min,:max)
-      end
+      logger.info "Observation Controller with params: " + params.to_s
       params.require(:observation).permit(
           :id, :station_id, :direction, :speed, :min_wind_speed, :max_wind_speed
       )
