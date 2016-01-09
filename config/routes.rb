@@ -25,17 +25,15 @@ RemoteWind::Application.routes.draw do
       end
     end
   end
-
-  # Legacy routes to support Ardiuno stations
-  put '/s/:id' => 'stations#update_balance', constraints: { format: :yaml }
-  post '/measures' => 'observations#create', constraints: { format: :yaml }
-  post '/observations' => 'observations#create'
-
+  
+  # Used by Ardiuno stations to lookup ID
   get 'stations/find/:hw_id', to: "stations#find", as: :find_station
+  # Used by Arduino stations to report firmwares
+  put   'stations/:id/firmware_version', to: 'stations#api_firmware_version', constraints: { format: :json }
+  patch 'stations/:id/firmware_version', to: 'stations#api_firmware_version', constraints: { format: 'json' }
 
   resources :stations do
     collection do
-      # Used by Ardiuno station to lookup ID
       # Proximity search - not in use
       get '/search/(:lon)(/:lat)(/:radius)',
           to: 'stations#search',

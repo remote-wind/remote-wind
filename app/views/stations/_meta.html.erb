@@ -34,6 +34,14 @@
         <td>Timezone</td>
         <td><%= @station.timezone %></td>
       </tr>
+      <tr class="firmware">
+        <td>Firmware</td>
+        <td><%= @station.firmware_version %></td>
+      </tr>
+      <tr class="gsm_software">
+        <td>GSM Modem firmware</td>
+        <td><%= @station.gsm_software %></td>
+      </tr>
       <tr class="visible">
         <td>Visible</td>
         <td><%= @station.show ? 'yes' : 'no' %></td>

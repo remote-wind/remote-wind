@@ -33,7 +33,7 @@ class Station < ActiveRecord::Base
 
    # constraints
   validates_uniqueness_of :hw_id
-  validates_presence_of :hw_id
+  #validates_presence_of :hw_id
   validates_numericality_of :speed_calibration
   validates_numericality_of :balance, allow_blank: true
 

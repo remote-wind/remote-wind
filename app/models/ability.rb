@@ -15,7 +15,7 @@ class Ability
     can :read, Station do |s|
       s.show?
     end
-    can [:update_balance, :find, :embed, :search], Station
+    can [:update_balance, :api_firmware_version, :find, :embed, :search], Station
     can [:read, :create], Observation
     can :crud, Notification do |note|
       note.user_id == user.id

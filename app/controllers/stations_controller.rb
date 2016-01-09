@@ -1,15 +1,13 @@
 class StationsController < ApplicationController
-
   skip_before_filter :authenticate_user!,
-                     only: [:show, :index, :search, :embed, :find, :update_balance]
-  authorize_resource
+                     only: [:show, :index, :search, :embed, :find, :api_firmware_version, :update_balance]
 
+  authorize_resource
   before_action :set_station, except: [:new, :index, :create, :find, :search]
   before_action :make_public, only: [:show, :index]
 
   # Skip CSRF protection since station does not send CSRF token.
-  protect_from_forgery except: [:create, :update_balance]
-
+  protect_from_forgery except: [:create, :update_balance, :api_firmware_version]
 
   # GET /stations
   # GET /stations.json
@@ -79,6 +77,15 @@ class StationsController < ApplicationController
     end
   end
 
+  # PATCH/PUT /stations/1/firmware_version.json
+  def api_firmware_version
+    if @station.update(params.require(:station).permit(:firmware_version, :gsm_software))
+      head :ok
+    else
+      render json: @station.errors, status: :unprocessable_entity
+    end
+  end
+  
   # @throws ActiveRecord::RecordNotFound if no station
   # PUT /s/:station_id
   def update_balance
@@ -170,13 +177,14 @@ class StationsController < ApplicationController
   # before_action
   def set_station
     @station = Station.friendly.find(params[:id])
-    authorize! @station, action_name.to_sym unless (action_name.to_sym).in?([:embed, :show, :update_balance])
+    logger.info action_name.to_sym
+    authorize! @station, action_name.to_sym unless (action_name.to_sym).in?([:embed, :show, :update_balance, :api_firmware_version])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def station_params
     params.require(:station).permit(
-      :name, :hw_id, :latitude, :longitude, :user_id, :slug, :show, :speed_calibration
+      :name, :hw_id, :latitude, :longitude, :user_id, :slug, :show, :speed_calibration, :description
     )
   end
 end
