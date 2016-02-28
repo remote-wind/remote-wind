@@ -5,6 +5,7 @@ class StationsController < ApplicationController
   authorize_resource
   before_action :set_station, except: [:new, :index, :create, :find, :search]
   before_action :make_public, only: [:show, :index]
+  before_action :no_cache, only: [:index]
 
   # Skip CSRF protection since station does not send CSRF token.
   protect_from_forgery except: [:create, :update_balance, :api_firmware_version]
@@ -163,6 +164,13 @@ class StationsController < ApplicationController
   end
 
   private
+  
+  def no_cache
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate" # HTTP 1.1.
+    response.headers["Pragma"] = "no-cache" # HTTP 1.0.
+    response.headers["Expires"] = "0" # Proxies.
+  end
+  
   # Get all stations with the latest observation preloaded
   # @return array
   def all_with_latest_observation
