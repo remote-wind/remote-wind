@@ -8,9 +8,7 @@
 <% unless @station.user.nil? %>
     <p>Owned by <%= link_to(@station.user.nickname, user_path(@station.user)) %></p>
 <% end %>
-<% unless @station.description.nil? %>
-	<p><%= @station.description.html_safe %></p>
-<% end %>
+<p><%= @station.description.try(:html_safe) %></p>
 <article class="station">
 
   <dl class="accordion" data-accordion>
