@@ -13,9 +13,8 @@ class StationsController < ApplicationController
   # GET /stations.json
   def index
     @title = "Stations"
-    # Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved
-    @last_updated = Station.order("updated_at asc").last
-    if stale?(etag: @last_updated, last_modified: @last_updated.try(:updated_at))
+    @last_updated = Observation.last
+    if stale?(@last_updated)
       @stations = all_with_latest_observation
       respond_to do |format|
         format.html
