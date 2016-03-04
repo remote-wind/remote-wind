@@ -9,22 +9,15 @@ describe ObservationsController, type: :controller do
   before(:each) { sign_out :user }
 
   describe "POST 'create'" do
-
-    it "does not accept any other format than yaml" do
-     expect {
-       post :create, { observation: valid_attributes, format: 'html' }
-     }.to raise_exception(ActionController::UnknownFormat)
-    end
-
     it "checks station status" do
       expect_any_instance_of(Station).to receive(:check_status!)
-      post :create, { observation: valid_attributes, format: "yaml" }
+      post :create, { station_id: station, observation: valid_attributes }
     end
 
     context "with valid attributes" do
       it "should create a new observation" do
         expect {
-          post :create, {observation: valid_attributes, format: "yaml"}
+          post :create, {station_id: station, observation: valid_attributes }
         }.to change(Observation, :count).by(1)
       end
     end
@@ -32,23 +25,22 @@ describe ObservationsController, type: :controller do
     context "with short form attributes" do
       it "should create a new observation" do
         expect {
-          post :create, {m: {s: 1, d:  2, i: station.id, max: 4, min: 5}, format: "yaml"}
+          post :create, {station_id: station, m: {s: 1, d:  2, i: station.id, max: 4, min: 5}}
         }.to change(Observation, :count).by(1)
       end
     end
 
     context "with yaml format" do
       it "sends HTTP success" do
-        post :create, { observation: valid_attributes, format: "yaml"}
+        post :create, { station_id: station, observation: valid_attributes }
         expect(response.code).to eq "200"
       end
     end
 
     it "updates station last_observation_received_at" do
-      post :create, { observation: valid_attributes, format: "yaml"}
+      post :create, { station_id: station, observation: valid_attributes }
       expect(assigns(:station).last_observation_received_at).to eq assigns(:observation).created_at
     end
-
   end
 
   describe "GET index" do
