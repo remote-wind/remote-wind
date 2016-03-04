@@ -24,14 +24,6 @@ describe ObservationsController, type: :controller do
       end
     end
 
-    context "with short form attributes" do
-      it "should create a new observation" do
-        expect {
-          post :create, {station_id: station, m: {s: 1, d:  2, i: station.id, max: 4, min: 5}}
-        }.to change(Observation, :count).by(1)
-      end
-    end
-
     context "with yaml format" do
       it "sends HTTP success" do
         post :create, { station_id: station, observation: valid_attributes }
