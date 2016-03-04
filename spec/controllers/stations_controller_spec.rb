@@ -436,40 +436,4 @@ describe StationsController, type: :controller do
       expect(yaml["id"]).to eq station.id
     end
   end
-
-  describe "PUT update_balance" do
-
-    before :each do
-      station
-    end
-
-    context 'with valid params' do
-      let(:params) { { id: station.id, s: { b: 90 } } }
-
-      it "should update balance" do
-        put :update_balance, params
-        expect( assigns(:station).balance ).to eq 90
-      end
-
-      it "should return 200/OK with valid input" do
-        put :update_balance, params
-        expect(response.status).to eq 200
-      end
-
-      it "should check station balance" do
-        expect_any_instance_of(Station).to receive(:check_balance)
-        put :update_balance, params
-      end
-    end
-
-    it "should return 422 - Unprocessable Entity when given an invalid balance" do
-      put :update_balance, id: station.id, s: { b: "NaN" }
-      expect(response.status).to eq 422
-    end
-
-    it "should log error if given an invalid balance" do
-      expect(Rails.logger).to receive(:error).with("Someone attemped to update #{station.name} balance with invalid data ('NaN') from 0.0.0.0")
-      put :update_balance, id: station.id, s: { b: "NaN" }
-    end
-  end
 end
