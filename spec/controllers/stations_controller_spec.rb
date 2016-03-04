@@ -81,7 +81,7 @@ describe StationsController, type: :controller do
           end
           context "if station has been updated" do
             before do
-              station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+              station.observations.create(attributes_for(:observation))
               request.env['HTTP_IF_NONE_MATCH'] = @etag
               request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
             end
@@ -143,7 +143,7 @@ describe StationsController, type: :controller do
         end
         context "if station has been updated" do
           before do
-            station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+            station.observations.create(attributes_for(:observation))
             request.env['HTTP_IF_NONE_MATCH'] = @etag
             request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
             get :show, id: station.to_param
