@@ -417,11 +417,11 @@ describe StationsController, type: :controller do
 
     render_views
 
-    let(:yaml) { JSON.parse(response.body) }
+    let(:json) { JSON.parse(response.body) }
 
     before do
       station
-      get :find, hw_id: station.hw_id, format: "yaml"
+      get :find, hw_id: station.hw_id, format: :json
     end
 
     it "should return HTTP success" do
@@ -433,7 +433,7 @@ describe StationsController, type: :controller do
     end
 
     it "contains the id" do
-      expect(yaml["id"]).to eq station.id
+      expect(json["id"]).to eq station.id
     end
   end
 end
