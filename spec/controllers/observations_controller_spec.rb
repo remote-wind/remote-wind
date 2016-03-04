@@ -9,6 +9,8 @@ describe ObservationsController, type: :controller do
   before(:each) { sign_out :user }
 
   describe "POST 'create'" do
+
+
     it "checks station status" do
       expect_any_instance_of(Station).to receive(:check_status!)
       post :create, { station_id: station, observation: valid_attributes }
@@ -41,6 +43,7 @@ describe ObservationsController, type: :controller do
       post :create, { station_id: station, observation: valid_attributes }
       expect(assigns(:station).last_observation_received_at).to eq assigns(:observation).created_at
     end
+
   end
 
   describe "GET index" do
@@ -99,20 +102,12 @@ describe ObservationsController, type: :controller do
       end
 
       context "on the first request" do
-        describe '#code' do
-          subject { super().code }
-          it { is_expected.to eq '200' }
-        end
+        before { get :index, station_id: station.to_param, format: 'json' }
+        subject { response }
 
-        describe '#headers' do
-          subject { super().headers }
-          it { is_expected.to have_key 'ETag' }
-        end
-
-        describe '#headers' do
-          subject { super().headers }
-          it { is_expected.to have_key 'Last-Modified' }
-        end
+        its(:code){ is_expected.to eq '200' }
+        its(:headers) { is_expected.to have_key 'ETag' }
+        its(:headers) { is_expected.to have_key 'Last-Modified' }
       end
       context "on a subsequent request" do
         before do
@@ -133,7 +128,7 @@ describe ObservationsController, type: :controller do
         end
         context "if station has been updated" do
           before do
-            station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+            station.observations.create(attributes_for(:observation))
             request.env['HTTP_IF_NONE_MATCH'] = @etag
             request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
           end
