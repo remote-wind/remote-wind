@@ -16,7 +16,7 @@ class ObservationsController < ApplicationController
     @observation = Observation.new(observation_params)
     if @observation.station.nil? && !@station.nil?
       @observation.station = @station
-    end 
+    end
     if @observation.save
       render nothing: true, status: :ok
     else
@@ -27,7 +27,7 @@ class ObservationsController < ApplicationController
   # GET /stations/:station_id/observations
   def index
     expires_in @station.next_observation_expected_in, public: true
-    if stale?(@station, last_modified: @station.last_observation_received_at)
+    if stale?(@station)
       respond_to do |format|
         @observations = @station.observations
         format.html do

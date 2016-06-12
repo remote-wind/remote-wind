@@ -29,8 +29,7 @@ class StationsController < ApplicationController
   def show
     @title = @station.name
     @observations = @station.load_observations!(10)
-    # Etag caching disabled until https://github.com/remote-wind/remote-wind/issues/101 can be resolved
-    if stale?(etag: @station, last_modified: @station.try(:updated_at))
+    if stale?(@station)
       respond_to do |format|
         format.html
         format.json { render json: @station }
@@ -85,7 +84,7 @@ class StationsController < ApplicationController
       render json: @station.errors, status: :unprocessable_entity
     end
   end
-  
+
   # @throws ActiveRecord::RecordNotFound if no station
   # PUT /s/:station_id
   def update_balance
