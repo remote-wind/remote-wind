@@ -10,42 +10,29 @@ describe ObservationsController, type: :controller do
 
   describe "POST 'create'" do
 
-    it "does not accept any other format than yaml" do
-     expect {
-       post :create, { observation: valid_attributes, format: 'html' }
-     }.to raise_exception(ActionController::UnknownFormat)
-    end
 
     it "checks station status" do
       expect_any_instance_of(Station).to receive(:check_status!)
-      post :create, { observation: valid_attributes, format: "yaml" }
+      post :create, { station_id: station, observation: valid_attributes }
     end
 
     context "with valid attributes" do
       it "should create a new observation" do
         expect {
-          post :create, {observation: valid_attributes, format: "yaml"}
-        }.to change(Observation, :count).by(1)
-      end
-    end
-
-    context "with short form attributes" do
-      it "should create a new observation" do
-        expect {
-          post :create, {m: {s: 1, d:  2, i: station.id, max: 4, min: 5}, format: "yaml"}
+          post :create, {station_id: station, observation: valid_attributes }
         }.to change(Observation, :count).by(1)
       end
     end
 
     context "with yaml format" do
       it "sends HTTP success" do
-        post :create, { observation: valid_attributes, format: "yaml"}
+        post :create, { station_id: station, observation: valid_attributes }
         expect(response.code).to eq "200"
       end
     end
 
     it "updates station last_observation_received_at" do
-      post :create, { observation: valid_attributes, format: "yaml"}
+      post :create, { station_id: station, observation: valid_attributes }
       expect(assigns(:station).last_observation_received_at).to eq assigns(:observation).created_at
     end
 
@@ -107,20 +94,12 @@ describe ObservationsController, type: :controller do
       end
 
       context "on the first request" do
-        describe '#code' do
-          subject { super().code }
-          it { is_expected.to eq '200' }
-        end
+        before { get :index, station_id: station.to_param, format: 'json' }
+        subject { response }
 
-        describe '#headers' do
-          subject { super().headers }
-          it { is_expected.to have_key 'ETag' }
-        end
-
-        describe '#headers' do
-          subject { super().headers }
-          it { is_expected.to have_key 'Last-Modified' }
-        end
+        its(:code){ is_expected.to eq '200' }
+        its(:headers) { is_expected.to have_key 'ETag' }
+        its(:headers) { is_expected.to have_key 'Last-Modified' }
       end
       context "on a subsequent request" do
         before do
@@ -141,7 +120,7 @@ describe ObservationsController, type: :controller do
         end
         context "if station has been updated" do
           before do
-            station.update_attribute(:last_observation_received_at, Time.now + 1.hour)
+            station.observations.create(attributes_for(:observation))
             request.env['HTTP_IF_NONE_MATCH'] = @etag
             request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
           end

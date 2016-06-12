@@ -27,7 +27,8 @@ class Station < ActiveRecord::Base
   belongs_to :user, inverse_of: :stations
   has_many  :observations,
     inverse_of: :station,
-    counter_cache: true
+    counter_cache: true,
+    after_add: ->(s,o){ s.touch if s.persisted? } # touch station so cache key is changed
   has_many :recent_observations, -> { order('created_at ASC').limit(10) }, class_name: 'Observation'
   has_one :current_observation, -> { order('created_at ASC').limit(1) }, class_name: 'Observation'
 
@@ -199,6 +200,7 @@ class Station < ActiveRecord::Base
     end
     5.minutes
   end
+
 
   # Does a select query to fetch observations and manually sets up active record association to avoid n+1 query
   # and memory issues when Rails tries to eager load the association without a limit.
