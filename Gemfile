@@ -46,9 +46,9 @@ end
 
 group :development, :test do
   gem "dotenv-rails", "~> 0.10.0" # load local config from .env file
-  gem 'therubyracer', platforms: :ruby # V8 Javascript runtime
   gem 'ffaker'
   gem 'foreman' # launches server from procfile
+  gem 'terminal-notifier', require: false
 end
 
 group :development do

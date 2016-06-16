@@ -16,6 +16,11 @@ See the [project wiki](https://github.com/remote-wind/remote-wind/wiki) for more
 - If you are using RVM, it should autodetect the ruby version and gemset when you cd into directory
 - bundle install
 
+### Having problems with bundle install on OS-X?
+The libv8 gem often has problems installing on OS-X due to the lack of openssl
+headers. What seems to work is using the system version of v8. `bundle config build.libv8 -- --with-system-v8`.
+
+
 ### Set up enviromental vars
 You may need set some enviromental vars to get the app running on your system.
 ```
@@ -42,4 +47,3 @@ This application supports debugging in Google chrome via [the RailsPanel extensi
 Norman Clarke
 Benedikt Deicke
 Thoughtbot
-
