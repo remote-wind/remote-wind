@@ -45,6 +45,7 @@ class Station < ActiveRecord::Base
   #callbacks
   before_validation :set_timezone!
   after_initialize :set_timezone!
+  after_save :calibrate_observations!, if: :speed_calibration_changed?
 
   # Attribute aliases
   alias_attribute :lat, :latitude
@@ -57,28 +58,26 @@ class Station < ActiveRecord::Base
   # Scopes
   scope :visible, -> { where( show: true ) }
 
-  # Eager load the latest observation.
-  scope :with_latest_observation, -> do
-    eager_load(:observations).where(observations: { id: Observation.pluck_one_from_each_station } )
-  end
-
-  # Eager load the latest N number of observations.
+  # Scope that eager loads the latest N number of observations.
   # @note requires Postgres 9.3+
   # @param [Integer] limit - the number of observations to eager load
-  scope :with_observations, ->(limit = 1) do
-    eager_load(:observations).where(observations: { id: Observation.pluck_from_each_station(limit) })
+  # @return [ActiveRecord::Relation]
+  def self.with_observations(limit = 1)
+    eager_load(:observations).where(
+      observations: { id: Observation.pluck_from_each_station(limit) }
+    )
   end
-
-  # callbacks
-  after_save -> do
-    self.observations.update_all(speed_calibration: self.speed_calibration)
-  end, if: lambda { |station| station.speed_calibration_changed? }
 
   # Setup default values for new records
   after_initialize do
     if self.new_record?
       self.speed_calibration = 1
     end
+  end
+
+  # Updates the "cached" speed_calibration value on the observations table
+  def calibrate_observations!
+    self.observations.update_all(speed_calibration: self.speed_calibration)
   end
 
   # Lookup timezone via lat/lng
@@ -147,7 +146,9 @@ class Station < ActiveRecord::Base
 
   # do heuristics if station is down
   def should_be_offline?
-      Observation.where({station_id: id}).since(24.minutes.ago).order(created_at: :desc).count  < 3
+      observations.desc
+                 .since(24.minutes.ago)
+                 .count < 3
   end
 
   def check_status!
@@ -200,7 +201,6 @@ class Station < ActiveRecord::Base
     end
     5.minutes
   end
-
 
   # Does a select query to fetch observations and manually sets up active record association to avoid n+1 query
   # and memory issues when Rails tries to eager load the association without a limit.

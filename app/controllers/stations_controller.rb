@@ -16,7 +16,11 @@ class StationsController < ApplicationController
     @title = "Stations"
     @last_updated = Observation.last
     if stale?(@last_updated)
-      @stations = all_with_latest_observation
+      @stations = Station.all.with_observations(1)
+      unless user_signed_in? && current_user.has_role?(:admin)
+        @stations = @stations.visible
+      end
+      @stations.load
       respond_to do |format|
         format.html
         format.json { render json: @stations }
@@ -163,21 +167,11 @@ class StationsController < ApplicationController
   end
 
   private
-  
+
   def no_cache
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate" # HTTP 1.1.
     response.headers["Pragma"] = "no-cache" # HTTP 1.0.
     response.headers["Expires"] = "0" # Proxies.
-  end
-  
-  # Get all stations with the latest observation preloaded
-  # @return array
-  def all_with_latest_observation
-    stations = Station.all.with_latest_observation
-    unless user_signed_in? && current_user.has_role?(:admin)
-      stations = stations.visible
-    end
-    stations.load
   end
 
   # before_action

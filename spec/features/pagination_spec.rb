@@ -16,7 +16,7 @@ feature "Pagination" do
       within "#table" do
         click_link 'More'
       end
-      expect(current_path).to eq station_observations_path(station)
+      expect(current_path).to eq station_observations_path(station, format: :html)
     end
   end
 end

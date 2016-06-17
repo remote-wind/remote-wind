@@ -294,24 +294,20 @@ describe Station, type: :model do
     end
   end
 
-  describe "scopes" do
-    before(:each) { 3.times { station.observations.create(attributes_for :observation) } }
-    describe ".with_latest_observation" do
-      it "eager loads the latest observation" do
-        stations = Station.with_latest_observation.load
-        observations = stations.last.observations
-        expect(observations.size).to eq 1
-        expect(observations.loaded?).to be true
-        expect(observations.last).to eq station.observations.order(created_at: :desc).last
+  describe ".with_observations" do
+    before do
+      [15, 10, 5, 0].map do |time|
+        Timecop.travel( time.minutes.ago ) do
+          station.observations.create(attributes_for :observation)
+        end
       end
     end
-    describe ".with_observations" do
-      it "eager loads the latest observation" do
-        stations = Station.with_observations(2).load
-        observations = stations.last.observations
-        expect(observations.size).to eq 2
-        expect(observations.loaded?).to be true
-      end
+    it "eager loads the latest observation" do
+      stations = Station.with_observations(2).load
+      observations = stations.last.observations
+      expect(observations.size).to eq 2
+      expect(observations.loaded?).to be true
+      expect(observations.first).to eq station.observations.order(created_at: :desc).first
     end
   end
 
