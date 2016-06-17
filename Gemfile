@@ -78,6 +78,7 @@ group :test do
   gem "terminal-notifier-guard", "~> 1.6.4", require: false
   # Used to generate test coverage reports
   gem 'simplecov', require: false
+  gem 'timecop'
 end
 
 #= Heroku Dependencies =========================================================

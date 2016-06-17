@@ -27,6 +27,10 @@ Spork.prefork do
 
     config.raise_errors_for_deprecations!
 
+    # Safe mode forces you to use Timecop with the block syntax
+    # since it always puts time back the way it was.
+    Timecop.safe_mode = true
+
     # Run specs in random order to surface order dependencies. If you find an
     # order dependency and want to debug it, you can fix the order by providing
     # the seed, which is printed after each run.

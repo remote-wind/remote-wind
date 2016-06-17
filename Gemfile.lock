@@ -297,6 +297,7 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (1.4.1)
+    timecop (0.8.1)
     timezone (0.4.3)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
@@ -355,6 +356,7 @@ DEPENDENCIES
   spork-rails (~> 4.0.0)
   terminal-notifier
   terminal-notifier-guard (~> 1.6.4)
+  timecop
   timezone (~> 0.4.2)
   uglifier (~> 2.5.0)
   will_paginate (~> 3.0.7)

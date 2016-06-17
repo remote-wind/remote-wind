@@ -302,6 +302,7 @@ describe Station, type: :model do
         observations = stations.last.observations
         expect(observations.size).to eq 1
         expect(observations.loaded?).to be true
+        expect(observations.last).to eq station.observations.order(created_at: :desc).last
       end
     end
     describe ".with_observations" do
