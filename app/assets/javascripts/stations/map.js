@@ -4,9 +4,11 @@ $(document).ready(function(){
     var mapInit = jQuery.Deferred();
     var $map_canvas = $('#map_canvas');
 
-    google.load("maps", "3", { other_params:'sensor=false', callback: function(){
-        apiLoaded.resolve(google);
-    }});
+    if ($map_canvas.length) {
+      google.load("maps", "3", { other_params:'sensor=false', callback: function(){
+          apiLoaded.resolve(google);
+      }});
+    }
 
     // Initialize map
     apiLoaded.done(function(gmaps){

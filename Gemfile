@@ -46,9 +46,9 @@ end
 
 group :development, :test do
   gem "dotenv-rails", "~> 0.10.0" # load local config from .env file
-  gem 'therubyracer', platforms: :ruby # V8 Javascript runtime
   gem 'ffaker'
   gem 'foreman' # launches server from procfile
+  gem 'terminal-notifier', require: false
 end
 
 group :development do
@@ -78,6 +78,7 @@ group :test do
   gem "terminal-notifier-guard", "~> 1.6.4", require: false
   # Used to generate test coverage reports
   gem 'simplecov', require: false
+  gem 'timecop'
 end
 
 #= Heroku Dependencies =========================================================

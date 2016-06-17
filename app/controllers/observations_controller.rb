@@ -31,7 +31,7 @@ class ObservationsController < ApplicationController
       respond_to do |format|
         @observations = @station.observations
         format.html do
-          @observations = @observations.order(created_at: :desc)
+          @observations = @observations.desc
                        .paginate(page: params[:page])
         end
         format.json do

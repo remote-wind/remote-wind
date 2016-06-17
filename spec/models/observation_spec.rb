@@ -122,4 +122,21 @@ describe Observation, type: :model do
       expect(observation.calibrated?).to be_truthy
     end
   end
+
+  describe ".pluck_from_each_station" do
+    Timecop.freeze do
+      before do
+        [15, 10, 5].each do |time|
+          Timecop.travel( time.minutes.ago ) do
+            create(:observation, station: station)
+          end
+        end
+      end
+      it "selects records in the correct order" do
+        observation = Observation.find(Observation.pluck_from_each_station.first)
+        expect(observation).to eq station.observations.last
+        expect(observation.created_at).to be > 6.minutes.ago
+      end
+    end
+  end
 end
