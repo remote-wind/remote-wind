@@ -169,6 +169,24 @@ describe Station, type: :model do
         expect(station.should_be_offline?).to be_truthy
       end
     end
+
+    describe "sampling rate" do
+      let!(:observations) do
+        [*1..4].map do |i|
+          create(:observation, station: station, created_at: (i*10).minutes.ago)
+        end
+      end
+
+      it "takes the sampling_rate into account" do
+        station.sampling_rate = 5.minutes
+        expect(station.should_be_offline?).to eq true
+      end
+
+      it "takes the sampling_rate into account 2" do
+        station.sampling_rate = 10.minutes
+        expect(station.should_be_offline?).to eq false
+      end
+    end
   end
 
   describe "check_status!" do

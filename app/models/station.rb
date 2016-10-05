@@ -147,7 +147,7 @@ class Station < ActiveRecord::Base
   # do heuristics if station is down
   def should_be_offline?
       observations.desc
-                 .since(24.minutes.ago)
+                 .since( (sampling_rate * 4.8).seconds.ago  )
                  .count < 3
   end
 
