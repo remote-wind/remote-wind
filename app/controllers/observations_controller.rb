@@ -26,7 +26,7 @@ class ObservationsController < ApplicationController
 
   # GET /stations/:station_id/observations
   def index
-    expires_in @station.next_observation_expected_in, public: true
+    expires_in expiry_time(@station), public: true
     if stale?(@station)
       respond_to do |format|
         @observations = @station.observations
@@ -36,8 +36,8 @@ class ObservationsController < ApplicationController
         end
         format.json do
           @observations = @station.load_observations!(
-              288,
-              query: Observation.desc.since(@station.last_observation_received_at - 24.hours)
+              @station.observations_per_day,
+              query: Observation.desc.since(24.hours.ago)
           )
           render json: @observations
         end
@@ -79,5 +79,12 @@ class ObservationsController < ApplicationController
       params.require(:observation).permit(
           :id, :station_id, :direction, :speed, :min_wind_speed, :max_wind_speed
       )
+    end
+
+    def expiry_time(station)
+      t = station.next_observation_expected_in
+      # checks if station is overdue for reporting in which case it sets the
+      # expiry to 1 minute to encourage the client to check again.
+      t > 0 ? t : 1.minute
     end
 end

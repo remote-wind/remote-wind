@@ -37,6 +37,7 @@ class Station < ActiveRecord::Base
   #validates_presence_of :hw_id
   validates_numericality_of :speed_calibration
   validates_numericality_of :balance, allow_blank: true
+  validates_numericality_of :sampling_rate, allow_blank: true, max: 24.hours.to_i
 
   # geolocation
   geocoded_by :name
@@ -196,10 +197,10 @@ class Station < ActiveRecord::Base
 
   def next_observation_expected_in
     if last_observation_received_at
-      eta = last_observation_received_at.minus_with_coercion(5.minutes.ago).round()
-      return eta.seconds if eta > 0
+      eta = (last_observation_received_at - sampling_rate.ago).round
+    else
+      sampling_rate
     end
-    5.minutes
   end
 
   # Does a select query to fetch observations and manually sets up active record association to avoid n+1 query
@@ -226,5 +227,9 @@ class Station < ActiveRecord::Base
     else
       self[:sampling_rate].seconds
     end
+  end
+
+  def observations_per_day
+    1.day / sampling_rate
   end
 end
