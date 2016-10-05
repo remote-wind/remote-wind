@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160108152623) do
+ActiveRecord::Schema.define(version: 20161005143212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20160108152623) do
     t.string   "firmware_version"
     t.string   "gsm_software"
     t.string   "description"
+    t.integer  "sampling_rate",     default: 300
   end
 
   add_index "stations", ["hw_id"], name: "index_stations_on_hw_id", unique: true, using: :btree

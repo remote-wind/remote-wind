@@ -216,4 +216,15 @@ class Station < ActiveRecord::Base
     observations.each { |observation| association.set_inverse_instance(observation) }
     self.observations
   end
+
+  # Custom getter to get the rate as a Duration instead of an integer
+  # @see http://api.rubyonrails.org/classes/ActiveSupport/Duration.html
+  # @return [ActiveSupport::Duration | nil]
+  def sampling_rate(unit: :seconds)
+    if self[:sampling_rate].nil? || self[:sampling_rate].is_a?(ActiveSupport::Duration)
+      self[:sampling_rate]
+    else
+      self[:sampling_rate].seconds
+    end
+  end
 end

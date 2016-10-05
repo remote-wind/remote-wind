@@ -27,5 +27,7 @@ module StationsHelper
   end
 
 
-
+  def readable_duration(duration)
+    Time.at(duration.to_i).utc.strftime("%H:%M:%S")
+  end
 end

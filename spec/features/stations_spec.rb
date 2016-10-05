@@ -104,4 +104,12 @@ feature "Stations", %{
       expect(station.observations.count).to eq 0
     end
   end
+
+  scenario "when I change the sampling rate" do
+    admin_session
+    visit edit_station_path(station)
+    fill_in 'Sampling rate', with: 600
+    click_button 'Update'
+    expect(page).to have_content "00:10:00"
+  end
 end

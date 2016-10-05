@@ -184,7 +184,8 @@ class StationsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def station_params
     params.require(:station).permit(
-      :name, :hw_id, :latitude, :longitude, :user_id, :slug, :show, :speed_calibration, :description
+      :name, :hw_id, :latitude, :longitude, :user_id, :slug,
+      :show, :speed_calibration, :description, :sampling_rate
     )
   end
 end

@@ -368,4 +368,10 @@ describe Station, type: :model do
   #   end
   # end
 
+  describe '#sampling_rate' do
+    let(:station) { build_stubbed(:station)  }
+    subject { station.sampling_rate }
+    it { should be_a ActiveSupport::Duration }
+  end
+
 end
