@@ -7,7 +7,8 @@ class ObservationsController < ApplicationController
   before_action :set_station, only: [:index, :clear, :create]
   before_action :make_public, only: [:index] # Sets CORS headers to allow cross-site sharing
 
-  # Send response first when creating an observation.
+  # Checks the up/down heuristics after creating an observation.
+  # Could possible be moved to a job after Rails 5 update.
   after_action ->{ @station.check_status! unless @station.nil? }, only: :create
 
   # POST /observations
@@ -84,7 +85,7 @@ class ObservationsController < ApplicationController
     def expiry_time(station)
       t = station.next_observation_expected_in
       # checks if station is overdue for reporting in which case it sets the
-      # expiry to 1 minute to encourage the client to check again.
+      # expiry to 1 minute to encourage the client (browser) to check again.
       t > 0 ? t : 1.minute
     end
 end
