@@ -16,7 +16,7 @@
 //= require remotewind
 //= require rickshaw_with_d3
 //= require Rickshaw.Graph.DirectionAnnotate
-//= require markerclusterer_compiled
+//= require markerclusterer
 //= require_tree .
 
 // This lets us call console even in crap browsers.
