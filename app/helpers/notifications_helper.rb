@@ -45,5 +45,4 @@ module NotificationsHelper
   def notification_timestamp(note)
     time_date_hours_seconds( @user.to_local_time( note.created_at ) )
   end
-
 end

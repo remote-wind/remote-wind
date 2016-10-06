@@ -1,26 +1,23 @@
-# == Schema Information
-#
-# Table name: stations
-#
-#  id                           :integer          not null, primary key
-#  name                         :string(255)
-#  hw_id                        :string(255)
-#  latitude                     :float
-#  longitude                    :float
-#  balance                      :float
-#  offline                      :boolean
-#  timezone                     :string(255)
-#  user_id                      :integer
-#  created_at                   :datetime
-#  updated_at                   :datetime
-#  slug                         :string(255)
-#  show                         :boolean          default(TRUE)
-#  speed_calibration            :float            default(1.0)
-#  last_observation_received_at :datetime
-#
-
-# NB! when getting a station use the Friendly ID method Station.friendly.find(params[:id])
-# Stations can use either slug or id as param
+# @attr id  [Integer]
+# @attr name [String]
+# @attr hw_id [String]
+# @attr latitude [Float]
+# @attr longitude [Float]
+# @attr balance [Float]  the balance on prepaid phone cards
+# @attr offline [Boolean]
+# @attr timezone [String]
+# @attr user_id [Integer]
+# @attr created_at [DateTime]
+# @attr updated_at [DateTime]
+# @attr slug [String]  a URL friendly version of the name. Can be used instead of ID.
+# @attr show [Boolean]
+# @attr speed_calibration [Float] 
+# @attr last_observation_received_at [DateTime]
+# @attr sampling_rate [Integer]  - how often a station can be expected to send observations
+# @see https://github.com/norman/friendly_id
+# @note When getting a station use the Friendly ID method!
+#       Station.friendly.find(params[:id])
+#       Since stations can use either the slug or id as param
 class Station < ActiveRecord::Base
 
   # relations

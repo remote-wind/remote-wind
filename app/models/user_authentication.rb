@@ -1,18 +1,14 @@
-# == Schema Information
-#
-# Table name: user_authentications
-#
-#  id                         :integer          not null, primary key
-#  user_id                    :integer
-#  authentication_provider_id :integer
-#  uid                        :string(255)
-#  token                      :string(255)
-#  token_expires_at           :datetime
-#  params                     :text
-#  created_at                 :datetime
-#  updated_at                 :datetime
-#  provider_name              :string(255)
-#
+# Used to store user oauth authentications
+# @attr id [Integer]
+# @attr user_id [Integer]
+# @attr authentication_provider_id [Integer]
+# @attr uid [String]
+# @attr token [String]
+# @attr token_expires_at [DateTime]
+# @attr params [String]
+# @attr created_at [DateTime] 
+# @attr updated_at [DateTime]
+# @attr provider_name [String]
 
 class UserAuthentication < ActiveRecord::Base
   belongs_to :user
@@ -31,10 +27,7 @@ class UserAuthentication < ActiveRecord::Base
       token_expires_at: Time.at(params['credentials']['expires_at']).to_datetime,
       params: params,
     )
-
   end
 
   alias :provider :authentication_provider
-
-
 end

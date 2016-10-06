@@ -23,3 +23,7 @@
 .env
 .env.test
 .env.dev
+
+# Ignore generated documentation
+/doc
+/.yardoc

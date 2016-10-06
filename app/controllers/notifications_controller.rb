@@ -1,3 +1,4 @@
+# Handles in-app notifications for station events.
 class NotificationsController < ApplicationController
 
   authorize_resource
@@ -65,13 +66,13 @@ class NotificationsController < ApplicationController
     redirect_to action: :index
   end
 
-  def set_user
-    # Avoid DB query if user is current_user
-    if [current_user.to_param, current_user.id.to_s].include?(params[:user_id])
-      @user = current_user
-    else
-      @user = User.friendly.find(params[:user_id])
+  private
+    def set_user
+      # Avoid DB query if user is current_user
+      if [current_user.to_param, current_user.id.to_s].include?(params[:user_id])
+        @user = current_user
+      else
+        @user = User.friendly.find(params[:user_id])
+      end
     end
-  end
-
 end

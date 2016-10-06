@@ -11,6 +11,9 @@ class ObservationsController < ApplicationController
   # Could possible be moved to a job after Rails 5 update.
   after_action ->{ @station.check_status! unless @station.nil? }, only: :create
 
+  # @todo CLEANUP
+  #   since the legacy Ardiuno routes which do not include the :station_id
+  #   i think we can safely assume the presence of the station.
   # POST /observations
   def create
     # Find station via ID or SLUG
@@ -69,14 +72,13 @@ class ObservationsController < ApplicationController
 
   private
 
+    # get station with Friendly ID as params[:id] can either be id or slug
     def set_station
-      # get station with Friendly Id, params[:id] can either be id or slug
+
       @station = Station.friendly.find(params[:station_id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
-      logger.info "Observation Controller with params: " + params.to_s
       params.require(:observation).permit(
           :id, :station_id, :direction, :speed, :min_wind_speed, :max_wind_speed
       )

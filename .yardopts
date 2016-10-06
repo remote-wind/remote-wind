@@ -1,0 +1,7 @@
+--protected
+--no-private
+--readme           README.md
+--markup           markdown
+--markup-provider  kramdown
+-
+LICENCE

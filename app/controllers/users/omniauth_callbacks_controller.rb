@@ -1,3 +1,4 @@
+# Handles callbacks when signing in via OAuth
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   skip_before_filter :verify_authenticity_token
