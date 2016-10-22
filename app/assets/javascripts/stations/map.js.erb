@@ -41,8 +41,9 @@ $(document).ready(function(){
 
         if ($map_canvas.hasClass("cluster")) {
             carta.markerCluster = new MarkerClusterer(carta, [], {
-              // this is interpolated by sprockets when crunching the file
-              imagePath: "<%= image_path('marker_cluster_1.png').chomp('1.png') %>"
+              // These files need to be placed in /public since
+              // it does not play well with sprockets asset fingerprinting.
+              imagePath: "/images/marker_cluster_"
             });
         }
 
