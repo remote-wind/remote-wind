@@ -1,12 +1,7 @@
-# == Schema Information
-#
-# Table name: authentication_providers
-#
-#  id         :integer          not null, primary key
-#  name       :string(255)
-#  created_at :datetime
-#  updated_at :datetime
-#
+# @todo CLEANUP - evalutate if can be removed
+# @attr name [string]
+# @attr created_at [datetime]
+# @attr updated_at [datetime]
 class AuthenticationProvider < ActiveRecord::Base
   has_many :users
   has_many :user_authentications

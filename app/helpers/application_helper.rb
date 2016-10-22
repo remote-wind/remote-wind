@@ -1,5 +1,6 @@
 module ApplicationHelper
-
+  # Renders dynamic page titles
+  # @return String
   def title
     if @title.nil?
       "Remote Wind"
@@ -7,5 +8,4 @@ module ApplicationHelper
       "#{@title} | Remote Wind"
     end
   end
-
 end

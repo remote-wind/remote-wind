@@ -51,20 +51,24 @@ $(function(){
             dataType: 'JSON',
             ifModified: true,
             success: function(data, textStatus, jqXHR){
-                // Status is 200 OK
-                if (data && data.length) {
-                    $graph.trigger('graph.render', [data]);
-                }
+              $graph.parents('.chart-wrapper').find("alert-box").remove();
+              if (textStatus = "200" && data.length) {
+                  $graph.show();
+                  $graph.trigger('graph.render', [data]);
+              } else {
+                 $graph.parents('.chart-wrapper').prepend('<div class="alert-box alert">No recent data available :|</div>')
+                 $graph.hide();
+              }
 
-                // Read max_age from Cache-Control header
-                var max_age = (function(cc) {
-                    return parseInt(cc.match(/max-age=(\d*),/).pop());
-                }(jqXHR.getResponseHeader('Cache-Control') || refresh));
+              // Read max_age from Cache-Control header
+              var max_age = (function(cc) {
+                  return parseInt(cc.match(/max-age=(\d*),/).pop());
+              }(jqXHR.getResponseHeader('Cache-Control') || refresh));
 
-                // Fetch new observations when max_age has expired
-                window.setTimeout(function() {
-                    $graph.trigger('graph.data.load');
-                }, max_age * 1000);
+              // Fetch new observations when max_age has expired
+              window.setTimeout(function() {
+                  $graph.trigger('graph.data.load');
+              }, max_age * 1000);
             }
         });
     });

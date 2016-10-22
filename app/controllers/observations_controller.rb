@@ -7,9 +7,13 @@ class ObservationsController < ApplicationController
   before_action :set_station, only: [:index, :clear, :create]
   before_action :make_public, only: [:index] # Sets CORS headers to allow cross-site sharing
 
-  # Send response first when creating an observation.
+  # Checks the up/down heuristics after creating an observation.
+  # Could possible be moved to a job after Rails 5 update.
   after_action ->{ @station.check_status! unless @station.nil? }, only: :create
 
+  # @todo CLEANUP
+  #   since the legacy Ardiuno routes which do not include the :station_id
+  #   i think we can safely assume the presence of the station.
   # POST /observations
   def create
     # Find station via ID or SLUG
@@ -26,7 +30,7 @@ class ObservationsController < ApplicationController
 
   # GET /stations/:station_id/observations
   def index
-    expires_in @station.next_observation_expected_in, public: true
+    expires_in expiry_time(@station), public: true
     if stale?(@station)
       respond_to do |format|
         @observations = @station.observations
@@ -36,8 +40,8 @@ class ObservationsController < ApplicationController
         end
         format.json do
           @observations = @station.load_observations!(
-              288,
-              query: Observation.desc.since(@station.last_observation_received_at - 24.hours)
+              @station.observations_per_day,
+              query: Observation.desc.since(24.hours.ago)
           )
           render json: @observations
         end
@@ -68,16 +72,22 @@ class ObservationsController < ApplicationController
 
   private
 
+    # get station with Friendly ID as params[:id] can either be id or slug
     def set_station
-      # get station with Friendly Id, params[:id] can either be id or slug
+
       @station = Station.friendly.find(params[:station_id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def observation_params
-      logger.info "Observation Controller with params: " + params.to_s
       params.require(:observation).permit(
           :id, :station_id, :direction, :speed, :min_wind_speed, :max_wind_speed
       )
+    end
+
+    def expiry_time(station)
+      t = station.next_observation_expected_in
+      # checks if station is overdue for reporting in which case it sets the
+      # expiry to 1 minute to encourage the client (browser) to check again.
+      t > 0 ? t : 1.minute
     end
 end

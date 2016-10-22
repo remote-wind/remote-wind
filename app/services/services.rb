@@ -1,1 +1,4 @@
-module Services; end
+module Services
+  class NotImplementedError
+  end
+end

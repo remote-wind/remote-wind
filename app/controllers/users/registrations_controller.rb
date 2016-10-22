@@ -1,4 +1,6 @@
-# Override verify_authenticity_token to prevent InvalidAuthenticationToken issues when using omniauth
+# Users registered via OAuth don't have a password
+# So we need to override the update method so that they can update their account
+# without providing a password
 class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
@@ -6,10 +8,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def update
-    # For Rails 4
     account_update_params = devise_parameter_sanitizer.sanitize(:account_update)
-    # For Rails 3
-    # account_update_params = params[:user]
 
     # required for settings form to submit when password is left blank
     if account_update_params[:password].blank?

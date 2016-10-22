@@ -1,37 +1,30 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id                     :integer          not null, primary key
-#  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(255)      default("")
-#  reset_password_token   :string(255)
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default(0), not null
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :string(255)
-#  last_sign_in_ip        :string(255)
-#  created_at             :datetime
-#  updated_at             :datetime
-#  image                  :string(255)
-#  nickname               :string(255)
-#  slug                   :string(255)
-#  timezone               :string(255)
-#  confirmation_token     :string(255)
-#  confirmed_at           :datetime
-#  confirmation_sent_at   :datetime
-#  invitation_token       :string(255)
-#  invitation_created_at  :datetime
-#  invitation_sent_at     :datetime
-#  invitation_accepted_at :datetime
-#  invitation_limit       :integer
-#  invited_by_id          :integer
-#  invited_by_type        :string(255)
-#  invitations_count      :integer          default(0)
-#
-
+# @attr email [String]  the default column used for database authentication
+# @attr encrypted_password [String]  used by Devise
+# @attr reset_password_token [String]  used by Devise
+# @attr reset_password_sent_at [DateTime]  used by Devise
+# @attr remember_created_at [DateTime]  used by Devise
+# @attr sign_in_count [Integer]  used by Devise trackable
+# @attr current_sign_in_at [DateTime]  used by Devise trackable
+# @attr last_sign_in_at [DateTime]  used by Devise trackable
+# @attr current_sign_in_ip [String]  used by Devise trackable
+# @attr last_sign_in_ip [String]  used by Devise trackable
+# @attr created_at [DateTime]
+# @attr updated_at [DateTime]
+# @attr image [String]  a url to an avatar - not currently in use
+# @attr nickname [String]  allows users to display something else than their email
+# @attr slug [String]  URL friendly version of name that can be used as a route param
+# @attr timezone [String]
+# @attr confirmation_token [String]  used by Devise Confirmable
+# @attr confirmed_at [DateTime]  used by Devise Confirmable
+# @attr confirmation_sent_at [DateTime]  used by Devise Confirmable
+# @attr invitation_token [String]  used by Devise Invitable
+# @attr invitation_created_at [DateTime]  used by Devise Invitable
+# @attr invitation_sent_at [DateTime]   used by Devise Invitable
+# @attr invitation_accepted_at [DateTime]  used by Devise Invitable
+# @attr invitation_limit [Integer]  used by Devise Invitable
+# @attr invited_by_id [Integer]  used by Devise Invitable
+# @attr invited_by_type [String]  used by Devise Invitable
+# @attr invitations_count [Integer]  used by Devise Invitable
 class User < ActiveRecord::Base
   rolify
   # Include default devise modules. Others available are:

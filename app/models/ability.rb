@@ -1,6 +1,11 @@
+# The Ability model is a centralised place to declare authorization rules
+# This is not an ActiveRecord model but rather initialized by CanCanCan
+# as part of the authorization process.
+# @see https://github.com/CanCanCommunity/cancancan/wiki/defining-abilities
 class Ability
   include CanCan::Ability
 
+  # @param [User] user
   def initialize(user)
     user ||= User.new
 
@@ -34,6 +39,5 @@ class Ability
     if user.has_role? :admin
       can :manage, :all
     end
-
   end
 end

@@ -5,9 +5,12 @@ $(document).ready(function(){
     var $map_canvas = $('#map_canvas');
 
     if ($map_canvas.length) {
-      google.load("maps", "3", { other_params:'sensor=false', callback: function(){
+      google.load("maps", "3", {
+        other_params:'key=AIzaSyADjhLKyBDLO7QwMSSZJChP2IUSsL52wNw',
+        callback: function(){
           apiLoaded.resolve(google);
-      }});
+        }
+      });
     }
 
     // Initialize map

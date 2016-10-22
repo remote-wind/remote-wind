@@ -1,15 +1,16 @@
 module Services
   module Notifiers
-    # Notifies owner when a station has a low balance on the prepaid SIM card.
+    # Used to constuct notifiers
+    # @abstract
     class StationEventNotifier
       def self.message(station)
-        raise 'StationEventNotifier subclasses must implement the .message class method'
+        raise NotImplementedError not_impemented_msg(__method__)
       end
 
       def self.event
-        raise 'StationEventNotifier subclasses must implement the .event class method'
+        raise NotImplementedError not_impemented_msg(__method__)
       end
-      
+
       def self.level
         :info
       end
@@ -38,6 +39,11 @@ module Services
           )
         end
       end
+
+      private
+        def not_impemented_msg(method)
+          "StationEventNotifier subclasses must implement .#{method}"
+        end
     end
   end
 end

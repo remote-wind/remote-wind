@@ -1,26 +1,23 @@
-# == Schema Information
-#
-# Table name: stations
-#
-#  id                           :integer          not null, primary key
-#  name                         :string(255)
-#  hw_id                        :string(255)
-#  latitude                     :float
-#  longitude                    :float
-#  balance                      :float
-#  offline                      :boolean
-#  timezone                     :string(255)
-#  user_id                      :integer
-#  created_at                   :datetime
-#  updated_at                   :datetime
-#  slug                         :string(255)
-#  show                         :boolean          default(TRUE)
-#  speed_calibration            :float            default(1.0)
-#  last_observation_received_at :datetime
-#
-
-# NB! when getting a station use the Friendly ID method Station.friendly.find(params[:id])
-# Stations can use either slug or id as param
+# @attr id  [Integer]
+# @attr name [String]
+# @attr hw_id [String]
+# @attr latitude [Float]
+# @attr longitude [Float]
+# @attr balance [Float]  the balance on prepaid phone cards
+# @attr offline [Boolean]
+# @attr timezone [String]
+# @attr user_id [Integer]
+# @attr created_at [DateTime]
+# @attr updated_at [DateTime]
+# @attr slug [String]  a URL friendly version of the name. Can be used instead of ID.
+# @attr show [Boolean]
+# @attr speed_calibration [Float] 
+# @attr last_observation_received_at [DateTime]
+# @attr sampling_rate [Integer]  - how often a station can be expected to send observations
+# @see https://github.com/norman/friendly_id
+# @note When getting a station use the Friendly ID method!
+#       Station.friendly.find(params[:id])
+#       Since stations can use either the slug or id as param
 class Station < ActiveRecord::Base
 
   # relations
@@ -37,6 +34,7 @@ class Station < ActiveRecord::Base
   #validates_presence_of :hw_id
   validates_numericality_of :speed_calibration
   validates_numericality_of :balance, allow_blank: true
+  validates_numericality_of :sampling_rate, allow_blank: true, max: 24.hours.to_i
 
   # geolocation
   geocoded_by :name
@@ -147,7 +145,7 @@ class Station < ActiveRecord::Base
   # do heuristics if station is down
   def should_be_offline?
       observations.desc
-                 .since(24.minutes.ago)
+                 .since( (sampling_rate * 4.8).seconds.ago  )
                  .count < 3
   end
 
@@ -196,10 +194,10 @@ class Station < ActiveRecord::Base
 
   def next_observation_expected_in
     if last_observation_received_at
-      eta = last_observation_received_at.minus_with_coercion(5.minutes.ago).round()
-      return eta.seconds if eta > 0
+      eta = (last_observation_received_at - sampling_rate.ago).round
+    else
+      sampling_rate
     end
-    5.minutes
   end
 
   # Does a select query to fetch observations and manually sets up active record association to avoid n+1 query
@@ -215,5 +213,20 @@ class Station < ActiveRecord::Base
     association.target.concat(observations)
     observations.each { |observation| association.set_inverse_instance(observation) }
     self.observations
+  end
+
+  # Custom getter to get the rate as a Duration instead of an integer
+  # @see http://api.rubyonrails.org/classes/ActiveSupport/Duration.html
+  # @return [ActiveSupport::Duration | nil]
+  def sampling_rate(unit: :seconds)
+    if self[:sampling_rate].nil? || self[:sampling_rate].is_a?(ActiveSupport::Duration)
+      self[:sampling_rate]
+    else
+      self[:sampling_rate].seconds
+    end
+  end
+
+  def observations_per_day
+    1.day / sampling_rate
   end
 end

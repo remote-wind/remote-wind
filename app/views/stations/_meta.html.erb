@@ -50,5 +50,9 @@
         <td>Speed Calibration</td>
         <td><%= @station.speed_calibration.round(2) %></td>
       </tr>
+      <tr class="sampling-rate">
+        <td>Sampling Rate</td>
+        <td><%= readable_duration( @station.sampling_rate ) %></td>
+      </tr>
   </tbody>
 </table>

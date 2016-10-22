@@ -16,6 +16,12 @@ See the [project wiki](https://github.com/remote-wind/remote-wind/wiki) for more
 - If you are using RVM, it should autodetect the ruby version and gemset when you cd into directory
 - bundle install
 
+## Documentation
+The API Documentation is written with [YARD](http://yardoc.org/). You can run the Yard server to view the documentation locally with:
+```bash
+yard server --reload
+```
+
 ### Having problems with bundle install on OS-X?
 The libv8 gem often has problems installing on OS-X due to the lack of openssl
 headers. What seems to work is using the system version of v8. `bundle config build.libv8 -- --with-system-v8`.

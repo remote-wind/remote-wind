@@ -169,6 +169,24 @@ describe Station, type: :model do
         expect(station.should_be_offline?).to be_truthy
       end
     end
+
+    describe "sampling rate" do
+      let!(:observations) do
+        [*1..4].map do |i|
+          create(:observation, station: station, created_at: (i*10).minutes.ago)
+        end
+      end
+
+      it "takes the sampling_rate into account" do
+        station.sampling_rate = 5.minutes
+        expect(station.should_be_offline?).to eq true
+      end
+
+      it "takes the sampling_rate into account 2" do
+        station.sampling_rate = 10.minutes
+        expect(station.should_be_offline?).to eq false
+      end
+    end
   end
 
   describe "check_status!" do
@@ -284,13 +302,13 @@ describe Station, type: :model do
 
   describe "#next_observation_expected_in" do
     let(:station){ build_stubbed(:station) }
-    it "should give number of seconds until next observation" do
+    it "gives number of seconds until next observation" do
       allow(station).to receive(:last_observation_received_at).and_return(2.minutes.ago)
       expect(station.next_observation_expected_in).to eq 3.minutes
     end
-    it "should never give more than 5 minutes" do
+    it "gives a negative number if overdue" do
       allow(station).to receive(:last_observation_received_at).and_return(10.minutes.ago)
-      expect(station.next_observation_expected_in).to eq 5.minutes
+      expect(station.next_observation_expected_in).to eq -5.minutes
     end
   end
 
@@ -368,4 +386,14 @@ describe Station, type: :model do
   #   end
   # end
 
+  describe '#sampling_rate' do
+    let(:station) { build_stubbed(:station)  }
+    subject { station.sampling_rate }
+    it { should be_a ActiveSupport::Duration }
+  end
+
+  describe "#observations_per_day" do
+    subject{ build_stubbed(:station, sampling_rate: 1.hour) }
+    its(:observations_per_day) { should eq 24 }
+  end
 end

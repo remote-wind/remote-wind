@@ -1,3 +1,5 @@
+# This provides addional actions for users in addition to [Devise::Registrations]
+# for example adding and removing roles from users.
 class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :index]
   before_filter :set_user, except: [:index]
@@ -44,13 +46,13 @@ class UsersController < ApplicationController
     end
   end
 
-  protected
+  private
 
-  def set_user
-    @user = User.friendly.find(params[:id])
-  end
+    def set_user
+      @user = User.friendly.find(params[:id])
+    end
 
-  def update_params
-    params.require(:user).permit(:email, role_ids: [])
-  end
+    def update_params
+      params.require(:user).permit(:email, role_ids: [])
+    end
 end

@@ -1,19 +1,5 @@
-# == Schema Information
-#
-# Table name: observations
-#
-#  id                :integer          not null, primary key
-#  station_id        :integer
-#  speed             :float
-#  direction         :float
-#  max_wind_speed    :float
-#  min_wind_speed    :float
-#  temperature       :float
-#  created_at        :datetime
-#  updated_at        :datetime
-#  speed_calibration :float
-#
-
+# Respresents a series of measurements taken by a weather station.
+# Take extreme care when querying this table as it contrains a lot of rows!
 class Observation < ActiveRecord::Base
 
   belongs_to :station, dependent: :destroy, inverse_of: :observations
@@ -25,11 +11,13 @@ class Observation < ActiveRecord::Base
             numericality: { allow_blank: true }
   validate :observation_cannot_be_calibrated
 
+  # @todo - CLEANUP --
   alias_attribute :i, :station_id
   alias_attribute :s, :speed
   alias_attribute :d, :direction
   alias_attribute :max, :max_wind_speed
   alias_attribute :min, :min_wind_speed
+  # /@todo
   attr_accessor :calibrated
   after_validation :set_calibration_value!
   after_find :calibrate!
@@ -40,26 +28,31 @@ class Observation < ActiveRecord::Base
   scope :since, ->(time) { where("created_at > ?", time) }
   scope :desc, -> { order('created_at DESC') }
 
+  # @todo - CLEANUP
   # when writing from the ardiuno params short form
   def s= val
     write_attribute(:speed, val.to_f / 100)
   end
 
+  # @todo - CLEANUP
   # when writing from the ardiuno params short form
   def d= val
     write_attribute(:direction, (val.to_f / 10).round(0))
   end
 
+  # @todo - CLEANUP
   # when writing from the ardiuno params short form
   def max= val
     write_attribute(:max_wind_speed, val.to_f / 100)
   end
 
+  # @todo - CLEANUP
   # when writing from the ardiuno params short form
   def min= val
     write_attribute(:min_wind_speed, val.to_f / 100)
   end
 
+  # @todo - CLEANUP
   def b=
     write_attribute(:min_wind_speed, val.to_f / 100)
   end

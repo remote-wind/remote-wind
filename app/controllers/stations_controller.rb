@@ -89,7 +89,6 @@ class StationsController < ApplicationController
     end
   end
 
-  # @throws ActiveRecord::RecordNotFound if no station
   # PUT /s/:station_id
   def update_balance
     sp = params.require(:s).permit(:b)
@@ -168,23 +167,24 @@ class StationsController < ApplicationController
 
   private
 
-  def no_cache
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate" # HTTP 1.1.
-    response.headers["Pragma"] = "no-cache" # HTTP 1.0.
-    response.headers["Expires"] = "0" # Proxies.
-  end
+    def no_cache
+      response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate" # HTTP 1.1.
+      response.headers["Pragma"] = "no-cache" # HTTP 1.0.
+      response.headers["Expires"] = "0" # Proxies.
+    end
 
-  # before_action
-  def set_station
-    @station = Station.friendly.find(params[:id])
-    logger.info action_name.to_sym
-    authorize! @station, action_name.to_sym unless (action_name.to_sym).in?([:embed, :show, :update_balance, :api_firmware_version])
-  end
+    # before_action
+    def set_station
+      @station = Station.friendly.find(params[:id])
+      logger.info action_name.to_sym
+      authorize! @station, action_name.to_sym unless (action_name.to_sym).in?([:embed, :show, :update_balance, :api_firmware_version])
+    end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
-  def station_params
-    params.require(:station).permit(
-      :name, :hw_id, :latitude, :longitude, :user_id, :slug, :show, :speed_calibration, :description
-    )
-  end
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def station_params
+      params.require(:station).permit(
+        :name, :hw_id, :latitude, :longitude, :user_id, :slug,
+        :show, :speed_calibration, :description, :sampling_rate
+      )
+    end
 end

@@ -40,12 +40,16 @@ describe StationsHelper, type: :helper do
   end
 
   describe "#station_coordinates" do
-
     let(:station) { build_stubbed(:station, lat: 50, lon: 40) }
     subject(:data_attrs) { helper.station_coordinates(station) }
-
     it { is_expected.to match 'data-lat="50"' }
     it { is_expected.to match 'data-lng="40"' }
+  end
 
+  describe "#readable_duration" do
+    let(:duration) { 1.hour + 5.minutes + 10.seconds }
+    it "includes hours seconds and minutes" do
+      expect(helper.readable_duration(duration)).to eq '01:05:10'
+    end
   end
 end
