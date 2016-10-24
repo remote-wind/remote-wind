@@ -5,7 +5,7 @@ It is a Rails based REST application.
 
 This open-source project is available under a [GNU GPL v3 license](http://www.gnu.org/copyleft/gpl.html)
 
-See the [project wiki](https://github.com/remote-wind/remote-wind/wiki) for more detailed information.
+See the [project wiki](https://github.com/remote-wind/remote-wind/wiki) for more detailed information and the [documentation](http://www.rubydoc.info/github/remote-wind/remote-wind/).
 
 ### Requirements
 - see Gemfile
@@ -17,7 +17,13 @@ See the [project wiki](https://github.com/remote-wind/remote-wind/wiki) for more
 - bundle install
 
 ## Documentation
-The API Documentation is written with [YARD](http://yardoc.org/). You can run the Yard server to view the documentation locally with:
+Documentation is available at:
+
+http://www.rubydoc.info/github/remote-wind/remote-wind/
+
+The API Documentation is written with [YARD](http://yardoc.org/).
+To run the documentation server locally:
+
 ```bash
 yard server --reload
 ```

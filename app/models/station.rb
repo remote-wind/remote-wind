@@ -11,14 +11,17 @@
 # @attr updated_at [DateTime]
 # @attr slug [String]  a URL friendly version of the name. Can be used instead of ID.
 # @attr show [Boolean]
-# @attr speed_calibration [Float] 
+# @attr speed_calibration [Float]
 # @attr last_observation_received_at [DateTime]
 # @attr sampling_rate [Integer]  - how often a station can be expected to send observations
+# @attr status [Integer] enum column
 # @see https://github.com/norman/friendly_id
 # @note When getting a station use the Friendly ID method!
 #       Station.friendly.find(params[:id])
 #       Since stations can use either the slug or id as param
 class Station < ActiveRecord::Base
+  # Denotes the general status of a station
+  enum status: [:not_initialized, :deactivated, :unresponsive, :active]
 
   # relations
   belongs_to :user, inverse_of: :stations

@@ -39,12 +39,11 @@ describe Station, type: :model do
       it { is_expected.to respond_to :owner }
     end
 
-=begin
+
     it {
       should define_enum_for(:status)
                .with([:not_initialized, :deactivated, :unresponsive, :active])
     }
-=end
   end
 
   describe "validations" do
