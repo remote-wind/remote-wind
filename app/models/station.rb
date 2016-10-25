@@ -146,21 +146,21 @@ class Station < ActiveRecord::Base
   end
 
   # do heuristics if station is down
-  def should_be_offline?
+  def is_unresponsive?
       observations.desc
                  .since( (sampling_rate * 4.8).seconds.ago  )
                  .count < 3
   end
 
   def check_status!
-    if should_be_offline?
-      unless offline?
-        update_attribute('offline', true)
+    if is_unresponsive?
+      if active?
+        self.unresponsive!
         Services::Notifiers::StationOffline.call(self)
       end
     else
-      if offline?
-        update_attribute('offline', false)
+      unless active?
+        self.active!
         Services::Notifiers::StationOnline.call(self)
       end
     end

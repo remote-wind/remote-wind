@@ -39,11 +39,11 @@ describe Station, type: :model do
       it { is_expected.to respond_to :owner }
     end
 
-
-    it {
-      should define_enum_for(:status)
-               .with([:not_initialized, :deactivated, :unresponsive, :active])
-    }
+    it do
+      should define_enum_for(:status).with(
+        [:not_initialized, :deactivated, :unresponsive, :active]
+      )
+    end
   end
 
   describe "validations" do
@@ -142,30 +142,26 @@ describe Station, type: :model do
     end
   end
 
-  describe "#should_be_offline?" do
+  describe "#is_unresponsive?" do
 
-    let(:station) { create(:station, offline: true) }
+    let(:station) { create(:station, status: :unresponsive) }
 
     context "when station has three observations in last 24 min" do
-      it "should not be down" do
-        4.times { create(:observation, station: station) }
-        expect(station.should_be_offline?).to be_falsey
+      before { create_list(:observation, 4, station: station) }
+      it "is responsive" do
+        expect(station.is_unresponsive?).to be_falsey
       end
     end
 
     context "when station has less than three observations in last 24 min" do
-
-      let(:observations) { [*1..4].map! { create(:observation, station: station) } }
-
-      before :each do
-        observations.each do |m, index|
-          m.update_attribute(:created_at, 1.hours.ago )
+      before {
+        create_list(:observation, 4, station: station)
+      }
+      it "is unresponsive" do
+        Timecop.travel(Time.now + 45.minutes) do
+          create(:observation, station: station)
+          expect(station.is_unresponsive?).to be_truthy
         end
-      end
-
-      it "should be offline" do
-        create(:observation, station: station)
-        expect(station.should_be_offline?).to be_truthy
       end
     end
 
@@ -178,12 +174,12 @@ describe Station, type: :model do
 
       it "takes the sampling_rate into account" do
         station.sampling_rate = 5.minutes
-        expect(station.should_be_offline?).to eq true
+        expect(station.is_unresponsive?).to eq true
       end
 
       it "takes the sampling_rate into account 2" do
         station.sampling_rate = 10.minutes
-        expect(station.should_be_offline?).to eq false
+        expect(station.is_unresponsive?).to eq false
       end
     end
   end
@@ -192,25 +188,46 @@ describe Station, type: :model do
 
     let(:user) { build_stubbed(:user) }
 
-    context "when station was online" do
+    context "when station was deactivated" do
+      let(:station){ create(:station, user: user, status: :deactivated) }
 
-      let(:station){ create(:station, offline: false, user: user) }
+      context "and starts to respond" do
+        before(:each) do
+          allow(station).to receive(:is_unresponsive?).and_return(false)
+          station.check_status!
+        end
+        it "makes the station active" do
+          expect(station.active?).to eq true
+        end
+      end
 
-      context "and station should be online" do
+      context "and is not responding" do
+        before(:each) do
+          allow(station).to receive(:is_unresponsive?).and_return(true)
+          station.check_status!
+        end
+        it "does not change the status of the station" do
+          expect(station.deactivated?).to eq true
+        end
+      end
+    end
+
+    context "when station was active" do
+
+      let(:station){ create(:station, user: user, status: :active) }
+      let(:notifier) { Services::Notifiers::StationOffline }
+
+      context "and is still responsive" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          allow(station).to receive(:should_be_offline?).and_return(false)
+          allow(station).to receive(:is_unresponsive?).and_return(false)
         end
 
-        it "station not be offline" do
+        it "does not have initended side effects" do
+          expect(notifier).to_not receive(:call)
           station.check_status!
-          expect(station.offline).to be_falsey
-        end
-
-        it "should not notify" do
-          expect(station).not_to receive("notify_offline")
-          station.check_status!
+          expect(station.active?).to eq true
         end
       end
 
@@ -218,58 +235,60 @@ describe Station, type: :model do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          allow(station).to receive(:should_be_offline?).and_return(true)
+          allow(station).to receive(:is_unresponsive?).and_return(true)
         end
 
-        specify "station should be offline" do
+        it "sets the status to unresponsive" do
           station.check_status!
-          expect(station.offline).to be_truthy
+          expect(station.unresponsive?).to eq true
         end
 
-        it "should notify that station is offline" do
-          expect(Services::Notifiers::StationOffline).to receive(:call).with(station)
+        it "notifies the owners" do
+          expect(notifier).to receive(:call)
+            .with(station)
           station.check_status!
         end
       end
     end
 
-    context "when station was offline" do
+    context "when station was unresponsive" do
 
-      let(:station){ create(:station, offline: true, user: user) }
+      let(:station){ create(:station, status: :unresponsive, user: user) }
+      let(:notifier) { Services::Notifiers::StationOnline }
 
-      context "and now should be online" do
+      context "and starts responding" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          allow(station).to receive(:should_be_offline?).and_return(false)
+          allow(station).to receive(:is_unresponsive?).and_return(false)
         end
 
-        specify "station should not be offline" do
+        it "makes the station active" do
           station.check_status!
-          expect(station.offline).to be_falsey
+          expect(station.active?).to eq true
         end
 
         it "should notify" do
-          expect(Services::Notifiers::StationOnline).to receive(:call).with(station)
+          expect(notifier).to receive(:call).with(station)
           station.check_status!
         end
       end
 
-      context "and now should be offline" do
+      context "and is still not responding" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
-          allow(station).to receive(:should_be_offline?).and_return(true)
+          allow(station).to receive(:is_unresponsive?).and_return(true)
         end
 
         it "should not send message" do
-          expect(Services::Notifiers::StationOnline).not_to receive(:call).with(station)
+          expect(notifier).not_to receive(:call).with(station)
           station.check_status!
         end
 
-        specify "station not be offline" do
+        it "remains unresponsive" do
           station.check_status!
-          expect(station.offline).to be_truthy
+          expect(station.unresponsive?).to eq true
         end
       end
     end
@@ -374,16 +393,6 @@ describe Station, type: :model do
       expect(station.low_balance?).to be_truthy
     end
   end
-
-  # describe "#cache_key" do
-  #   it "handles a station without observations gracefully" do
-  #     expect { station.cache_key }.to_not raise_error
-  #   end
-  #   it "appends the cache key for the last observation" do
-  #     observation = station.observations.create(attributes_for(:observation))
-  #     expect(station.cache_key).to match observation.cache_key
-  #   end
-  # end
 
   describe '#sampling_rate' do
     let(:station) { build_stubbed(:station)  }

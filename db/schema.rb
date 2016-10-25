@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161024164616) do
+ActiveRecord::Schema.define(version: 20161025141457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,13 +79,11 @@ ActiveRecord::Schema.define(version: 20161024164616) do
     t.float    "latitude"
     t.float    "longitude"
     t.float    "balance"
-    t.boolean  "offline"
     t.string   "timezone"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "slug"
-    t.boolean  "show",              default: true
     t.float    "speed_calibration", default: 1.0
     t.string   "firmware_version"
     t.string   "gsm_software"
@@ -95,8 +93,6 @@ ActiveRecord::Schema.define(version: 20161024164616) do
   end
 
   add_index "stations", ["hw_id"], name: "index_stations_on_hw_id", unique: true, using: :btree
-  add_index "stations", ["offline"], name: "index_stations_on_offline", using: :btree
-  add_index "stations", ["show"], name: "index_stations_on_show", using: :btree
   add_index "stations", ["slug"], name: "index_stations_on_slug", unique: true, using: :btree
   add_index "stations", ["status"], name: "index_stations_on_status", using: :btree
   add_index "stations", ["updated_at"], name: "index_stations_on_updated_at", using: :btree
