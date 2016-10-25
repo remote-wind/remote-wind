@@ -5,11 +5,9 @@
 class Ability
   include CanCan::Ability
 
-  attr_accessor :user
-
   # @param [User] user
   def initialize(user)
-    @user ||= User.new
+    user ||= User.new
 
     # Use crud alias instead of manage since it can grant invitation access for example.
     alias_action :create, :read, :update, :destroy,

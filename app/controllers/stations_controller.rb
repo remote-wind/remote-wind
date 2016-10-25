@@ -154,13 +154,15 @@ class StationsController < ApplicationController
   # Used by Ardiuno to lookup station ID
   def find
     @station = Station.find_by(hw_id: params[:hw_id])
-    if(@station.nil?)
+    if @station.nil?
       respond_to do |format|
         format.json { head :not_found }
       end
     else
+      # Update station to show that it has been intialized
+      @station.unresponsive! if @station.not_initialized?
       respond_to do |format|
-        format.json { render json: { id: @station.id }}
+        format.json { render json: { id: @station.id } }
       end
     end
   end

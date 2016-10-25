@@ -415,13 +415,16 @@ describe StationsController, type: :controller do
 
   describe "GET find" do
 
+    let(:station) { create(:station, status: :not_initialized) }
     render_views
 
     let(:json) { JSON.parse(response.body) }
 
-    before do
+    before do |ex|
       station
-      get :find, hw_id: station.hw_id, format: :json
+      unless ex.metadata[:skip_request]
+        get :find, hw_id: station.hw_id, format: :json
+      end
     end
 
     it "should return HTTP success" do
@@ -434,6 +437,14 @@ describe StationsController, type: :controller do
 
     it "contains the id" do
       expect(json["id"]).to eq station.id
+    end
+
+    it "changes the station status" do
+      expect {
+        get :find, hw_id: station.hw_id, format: :json
+        station.reload
+      }.to change(station, :status).from("not_initialized")
+           .to("unresponsive")
     end
   end
 end
