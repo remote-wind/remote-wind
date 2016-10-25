@@ -263,7 +263,7 @@ describe Station, type: :model do
         end
 
         it "should not send message" do
-          expect(Services::Notifiers::StationOnline).to_not receive(:call).with(station)
+          expect(Services::Notifiers::StationOnline).not_to receive(:call).with(station)
           station.check_status!
         end
 

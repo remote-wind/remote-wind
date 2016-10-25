@@ -5,9 +5,11 @@
 class Ability
   include CanCan::Ability
 
+  attr_accessor :user
+
   # @param [User] user
   def initialize(user)
-    user ||= User.new
+    @user ||= User.new
 
     # Use crud alias instead of manage since it can grant invitation access for example.
     alias_action :create, :read, :update, :destroy,
@@ -17,9 +19,14 @@ class Ability
 
     can :read, User
     can :read, Role
-    can :read, Station do |s|
-      s.show?
+    can :read, Station do |station|
+      if user.has_role?(:owner, station)
+        true # can see any status
+      else
+        station.active? || station.unresponsive?
+      end
     end
+
     can [:update_balance, :api_firmware_version, :find, :embed, :search], Station
     can [:read, :create], Observation
     can :crud, Notification do |note|

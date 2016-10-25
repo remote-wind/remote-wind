@@ -17,22 +17,34 @@ describe Ability, type: :model do
     it "should not be able to manage others" do
       expect(subject).to_not be_able_to(:manage, User)
     end
-    it { is_expected.to be_able_to(:crud, auth) }
-    it { is_expected.not_to be_able_to(:crud, build_stubbed(:user_authentication, user: build_stubbed(:user))) }
-    it { is_expected.to be_able_to(:read, Station) }
-    it { is_expected.to be_able_to(:find, Station) }
-    it { is_expected.to be_able_to(:read, Observation) }
-    it { is_expected.to be_able_to(:create, Observation) }
-    it { is_expected.to be_able_to(:read, notification) }
-    it { is_expected.to be_able_to(:destroy, notification) }
+    it { should be_able_to(:crud, auth) }
+    it { should_not be_able_to(:crud, build_stubbed(:user_authentication, user: build_stubbed(:user))) }
+
+    describe "stations" do
+      def stn(status)
+        build_stubbed(:station, status: status)
+      end
+
+      it { should be_able_to( :read, stn(:active) ) }
+      it { should be_able_to( :read, stn(:unresponsive) ) }
+      it { should_not be_able_to( :read, stn(:not_initialized) ) }
+      it { should_not be_able_to( :read, stn(:deactivated) ) }
+    end
+
+    it { should be_able_to(:read, Station) }
+    it { should be_able_to(:find, Station) }
+    it { should be_able_to(:read, Observation) }
+    it { should be_able_to(:create, Observation) }
+    it { should be_able_to(:read, notification) }
+    it { should be_able_to(:destroy, notification) }
   end
 
   context "an admin" do
     before do
       allow_any_instance_of(User).to receive(:has_role?).with(:admin).and_return(true)
     end
-    it { is_expected.to be_able_to(:manage, User) }
-    it { is_expected.to be_able_to(:manage, UserAuthentication) }
-    it { is_expected.to be_able_to(:manage, Station) }
+    it { should be_able_to(:manage, User) }
+    it { should be_able_to(:manage, UserAuthentication) }
+    it { should be_able_to(:manage, Station) }
   end
 end
