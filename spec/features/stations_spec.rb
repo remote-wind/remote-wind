@@ -112,4 +112,20 @@ feature "Stations", %{
     click_button 'Update'
     expect(page).to have_content "00:10:00"
   end
+
+  scenario "when I deactivate a station" do
+    admin_session
+    visit edit_station_path(station)
+    click_button 'Deactivate'
+    expect(page).to have_content "deactivated"
+  end
+
+  scenario "when I reactivate a station" do
+    admin_session
+    visit edit_station_path(station)
+    click_button 'Deactivate'
+    click_link 'Edit'
+    click_button 'Activate'
+    expect(page).to have_content "active"
+  end
 end

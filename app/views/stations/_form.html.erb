@@ -19,3 +19,15 @@
       <%= f.submit %>
     </div>
 <% end %>
+
+<% if @station.persisted? %>
+  <%= simple_form_for @station do |f| %>
+    <% if @station.deactivated?  %>
+      <%= f.hidden_field(:status, value: 'active')  %>
+      <%= f.submit('Activate') %>
+    <% else %>
+      <%= f.hidden_field(:status, value: 'deactivated')  %>
+      <%= f.submit('Deactivate') %>
+    <% end %>
+  <% end %>
+<% end %>
