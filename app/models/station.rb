@@ -134,7 +134,7 @@ class Station < ActiveRecord::Base
   end
 
   # Rake task which periodically tests the status of each station.
-  # @param stations array
+  # @param array
   def self.check_all_stations stations = Station.all
     stations.each do |s|
       s.check_status!
@@ -145,13 +145,26 @@ class Station < ActiveRecord::Base
     self.zone.nil? ? time : zone.time(time)
   end
 
-  # do heuristics if station is down
+  # Checks if a station has been responding regulary.
+  # New stations are allowed a certain leeway.
+  # @return [Boolean]
   def is_unresponsive?
-      observations.desc
-                 .since( (sampling_rate * 4.8).seconds.ago  )
-                 .count < 3
+    # Based on the default sampling_rate this is 24 minutes
+    deadline = (sampling_rate * 4.8).seconds.ago
+    count = 3
+    # Allows new stations leeway
+    if created_at > deadline
+      count = ((Time.current - created_at) / sampling_rate).floor
+    end
+    observations.desc
+               .since( deadline )
+               .count < count
   end
 
+  # Used to check the status of a station when new observations are created or
+  # by a scheduled rake task.
+  # Will email/notify the station owner.
+  # @return [void]
   def check_status!
     if is_unresponsive?
       if active?
@@ -167,7 +180,6 @@ class Station < ActiveRecord::Base
   end
 
   # Send notifications if station balance is low
-  # @return boolean true for ok balance, false if balance is low
   def check_balance
     if low_balance?
       Services::Notifiers::LowBalance.call(self)

@@ -144,7 +144,18 @@ describe Station, type: :model do
 
   describe "#is_unresponsive?" do
 
-    let(:station) { create(:station, status: :unresponsive) }
+    let(:station) do
+      # Fakes that station is old to avoid false positives
+      Timecop.travel(1.month.ago){ create(:station, status: :unresponsive) }
+    end
+
+    context "a new station" do
+      let(:station){ create(:station, status: :unresponsive)  }
+      it "has a grace peroid where one observation will make it active" do
+        create(:observation, station: station)
+        expect(station.is_unresponsive?).to be_falsey
+      end
+    end
 
     context "when station has three observations in last 24 min" do
       before { create_list(:observation, 4, station: station) }
@@ -186,11 +197,14 @@ describe Station, type: :model do
 
   describe "check_status!" do
 
+    let(:station) do |ex|
+      Timecop.travel(1.month.ago) do
+        create(:station, status: ex.metadata[:status])
+      end
+    end
     let(:user) { build_stubbed(:user) }
 
-    context "when station was deactivated" do
-      let(:station){ create(:station, user: user, status: :deactivated) }
-
+    context "when station was deactivated", status: :deactivated do
       context "and starts to respond" do
         before(:each) do
           allow(station).to receive(:is_unresponsive?).and_return(false)
@@ -212,9 +226,7 @@ describe Station, type: :model do
       end
     end
 
-    context "when station was active" do
-
-      let(:station){ create(:station, user: user, status: :active) }
+    context "when station was active", status: :active do
       let(:notifier) { Services::Notifiers::StationOffline }
 
       context "and is still responsive" do
@@ -231,7 +243,7 @@ describe Station, type: :model do
         end
       end
 
-      context "and station should be offline" do
+      context "and is not responding" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
         before(:each) do
@@ -251,11 +263,8 @@ describe Station, type: :model do
       end
     end
 
-    context "when station was unresponsive" do
-
-      let(:station){ create(:station, status: :unresponsive, user: user) }
+    context "when station was unresponsive", status: :unresponsive do
       let(:notifier) { Services::Notifiers::StationOnline }
-
       context "and starts responding" do
         # Essentially nothing should happen here.
         # test that notifications are not sent
