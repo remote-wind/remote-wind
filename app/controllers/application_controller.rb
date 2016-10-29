@@ -86,4 +86,6 @@ class ApplicationController < ActionController::Base
       self.headers['Access-Control-Allow-Methods'] = methods
       self.headers['Access-Control-Allow-Headers'] = headers
     end
+
+
 end

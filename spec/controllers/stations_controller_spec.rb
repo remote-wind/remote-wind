@@ -25,6 +25,14 @@ describe StationsController, type: :controller do
         get :index, format: 'html'
         expect(first_response['ETag']).to_not eq (response.headers['ETag'])
       end
+
+      it "takes the user into account" do
+        get :index
+        first_response = response.headers.clone
+        sign_in(create(:user))
+        get :index
+        expect(first_response['ETag']).to_not eq (response.headers['ETag'])
+      end
     end
 
     before :each do

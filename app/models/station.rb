@@ -32,6 +32,13 @@ class Station < ActiveRecord::Base
   has_many :recent_observations, -> { order('created_at ASC').limit(10) }, class_name: 'Observation'
   has_one :current_observation, -> { order('created_at ASC').limit(1) }, class_name: 'Observation'
 
+  # Has scoped roles
+  # @see https://github.com/RolifyCommunity/rolify
+  resourcify
+
+  # Scopes
+  scope :visible, -> { unresponsive.merge(active) }
+
    # constraints
   validates_uniqueness_of :hw_id
   #validates_presence_of :hw_id
@@ -52,12 +59,8 @@ class Station < ActiveRecord::Base
   alias_attribute :lat, :latitude
   alias_attribute :lon, :longitude
   alias_attribute :lng, :longitude
-  alias_attribute :owner, :user
   attr_accessor :zone
   attr_accessor :latest_observation
-
-  # Scopes
-  scope :visible, -> { where( show: true ) }
 
   # Scope that eager loads the latest N number of observations.
   # @note requires Postgres 9.3+

@@ -5,7 +5,7 @@ feature "Stations", %{
   and  editable by admins
 } do
 
-  let(:station) { create :station }
+  let(:station) { create(:station, status: :active) }
   let(:observation) { station.observations.create(attributes_for(:observation)) }
 
   let(:stations) do

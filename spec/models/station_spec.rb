@@ -36,7 +36,6 @@ describe Station, type: :model do
       it { is_expected.to respond_to :lon }
       it { is_expected.to respond_to :lng }
       it { is_expected.to respond_to :lat }
-      it { is_expected.to respond_to :owner }
     end
 
     it do

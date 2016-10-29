@@ -5,7 +5,6 @@ class StationsController < ApplicationController
   authorize_resource
   before_action :set_station, except: [:new, :index, :create, :find, :search]
   before_action :make_public, only: [:show, :index]
-  before_action :no_cache, only: [:index]
 
   # Skip CSRF protection since station does not send CSRF token.
   protect_from_forgery except: [:create, :update_balance, :api_firmware_version]
@@ -14,12 +13,19 @@ class StationsController < ApplicationController
   # GET /stations.json
   def index
     @title = "Stations"
-    @last_updated = Observation.last
-    if stale?(@last_updated)
-      @stations = Station.all.with_observations(1)
-      unless user_signed_in? && current_user.has_role?(:admin)
-        @stations = @stations.visible
+    if authenticated_stale?
+      # @todo should be handled in autorization layer (CanCanCan)
+      if user_signed_in?
+        if current_user.has_role?(:admin)
+          @stations = Station.all
+        else
+          @stations = Station.with_role(:owner, current_user)
+        end
+      else
+        @stations = Station.visible
       end
+
+      @stations = @stations.with_observations(1)
       @stations.load
       respond_to do |format|
         format.html
@@ -169,10 +175,13 @@ class StationsController < ApplicationController
 
   private
 
-    def no_cache
-      response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate" # HTTP 1.1.
-      response.headers["Pragma"] = "no-cache" # HTTP 1.0.
-      response.headers["Expires"] = "0" # Proxies.
+    # Creates an etag cache key based on the latest observation
+    # and the current user.
+    def authenticated_stale?
+      s = Station.order(updated_at: :desc).first
+      # handles edge case in tests where there are no stations
+      return true if s.nil?
+      stale?(etag: [s, current_user], last_modified: s.try(:updated_at))
     end
 
     # before_action

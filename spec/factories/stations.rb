@@ -5,7 +5,6 @@ FactoryGirl.define do
     sequence(:name) { |n| "Station #{n}" }
     latitude 51.478885
     longitude -0.010635
-    show true
     balance 1
     status :active
     user

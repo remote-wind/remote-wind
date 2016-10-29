@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe "Stations", type: :request do
 
-  let(:station){ create(:station) }
+  let(:station){ create(:station, status: :active) }
   let(:json) { JSON.parse(response.body) }
 
   describe "GET /stations/find/:hw_id" do
@@ -23,7 +23,7 @@ RSpec.describe "Stations", type: :request do
           station.observations.create( attributes_for(:observation) )
         end
       end
-    end 
+    end
 
     it "should include the correct observation" do
       get '/stations.json'
