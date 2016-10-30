@@ -46,10 +46,6 @@
         <td>GSM Modem firmware</td>
         <td><%= @station.gsm_software %></td>
       </tr>
-      <tr class="visible">
-        <td>Visible</td>
-        <td><%= @station.show ? 'yes' : 'no' %></td>
-      </tr>
       <tr class="speed-calibration">
         <td>Speed Calibration</td>
         <td><%= @station.speed_calibration.round(2) %></td>

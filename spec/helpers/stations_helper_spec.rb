@@ -31,10 +31,11 @@ describe StationsHelper, type: :helper do
       expect(heading).to eq (station.name)
     end
 
-    context "when station is down" do
-      subject(:heading)  { helper.station_header(build_stubbed(:station, offline: true)) }
+    context "when station is not active" do
+      let(:station) { build_stubbed(:station, status: :deactivated) }
+      subject(:heading)  { helper.station_header(station) }
       it "says 'offline'" do
-        expect(heading).to have_selector 'em', text: 'offline'
+        expect(heading).to have_selector 'em', text: 'deactivated'
       end
     end
   end

@@ -18,15 +18,16 @@ module StationsHelper
 
   # @param station [Station]
   # @return [String]
-  # @example when online
+  # @example when status == active
   #   station_header(station)
   #   => "Test station"
-  # @example when offline
+  # @example when status == "not_initialized"
+  # @todo Use i18n to translate statuses
   #   station_header(station)
-  #   => "Test station(<em>offline</em>)"
+  #   => "Test station(<em>not initalized</em>)"
   def station_header(station)
-    if station.offline?
-      ( station.name + "(#{content_tag(:em, 'offline')})" ).html_safe
+    unless station.active?
+      ( station.name + "(#{content_tag(:em, station.status.titleize.downcase )})" ).html_safe
     else
       station.name
     end
@@ -36,7 +37,10 @@ module StationsHelper
   # @param station [Station]
   # @return [String]
   def station_coordinates(station)
-    sprintf('data-lat="%d" data-lng="%d"', station.latitude, station.longitude).html_safe
+    sprintf(
+      'data-lat="%d" data-lng="%d"',
+      station.latitude,
+      station.longitude).html_safe
   end
 
   # Displays a duration as a digital timer format
