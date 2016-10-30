@@ -74,7 +74,6 @@ class ObservationsController < ApplicationController
 
     # get station with Friendly ID as params[:id] can either be id or slug
     def set_station
-
       @station = Station.friendly.find(params[:station_id])
     end
 

@@ -11,7 +11,7 @@
 # @attr updated_at [DateTime]
 # @attr slug [String]  a URL friendly version of the name. Can be used instead of ID.
 # @attr show [Boolean]
-# @attr speed_calibration [Float] 
+# @attr speed_calibration [Float]
 # @attr last_observation_received_at [DateTime]
 # @attr sampling_rate [Integer]  - how often a station can be expected to send observations
 # @see https://github.com/norman/friendly_id
@@ -117,11 +117,7 @@ class Station < ActiveRecord::Base
   end
 
   def observations?
-    if self.observations.loaded?
-      self.observations.length > 0
-    else
-      self.observations.present?
-    end
+    self.observations.any?
   end
 
   def self.send_low_balance_alerts stations = Station.all()

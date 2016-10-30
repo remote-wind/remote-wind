@@ -11,13 +11,9 @@ class Observation < ActiveRecord::Base
             numericality: { allow_blank: true }
   validate :observation_cannot_be_calibrated
 
-  # @todo - CLEANUP --
-  alias_attribute :i, :station_id
-  alias_attribute :s, :speed
-  alias_attribute :d, :direction
   alias_attribute :max, :max_wind_speed
   alias_attribute :min, :min_wind_speed
-  # /@todo
+
   attr_accessor :calibrated
   after_validation :set_calibration_value!
   after_find :calibrate!
@@ -28,47 +24,17 @@ class Observation < ActiveRecord::Base
   scope :since, ->(time) { where("created_at > ?", time) }
   scope :desc, -> { order('created_at DESC') }
 
-  # @todo - CLEANUP
-  # when writing from the ardiuno params short form
-  def s= val
-    write_attribute(:speed, val.to_f / 100)
-  end
-
-  # @todo - CLEANUP
-  # when writing from the ardiuno params short form
-  def d= val
-    write_attribute(:direction, (val.to_f / 10).round(0))
-  end
-
-  # @todo - CLEANUP
-  # when writing from the ardiuno params short form
-  def max= val
-    write_attribute(:max_wind_speed, val.to_f / 100)
-  end
-
-  # @todo - CLEANUP
-  # when writing from the ardiuno params short form
-  def min= val
-    write_attribute(:min_wind_speed, val.to_f / 100)
-  end
-
-  # @todo - CLEANUP
-  def b=
-    write_attribute(:min_wind_speed, val.to_f / 100)
-  end
-
   def calibrated?
     self.calibrated == true
   end
 
   def calibrate!
-    unless self.calibrated
-      unless self.speed_calibration.nil?
-        self.speed            = (self.speed * self.speed_calibration).round(1)
-        self.min_wind_speed   = (self.min_wind_speed * self.speed_calibration).round(1)
-        self.max_wind_speed   = (self.max_wind_speed * self.speed_calibration).round(1)
-        self.calibrated = true
-      end
+    unless self.calibrated || self.speed_calibration.nil?
+      c = self.speed_calibration
+      self.speed            = (self.speed * c).round(1)
+      self.min_wind_speed   = (self.min_wind_speed * c).round(1)
+      self.max_wind_speed   = (self.max_wind_speed * c).round(1)
+      self.calibrated = true
     end
   end
 
