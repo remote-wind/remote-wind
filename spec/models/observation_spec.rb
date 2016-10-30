@@ -31,33 +31,8 @@ describe Observation, type: :model do
     end
 
     describe "aliases" do
-      it { is_expected.to respond_to :i }
-      it { is_expected.to respond_to :s }
-      it { is_expected.to respond_to :d }
       it { is_expected.to respond_to :max }
       it { is_expected.to respond_to :min }
-    end
-  end
-
-  describe "Ardiuno adapted setters should" do
-    specify "normalize speed" do
-      expect(Observation.new(s: 100).speed).to eq 1
-    end
-
-    specify "normalize direction" do
-      expect(Observation.new(d: 100).direction).to eq 10
-    end
-
-    specify "round direction properly" do
-      expect(Observation.new(d: "2838").direction).to eq 284
-    end
-
-    specify "normalize min" do
-      expect(Observation.new(min: 100).min).to eq 1
-    end
-
-    specify "normalize max" do
-      expect(Observation.new(max: 100).max).to eq 1
     end
   end
 

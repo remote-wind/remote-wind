@@ -124,11 +124,7 @@ class Station < ActiveRecord::Base
   end
 
   def observations?
-    if self.observations.loaded?
-      self.observations.length > 0
-    else
-      self.observations.present?
-    end
+    self.observations.any?
   end
 
   def self.send_low_balance_alerts stations = Station.all()
