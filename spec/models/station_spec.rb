@@ -339,19 +339,32 @@ describe Station, type: :model do
   end
 
   describe ".with_observations" do
-    before do
-      [15, 10, 5, 0].map do |time|
+    before do |ex|
+      [15, 10, 5, 1].map do |time|
         Timecop.travel( time.minutes.ago ) do
           station.observations.create(attributes_for :observation)
         end
       end
     end
+
     it "eager loads the latest observation" do
+        stations = Station.with_observations
+        expect(stations.last.observations.loaded?)
+    end
+
+    it "eager loads multiple observations" do
       stations = Station.with_observations(2).load
       observations = stations.last.observations
-      expect(observations.size).to eq 2
-      expect(observations.loaded?).to be true
-      expect(observations.first).to eq station.observations.order(created_at: :desc).first
+      expect(observations.first).to eq \
+        station.observations.order(created_at: :desc).first
+      expect(observations.last).to eq \
+        station.observations.order(created_at: :desc).offset(1).take
+    end
+
+    it "includes stations that have no observations" do
+      new_station = create(:station)
+      stations = Station.with_observations(2)
+      expect(stations).to include new_station
     end
   end
 

@@ -7,14 +7,7 @@ feature "Stations", %{
 
   let(:station) { create(:station, status: :active) }
   let(:observation) { station.observations.create(attributes_for(:observation)) }
-
-  let(:stations) do
-    [*1..3].map! do |i|
-      station = create(:station, name: "Station #{i+1}")
-      station.observations.create attributes_for(:observation)
-      station
-    end
-  end
+  let(:stations) { create_list(:station, 3) }
 
   let(:admin) { create :admin }
   let(:admin_session) { sign_in! admin }
@@ -76,21 +69,24 @@ feature "Stations", %{
     expect(page).to have_content 'Station at the End of The World'
   end
 
-  scenario "when I view index I should not see hidden stations" do
-    station = create(:station, show: false)
-    visit stations_path
-    expect(page).to_not have_link station.name
-  end
+  context "hidden stations" do
+    let!(:deactivated_station) { create(:station, status: :deactivated) }
+    let!(:new_station) { create(:station, status: :not_initialized) }
 
-  scenario "when I am signed in as an admin and view index I should see hidden stations" do
-    skip %Q{
-      This works when I manually check in browser but for some reason capybara gets a document without any
-      stations at all. I must be missing something
-    }
-    admin_session
-    #station = create(:station, show: false)
-    #visit stations_path
-    #expect(page).to have_link station.name
+    scenario "when I view index I should not see hidden stations" do
+      station =
+      station2 = create(:station, status: :not_initialized)
+      visit stations_path
+      expect(page).to_not have_link deactivated_station.name
+      expect(page).to_not have_link new_station.name
+    end
+
+    scenario "when I am signed in as an admin and view index I should see hidden stations" do
+      admin_session
+      visit stations_path
+      expect(page).to have_link deactivated_station.name
+      expect(page).to have_link new_station.name
+    end
   end
 
   context "given a station with observations" do

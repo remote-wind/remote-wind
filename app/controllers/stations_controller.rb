@@ -26,6 +26,7 @@ class StationsController < ApplicationController
       end
 
       @stations = @stations.with_observations(1)
+
       @stations.load
       respond_to do |format|
         format.html

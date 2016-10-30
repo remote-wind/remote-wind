@@ -68,9 +68,10 @@ class Station < ActiveRecord::Base
   # @return [ActiveRecord::Relation]
   def self.with_observations(limit = 1)
     eager_load(:observations).where(
-      observations: { id: Observation.pluck_from_each_station(limit) }
-    )
-  end
+      'observations.id is null or observations.id in (?)',
+      Observation.pluck_from_each_station(limit)
+    ).order('observations.created_at DESC')
+  end 
 
   # Setup default values for new records
   after_initialize do

@@ -15,19 +15,30 @@ RSpec.describe "Stations", type: :request do
     end
   end
 
-  describe "GET /stations.json" do
-    let(:observation) { json.first["observations"].first }
-    before do
-      [20, 15, 10, 5, 0].map do |time|
-        Timecop.travel( time.minutes.ago ) do
-          station.observations.create( attributes_for(:observation) )
+  describe "GET /stations" do
+
+    context 'with observations' do
+      let(:observation) { json.first["observations"].first }
+      before do
+        [20, 15, 10, 5, 1].map do |time|
+          Timecop.travel( time.minutes.ago ) do
+            station.observations.create( attributes_for(:observation) )
+          end
         end
+      end
+
+      it "should include the correct observation" do
+        get '/stations.json'
+        expect(observation["id"]).to eq station.observations.last.id
       end
     end
 
-    it "should include the correct observation" do
+    it 'includes stations with no observations' do
+      station
       get '/stations.json'
-      expect(observation["id"]).to eq station.observations.last.id
+      expect(json.first['id']).to eq station.id
     end
   end
+
+
 end
