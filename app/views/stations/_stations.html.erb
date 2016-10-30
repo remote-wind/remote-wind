@@ -23,10 +23,10 @@
           <% end %>
         </td>
         <td>
-          <% unless station.offline? %>
-              <span class="label success">OK</span>
+          <% unless station.active? %>
+              <span class="label success">Active</span>
           <% else %>
-              <span class="label alert">DOWN</span>
+              <span class="label alert"><%= station.status %></span>
           <% end %>
         </td>
       </tr>

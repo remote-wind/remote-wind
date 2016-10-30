@@ -34,7 +34,7 @@ describe StationsHelper, type: :helper do
     context "when station is not active" do
       let(:station) { build_stubbed(:station, status: :deactivated) }
       subject(:heading)  { helper.station_header(station) }
-      it "says 'offline'" do
+      it "shows the stations status" do
         expect(heading).to have_selector 'em', text: 'deactivated'
       end
     end

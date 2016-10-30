@@ -21,7 +21,7 @@ describe StationSerializer do
   it "has the correct path" do
     expect(subject.path).to eq station_path(resource)
   end
-  it "has the correct offline attribute" do
+  it "has the correct status" do
     expect(subject.status).to eq resource.status
   end
 end

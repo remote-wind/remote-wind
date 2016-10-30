@@ -120,7 +120,7 @@ $(document).ready(function(){
             href: station.path,
             zIndex: 50
         };
-        if (station.offline) {
+        if (station.status !== 'active') {
             options.icon = remotewind.icons.station_down();
         } else {
             options.icon = remotewind.icons.station(observation);
@@ -156,8 +156,8 @@ $(document).ready(function(){
                     map: map,
                     text: (function (station) {
                         var str = station.name + "<br>";
-                        if (station.offline) {
-                            str += " Offline";
+                        if (station.status !== 'active') {
+                            str += station.status;
                         } else if (observation) {
                             str += observation.speed + "(" + observation.min_wind_speed + "-" + observation.max_wind_speed + ")  m/s";
                         }

@@ -4,13 +4,11 @@
 # @attr latitude [Float]
 # @attr longitude [Float]
 # @attr balance [Float]  the balance on prepaid phone cards
-# @attr offline [Boolean]
 # @attr timezone [String]
 # @attr user_id [Integer]
 # @attr created_at [DateTime]
 # @attr updated_at [DateTime]
 # @attr slug [String]  a URL friendly version of the name. Can be used instead of ID.
-# @attr show [Boolean]
 # @attr speed_calibration [Float]
 # @attr last_observation_received_at [DateTime]
 # @attr sampling_rate [Integer]  - how often a station can be expected to send observations
@@ -71,7 +69,7 @@ class Station < ActiveRecord::Base
       'observations.id is null or observations.id in (?)',
       Observation.pluck_from_each_station(limit)
     ).order('observations.created_at DESC')
-  end 
+  end
 
   # Setup default values for new records
   after_initialize do
