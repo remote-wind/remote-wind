@@ -51,4 +51,8 @@ module StationsHelper
   def readable_duration(duration)
     Time.at(duration.to_i).utc.strftime("%H:%M:%S")
   end
+
+  def timezone_options
+    ActiveSupport::TimeZone::MAPPING.values
+  end
 end

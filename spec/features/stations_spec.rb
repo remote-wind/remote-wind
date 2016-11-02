@@ -124,4 +124,14 @@ feature "Stations", %{
     click_button 'Activate'
     expect(page).to have_content "active"
   end
+
+  scenario "when I edit the station timezone" do
+    admin_session
+    visit edit_station_path(station)
+    select('Europe/Copenhagen', from: 'Timezone')
+    click_button 'Update'
+    expect(page).to have_content 'Europe/Copenhagen'
+    station.reload
+    expect(station.timezone).to eq 'Europe/Copenhagen'
+  end
 end
