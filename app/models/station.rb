@@ -139,8 +139,8 @@ class Station < ActiveRecord::Base
     end
   end
 
-  def time_to_local time
-    self.zone.nil? ? time : zone.time(time)
+  def time_to_local(time)
+    Timezone['Europe/Stockholm'].time(time)
   end
 
   # Checks if a station has been responding regulary.

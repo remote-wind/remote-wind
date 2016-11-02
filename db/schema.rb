@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161025141457) do
+ActiveRecord::Schema.define(version: 20161102202422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,7 +79,7 @@ ActiveRecord::Schema.define(version: 20161025141457) do
     t.float    "latitude"
     t.float    "longitude"
     t.float    "balance"
-    t.string   "timezone"
+    t.string   "timezone",          default: "Europe/Stockholm"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"

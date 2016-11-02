@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'cancan/matchers'
 
 # @see https://github.com/CanCanCommunity/cancancan/wiki/Testing-Abilities

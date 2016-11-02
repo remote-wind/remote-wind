@@ -79,13 +79,16 @@ class User < ActiveRecord::Base
     end
   end
 
+  # @todo depreachiate and remove
   def valid_timezone
-    errors.add(:timezone, "#{timezone} is not a valid zone name") unless ActiveSupport::TimeZone::MAPPING.has_key?(timezone)
+    unless ActiveSupport::TimeZone::MAPPING.has_key?(timezone)
+      errors.add(:timezone, "#{timezone} is not a valid zone name")
+    end
   end
 
+  # @todo depreachiate and remove
   def to_local_time(time)
-    @_timezone = Timezone::Zone.new( zone: ActiveSupport::TimeZone::MAPPING[timezone] ) if @_timezone.nil?
-    @_timezone.time(time)
+    Timezone['Europe/Stockholm'].time(time)
   end
 
 end

@@ -12,7 +12,7 @@
 #  updated_at        :datetime
 #  speed_calibration :float
 #
-require 'spec_helper'
+require 'rails_helper'
 
 describe ObservationSerializer do
 

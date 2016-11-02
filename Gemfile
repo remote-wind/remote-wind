@@ -1,5 +1,5 @@
 source 'http://rubygems.org'
-ruby '2.1.5'
+ruby '2.3.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2.4'
@@ -25,7 +25,7 @@ gem 'omniauth-facebook', '~> 2.0.1'
 
 #= Geolocation =======================================================
 gem 'geocoder', '~> 1.2.11' # https://github.com/alexreisner/geocoder
-gem 'timezone', '~> 0.4.2' # Timezone lookup via lat / lon
+gem 'timezone', '~> 1.2', '>= 1.2.2' # Timezone lookup via lat / lon
 
 #= Misc ===============================================================
 gem 'friendly_id', '~> 5.1.0' # Slugging
@@ -45,39 +45,37 @@ group :doc do
 end
 
 group :development, :test do
-  gem "dotenv-rails", "~> 0.10.0" # load local config from .env file
+  gem 'listen', '~> 3.0.5'
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
+  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-commands-rspec'
+  gem "dotenv-rails"  # load local config from .env file
   gem 'ffaker'
   gem 'foreman' # launches server from procfile
   gem 'terminal-notifier', require: false
+  # Show test status indicators on Mac OS X
+  gem "terminal-notifier-guard", require: false
+  gem 'launchy', require: false
 end
 
 group :development do
-  gem 'guard-livereload', require: false
   gem 'better_errors' # better error pages
   gem 'binding_of_caller' # REPL on error pages
   gem 'meta_request' # used for RailsPanel in Google Chrome
 end
 
 group :test do
-  gem 'rspec-rails', '~> 3.3.3'
+  gem 'rspec-rails', '~> 3.5'
   gem 'database_cleaner' # cleans test database between specs
   # factory_girl provides a framework and DSL for defining and using factories.
-  gem "factory_girl_rails", "~> 4.4.1"
+  gem "factory_girl_rails", "~> 4.7"
   # Matchers to make model specs easy on the fingers and eyes
-  gem 'shoulda-matchers', '~> 3.0'
+  gem 'shoulda-matchers', '~> 3.1', '>= 3.1.1'
   gem "rspec-its"
   # Capybara is an integration testing tool for rack based web applications.
-  gem 'capybara', '~> 2.5.0'
-  # A forking Drb spec server
-  gem "spork-rails", "~> 4.0.0"
-  # Guard is a command line tool to easily handle events on file system modifications.
-  gem "guard-spork", "~> 2.1.0"
-  gem "guard-rspec", "~> 4.6.4"
-  gem 'launchy', require: false
-  # Show test status indicators on Mac OS X
-  gem "terminal-notifier-guard", "~> 1.6.4", require: false
-  # Used to generate test coverage reports
-  gem 'simplecov', require: false
+  gem 'capybara', '~> 2.10', '>= 2.10.1'
+  gem 'guard-rspec', '~> 4.7', '>= 4.7.3'
   gem 'timecop'
 end
 

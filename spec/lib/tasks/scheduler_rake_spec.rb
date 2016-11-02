@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'rails_helper'
 
 # Nothing fancy, just check that the right messages are sent.
 describe "scheduler:send_alerts_about_down_stations" do

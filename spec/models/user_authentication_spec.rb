@@ -14,7 +14,7 @@
 #  provider_name              :string(255)
 #
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe UserAuthentication, type: :model do
 

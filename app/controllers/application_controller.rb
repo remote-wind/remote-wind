@@ -19,10 +19,7 @@ class ApplicationController < ActionController::Base
   # or a page with authorized features missing.
   etag { user_signed_in? ? current_user.id : 0 }
 
-  # Setup geonames user name
-  Timezone::Configure.begin do |c|
-    c.username = ENV['REMOTE_WIND_GEONAMES']
-  end
+
 
   ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
     html_tag.html_safe

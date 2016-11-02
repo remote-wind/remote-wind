@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 feature "products page" do
   scenario "when I am at home page and want to check out products" do

@@ -8,7 +8,7 @@
 #  updated_at :datetime
 #
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe AuthenticationProvider, type: :model do
   it { is_expected.to have_many :user_authentications }

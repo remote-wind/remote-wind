@@ -26,7 +26,7 @@ module Features
     end
 
     # http://stackoverflow.com/questions/5018344
-    def stub_user_for_view_test user = build_stubbed(User)
+    def stub_user_for_view_test(user = build_stubbed(:user))
       @user = user
       assign(:user, @user)
       @ability = Object.new
