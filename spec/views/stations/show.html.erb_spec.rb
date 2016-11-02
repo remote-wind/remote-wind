@@ -9,7 +9,8 @@ describe "stations/show", type: :view do
                   speed_calibration: 0.5143,
                   user: user,
                   updated_at: Time.new(2000),
-                  observations: [ build_stubbed(:observation, created_at: Time.new(2000) ) ]
+                  observations: [ build_stubbed(:observation, created_at: Time.new(2000) ) ],
+                  status: :active
     )
   end
 
@@ -61,8 +62,8 @@ describe "stations/show", type: :view do
       expect(page).to have_selector ".station-meta .latitude td:last", text: station.latitude
       expect(page).to have_selector ".station-meta .longitude td:last", text: station.longitude
       expect(page).to have_selector ".station-meta .timezone td:last", text: station.timezone
-      expect(page).to have_selector ".station-meta .visible td:last", text: "yes"
       expect(page).to have_selector ".station-meta .speed-calibration td:last", text: 0.51
+      expect(page).to have_selector ".station-meta .status td:last", text: "active"
     end
   end
 
