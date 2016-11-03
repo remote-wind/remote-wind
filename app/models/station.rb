@@ -36,7 +36,7 @@ class Station < ActiveRecord::Base
   resourcify
 
   # Scopes
-  scope :visible, -> { unresponsive.merge(active) }
+  scope :visible, -> { where(status: [2,3]) }
 
    # constraints
   validates_uniqueness_of :hw_id
