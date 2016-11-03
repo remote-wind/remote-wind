@@ -5,6 +5,11 @@ RSpec.describe NotificationPolicy do
   let(:user) { User.new }
 
   permissions ".scope" do
+    let!(:user) { create(:user) }
+    let!(:note) { create(:notification) }
+    let!(:note2) { create(:notification, user: user) }
+    subject { policy_scope(user).resolve }
+    it { should eq user.notifications }
   end
 
   permissions :show? do

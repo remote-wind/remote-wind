@@ -5,7 +5,6 @@ describe NotificationsController, type: :controller do
   let(:user) { user = create(:user) }
   let(:note) { create(:notification, user: user) }
   let(:params) { { user_id: user } }
-  let(:notifications_url) { user_notifications_url(user_id: user) }
 
   subject { response }
 

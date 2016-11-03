@@ -108,6 +108,7 @@ describe StationsController, type: :controller do
     end
 
     it "enables CORS" do
+      bypass_rescue
       get :show, id: station.to_param
       expect(response.headers['Access-Control-Allow-Origin']).to eq "*"
     end
@@ -177,7 +178,7 @@ describe StationsController, type: :controller do
         bypass_rescue
         expect do
           post :create, {station: valid_params}
-        end.to raise_error CanCan::AccessDenied
+        end.to raise_error Pundit::NotAuthorizedError
       end
     end
 
@@ -241,7 +242,7 @@ describe StationsController, type: :controller do
         bypass_rescue
         expect do
           put :update, {id: station.to_param, station: { "name" => "foo" }}
-        end.to raise_error CanCan::AccessDenied
+        end.to raise_error Pundit::NotAuthorizedError
       end
     end
 
@@ -305,7 +306,7 @@ describe StationsController, type: :controller do
 
       it "should not allow stations to be destoyed" do
         bypass_rescue
-        expect { delete :destroy, {id: station.to_param} }.to raise_error CanCan::AccessDenied
+        expect { delete :destroy, {id: station.to_param} }.to raise_error Pundit::NotAuthorizedError
       end
     end
 

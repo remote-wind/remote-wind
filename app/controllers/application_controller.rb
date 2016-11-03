@@ -1,16 +1,12 @@
 class ApplicationController < ActionController::Base
-
+  include Pundit
   include ActionView::Helpers::TextHelper
 
   protect_from_forgery with: :exception
   before_filter :get_notifications, if: -> { user_signed_in? }
 
   # OPT OUT security model
-  before_filter :authenticate_user!, except: [:honeypot], unless: -> { user_signed_in? }
-
-  # Ensure authorization with CanCan
-  # https://github.com/ryanb/cancan/wiki/Ensure-Authorization
-  check_authorization unless: :devise_controller?
+  before_filter :authenticate_user!, unless: -> { user_signed_in? }
 
   # Ensures that different types of representations of a resource are NOT given the same etag.
   # @see https://github.com/rails/rails/issues/17129
@@ -19,21 +15,13 @@ class ApplicationController < ActionController::Base
   # or a page with authorized features missing.
   etag { user_signed_in? ? current_user.id : 0 }
 
-
-
   ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
     html_tag.html_safe
   end
 
-  # Generally just used for test and catching malicious users.
-  # GET /honeypot
-  def honeypot
-    raise CanCan::AccessDenied and return
-  end
-
   # Handle authentication errors
   # @todo store original request url in session and redirect after sign in.
-  rescue_from CanCan::AccessDenied do |exception|
+  rescue_from Pundit::NotAuthorizedError do |exception|
     if user_signed_in?
       redirect_to root_url
     else
@@ -49,7 +37,7 @@ class ApplicationController < ActionController::Base
       count = Notification.where(user: current_user, read: false).count
       if count > 0
         flash[:notice] = view_context.link_to(
-            "You have #{pluralize(count, 'unread notification')}.", user_notifications_path(user_id: current_user)
+            "You have #{pluralize(count, 'unread notification')}.", notifications_path
         )
         @unread_notifications_count = count
       end
@@ -84,5 +72,11 @@ class ApplicationController < ActionController::Base
       self.headers['Access-Control-Allow-Headers'] = headers
     end
 
+    def self.member_actions
+      [:show, :edit, :update, :destroy]
+    end
 
+    def self.collection_actions
+      [:new, :create, :index]
+    end
 end

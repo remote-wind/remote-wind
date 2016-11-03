@@ -3,17 +3,19 @@ class StationPolicy < ApplicationPolicy
     def resolve
       if is_admin?
         scope.all
-      else
+      elsif user
         scope.where(
           "stations.status IN (2,3) OR stations.id IN (?)",
           Station.with_role(:owner, user).pluck(:id)
         )
+      else
+        Station.visible
       end
     end
   end
 
   def show?
-    is_admin? || is_owner?
+    is_admin? || is_owner? || record.active? || record.unresponsive?
   end
 
   def create?
@@ -46,6 +48,10 @@ class StationPolicy < ApplicationPolicy
     true
   end
 
+  def embed?
+    true
+  end
+
   def permitted_attributes
     [
       :name, :hw_id, :latitude, :longitude, :user_id, :slug, :speed_calibration,
@@ -54,6 +60,6 @@ class StationPolicy < ApplicationPolicy
   end
 
   def is_owner?
-    user.has_role?(:owner, record)
+    user && user.has_role?(:owner, record)
   end
 end

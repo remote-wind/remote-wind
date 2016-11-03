@@ -51,23 +51,23 @@ RSpec.describe StationPolicy do
 
   permissions :show? do
     context 'guest or unpriveledged users' do
-      specify "cant see deactivated stations" do
+      specify "can not view deactivated stations" do
         expect(subject).to_not permit(User.new, Station.new(status: :deactivated))
       end
-      specify "cant see unitialized stations" do
+      specify "can not view unitialized stations" do
         expect(subject).to_not permit(User.new, Station.new(status: :not_initialized))
       end
-      specify "can see active and unresponsive stations" do
-        expect(subject).to_not permit(User.new, Station.new(status: :active))
-        expect(subject).to_not permit(User.new, Station.new(status: :unresponsive))
+      specify "can view active and unresponsive stations" do
+        expect(subject).to permit(User.new, Station.new(status: :active))
+        expect(subject).to permit(User.new, Station.new(status: :unresponsive))
       end
     end
-    specify "admins can see stations with any status" do
+    specify "admins can view stations with any status" do
       Station.statuses.keys.each do |status|
         expect(subject).to permit(admin, Station.new(status: status))
       end
     end
-    specify "owners can see stations with any status" do
+    specify "owners can view stations with any status" do
       Station.statuses.keys.each do |status|
         station.status = status
         expect(subject).to permit(owner, station)
@@ -125,6 +125,12 @@ RSpec.describe StationPolicy do
   end
 
   permissions :search? do
+    it "permits anyone" do
+      expect(subject).to permit(User.new, Station.new)
+    end
+  end
+
+  permissions :embed? do
     it "permits anyone" do
       expect(subject).to permit(User.new, Station.new)
     end

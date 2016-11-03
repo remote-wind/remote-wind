@@ -18,7 +18,7 @@ module NotificationsHelper
   def link_to_notifications(user, count=nil, opts = {})
     txt = "Inbox"
     txt += "(#{count})" unless count.to_i.zero?
-    link_to txt, user_notifications_path(user_id: user), opts
+    link_to txt, notifications_path, opts
   end
 
   # Create link to mark all as read
@@ -29,14 +29,14 @@ module NotificationsHelper
       method: :patch,
       class: 'button'
     })
-    link_to "Mark all as read", user_notifications_path(user_id: user.to_param), opts
+    link_to "Mark all as read", notifications_path, opts
   end
 
   # Create link to destroy notification
   # @param note Notification
   # @return String - an anchor element
   def link_to_destroy_notification(note)
-    link_to 'delete', user_notification_path(note, user_id: @user.to_param), method: :delete
+    link_to 'delete', notification_path(note), method: :delete
   end
 
   # Create timestamp for html5 <time> element

@@ -6,8 +6,6 @@ feature "Notifications", %{
 
   let(:user) { create(:user) }
   let(:note) { create(:notification, user: user) }
-  let(:notifications_path) {  user_notifications_path(user_id: user.to_param)  }
-
   context "when I receive a notification" do
 
     before :each do

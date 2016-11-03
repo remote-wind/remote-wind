@@ -39,7 +39,7 @@ class ApplicationPolicy
   end
 
   def is_admin?
-    user.has_role?(:admin)
+    user && user.has_role?(:admin)
   end
 
   class Scope
@@ -55,7 +55,7 @@ class ApplicationPolicy
     end
 
     def is_admin?
-      user.has_role?(:admin)
+      user && user.has_role?(:admin)
     end
   end
 end
