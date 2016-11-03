@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe PagesController do
 
-  before { sign_out :user }
+  before { logout :user }
   subject { response }
 
   describe "GET 'home'" do

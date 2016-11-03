@@ -20,7 +20,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     if @user.update_attributes(account_update_params)
       set_flash_message :notice, :updated
       # Sign in the user bypassing validation in case his password changed
-      sign_in @user, bypass: true
+      bypass_sign_in @user
       redirect_to after_update_path_for(@user), notice: "Your profile has been updated."
     else
       render :edit

@@ -5,8 +5,13 @@
   <% if user_signed_in? %>
   <p>Email: <a href="mailto:<%= @user.email %>"><%= @user.email %></a></p>
   <% end %>
-
   <% if policy(@user).update? %>
-  <p><%= link_to("Edit user", edit_user_path(@user)) %></p>
+  <div class="button-group">
+    <% if @user == current_user %>
+    <%= link_to("Edit profile", edit_user_registration_path, class: 'button') %>
+    <% else %>
+    <%= link_to("Edit user", edit_user_path(@user), class: 'button') %>
+    <% end %>
+  </div>
   <% end %>
 </article>
