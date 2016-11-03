@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe StationsController, type: :controller do
 
@@ -108,6 +108,7 @@ describe StationsController, type: :controller do
     end
 
     it "enables CORS" do
+      bypass_rescue
       get :show, id: station.to_param
       expect(response.headers['Access-Control-Allow-Origin']).to eq "*"
     end
@@ -177,7 +178,7 @@ describe StationsController, type: :controller do
         bypass_rescue
         expect do
           post :create, {station: valid_params}
-        end.to raise_error CanCan::AccessDenied
+        end.to raise_error Pundit::NotAuthorizedError
       end
     end
 
@@ -203,14 +204,6 @@ describe StationsController, type: :controller do
 
         it "creates a station with a custom slug", params: { slug: 'custom_slug' } do
           expect(assigns(:station).slug).to eq 'custom_slug'
-        end
-
-        it "creates a visible station when show checkbox is checked", params: { show: '1' } do
-          expect(assigns(:station).show).to be_truthy
-        end
-
-        it "creates a hidden station show checkbox is unchecked", params: { show: '0' } do
-          expect(assigns(:station).show).to be_falsey
         end
       end
 
@@ -249,7 +242,7 @@ describe StationsController, type: :controller do
         bypass_rescue
         expect do
           put :update, {id: station.to_param, station: { "name" => "foo" }}
-        end.to raise_error CanCan::AccessDenied
+        end.to raise_error Pundit::NotAuthorizedError
       end
     end
 
@@ -313,7 +306,7 @@ describe StationsController, type: :controller do
 
       it "should not allow stations to be destoyed" do
         bypass_rescue
-        expect { delete :destroy, {id: station.to_param} }.to raise_error CanCan::AccessDenied
+        expect { delete :destroy, {id: station.to_param} }.to raise_error Pundit::NotAuthorizedError
       end
     end
 

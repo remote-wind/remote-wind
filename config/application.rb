@@ -20,6 +20,9 @@ module RemoteWind
     # @see https://github.com/krautcomputing/services
     config.autoload_paths += [config.root.join('app')]
 
+    # Default in the next version of rails
+    config.active_record.raise_in_transactional_callbacks = true
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

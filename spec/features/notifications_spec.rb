@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 feature "Notifications", %{
   The app should be able to notify users of events with in app notifications.
@@ -6,8 +6,6 @@ feature "Notifications", %{
 
   let(:user) { create(:user) }
   let(:note) { create(:notification, user: user) }
-  let(:notifications_path) {  user_notifications_path(user_id: user.to_param)  }
-
   context "when I receive a notification" do
 
     before :each do

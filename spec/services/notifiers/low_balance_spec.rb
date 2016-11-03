@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Services::Notifiers::LowBalance do
   describe '.call' do

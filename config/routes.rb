@@ -17,15 +17,15 @@ RemoteWind::Application.routes.draw do
           via: [:GET, :DELETE]
   end
 
-  resources :users, except: [:new] do
-    resources :notifications, only: [:index, :destroy] do
-      collection do
-        patch '/', action: :update_all
-        delete '/', action: :destroy_all
-      end
+  resources :users, except: [:new]
+
+  resources :notifications, only: [:index, :destroy] do
+    collection do
+      patch '/', action: :update_all
+      delete '/', action: :destroy_all
     end
   end
-  
+
   # Used by Ardiuno stations to lookup ID
   get 'stations/find/:hw_id', to: "stations#find", as: :find_station
   # Used by Arduino stations to report firmwares

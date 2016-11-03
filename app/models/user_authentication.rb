@@ -6,7 +6,7 @@
 # @attr token [String]
 # @attr token_expires_at [DateTime]
 # @attr params [String]
-# @attr created_at [DateTime] 
+# @attr created_at [DateTime]
 # @attr updated_at [DateTime]
 # @attr provider_name [String]
 

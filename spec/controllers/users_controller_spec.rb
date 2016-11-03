@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe UsersController, type: :controller do
 
@@ -27,21 +27,21 @@ describe UsersController, type: :controller do
       it "denies access" do
         expect {
           get :edit, id: create(:user)
-        }.to raise_error CanCan::AccessDenied
+        }.to raise_error Pundit::NotAuthorizedError
       end
     end
     describe "PATCH 'update'" do
       it "denies access" do
         expect {
           patch :update, id: user, user: { email: 'test@example.com' }
-        }.to raise_error CanCan::AccessDenied
+        }.to raise_error Pundit::NotAuthorizedError
       end
     end
     describe "DESTROY 'delete'" do
       it "denies access" do
         expect {
           delete :destroy, id: user
-        }.to raise_error CanCan::AccessDenied
+        }.to raise_error Pundit::NotAuthorizedError
       end
     end
   end
@@ -57,7 +57,7 @@ describe UsersController, type: :controller do
       context "with valid attributes" do
         before {  patch :update, id: user, user: { email: 'test@example.com' } }
         it "updates the user" do
-          expect(user.reload.email).to eq 'test@example.com'
+          expect(user.reload.unconfirmed_email).to eq 'test@example.com'
         end
         it { should redirect_to user_path(user) }
       end

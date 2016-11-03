@@ -18,9 +18,6 @@
       <%= f.input :nickname %>
       <%= f.input :password, required: true %>
       <%= f.input :password_confirmation, required: true %>
-      <%= f.input(:timezone, label: "Time Zone") do %>
-          <% f.time_zone_select :timezone %>
-      <% end %>
       <div class="form-actions">
         <%= f.button :submit, t('.sign_up') %>
       </div>

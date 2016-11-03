@@ -13,7 +13,6 @@
 # @attr image [String]  a url to an avatar - not currently in use
 # @attr nickname [String]  allows users to display something else than their email
 # @attr slug [String]  URL friendly version of name that can be used as a route param
-# @attr timezone [String]
 # @attr confirmation_token [String]  used by Devise Confirmable
 # @attr confirmed_at [DateTime]  used by Devise Confirmable
 # @attr confirmation_sent_at [DateTime]  used by Devise Confirmable
@@ -39,18 +38,10 @@ class User < ActiveRecord::Base
 
   validates_uniqueness_of :nickname, allow_nil: true
   validates_uniqueness_of :confirmation_token, allow_nil: true
-  validate :valid_timezone
 
   # Use FriendlyId to create "pretty urls"
   extend FriendlyId
   friendly_id :nickname, use: [:slugged]
-
-  # Setup default values for new records
-  after_initialize do
-    if self.new_record?
-      self.timezone = "Stockholm"
-    end
-  end
 
   def self.create_from_omniauth(params)
     info = params[:info]
@@ -78,14 +69,4 @@ class User < ActiveRecord::Base
       false
     end
   end
-
-  def valid_timezone
-    errors.add(:timezone, "#{timezone} is not a valid zone name") unless ActiveSupport::TimeZone::MAPPING.has_key?(timezone)
-  end
-
-  def to_local_time(time)
-    @_timezone = Timezone::Zone.new( zone: ActiveSupport::TimeZone::MAPPING[timezone] ) if @_timezone.nil?
-    @_timezone.time(time)
-  end
-
 end

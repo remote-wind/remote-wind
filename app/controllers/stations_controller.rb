@@ -1,9 +1,11 @@
 class StationsController < ApplicationController
   skip_before_filter :authenticate_user!,
-                     only: [:show, :index, :search, :embed, :find, :api_firmware_version, :update_balance]
+    only: [
+      :show, :index, :search, :embed, :find,
+      :api_firmware_version, :update_balance
+    ]
 
-  authorize_resource
-  before_action :set_station, except: [:new, :index, :create, :find, :search]
+  before_action :set_station, only: member_actions + [:embed, :api_firmware_version, :update_balance]
   before_action :make_public, only: [:show, :index]
 
   # Skip CSRF protection since station does not send CSRF token.
@@ -14,19 +16,7 @@ class StationsController < ApplicationController
   def index
     @title = "Stations"
     if authenticated_stale?
-      # @todo should be handled in autorization layer (CanCanCan)
-      if user_signed_in?
-        if current_user.has_role?(:admin)
-          @stations = Station.all
-        else
-          @stations = Station.with_role(:owner, current_user)
-        end
-      else
-        @stations = Station.visible
-      end
-
-      @stations = @stations.with_observations(1)
-
+      @stations = policy_scope(Station).with_observations(1)
       @stations.load
       respond_to do |format|
         format.html
@@ -61,7 +51,8 @@ class StationsController < ApplicationController
   # POST /stations
   # POST /stations.json
   def create
-    @station = Station.new(station_params)
+    @station =  Station.new(station_params)
+    authorize(@station)
     respond_to do |format|
       if @station.save
         format.html { redirect_to station_path(@station), notice: 'Station was successfully created.' }
@@ -188,16 +179,11 @@ class StationsController < ApplicationController
     # before_action
     def set_station
       @station = Station.friendly.find(params[:id])
-      logger.info action_name.to_sym
-      authorize! @station, action_name.to_sym unless (action_name.to_sym).in?([:embed, :show, :update_balance, :api_firmware_version])
+      authorize( @station )
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def station_params
-      params.require(:station).permit(
-        :name, :hw_id, :latitude, :longitude, :user_id, :slug,
-        :show, :speed_calibration, :description, :sampling_rate,
-        :status
-      )
+      permitted_attributes(@station || Station)
     end
 end

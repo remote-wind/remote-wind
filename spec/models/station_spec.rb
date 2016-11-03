@@ -1,7 +1,6 @@
-require 'spec_helper'
-require 'timezone/error'
+require 'rails_helper'
 
-describe Station, type: :model do
+RSpec.describe Station, type: :model do
 
   let(:station) { create(:station) }
 
@@ -29,26 +28,15 @@ describe Station, type: :model do
     xit { is_expected.to validate_presence_of :hw_id }
   end
 
-  describe "#set_timezone!" do
-    before :each do
-      allow_any_instance_of(Station).to receive(:lookup_timezone).and_call_original
-      @zone = double(Timezone::Zone)
-      allow(@zone).to receive(:zone).and_return("Europe/London")
-      allow(Timezone::Zone).to receive(:new).and_return(@zone)
+  describe "#timezone" do
+    it "has a default timezone" do
+      expect(Station.new.timezone).to eq 'Europe/Stockholm'
     end
 
-    it "should set timezone on object creation given lat and lon" do
-      expect(Timezone::Zone).to receive(:new).with(latlon: [35.6148800, 139.5813000])
-      expect(create(:station, lat: 35.6148800, lon: 139.5813000).timezone).to eq "Europe/London"
-    end
-
-    it "handles exceptions from Timezone" do
-      allow_any_instance_of(Station).to receive(:lookup_timezone).and_raise(Timezone::Error::Base)
-      expect{expect(create(:station, lat: 35.6148800, lon: 139.5813000))}.to_not raise_error
-    end
-
-    it "should set the zone attribute after initialization" do
-      expect(Station.find(station.id).zone).to eq @zone
+    it "validates the timezone" do
+      station = Station.new(timezone: 'foo')
+      station.valid?
+      expect(station.errors).to have_key :timezone
     end
   end
 
@@ -66,35 +54,33 @@ describe Station, type: :model do
 
   describe ".send_low_balance_alerts" do
     it "checks all the stations" do
-      # prevents no user error
-      allow_any_instance_of(Station).to receive(:check_balance)
-      stations = [*1..3].map! { build_stubbed(:station) }
-      expect(stations.last).to receive(:check_balance)
+      stations = build_stubbed_list(:station, 3) do |s|
+        expect(s).to receive(:check_balance)
+      end
       Station.send_low_balance_alerts(stations)
     end
   end
 
   describe ".check_all_stations" do
-    let!(:stations) { [*1..3].map! { build_stubbed(:station) } }
     it "should check each station" do
-      allow_any_instance_of(Station).to receive(:check_status!)
-      expect(stations.last).to receive(:check_status!)
+      stations = build_stubbed_list(:station, 3) do |s|
+        expect(s).to receive(:check_status!)
+      end
       Station.check_all_stations(stations)
     end
   end
 
-  describe "#time_to_local_time" do
+  describe "#time_to_local" do
+    let(:time) { Time.new(2013).utc }
 
     it "converts a Time to local offset" do
-      t = Time.new(2013)
-      station.zone = Timezone::Zone.new zone: "Europe/Stockholm"
-      expect(station.time_to_local(t)).to eq t + 1.hours
+      station.timezone = "America/New_York"
+      expect(station.time_to_local(time)).to eq time.in_time_zone("America/New_York")
     end
-
     it "does not break if there is no zone" do
       t = Time.new(2013)
-      station.zone = nil
-      expect(station.time_to_local(t)).to eq t
+      station.timezone = nil
+      expect(station.time_to_local(t)).to eq time.in_time_zone("UTC")
     end
   end
 

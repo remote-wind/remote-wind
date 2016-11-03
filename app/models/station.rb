@@ -18,6 +18,7 @@
 #       Station.friendly.find(params[:id])
 #       Since stations can use either the slug or id as param
 class Station < ActiveRecord::Base
+  include Timezoned
   # Denotes the general status of a station
   enum status: [:not_initialized, :deactivated, :unresponsive, :active]
 
@@ -35,7 +36,7 @@ class Station < ActiveRecord::Base
   resourcify
 
   # Scopes
-  scope :visible, -> { unresponsive.merge(active) }
+  scope :visible, -> { where(status: [2,3]) }
 
    # constraints
   validates_uniqueness_of :hw_id
@@ -44,21 +45,23 @@ class Station < ActiveRecord::Base
   validates_numericality_of :balance, allow_blank: true
   validates_numericality_of :sampling_rate, allow_blank: true, max: 24.hours.to_i
 
+
   # geolocation
   geocoded_by :name
   reverse_geocoded_by :latitude, :longitude
 
   #callbacks
-  before_validation :set_timezone!
-  after_initialize :set_timezone!
   after_save :calibrate_observations!, if: :speed_calibration_changed?
 
   # Attribute aliases
   alias_attribute :lat, :latitude
   alias_attribute :lon, :longitude
   alias_attribute :lng, :longitude
-  attr_accessor :zone
   attr_accessor :latest_observation
+
+  # Use FriendlyId to create easily "pretty urls"
+  extend FriendlyId
+  friendly_id :name, use: [:slugged, :history]
 
   # Scope that eager loads the latest N number of observations.
   # @note requires Postgres 9.3+
@@ -82,31 +85,6 @@ class Station < ActiveRecord::Base
   def calibrate_observations!
     self.observations.update_all(speed_calibration: self.speed_calibration)
   end
-
-  # Lookup timezone via lat/lng
-  def lookup_timezone
-    self.zone = Timezone::Zone.new(latlon: [self.lat, self.lon])
-    self.zone.zone
-  end
-
-  # Lookup and set timezone
-  # Also catches any errors caused by Timezone and logs them
-  def set_timezone!
-    if self.timezone.nil? and !self.latitude.nil? and !self.longitude.nil?
-      # Lookup timezone and catch errors due to geonames not answering
-      begin
-        self.timezone = self.lookup_timezone
-      rescue Timezone::Error::Base => e
-        logger.warn e.message
-      end
-    elsif self.timezone and self.zone.nil?
-      self.zone = Timezone::Zone.new( zone: self.timezone )
-    end
-  end
-
-  # Use FriendlyId to create easily "pretty urls"
-  extend FriendlyId
-  friendly_id :name, use: [:slugged, :history]
 
   # Generate a slug from name if none is given when creating station
   def should_generate_new_friendly_id?
@@ -137,10 +115,6 @@ class Station < ActiveRecord::Base
     stations.each do |s|
       s.check_status!
     end
-  end
-
-  def time_to_local time
-    self.zone.nil? ? time : zone.time(time)
   end
 
   # Checks if a station has been responding regulary.
@@ -193,14 +167,6 @@ class Station < ActiveRecord::Base
     observations.last.try(:created_at)
   end
 
-  def created_at_local
-    time_to_local created_at if created_at.present?
-  end
-
-  def updated_at_local
-    time_to_local updated_at if updated_at.present?
-  end
-
   def last_observation_received_at_local
     time_to_local updated_at if last_observation_received_at.present?
   end
@@ -239,6 +205,7 @@ class Station < ActiveRecord::Base
     end
   end
 
+  # @return [Integer] the expected number of observations based on the sampling_rate
   def observations_per_day
     1.day / sampling_rate
   end

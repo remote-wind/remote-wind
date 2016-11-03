@@ -3,7 +3,6 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :index]
   before_filter :set_user, except: [:index]
-  load_and_authorize_resource
 
   # GET /users/:id
   def show
@@ -50,6 +49,7 @@ class UsersController < ApplicationController
 
     def set_user
       @user = User.friendly.find(params[:id])
+      authorize @user
     end
 
     def update_params

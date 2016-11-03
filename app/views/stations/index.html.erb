@@ -3,6 +3,11 @@
 <% end %>
 <h1>Wind stations</h1>
 <%= render :partial => 'stations/stations', object: @stations %>
+
+<% if policy(Station).create? %>
+<%= link_to 'New Station', new_station_path %>
+<% end %>
+
 <ul class="breadcrumbs">
   <li class="root"><a href="<%= root_path %>">Home</a></li>
   <li class="current"><a href="<%= stations_path %>">Stations</a></li>

@@ -1,11 +1,10 @@
-require "spec_helper"
+require 'rails_helper'
 
 describe NotificationsController, type: :controller do
 
   let(:user) { user = create(:user) }
   let(:note) { create(:notification, user: user) }
   let(:params) { { user_id: user } }
-  let(:notifications_url) { user_notifications_url(user_id: user) }
 
   subject { response }
 
@@ -21,10 +20,9 @@ describe NotificationsController, type: :controller do
     end
 
     it "redirects if user is not logged in" do
-      sign_out user
-      expect {
-        get :index, params
-      }.to raise_error 'uncaught throw :warden'
+      sign_out :user
+      get :index, params
+      expect(response).to redirect_to '/signin'
     end
 
     it "assigns current user as @user" do

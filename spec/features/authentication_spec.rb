@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 feature 'Authentication' do
 
@@ -35,6 +35,10 @@ feature 'Authentication' do
   describe 'Email confirmation' do
     scenario "when I click link in confirmation mail, should confirm email" do
       user = create(:unconfirmed_user)
+      visit '/signin'
+      click_link "Didn't receive confirm instructions?"
+      fill_in "Email", with: user.email
+      click_button 'Resend confirmation instructions'
       mail = Capybara.string(ActionMailer::Base.deliveries.last.body.to_s)
       visit mail.find('a', text: "Confirm my account")[:href]
       expect(user.reload.confirmed_at).to_not be_nil
@@ -77,7 +81,7 @@ feature 'Authentication' do
         fill_in 'Email', with: 'foo@bar.com'
         click_button 'Update'
         expect(page).to have_content "Your profile has been updated."
-        expect(user.reload.email).to eq 'foo@bar.com'
+        expect(user.reload.unconfirmed_email).to eq 'foo@bar.com'
       end
     end
   end

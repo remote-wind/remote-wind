@@ -5,13 +5,6 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-
-# Setup geonames user name
-Timezone::Configure.begin do |c|
-  c.username = ENV['REMOTE_WIND_GEONAMES']
-end
-
-
 class AdminMaker
   def initialize
 
@@ -66,7 +59,9 @@ class StationsMaker
       ].map! do |st|
         print st[:name]
         puts " "
-        Station.where(hw_id: st[:hw_id]).first_or_create(st)
+        Station.where(hw_id: st[:hw_id]).first_or_create(st) do |station|
+          station.status = :unresponsive
+        end
       end
     end
   end

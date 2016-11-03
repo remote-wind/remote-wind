@@ -42,7 +42,7 @@ shared_examples "a observation" do
 
     describe '#tstamp' do
       subject { super().tstamp }
-      it { is_expected.to eq Time.new(2000).to_i }
+      it { is_expected.to eq Time.new(2000).in_time_zone('Europe/Stockholm').to_i }
     end
   end
 end

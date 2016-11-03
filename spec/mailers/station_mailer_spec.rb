@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'rails_helper'
 describe StationMailer, type: :mailer do
 
   let(:user) { build_stubbed :user }

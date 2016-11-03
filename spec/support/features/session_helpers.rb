@@ -26,13 +26,9 @@ module Features
     end
 
     # http://stackoverflow.com/questions/5018344
-    def stub_user_for_view_test user = build_stubbed(User)
+    def stub_user_for_view_test(user = build_stubbed(:user))
       @user = user
       assign(:user, @user)
-      @ability = Object.new
-      @ability.extend(CanCan::Ability)
-      allow(controller).to receive(:current_ability) { @ability }
-      assign(:ability, @ability)
     end
 
     def sign_out_via_capybara
