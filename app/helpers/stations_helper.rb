@@ -52,7 +52,24 @@ module StationsHelper
     Time.at(duration.to_i).utc.strftime("%H:%M:%S")
   end
 
+  # Gets all the valid time zones for rails in a format for a select
+  # @return [Array]
   def timezone_options
     ActiveSupport::TimeZone::MAPPING.values
+  end
+
+  # @return [String]
+  # @param [Station] station
+  # @param [Hash] opts
+  #  any keywords are passed on to content_tag
+  # @example station_status_indicator(Station.new(status: active))
+  #   <span class="status active">Ok</span>
+  # @example station_status_indicator(Station.new(status: active), foo: bar, element: :div)
+  #   <div class="status active" foo="bar">Ok</div>
+  def station_status_indicator(station, element: :span, **opts)
+    text = I18n.t!("station.statuses.#{station.status}")
+    content_tag(element, text, opts.reverse_merge(
+      class: ['status', station.status].join(' ')
+    ))
   end
 end

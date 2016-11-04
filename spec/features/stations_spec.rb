@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature "Stations" do
+RSpec.feature "Stations" do
 
   include ObservationsHelper
   include_context "Stations"
@@ -24,20 +24,28 @@ feature "Stations" do
     end
   end
 
-
-
   scenario "when I view the index page" do
-    stations.each { |s| create(:observation, station: s) }
+    stations = one_of_each_status.values
+                  .each { |s| create(:observation, station: s) }
     visit root_path
-    Capybara.find("#left-off-canvas-menu a", text: "Stations").click
-    expect(page).to have_selector '.station', count: 3
+    first("a", text: "Stations").click
+
     stations.each do |s|
-      o = s.observations.last
-      expect(page).to have_link s.name, href: station_path(s)
-      expect(page).to have_content speed_min_max(o)
-      expect(page).to have_content degrees_and_cardinal(o.direction)
+      if s.active? || s.unresponsive?
+        o = s.observations.last
+        expect(page).to have_link s.name, href: station_path(s)
+        expect(page).to have_content speed_min_max(o)
+        expect(page).to have_content degrees_and_cardinal(o.direction)
+      else
+        expect(page).to_not have_link s.name, href: station_path(s)
+      end
     end
+
     expect(page).to have_title "Stations | Remote Wind"
+    expect(page).to have_selector '.status', text: 'Ok'
+    expect(page).to have_selector '.status', text: 'Unresponsive'
+    expect(page).to_not have_selector '.status', text: 'Not in use'
+    expect(page).to_not have_selector '.status', text: 'Not initialized'
   end
 
   context "as an admin" do
@@ -70,6 +78,7 @@ feature "Stations" do
       stations.slice(:not_initialized, :deactivated).values.each do |s|
         expect(page).to_not have_link s.name, href: station_path(s)
       end
+
     end
   end
 

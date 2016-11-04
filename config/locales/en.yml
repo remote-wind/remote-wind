@@ -20,3 +20,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  station:
+    statuses:
+      not_initialized: 'Not initialized'
+      deactivated:     'Not in use'
+      unresponsive:    'Unresponsive'
+      active:          'Ok'

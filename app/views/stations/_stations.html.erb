@@ -16,16 +16,10 @@
           <%= speed_min_max(observation) if observation %>
         </td>
         <td class="direction">
-          <% if observation %>
-              <%= degrees_and_cardinal(observation.direction) %>
-          <% end %>
+          <%= degrees_and_cardinal(observation.direction) if observation %>
         </td>
         <td>
-          <% unless station.active? %>
-              <span class="label success">Active</span>
-          <% else %>
-              <span class="label alert"><%= station.status %></span>
-          <% end %>
+          <%= station_status_indicator(station) %>
         </td>
       </tr>
   <% end %>
