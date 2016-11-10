@@ -8,7 +8,6 @@ describe NotificationsHelper, type: :helper do
 
     let(:note) { create(:notification, event: 'test-event', level: :warning, read: false) }
 
-
     subject { notification_classes(note) }
 
     it { is_expected.to include 'notification' }
@@ -21,31 +20,24 @@ describe NotificationsHelper, type: :helper do
       subject { notification_classes(note) }
       it { is_expected.to include 'read' }
     end
-
   end
 
   describe "#link_to_notifications" do
-
     it "should accept nil" do
-      expect(link_to_notifications(user, nil)).to eq link_to "Inbox", user_notifications_path(user)
+      expect(link_to_notifications(user, nil)).to eq link_to "Inbox", notifications_path
     end
-
     it "should not append 0" do
-      expect(link_to_notifications(user, 0)).to eq link_to "Inbox", user_notifications_path(user)
+      expect(link_to_notifications(user, 0)).to eq link_to "Inbox", notifications_path
     end
-
     it "should append count within parens" do
-      expect(link_to_notifications(user, 5)).to eq link_to "Inbox(5)", user_notifications_path(user)
+      expect(link_to_notifications(user, 5)).to eq link_to "Inbox(5)", notifications_path
     end
-
   end
 
   describe "#link_to_mark_all_as_read" do
-
     context "when called with nil number of notifications" do
       subject { link_to_mark_all_as_read(user) }
-      it { is_expected.to have_link "Mark all as read", href: user_notifications_path(user) }
+      it { is_expected.to have_link "Mark all as read", href: notifications_path }
     end
-
   end
 end

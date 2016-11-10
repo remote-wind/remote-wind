@@ -156,7 +156,7 @@ describe ObservationsController, type: :controller do
         expect do
           bypass_rescue
           action
-        end.to raise_error CanCan::AccessDenied
+        end.to raise_error Pundit::NotAuthorizedError
       end
     end
 

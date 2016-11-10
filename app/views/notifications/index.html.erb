@@ -15,7 +15,7 @@
         <% end %>
       </ul>
   <%= foundation_paginate(@notifications, params: { user_id: @user.to_param }) %>
-  <%= form_tag user_notifications_path(user_id: @user.to_param), id: 'delete-notifications-form', method: :delete, class: 'panel radius' do %>
+  <%= form_tag notifications_path, id: 'delete-notifications-form', method: :delete, class: 'panel radius' do %>
       <h3>Delete Notifications</h3>
       <div class="row">
         <p class="columns">that are</p>
@@ -43,4 +43,3 @@
   <p>There are no notifications to display. Sorry.</p>
   <% end %>
 </section>
-

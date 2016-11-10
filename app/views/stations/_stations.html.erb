@@ -13,9 +13,7 @@
       <tr class="station" id="station-<%= station.id %>">
         <td class="name"><%= link_to station.name, station %></td>
         <td class="speed">
-          <% if observation %>
-              <%= observation.speed %> (<%=  observation.min_wind_speed %> - <%= observation.max_wind_speed %>)
-          <% end %>
+          <%= speed_min_max(observation) if observation %>
         </td>
         <td class="direction">
           <% if observation %>
@@ -29,12 +27,6 @@
               <span class="label alert"><%= station.status %></span>
           <% end %>
         </td>
-      </tr>
-
-  <% end %>
-  <% if can? :manage, Station && params[:controller] == 'stations' %>
-      <tr class="station">
-        <td><%= link_to 'New Station', new_station_path %></td>
       </tr>
   <% end %>
   </tbody>

@@ -27,21 +27,21 @@ describe UsersController, type: :controller do
       it "denies access" do
         expect {
           get :edit, id: create(:user)
-        }.to raise_error CanCan::AccessDenied
+        }.to raise_error Pundit::NotAuthorizedError
       end
     end
     describe "PATCH 'update'" do
       it "denies access" do
         expect {
           patch :update, id: user, user: { email: 'test@example.com' }
-        }.to raise_error CanCan::AccessDenied
+        }.to raise_error Pundit::NotAuthorizedError
       end
     end
     describe "DESTROY 'delete'" do
       it "denies access" do
         expect {
           delete :destroy, id: user
-        }.to raise_error CanCan::AccessDenied
+        }.to raise_error Pundit::NotAuthorizedError
       end
     end
   end

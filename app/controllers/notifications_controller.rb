@@ -1,18 +1,14 @@
 # Handles in-app notifications for station events.
 class NotificationsController < ApplicationController
-
-  authorize_resource
-
-  skip_before_filter :get_notifications, only: [:mark_all_as_read]
-  before_filter :set_user
-
   # Display notifications belonging to the currently logged in user.
+  before_action :authenticate_user!
+
+  before_action :set_user
+  before_action :set_notifications
   # GET /notifications
   def index
-    @notifications = @user.notifications
-            .order(created_at: :desc)
-            .paginate(page: params[:page])
-
+    @notifications = policy_scope(Notification).order(created_at: :desc)
+                                               .paginate(page: params[:page])
     @title = "Inbox"
     @title += "(#{@unread_notifications_count})" unless @unread_notifications_count.nil?
 
@@ -26,7 +22,7 @@ class NotificationsController < ApplicationController
 
   # PATCH /notifications
   def update_all
-    @notifications = @user.notifications.where(read: false)
+    @notifications = policy_scope(Notification).where(read: false)
     if @notifications.update_all(read: true) > 0
       flash[:success] = 'All notifications have been marked as read.'
       redirect_to action: :index
@@ -39,7 +35,8 @@ class NotificationsController < ApplicationController
 
   # DESTROY /notifications/:id
   def destroy
-    @notification = @user.notifications.find(params[:id])
+    @notification = current_user.notifications.find(params[:id])
+    authorize(@notification)
     @notification.destroy
     flash[:success] = 'Notification deleted.'
     redirect_to action: :index
@@ -47,7 +44,7 @@ class NotificationsController < ApplicationController
 
   # DESTROY /notifications
   def destroy_all
-    @notifications = @user.notifications
+    @notifications = policy_scope(Notification)
     @notifications = @notifications.where(read: true) if params[:condition] == 'read'
     # Use time input to limit chonographically
     if (!params[:time].nil? && !params[:time_unit].nil?)
@@ -67,12 +64,12 @@ class NotificationsController < ApplicationController
   end
 
   private
-    def set_user
-      # Avoid DB query if user is current_user
-      if [current_user.to_param, current_user.id.to_s].include?(params[:user_id])
-        @user = current_user
-      else
-        @user = User.friendly.find(params[:user_id])
-      end
-    end
+
+  def set_notifications
+    @notifications = policy_scope(Notification)
+  end
+
+  def set_user
+    @user = current_user
+  end
 end

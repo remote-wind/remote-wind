@@ -47,7 +47,7 @@
     </dd>
     <% end %>
 
-    <% if can? :manage, Station %>
+    <% if policy(Station).update? %>
     <dd id="admin">
       <a href="#admin-panel">Admin</a>
       <div class="content clearfix" id="admin-panel">

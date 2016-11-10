@@ -6,7 +6,7 @@
   <p>Email: <a href="mailto:<%= @user.email %>"><%= @user.email %></a></p>
   <% end %>
 
-  <% if can? :edit, @user %>
+  <% if policy(@user).update? %>
   <p><%= link_to("Edit user", edit_user_path(@user)) %></p>
   <% end %>
 </article>
