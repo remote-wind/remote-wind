@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'nokogiri'
 
 describe StationsHelper, type: :helper do
 
@@ -51,6 +52,36 @@ describe StationsHelper, type: :helper do
     let(:duration) { 1.hour + 5.minutes + 10.seconds }
     it "includes hours seconds and minutes" do
       expect(helper.readable_duration(duration)).to eq '01:05:10'
+    end
+  end
+
+  describe "#station_status_indicator" do
+    let(:station) { Station.new(status: :not_initialized) }
+    subject { helper.station_status_indicator(station) }
+    it "can create any element" do
+      output = helper.station_status_indicator(station, element: :div)
+      expect(output).to have_selector 'div.not_initialized'
+    end
+    it "passes on keyword args" do
+      output = helper.station_status_indicator(station, foo: "bar")
+      expect(output).to have_selector 'span[foo="bar"]'
+    end
+    context "not_initialized" do
+      let(:station) { Station.new(status: :not_initialized ) }
+      it { should have_selector 'span', text: 'Not initialized' }
+      it { should have_selector '.not_initialized', text: 'Not initialized' }
+    end
+    context "deactivated" do
+      let(:station) { Station.new(status: :deactivated ) }
+      it { should have_selector '.deactivated', text: 'Not in use' }
+    end
+    context "unresponsive"  do
+      let(:station) { Station.new(status: :unresponsive ) }
+      it { should have_selector '.unresponsive', text: 'Unresponsive' }
+    end
+    context "active" do
+      let(:station) { Station.new(status: :active ) }
+      it { should have_selector '.active', text: 'Ok' }
     end
   end
 end

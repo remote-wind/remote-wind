@@ -35,10 +35,10 @@ Shoulda::Matchers.configure do |config|
 end
 
 RSpec.configure do |config|
-  include FactoryGirl::Syntax::Methods
-  include Devise::TestHelpers
-  include Warden::Test::Helpers
-  include Features::SessionHelpers
+  config.include FactoryGirl::Syntax::Methods
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Warden::Test::Helpers
+  config.include Features::SessionHelpers
 
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!

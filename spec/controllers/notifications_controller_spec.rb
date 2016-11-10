@@ -20,10 +20,9 @@ describe NotificationsController, type: :controller do
     end
 
     it "redirects if user is not logged in" do
-      sign_out user
-      expect {
-        get :index, params
-      }.to raise_error 'uncaught throw :warden'
+      sign_out :user
+      get :index, params
+      expect(response).to redirect_to '/signin'
     end
 
     it "assigns current user as @user" do

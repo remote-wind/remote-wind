@@ -13,14 +13,14 @@ gem 'foundation-rails', '~> 5.4.5.0' # Responsive front-end framework
 gem 'rickshaw_rails', '~> 1.4.5' # Javascript toolkit for graphs
 
 #= Views  ============================================================
-gem 'simple_form', '~> 3.1.1' # Forms made easy for Rails!: https://github.com/plataformatec/simple_form
+gem 'simple_form', '~> 3.3.1' # Forms made easy for Rails!: https://github.com/plataformatec/simple_form
 
 #= Authentication ====================================================
-gem 'devise', '~> 3.5.2'
-gem 'devise_invitable', '~> 1.3.5'
+gem 'devise', '~> 4.2'
+gem 'devise_invitable', '~> 1.7'
 gem 'rolify', '~> 5.1.0'
-gem 'omniauth', '~> 1.2.2'
-gem 'omniauth-facebook', '~> 2.0.1'
+gem 'omniauth', '~> 1.3.1'
+gem 'omniauth-facebook', '~> 4.0'
 gem 'pundit', '~> 1.1'
 
 #= Geolocation =======================================================

@@ -6,7 +6,7 @@ describe ObservationsController, type: :controller do
   let(:observation) { create(:observation, station: station) }
   let(:valid_attributes) { attributes_for(:observation, station_id: station.id) }
 
-  before(:each) { sign_out :user }
+  before(:each) { logout :user }
 
   describe "POST 'create'" do
 

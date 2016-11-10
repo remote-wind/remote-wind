@@ -9,8 +9,17 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require foundation_and_overrides
  *= require rickshaw
  *= require maps
  *= require_tree .
  */
+
+@import "foundation_and_overrides";
+
+ .status {
+  @extend .label;
+   &.not_initialized { background-color: $secondary-color }
+   &.deactivated { background-color: $alert-color  }
+   &.unresponsive { background-color: #f4e242 }
+   &.active { background-color: $success-color }
+ }

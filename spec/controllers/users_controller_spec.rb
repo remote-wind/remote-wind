@@ -57,7 +57,7 @@ describe UsersController, type: :controller do
       context "with valid attributes" do
         before {  patch :update, id: user, user: { email: 'test@example.com' } }
         it "updates the user" do
-          expect(user.reload.email).to eq 'test@example.com'
+          expect(user.reload.unconfirmed_email).to eq 'test@example.com'
         end
         it { should redirect_to user_path(user) }
       end
