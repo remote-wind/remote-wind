@@ -4,18 +4,26 @@ describe "stations/show", type: :view do
   let(:user) { build_stubbed(:user) }
   let(:observation) { build_stubbed(:observation, created_at: Time.new(2000) ) }
 
+  let(:observations) do
+    Timecop.travel(Time.new(2016)) do
+
+    end
+  end
+
   let (:station) do
-    build_stubbed(:station,
-                  speed_calibration: 0.5143,
-                  user: user,
-                  updated_at: Time.new(2000),
-                  observations: [ build_stubbed(:observation, created_at: Time.new(2000) ) ],
-                  status: :active
-    )
+    Timecop.freeze(Time.new(2016)) do
+      build_stubbed(:station,
+        speed_calibration: 0.5143,
+        user: user,
+        created_at: 1.hour.ago,
+        updated_at: 30.minutes.ago,
+        observations: [ build_stubbed(:observation, created_at: Time.now ) ],
+        status: :active
+      )
+    end
   end
 
   before(:each) do
-    allow(Time).to receive(:now).and_return(Time.new(2000) - 2.hours)
     stub_user_for_view_test
     assign(:station, station)
   end
@@ -54,11 +62,10 @@ describe "stations/show", type: :view do
   end
 
   describe "meta" do
-    # Spec is broken here.
-    xit "has the correct timestamps" do
-      expect(page).to have_selector ".station-meta .created-at td:last", text: "23:00"
-      expect(page).to have_selector ".station-meta .updated-at td:last", text: "23:00"
-      expect(page).to have_selector ".station-meta .last-observation-received-at td:last", text: "23:00"
+    it "has the correct timestamps" do
+      expect(page).to have_selector ".station-meta .created-at td:last", text: "12/31 23:00"
+      expect(page).to have_selector ".station-meta .updated-at td:last", text: "12/31 23:30"
+      expect(page).to have_selector ".station-meta .last-observation-received-at td:last", text: "12/31 23:30"
     end
 
     it "has the correct metadata" do

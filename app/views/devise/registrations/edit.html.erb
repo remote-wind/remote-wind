@@ -11,9 +11,6 @@
     <% end %>
     <%= f.input :password, autocomplete: "off", hint: t('.leave_blank_if_no_change'), required: false %>
     <%= f.input :password_confirmation, required: false %>
-    <%= f.input(:timezone, label: "Time Zone") do %>
-        <% f.time_zone_select :timezone %>
-    <% end %>
   </div>
 
   <div class="form-actions">
@@ -23,4 +20,3 @@
 
 <h3><%= t('.unhappy') %></h3>
 <p><%= link_to t('.cancel_my_account'), registration_path(resource_name), data: { confirm: t('.are_you_sure') }, method: :delete %></p>
-

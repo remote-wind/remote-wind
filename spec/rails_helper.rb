@@ -43,11 +43,6 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   config.raise_errors_for_deprecations!
 
-  # @todo remove this hack!
-  config.before(:each) do
-    allow_any_instance_of(Station).to receive(:lookup_timezone).and_return("Europe/London")
-  end
-
   # Safe mode forces you to use Timecop with the block syntax
   # since it always puts time back the way it was.
   Timecop.safe_mode = true

@@ -25,7 +25,6 @@ gem 'omniauth-facebook', '~> 2.0.1'
 
 #= Geolocation =======================================================
 gem 'geocoder', '~> 1.2.11' # https://github.com/alexreisner/geocoder
-gem 'timezone', '~> 1.2', '>= 1.2.2' # Timezone lookup via lat / lon
 
 #= Misc ===============================================================
 gem 'friendly_id', '~> 5.1.0' # Slugging

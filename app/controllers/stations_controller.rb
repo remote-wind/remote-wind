@@ -197,7 +197,7 @@ class StationsController < ApplicationController
       params.require(:station).permit(
         :name, :hw_id, :latitude, :longitude, :user_id, :slug,
         :show, :speed_calibration, :description, :sampling_rate,
-        :status
+        :status, :timezone
       )
     end
 end
