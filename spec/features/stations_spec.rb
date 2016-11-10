@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 feature "Stations", %{
   the application should have weather stations that are viewable by users

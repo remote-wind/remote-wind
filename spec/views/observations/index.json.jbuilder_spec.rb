@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 describe 'observations/index.json.jbuilder', type: :view do
 
   let(:station) { build_stubbed(:station) }

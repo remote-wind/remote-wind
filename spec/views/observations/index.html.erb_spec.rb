@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe "observations/index", type: :view do
 
@@ -13,9 +13,8 @@ describe "observations/index", type: :view do
 
 
   let!(:rendered_view) do
-    allow(Observation).to receive(:last).and_return(observations.last)
-    allow(Observation).to receive(:created_at).and_return(Time.new(2000))
-
+    #allow(Observation).to receive(:last).and_return(observations.last)
+    #allow(Observation).to receive(:created_at).and_return(Time.new(2000))
     assign(:station, station)
     assign(:observations, observations)
     stub_user_for_view_test
@@ -32,5 +31,5 @@ describe "observations/index", type: :view do
     expect(rendered_view).to have_selector '.previous_page'
     expect(rendered_view).to have_selector '.next_page'
   end
-  
+
 end

@@ -32,7 +32,7 @@
 #  invitations_count      :integer          default(0)
 #
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe User, type: :model do
 

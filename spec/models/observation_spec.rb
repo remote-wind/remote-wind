@@ -14,16 +14,11 @@
 #  speed_calibration :float
 #
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe Observation, type: :model do
 
   let(:station) { create(:station) }
-
-  before do
-    # makes it possible to use stubbed stations
-    allow_any_instance_of(Observation).to receive(:update_station)
-  end
 
   describe "attributes" do
     describe "validations" do

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 feature "Notifications", %{
   The app should be able to notify users of events with in app notifications.

@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 feature 'Facebook Authentiation' do
 
-  background do
+  before do
     visit root_path
     AuthenticationProvider.create(name: 'facebook')
   end
