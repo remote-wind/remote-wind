@@ -204,14 +204,6 @@ describe StationsController, type: :controller do
         it "creates a station with a custom slug", params: { slug: 'custom_slug' } do
           expect(assigns(:station).slug).to eq 'custom_slug'
         end
-
-        it "creates a visible station when show checkbox is checked", params: { show: '1' } do
-          expect(assigns(:station).show).to be_truthy
-        end
-
-        it "creates a hidden station show checkbox is unchecked", params: { show: '0' } do
-          expect(assigns(:station).show).to be_falsey
-        end
       end
 
       describe "with invalid params" do

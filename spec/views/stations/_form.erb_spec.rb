@@ -14,7 +14,7 @@ describe "stations/_form", type: :view do
     expect(subject).to have_field "Latitude"
     expect(subject).to have_field "Longitude"
     expect(subject).to have_field "Hardware ID"
-    expect(subject).to have_field "Show"
     expect(subject).to have_field "Speed Calibration"
+    expect(subject).to_not have_field "Show"
   end
 end
