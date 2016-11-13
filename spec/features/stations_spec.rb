@@ -193,5 +193,13 @@ RSpec.feature "Stations" do
     expect(page).to have_content 'Europe/Copenhagen'
     station.reload
     expect(station.timezone).to eq 'Europe/Copenhagen'
+  end 
+
+  scenario "when I click on the station owner" do
+    admin_session
+    visit station_path(station)
+    save_and_open_page
+    click_link(station.user.display_name)
+    expect(current_path).to include user_path(station.user)
   end
 end

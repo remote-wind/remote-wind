@@ -14,12 +14,6 @@
         <td>Updated</td>
         <td><%= @station.status %></td>
       </tr>
-      <% if @station.user.present? %>
-      <tr class="owner">
-        <td>Owner</td>
-        <td><%= link_to(@station.user.nickname, user_path(@station.user)) %></td>
-      </tr>
-      <% end %>
       <% unless @station.last_observation_received_at.nil? %>
       <tr class="last-observation-received-at">
         <td>Last data recieved at</td>

@@ -69,4 +69,9 @@ class User < ActiveRecord::Base
       false
     end
   end
+
+  # @return [String]
+  def display_name
+    nickname.present? ? nickname : email.split("@").first
+  end
 end
