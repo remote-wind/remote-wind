@@ -75,12 +75,12 @@ module StationsHelper
 
   # Creates a DIV tag for a leaflet map canvas
   # @param [Station|nil] station
+  # @yeilds Yields inside DIV if passed a block
   # @return [String] or some kind of string like safe buffer object
   def leaflet_tag(station = nil, **kwargs)
-    css_classes = %w[map-canvas cluster small-12 large-12 columns]
+    css_classes = %w[map-canvas small-12 large-12 columns]
     css_classes << "#{controller_name}-#{action_name}"
     css_classes << kwargs[:class]
-
     opts = {
       id: "map_canvas",
       class: css_classes.compact.join(' '),
@@ -89,11 +89,8 @@ module StationsHelper
         lng: station.try(:longitude) || 13.081667
       }
     }
-
     content_tag :div, opts do
-      content_tag :div, class: "controls" do
-        # button_tag "Show all", class: 'tiny', id: "show-all-markers"
-      end
+      yield if block_given?
     end
   end
 end
