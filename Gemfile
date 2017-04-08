@@ -37,6 +37,8 @@ gem 'kramdown', '~> 1.4.1' # Markdown parser
 
 gem 'minitest'
 
+gem 'newrelic_rpm'
+
 #= BDD Tools =========================================================
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
