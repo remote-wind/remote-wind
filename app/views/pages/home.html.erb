@@ -1,3 +1,3 @@
 <% content_for :map do %>
-    <%= render :partial => 'stations/map', locals: { stations: @stations, fullscreen: true } %>
+  <%= leaflet_tag(class: 'fullscreen'); %>
 <% end %>

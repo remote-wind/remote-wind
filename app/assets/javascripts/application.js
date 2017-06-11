@@ -13,10 +13,9 @@
 //= require jquery
 //= require jquery_ujs
 //= require foundation
-//= require remotewind
 //= require rickshaw_with_d3
 //= require Rickshaw.Graph.DirectionAnnotate
-//= require markerclusterer
+//= require_self
 //= require_tree .
 
 // This lets us call console even in crap browsers.
@@ -25,6 +24,8 @@ window.console = window.console ||{
     info: function(){},
     error: function(){}
 };
+
+window.Remotewind = window.Remotewind || {};
 
 // Init foundation.js (UI toolkit)
 $(document).ready(function(){

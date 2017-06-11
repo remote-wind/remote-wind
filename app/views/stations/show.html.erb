@@ -1,7 +1,5 @@
 <% content_for :map do %>
-<div class="map-canvas small-12 large-12 columns no-fullscreen" data-lat="<%= @station.lat %>" data-lon="<%= @station.lon %>" id="map_canvas">
-  <%= render partial: 'stations/map', locals: { stations: [@station] } %>
-</div>
+  <%= leaflet_tag(@station) %>
 <% end %>
 
 <h1><%= station_header(@station) %></h1>

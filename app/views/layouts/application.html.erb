@@ -6,10 +6,10 @@
   <!-- Set the viewport width to device width for mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Remote Wind - open source wind data.">
-  <%= stylesheet_link_tag    "application" %>
-  <link href='http://fonts.googleapis.com/css?family=Lato:100,300,700' rel='stylesheet' type='text/css'>
+  <%= stylesheet_link_tag "application" %>
+  <%= stylesheet_link_tag "https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css" %>
+  <%= stylesheet_link_tag "https://fonts.googleapis.com/css?family=Lato:100,300,700" %>
   <%= csrf_meta_tags %>
-  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
 <body>
 
@@ -40,13 +40,12 @@
 
     <%= render 'layouts/left_menu' %>
     <%= render 'layouts/right_menu' %>
-
     <a class="exit-off-canvas"></a>
 
   </div>
 </div>
-
+  <%= javascript_include_tag "https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js" %>
+  <%= javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.2.1/chroma.min.js" %>
   <%= javascript_include_tag "application" %>
 </body>
 </html>
-

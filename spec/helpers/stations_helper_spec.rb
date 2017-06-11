@@ -3,6 +3,13 @@ require 'nokogiri'
 
 describe StationsHelper, type: :helper do
 
+  # stub helper so that we can test that controller and action name classes
+  # are added.
+  before do
+    allow(helper).to receive(:controller_name).and_return('foo')
+    allow(helper).to receive(:action_name).and_return('bar')
+  end
+
   let(:station) { build_stubbed(:station) }
 
   describe "#clear_observations_button" do
@@ -82,6 +89,44 @@ describe StationsHelper, type: :helper do
     context "active" do
       let(:station) { Station.new(status: :active ) }
       it { should have_selector '.active', text: 'Ok' }
+    end
+  end
+
+  describe "#leaflet_tag" do
+
+    subject { helper.leaflet_tag }
+    it { should have_selector "#map_canvas.map-canvas" }
+    it { should have_selector "#map_canvas.foo-bar" }
+
+    it "yields to a block" do
+      helper.leaflet_tag
+    end
+
+    context "when passed a block" do
+      subject do
+        helper.leaflet_tag do
+          helper.content_tag :span, "Hello World!"
+        end
+      end
+      it "yeilds the block" do
+        expect(subject).to have_content "Hello World!"
+      end
+    end
+
+    context "when passed a station" do
+      let(:s) { build_stubbed(:station) }
+      subject { helper.leaflet_tag(s) }
+      it { should have_selector "#map_canvas[data-lat='#{s.latitude}']" }
+      it { should have_selector "#map_canvas[data-lng='#{s.longitude}']" }
+    end
+
+    context "when passed extra css classes" do
+      it "adds classes to container" do
+        expect( helper.leaflet_tag(class: 'foo') ).to have_selector('.foo')
+        expect(
+          helper.leaflet_tag(class: %w{ foo bar })
+        ).to have_selector('.foo.bar')
+      end
     end
   end
 end
