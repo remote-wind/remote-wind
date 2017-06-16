@@ -1,7 +1,7 @@
 class RemoveBooleanColumnsFromStations < ActiveRecord::Migration
   def change
     # needed if migration is reversed
-    if Station.column_names.includes?("offline")
+    if Station.column_names.include?("offline")
       Station.where(offline: true).update_all(
         status: Station.statuses[:unresponsive] # should be the integer mapping
       )
