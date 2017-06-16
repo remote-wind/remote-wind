@@ -116,6 +116,7 @@ Remotewind.UnresponsiveIcon = Remotewind.VectorIcon.extend({
       'fill': '#333',
     });
     g.appendChild(circle);
+    return g;
   }
 });
 
