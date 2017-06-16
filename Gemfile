@@ -58,6 +58,7 @@ group :development, :test do
   # Show test status indicators on Mac OS X
   gem "terminal-notifier-guard", require: false
   gem 'launchy', require: false
+  gem 'byebug' # byebug debugger
 end
 
 group :development do

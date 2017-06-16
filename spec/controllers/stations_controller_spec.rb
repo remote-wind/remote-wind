@@ -39,6 +39,7 @@ describe StationsController, type: :controller do
       station
       create(:observation, station: station, direction: 0)
       create(:observation, station: station, direction: 90)
+      create(:latest_observation, station: station, direction: 90)
       get :index
     end
 
@@ -51,7 +52,7 @@ describe StationsController, type: :controller do
     end
 
     it "gets the latest observation for station" do
-      expect(assigns(:stations).first.observations.loaded?).to be_truthy
+      expect(assigns(:stations).first.latest_observation).not_to be nil
     end
 
     it "enables CORS" do

@@ -27,9 +27,12 @@ class Station < ActiveRecord::Base
   has_many  :observations,
     inverse_of: :station,
     counter_cache: true,
-    after_add: ->(s,o){ s.touch if s.persisted? } # touch station so cache key is changed
-  has_many :recent_observations, -> { order('created_at ASC').limit(10) }, class_name: 'Observation'
-  has_one :current_observation, -> { order('created_at ASC').limit(1) }, class_name: 'Observation'
+    after_add: ->(s,o) do
+       s.touch if s.persisted?
+       s.store_latest_observation(o)
+     end # touch station so cache key is changed
+  has_one :latest_observation
+  has_many :recent_observations, -> { where('observations.created_at > ?', 24.hours.ago)}, class_name: 'Observation'
 
   # Has scoped roles
   # @see https://github.com/RolifyCommunity/rolify
@@ -57,7 +60,6 @@ class Station < ActiveRecord::Base
   alias_attribute :lat, :latitude
   alias_attribute :lon, :longitude
   alias_attribute :lng, :longitude
-  attr_accessor :latest_observation
 
   # Use FriendlyId to create easily "pretty urls"
   extend FriendlyId
@@ -68,10 +70,32 @@ class Station < ActiveRecord::Base
   # @param [Integer] limit - the number of observations to eager load
   # @return [ActiveRecord::Relation]
   def self.with_observations(limit = 1)
-    eager_load(:observations).where(
-      'observations.id is null or observations.id in (?)',
-      Observation.pluck_from_each_station(limit)
-    ).order('observations.created_at DESC')
+    if(limit == 1)
+      includes(:latest_observation).all
+    else
+      eager_load(:observations).where(
+        'observations.id is null or observations.id in (?)',
+        Observation.pluck_from_each_station(limit)
+        ).order('observations.created_at DESC')
+    end
+  end
+
+  def store_latest_observation(observation)
+    if self.latest_observation.nil?
+      attributes = observation.attributes
+      attributes.delete(:id)
+      latest = LatestObservation.new(attributes)
+      if !latest.valid?
+        byebug
+      end
+      latest.save
+      self.reload
+    else
+      self.latest_observation.update(observation.attributes)
+    end
+    LatestObservation.record_timestamps = false
+    self.latest_observation.update(updated_at: observation.updated_at, created_at: observation.created_at)
+    LatestObservation.record_timestamps = true
   end
 
   # Setup default values for new records
@@ -164,7 +188,7 @@ class Station < ActiveRecord::Base
   end
 
   def last_observation_received_at
-    observations.last.try(:created_at)
+    latest_observation.try(:created_at)
   end
 
   def last_observation_received_at_local

@@ -18,7 +18,7 @@ RSpec.describe "Stations", type: :request do
   describe "GET /stations" do
 
     context 'with observations' do
-      let(:observation) { json.first["observations"].first }
+      let(:observation) { json.first["latest_observation"] }
       before do
         [20, 15, 10, 5, 1].map do |time|
           Timecop.travel( time.minutes.ago ) do
@@ -29,7 +29,7 @@ RSpec.describe "Stations", type: :request do
 
       it "should include the correct observation" do
         get '/stations.json'
-        expect(observation["id"]).to eq station.observations.last.id
+        expect(observation["id"]).to eq station.observations.first.id
       end
     end
 

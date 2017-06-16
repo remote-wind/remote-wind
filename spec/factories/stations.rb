@@ -9,5 +9,6 @@ FactoryGirl.define do
     status :active
     user
     speed_calibration 1
+    updated_at Time.now
   end
 end

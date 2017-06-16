@@ -33,7 +33,7 @@ describe ObservationsController, type: :controller do
 
     it "updates station last_observation_received_at" do
       post :create, { station_id: station, observation: valid_attributes }
-      expect(assigns(:station).last_observation_received_at).to eq assigns(:observation).created_at
+      expect(assigns(:station).reload.last_observation_received_at).to be_within(1.second).of(assigns(:observation).created_at)
     end
 
   end

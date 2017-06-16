@@ -1,7 +1,7 @@
 # Emits observations as JSON
 class StationSerializer < ActiveModel::Serializer
   attributes  :id, :latitude, :longitude, :name, :slug, :path,
-              :status, :observations
+              :status, :latest_observation
   private
     # Prevents memory issues if observations have not been preloaded
     # @todo CLEANUP is this still neeeded?

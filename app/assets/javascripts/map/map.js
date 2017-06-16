@@ -33,7 +33,7 @@ $(function(){
 
     $.each(stations, function(i, s){
       var o, marker;
-      o = s.observations[0];
+      o = s.latest_observation;
       marker = (function(){
         if (s.status === 'active' && o) {
           return L.marker([s.latitude, s.longitude], {
