@@ -34,28 +34,30 @@ $(function(){
     $.each(stations, function(i, s){
       var o, marker;
       o = s.latest_observation;
-      marker = (function(){
-        if (s.status === 'active' && o) {
-          return L.marker([s.latitude, s.longitude], {
-            title: s.name + " | " + o.speed + "(" + o.max_wind_speed + ") m/s",
-            icon: Remotewind.stationIcon({
-              speed: o.speed,
-              direction: o.direction
-            }),
-            uri: s.path
-          });
-        } else {
-          return L.marker([s.latitude, s.longitude], {
-            title: s.name,
-            icon: Remotewind.unresponsiveIcon(),
-            uri: s.path
-          });
-        }
-      }());
-      marker.addTo(map).on('click', function(e) {
-        window.location = e.target.options.uri;
-        return false;
-      });
+      if(o!==null){
+        marker = (function(){
+          if (s.status === 'active' && o) {
+            return L.marker([s.latitude, s.longitude], {
+              title: s.name + " | " + o.speed + "(" + o.max_wind_speed + ") m/s",
+              icon: Remotewind.stationIcon({
+                speed: o.speed,
+                direction: o.direction
+              }),
+              uri: s.path
+            });
+          } else {
+            return L.marker([s.latitude, s.longitude], {
+              title: s.name,
+              icon: Remotewind.unresponsiveIcon(),
+              uri: s.path
+            });
+          }
+        }());
+        marker.addTo(map).on('click', function(e) {
+          window.location = e.target.options.uri;
+          return false;
+        });
+      }
     });
   });
 });
