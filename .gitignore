@@ -27,3 +27,4 @@
 # Ignore generated documentation
 /doc
 /.yardoc
+.byebug_history
