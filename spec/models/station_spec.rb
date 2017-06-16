@@ -91,12 +91,12 @@ RSpec.describe Station, type: :model do
     end
 
     it "returns cached observation" do
-      station.latest_observation = build_stubbed(:observation, speed: 999)
+      station.latest_observation = LatestObservation.new(speed: 999, min_wind_speed: 990, max_wind_speed: 1999)
       expect(station.current_observation.speed).to eq 999
     end
 
     it "does not issue query if cached observation available" do
-      station.latest_observation = build_stubbed(:observation, speed: 999)
+      station.latest_observation = LatestObservation.new(speed: 999, min_wind_speed: 990, max_wind_speed: 1999)
       expect(station.observations).not_to receive(:last)
       station.current_observation
     end
@@ -148,6 +148,8 @@ RSpec.describe Station, type: :model do
       end
 
       it "takes the sampling_rate into account" do
+        expect(station.observations.length).to eq 4
+        expect(station.created_at).to be_within(1.minute).of(1.month.ago)
         station.sampling_rate = 5.minutes
         expect(station.is_unresponsive?).to eq true
       end
@@ -313,17 +315,14 @@ RSpec.describe Station, type: :model do
     end
 
     it "eager loads the latest observation" do
-        stations = Station.with_observations
-        expect(stations.last.observations.loaded?)
+      stations = Station.with_observations
+      expect(stations.last.latest_observation)
     end
 
     it "eager loads multiple observations" do
       stations = Station.with_observations(2).load
-      observations = stations.last.observations
-      expect(observations.first).to eq \
-        station.observations.order(created_at: :desc).first
-      expect(observations.last).to eq \
-        station.observations.order(created_at: :desc).offset(1).take
+      expect(stations.last.observations.loaded?)
+      expect(stations.last.observations.length).to eq 2
     end
 
     it "includes stations that have no observations" do
@@ -354,16 +353,16 @@ RSpec.describe Station, type: :model do
     end
   end
 
-  describe 'observations callbacks' do
+  describe 'latest_observation callbacks' do
     it 'updates last_observation_received_at when observation is added' do
       expect {
-        station.observations.create(attributes_for :observation)
+        station.latest_observation = LatestObservation.create(attributes_for :observation)
       }.to change(station, :last_observation_received_at)
     end
 
     it "touches station when observation is recieved" do
       expect {
-        station.observations.create(attributes_for(:observation))
+        station.latest_observation = LatestObservation.create(attributes_for(:observation))
       }.to change(station, :updated_at)
     end
   end
