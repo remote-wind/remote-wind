@@ -28,36 +28,32 @@ $(function(){
   }
 
   $el.on('stations.loaded', function(e, stations){
-
-    console.log('adding markers to stations');
-
     $.each(stations, function(i, s){
       var o, marker;
       o = s.latest_observation;
-      if(o!==null){
-        marker = (function(){
-          if (s.status === 'active' && o) {
-            return L.marker([s.latitude, s.longitude], {
-              title: s.name + " | " + o.speed + "(" + o.max_wind_speed + ") m/s",
-              icon: Remotewind.stationIcon({
-                speed: o.speed,
-                direction: o.direction
-              }),
-              uri: s.path
-            });
-          } else {
-            return L.marker([s.latitude, s.longitude], {
-              title: s.name,
-              icon: Remotewind.unresponsiveIcon(),
-              uri: s.path
-            });
-          }
-        }());
-        marker.addTo(map).on('click', function(e) {
-          window.location = e.target.options.uri;
-          return false;
-        });
-      }
+      marker = (function(){
+        // this checks if o is null properly
+        if (o && s.status === 'active') {
+          return L.marker([s.latitude, s.longitude], {
+            title: s.name + " | " + o.speed + "(" + o.max_wind_speed + ") m/s",
+            icon: Remotewind.stationIcon({
+              speed: o.speed,
+              direction: o.direction
+            }),
+            uri: s.path
+          });
+        } else {
+          return L.marker([s.latitude, s.longitude], {
+            title: s.name,
+            icon: Remotewind.unresponsiveIcon(),
+            uri: s.path
+          });
+        }
+      }());
+      marker.addTo(map).on('click', function(e) {
+        window.location = e.target.options.uri;
+        return false;
+      });
     });
   });
 });

@@ -29,7 +29,7 @@ RSpec.describe "Stations", type: :request do
 
       it "should include the correct observation" do
         get '/stations.json'
-        expect(observation["id"]).to eq station.observations.first.id
+        expect(observation["id"]).to eq station.observations.last.id
       end
     end
 

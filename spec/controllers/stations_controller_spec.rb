@@ -37,9 +37,8 @@ describe StationsController, type: :controller do
 
     before :each do
       station
-      create(:observation, station: station, direction: 0)
-      create(:observation, station: station, direction: 90)
-      create(:latest_observation, station: station, direction: 90)
+      station.observations.create(attributes_for(:observation, direction: 0))
+      station.observations.create(attributes_for(:observation, direction: 90))
       get :index
     end
 
@@ -51,8 +50,9 @@ describe StationsController, type: :controller do
       expect(response).to render_template :index
     end
 
-    it "gets the latest observation for station" do
-      expect(assigns(:stations).first.latest_observation).not_to be nil
+    it "eager loads the latest observation" do
+      s = assigns(:stations).first
+      expect(s.association(:latest_observation).loaded?)
     end
 
     it "enables CORS" do
@@ -227,8 +227,6 @@ describe StationsController, type: :controller do
   end
 
   describe "PUT update" do
-
-
     let!(:station) { create(:station) }
 
     context "as unpriveleged user, it" do

@@ -121,7 +121,7 @@ class RandomObservationMaker
       @speed += s_var
     end
 
-    measure = Observation.new({
+    observation = station.observations.new({
         station: station,
         direction: Random.new.rand(0..360),
         speed: @speed,
@@ -129,9 +129,9 @@ class RandomObservationMaker
         max_wind_speed: @speed + Random.new.rand(0..5)
     })
 
-    if measure.save
-      measure.update_attribute :created_at, @ctime
-      measure.update_attribute :updated_at, @ctime
+    if observation.save
+      observation.update_attribute :created_at, @ctime
+      observation.update_attribute :updated_at, @ctime
     end
 
     @ctime += 300
