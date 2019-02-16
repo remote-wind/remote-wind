@@ -3,7 +3,7 @@ class LatestObservation < ActiveRecord::Base
   # reading per stations, the latest. To speed up DB queries. Can certainly be
   # made in a much better way
 
-  belongs_to :station, dependent: :destroy, inverse_of: :observations
+  belongs_to :station, dependent: :destroy
   attr_accessor :timezone
 
   # constraints
