@@ -29,13 +29,13 @@ class LatestObservation < ActiveRecord::Base
   def calibrated?
     self.calibrated == true
   end
-
+  
   def calibrate!
     unless self.calibrated || self.speed_calibration.nil?
       c = self.speed_calibration
-      self.speed            = (self.speed * c).round(1)
-      self.min_wind_speed   = (self.min_wind_speed * c).round(1)
-      self.max_wind_speed   = (self.max_wind_speed * c).round(1)
+      self.speed            = self.speed.nil? ? nil : (self.speed * c).round(1)
+      self.min_wind_speed   = self.min_wind_speed.nil? ? nil : (self.min_wind_speed * c).round(1)
+      self.max_wind_speed   = self.max_wind_speed.nil? ? nil : (self.max_wind_speed * c).round(1)
       self.calibrated = true
     end
   end
