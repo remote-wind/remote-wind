@@ -52,7 +52,8 @@ $(function(){
             ifModified: true,
             success: function(data, textStatus, jqXHR){
               $graph.parents('.chart-wrapper').find("alert-box").remove();
-              if (textStatus = "200" && data.length) {
+              if (textStatus == "notmodified") { 
+              } else if (textStatus == "success" && data.length) {
                   $graph.show();
                   $graph.trigger('graph.render', [data]);
               } else {
@@ -142,7 +143,7 @@ $(function(){
             element: $graph.find('.timeline')[0]
         });
         $(data).each(function(i,m){
-            graph.annotator.add(m.tstamp, m.direction);
+            if(m.direction!= null) graph.annotator.add(m.tstamp, m.direction);
         });
 
         graph.render();
