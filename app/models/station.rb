@@ -91,7 +91,11 @@ class Station < ActiveRecord::Base
       latest.save
       self.reload
     else
-      self.latest_observation.update(observation.attributes)
+      attributes = observation.attributes.except("id", "updated_at", "created_at")
+      attributes[:calibrated] = false
+      unless self.latest_observation.update(attributes) 
+        Rails.logger.info(self.latest_observation.errors.messages.inspect)
+      end
     end
     LatestObservation.record_timestamps = false
     self.latest_observation.update(updated_at: observation.updated_at, created_at: observation.created_at)
