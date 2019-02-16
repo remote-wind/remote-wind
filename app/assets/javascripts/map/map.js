@@ -38,7 +38,7 @@ $(function(){
         marker = (function(){
           if (s.status === 'active' && o) {
             return L.marker([s.latitude, s.longitude], {
-              title: s.name + " | " + o.speed + "(" + o.max_wind_speed + ") m/s",
+              title: s.name + " | " + o.speed + "(" + (o.min_wind_speed==null ? "" : (o.min_wind_speed + "-")) + o.max_wind_speed + ") m/s",
               icon: Remotewind.stationIcon({
                 speed: o.speed,
                 direction: o.direction
