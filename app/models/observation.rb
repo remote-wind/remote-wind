@@ -30,9 +30,9 @@ class Observation < ActiveRecord::Base
   def calibrate!
     unless self.calibrated || self.speed_calibration.nil?
       c = self.speed_calibration
-      self.speed            = (self.speed * c).round(1)
-      self.min_wind_speed   = (self.min_wind_speed * c).round(1)
-      self.max_wind_speed   = (self.max_wind_speed * c).round(1)
+      self.speed            = self.speed.nil? ? nil : (self.speed * c).round(1)
+      self.min_wind_speed   = self.min_wind_speed.nil? ? nil : (self.min_wind_speed * c).round(1)
+      self.max_wind_speed   = self.max_wind_speed.nil? ? nil : (self.max_wind_speed * c).round(1)
       self.calibrated = true
     end
   end
@@ -55,7 +55,7 @@ class Observation < ActiveRecord::Base
 
   # degrees to cardinal
   def compass_point
-    Geocoder::Calculations.compass_point(self.direction)
+    self.direction.nil? ? nil : Geocoder::Calculations.compass_point(self.direction)
   end
   alias_method :cardinal, :compass_point
 end

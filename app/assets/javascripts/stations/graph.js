@@ -28,15 +28,15 @@ $(function(){
         if (data.length) {
             $(data).each(function(k,m){
                 series[0].data.push({
-                    x : m.tstamp,
+                    x : Date.parse(m.created_at)/1000,
                     y : m.min_wind_speed
                 });
                 series[1].data.push({
-                    x : m.tstamp,
+                    x : Date.parse(m.created_at)/1000,
                     y : m.speed
                 });
                 series[2].data.push({
-                    x : m.tstamp,
+                    x : Date.parse(m.created_at)/1000,
                     y : m.max_wind_speed
                 });
             });
@@ -52,7 +52,8 @@ $(function(){
             ifModified: true,
             success: function(data, textStatus, jqXHR){
               $graph.parents('.chart-wrapper').find("alert-box").remove();
-              if (textStatus = "200" && data.length) {
+              if (textStatus == "notmodified") { 
+              } else if (textStatus == "success" && data.length) {
                   $graph.show();
                   $graph.trigger('graph.render', [data]);
               } else {
@@ -120,11 +121,21 @@ $(function(){
         });
         graph.time =  graph.time || new Rickshaw.Fixtures.Time();
 
+
         // Custom timescale with 15min "clicks"
+				var timeAxisUnit = {
+				  name: 'custom',
+				  seconds: 60*15,
+				  formatter: function (d) {
+				    return d.toLocaleTimeString().match(/(\d+:\d+):/)[1];
+				  }
+				}
+				
         graph.x_axis = graph.x_axis || new Rickshaw.Graph.Axis.Time({
             element: $graph.$x_axis[0],
             graph: graph,
-            timeUnit: graph.time.unit('15 minute')
+						timeFixture: new Rickshaw.Fixtures.Time.Local(),
+            timeUnit: timeAxisUnit
         });
 
         graph.y_axis = graph.y_axis || new Rickshaw.Graph.Axis.Y( {
@@ -142,8 +153,14 @@ $(function(){
             element: $graph.find('.timeline')[0]
         });
         $(data).each(function(i,m){
-            graph.annotator.add(m.tstamp, m.direction);
+            if(m.direction!= null) graph.annotator.add(Date.parse(m.created_at)/1000, m.direction);
         });
+
+				graph.hoverDetail = graph.hoverDetail || new Rickshaw.Graph.HoverDetail( {
+				    graph: graph,
+				    xFormatter: function(x) { return new Date(x*1000).toLocaleTimeString()},
+				    yFormatter: function(y) { return y + " m/s" }
+				} );
 
         graph.render();
         graph.annotator.update();

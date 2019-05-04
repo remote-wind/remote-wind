@@ -45,7 +45,7 @@ See see https://github.com/bkeepers/dotenv for details
 This app uses the mailcatcher smtp server for the dev environment
 see http://mailcatcher.me/ for instructions
 
-## Continuus testing with Guard and Zeus
+## Continous testing with Guard and Zeus
 ```
 zeus start
 bundle exec guard (in a new tab)

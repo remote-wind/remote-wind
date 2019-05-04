@@ -66,13 +66,26 @@ Remotewind.StationIcon = Remotewind.VectorIcon.extend({
         path = this._createElement('path'),
         options = this.options;
     g.setAttributeNS(null, "transform", "translate(0,-6)");
-    $(path).attr({
-      "d": "M26,19c0-2.2-0.6-4.4-1.6-6.2C22.2,8.8,13,0,13,0S3.8,8.7,1.6,12.8c-1,1.8-1.6,4-1.6,6.2c0,7.2,5.8,13,13,13 S26,26.2,26,19z",
-      "stroke": options.stroke,
-      "stroke-width": options.strokeWidth,
-      "fill": Remotewind.color_scale(options.speed).name(),
-      "transform": "rotate(% 13 19)".replace('%', options.direction)
-    });
+		if(options.direction==null) {
+			path = this._createElement('circle')
+			$(path).attr({
+	      'cx': 13,
+	      'cy': 13,
+	      'r': 13,
+				"stroke": options.stroke,
+	      "stroke-width": options.strokeWidth,
+	      "fill": Remotewind.color_scale(options.speed).name(),
+	 			"transform": "translate(0,6)"
+	    });
+		} else {
+			$(path).attr({
+	      "d": "M26,19c0-2.2-0.6-4.4-1.6-6.2C22.2,8.8,13,0,13,0S3.8,8.7,1.6,12.8c-1,1.8-1.6,4-1.6,6.2c0,7.2,5.8,13,13,13 S26,26.2,26,19z",
+	      "stroke": options.stroke,
+	      "stroke-width": options.strokeWidth,
+	      "fill": Remotewind.color_scale(options.speed).name(),
+	      "transform": "rotate(% 13 19)".replace('%', options.direction)
+	    });
+		}
     g.appendChild(path);
     return g;
   },
