@@ -16,8 +16,7 @@ class StationsController < ApplicationController
   def index
     @title = "Stations"
     if authenticated_stale?
-      @stations = policy_scope(Station).with_observations(1)
-      @stations.load
+      @stations = policy_scope(Station).eager_load(:latest_observation)
       respond_to do |format|
         format.html
         format.json { render json: @stations }
@@ -51,7 +50,7 @@ class StationsController < ApplicationController
   # POST /stations
   # POST /stations.json
   def create
-    @station =  Station.new(station_params)
+    @station = Station.new(station_params)
     authorize(@station)
     respond_to do |format|
       if @station.save
@@ -127,7 +126,7 @@ class StationsController < ApplicationController
 
   # GET /stations/:id/embed
   def embed
-    @observation = @station.current_observation
+    @observation = @station.latest_observation
     @observations = [@observation]
     @embed_options = {
         css: (params[:css].in?(['true', 'TRUE'])),
@@ -178,7 +177,8 @@ class StationsController < ApplicationController
 
     # before_action
     def set_station
-      @station = Station.friendly.find(params[:id])
+      @station = Station.eager_load(:latest_observation)
+                        .friendly.find(params[:id])
       authorize( @station )
     end
 

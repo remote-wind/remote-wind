@@ -7,6 +7,7 @@ RSpec.describe Station, type: :model do
   describe "relations" do
     it { is_expected.to have_many :observations }
     it { is_expected.to belong_to :user }
+    it { is_expected.to belong_to(:latest_observation).class_name('Observation') }
   end
 
   describe "attributes" do
@@ -84,25 +85,13 @@ RSpec.describe Station, type: :model do
     end
   end
 
-  describe "#current_observation" do
+  describe "#latest_observation" do
 
-    let!(:observation) do
-      create(:observation, station: station, speed: 777)
-    end
+    let(:station) { create(:station) }
 
-    it "returns cached observation" do
-      station.latest_observation = LatestObservation.new(speed: 999, min_wind_speed: 990, max_wind_speed: 1999)
-      expect(station.current_observation.speed).to eq 999
-    end
-
-    it "does not issue query if cached observation available" do
-      station.latest_observation = LatestObservation.new(speed: 999, min_wind_speed: 990, max_wind_speed: 1999)
-      expect(station.observations).not_to receive(:last)
-      station.current_observation
-    end
-
-    it "returns latest observation if none cached" do
-      expect(station.current_observation.speed).to eq 777
+    it "is set in a callback when observations are created" do
+      station.observations.create(attributes_for(:observation))
+      expect(station.latest_observation).to eq station.observations.last
     end
   end
 
@@ -305,33 +294,6 @@ RSpec.describe Station, type: :model do
     end
   end
 
-  describe ".with_observations" do
-    before do |ex|
-      [15, 10, 5, 1].map do |time|
-        Timecop.travel( time.minutes.ago ) do
-          station.observations.create(attributes_for :observation)
-        end
-      end
-    end
-
-    it "eager loads the latest observation" do
-      stations = Station.with_observations
-      expect(stations.last.latest_observation)
-    end
-
-    it "eager loads multiple observations" do
-      stations = Station.with_observations(2).load
-      expect(stations.last.observations.loaded?)
-      expect(stations.last.observations.length).to eq 2
-    end
-
-    it "includes stations that have no observations" do
-      new_station = create(:station)
-      stations = Station.with_observations(2)
-      expect(stations).to include new_station
-    end
-  end
-
   describe "changing calibration" do
     before { station.observations.create(attributes_for :observation, speed: 2) }
     it "should cascade to observations" do
@@ -345,7 +307,7 @@ RSpec.describe Station, type: :model do
   describe "load_observations!" do
     let(:station) { create(:station) }
     before(:each) {
-      station.observations.create(attributes_for :observation)
+      station.observations.create(attributes_for(:observation))
     }
     it "loads observations" do
       observations = station.load_observations!(50)
@@ -353,16 +315,16 @@ RSpec.describe Station, type: :model do
     end
   end
 
-  describe 'latest_observation callbacks' do
+  describe 'observations association callbacks' do
     it 'updates last_observation_received_at when observation is added' do
       expect {
-        station.latest_observation = LatestObservation.create(attributes_for :observation)
+        station.observations.create(attributes_for(:observation))
       }.to change(station, :last_observation_received_at)
     end
 
     it "touches station when observation is recieved" do
       expect {
-        station.latest_observation = LatestObservation.create(attributes_for(:observation))
+        station.observations.create(attributes_for(:observation))
       }.to change(station, :updated_at)
     end
   end

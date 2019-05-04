@@ -17,7 +17,6 @@ class Observation < ActiveRecord::Base
   attr_accessor :calibrated
   after_validation :set_calibration_value!
   after_find :calibrate!
-  after_save :calibrate!
 
   # Scopes
   # default_scope { order("created_at DESC").limit(144) }
@@ -59,24 +58,4 @@ class Observation < ActiveRecord::Base
     self.direction.nil? ? nil : Geocoder::Calculations.compass_point(self.direction)
   end
   alias_method :cardinal, :compass_point
-
-  # Plucks the IDs of the N latest observations from each station
-  # @note requires Postgres 9.3
-  # @see https://github.com/remote-wind/remote-wind/issues/112
-  # @param [Integer] limit
-  # @return [Array]
-  def self.pluck_from_each_station(limit = 1)
-    ActiveRecord::Base.connection.execute(%Q{
-      SELECT o.id
-      FROM   stations s
-      JOIN   LATERAL (
-         SELECT id, created_at
-         FROM   observations
-         WHERE  station_id = s.id  -- lateral reference
-         ORDER  BY created_at DESC
-         LIMIT  #{limit}
-         ) o ON TRUE
-      ORDER  BY s.id, o.created_at DESC;
-    }).field_values('id')
-  end
 end

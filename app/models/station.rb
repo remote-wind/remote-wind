@@ -27,11 +27,8 @@ class Station < ActiveRecord::Base
   has_many  :observations,
     inverse_of: :station,
     counter_cache: true,
-    after_add: ->(s,o) do
-       s.touch if s.persisted?
-       s.store_latest_observation(o)
-     end # touch station so cache key is changed
-  has_one :latest_observation
+    after_add: ->(s,o) { s.store_latest_observation(o) }
+  belongs_to :latest_observation, class_name: 'Observation', required: false
   has_many :recent_observations, -> { where('observations.created_at > ?', 24.hours.ago)}, class_name: 'Observation'
 
   # Has scoped roles
@@ -65,41 +62,10 @@ class Station < ActiveRecord::Base
   extend FriendlyId
   friendly_id :name, use: [:slugged, :history]
 
-  # Scope that eager loads the latest N number of observations.
-  # @note requires Postgres 9.3+
-  # @param [Integer] limit - the number of observations to eager load
-  # @return [ActiveRecord::Relation]
-  def self.with_observations(limit = 1)
-    if(limit == 1)
-      includes(:latest_observation).all
-    else
-      eager_load(:observations).where(
-        'observations.id is null or observations.id in (?)',
-        Observation.pluck_from_each_station(limit)
-        ).order('observations.created_at DESC')
-    end
-  end
-
   def store_latest_observation(observation)
-    if self.latest_observation.nil?
-      attributes = observation.attributes
-      attributes.delete(:id)
-      latest = LatestObservation.new(attributes)
-      if !latest.valid?
-        byebug
-      end
-      latest.save
-      self.reload
-    else
-      attributes = observation.attributes.except("id", "updated_at", "created_at")
-      attributes[:calibrated] = false
-      unless self.latest_observation.update(attributes) 
-        Rails.logger.info(self.latest_observation.errors.messages.inspect)
-      end
-    end
-    LatestObservation.record_timestamps = false
-    self.latest_observation.update(updated_at: observation.updated_at, created_at: observation.created_at)
-    LatestObservation.record_timestamps = true
+    self.update(
+      latest_observation: observation
+    )
   end
 
   # Setup default values for new records
@@ -121,10 +87,6 @@ class Station < ActiveRecord::Base
     else
       false
     end
-  end
-
-  def current_observation
-    latest_observation.presence || observations.last
   end
 
   def observations?
