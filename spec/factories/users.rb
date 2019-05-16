@@ -1,12 +1,12 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
-FactoryGirl.define do
+# Read about factories at https://github.com/thoughtbot/factory_bot
+FactoryBot.define do
   factory :user do
     sequence(:nickname) { FFaker::Internet.user_name }
     sequence(:email) { FFaker::Internet.safe_email }
-    password 'changeme'
-    password_confirmation 'changeme'
+    password { 'changeme' }
+    password_confirmation { password }
     # required if the Devise Confirmable module is used
-    confirmed_at Time.now
+    confirmed_at { Time.now }
 
     factory :admin do
       after(:create) do |admin|
@@ -15,7 +15,7 @@ FactoryGirl.define do
     end
 
     factory :unconfirmed_user do
-      confirmed_at nil
+      confirmed_at { nil }
     end
   end
 end
