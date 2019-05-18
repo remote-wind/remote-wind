@@ -1,5 +1,4 @@
 <ul class="side-nav">
-  <li><%= link_to "Sign in with Facebook", user_facebook_omniauth_authorize_path, class: "auth-provider facebook" %></li>
   <%- if controller_name != 'sessions' %>
   <li><%= link_to t('.sign_in'), new_session_path(resource_name) %></li>
   <% end -%>

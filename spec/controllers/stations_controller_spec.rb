@@ -6,7 +6,7 @@ describe StationsController, type: :controller do
   # Station. As you add validations to Station, be sure to
   # adjust the attributes here as well.
 
-  let(:valid_params) { FactoryGirl.attributes_for(:station) }
+  let(:valid_params) { FactoryBot.attributes_for(:station) }
   let(:invalid_params) { { name: 'foo' } }
   let(:station) { create(:station, slug: 'xxx', speed_calibration: 0.5) }
 

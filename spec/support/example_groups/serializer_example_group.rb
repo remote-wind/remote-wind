@@ -4,7 +4,7 @@
 # Borrowed from Benedikt Deicke
 # http://benediktdeicke.com/2013/01/custom-rspec-example-groups/
 
-require 'factory_girl'
+require 'factory_bot'
 require 'ostruct'
 
 module SerializerExampleGroup

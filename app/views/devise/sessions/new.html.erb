@@ -1,13 +1,5 @@
 <h2><%= t('.sign_in') %></h2>
 <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-
-    <fieldset class="oath-login">
-      <legend><%= t('.you_can_login_with_oath') %></legend>
-      <div class="auth-providers">
-        <%= render 'devise/shared/auth_providers' %>
-      </div>
-    </fieldset>
-
     <fieldset class="password-login">
       <legend><%= t('.or_with_password') %></legend>
       <%= f.input :email, required: false, autofocus: true %>

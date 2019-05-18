@@ -19,8 +19,6 @@ gem 'simple_form', '~> 3.3.1' # Forms made easy for Rails!: https://github.com/p
 gem 'devise', '~> 4.2'
 gem 'devise_invitable', '~> 1.7'
 gem 'rolify', '~> 5.1.0'
-gem 'omniauth', '~> 1.3.1'
-gem 'omniauth-facebook', '~> 4.0'
 gem 'pundit', '~> 1.1'
 
 #= Geolocation =======================================================
@@ -71,7 +69,7 @@ group :test do
   gem 'rspec-rails', '~> 3.5'
   gem 'database_cleaner' # cleans test database between specs
   # factory_girl provides a framework and DSL for defining and using factories.
-  gem "factory_girl_rails", "~> 4.7"
+  gem 'factory_bot_rails', '~> 5.0', '>= 5.0.2'
   # Matchers to make model specs easy on the fingers and eyes
   gem 'shoulda-matchers', '~> 3.1', '>= 3.1.1'
   gem "rspec-its"
