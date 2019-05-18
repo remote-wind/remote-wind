@@ -49,6 +49,8 @@ GEM
       public_suffix (>= 2.0.2, < 4.0)
     arel (9.0.0)
     bcrypt (3.1.12)
+    bootsnap (1.4.4)
+      msgpack (~> 1.0)
     builder (3.2.3)
     byebug (11.0.1)
     callsite (0.0.11)
@@ -140,6 +142,7 @@ GEM
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
+    msgpack (1.2.10)
     nenv (0.3.0)
     newrelic_rpm (6.3.0.355)
     nio4r (2.3.1)
@@ -284,6 +287,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.9.3)
+  bootsnap
   byebug
   capybara (~> 2.10, >= 2.10.1)
   database_cleaner

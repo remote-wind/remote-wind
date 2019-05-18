@@ -4,6 +4,7 @@ ruby '2.6.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2', '>= 5.2.3'
 gem 'puma'
+gem 'bootsnap'
 
 #= ASSETS ============================================================
 gem 'sassc-rails', '~> 2.1', '>= 2.1.1'# Use SCSS for stylesheets
