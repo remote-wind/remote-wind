@@ -6,7 +6,7 @@ gem 'rails', '~> 4.2.11'
 gem 'puma'
 
 #= ASSETS ============================================================
-gem 'sass-rails', '~> 4.0.3' # Use SCSS for stylesheets
+gem 'sassc-rails', '~> 2.1', '>= 2.1.1'# Use SCSS for stylesheets
 gem 'uglifier', '~> 2.5.0' # Use Uglifier as compressor for JavaScript assets
 gem 'jquery-rails', '~> 3.1.0' # Use jquery as the JavaScript library
 gem 'foundation-rails', '~> 5.4.5.0' # Responsive front-end framework
