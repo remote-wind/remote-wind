@@ -6,6 +6,7 @@ describe Services::Notifiers::StationOffline do
     let(:station) { build_stubbed(:station, name: 'Monkey Island', user: user) }
     let(:mail) { ActionMailer::Base.deliveries.last }
     let(:message) { "Your station Monkey Island has not responded for 15 minutes." }
+    let(:logger) { Logger.new('/dev/null') }
     it "sends an email to the owner" do
       described_class.call(station)
       expect(mail.to.first).to eq station.user.email
@@ -17,8 +18,8 @@ describe Services::Notifiers::StationOffline do
       }.to change(Notification, :count).by(+1)
     end
     it "logs a message" do
-      expect(Rails.logger).to receive(:info).with(message)
-      described_class.call(station)
+      expect(logger).to receive(:info).with(message)
+      described_class.call(station, logger: logger)
     end
   end
 end
