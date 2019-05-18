@@ -1,6 +1,6 @@
 class ObservationsController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:create, :index] # Ardiuno needs to be able to post without auth.
+  skip_before_action :authenticate_user!, only: [:create, :index] # Ardiuno needs to be able to post without auth.
   protect_from_forgery        only: [:destroy, :clear]
   before_action :set_station, only: [:index, :clear, :create]
   before_action :make_public, only: [:index] # Sets CORS headers to allow cross-site sharing

@@ -1,8 +1,8 @@
 # This provides addional actions for users in addition to [Devise::Registrations]
 # for example adding and removing roles from users.
 class UsersController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :index]
-  before_filter :set_user, except: [:index]
+  before_action :authenticate_user!, except: [:show, :index]
+  before_action :set_user, except: [:index]
 
   # GET /users/:id
   def show

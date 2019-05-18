@@ -3,10 +3,10 @@ class ApplicationController < ActionController::Base
   include ActionView::Helpers::TextHelper
 
   protect_from_forgery with: :exception
-  before_filter :get_notifications, if: -> { user_signed_in? }
+  before_action :get_notifications, if: -> { user_signed_in? }
 
   # OPT OUT security model
-  before_filter :authenticate_user!, unless: -> { user_signed_in? }
+  before_action :authenticate_user!, unless: -> { user_signed_in? }
 
   # Ensures that different types of representations of a resource are NOT given the same etag.
   # @see https://github.com/rails/rails/issues/17129
