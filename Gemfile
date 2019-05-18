@@ -7,13 +7,12 @@ gem 'puma'
 
 #= ASSETS ============================================================
 gem 'sassc-rails', '~> 2.1', '>= 2.1.1'# Use SCSS for stylesheets
-gem 'uglifier', '~> 2.5.0' # Use Uglifier as compressor for JavaScript assets
-gem 'jquery-rails', '~> 3.1.0' # Use jquery as the JavaScript library
+gem 'jquery-rails', '~> 4.3', '>= 4.3.3' # Use jquery as the JavaScript library
 gem 'foundation-rails', '~> 5.4.5.0' # Responsive front-end framework
 gem 'rickshaw_rails', '~> 1.4.5' # Javascript toolkit for graphs
 
 #= Views  ============================================================
-gem 'simple_form', '~> 3.3.1' # Forms made easy for Rails!: https://github.com/plataformatec/simple_form
+gem 'simple_form', '~> 3.5.1' # Forms made easy for Rails!: https://github.com/plataformatec/simple_form
 
 #= Authentication ====================================================
 gem 'devise', '~> 4.2'
