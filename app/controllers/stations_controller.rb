@@ -50,7 +50,9 @@ class StationsController < ApplicationController
   # POST /stations
   # POST /stations.json
   def create
-    @station = Station.new(station_params)
+    @station = Station.new(station_params) do |s|
+      s.user ||= current_user
+    end
     authorize(@station)
     respond_to do |format|
       if @station.save

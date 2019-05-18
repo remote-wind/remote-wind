@@ -23,7 +23,7 @@ class Station < ActiveRecord::Base
   enum status: [:not_initialized, :deactivated, :unresponsive, :active]
 
   # relations
-  belongs_to :user, inverse_of: :stations
+  belongs_to :user, inverse_of: :stations, required: true
   has_many  :observations,
     inverse_of: :station,
     counter_cache: true,
