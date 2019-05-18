@@ -1,7 +1,7 @@
 <h2><%= t('.edit_account') %></h2>
 
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render partial: 'devise/shared/error_messages', resource: resource %>
+  <%= render 'devise/shared/error_messages', resource: resource  %>
   <div class="form-inputs">
     <%= f.input :email, required: true, autofocus: true %>
     <%= f.input :nickname %>
