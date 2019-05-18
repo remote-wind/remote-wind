@@ -18,8 +18,8 @@ gem 'simple_form', '~> 3.3.1' # Forms made easy for Rails!: https://github.com/p
 #= Authentication ====================================================
 gem 'devise', '~> 4.2'
 gem 'devise_invitable', '~> 1.7'
-gem 'rolify', '~> 5.1.0'
-gem 'pundit', '~> 1.1'
+gem 'rolify', '~> 5.2'
+gem 'pundit', '~> 2.0', '>= 2.0.1'
 
 #= Geolocation =======================================================
 gem 'geocoder', '~> 1.2.11' # https://github.com/alexreisner/geocoder
