@@ -22,25 +22,6 @@ RSpec.describe User, type: :model do
 
   describe "relations" do
     it { should have_and_belong_to_many :roles }
-    it { should have_many :authentications }
     it { should have_many :notifications }
-  end
-
-  describe ".create_from_omniauth" do
-    subject { User.create_from_omniauth(OmniAuth::MockFactory.facebook)  }
-    describe '#email' do
-      subject { super().email }
-      it { should eq 'joe@bloggs.com' }
-    end
-
-    describe '#nickname' do
-      subject { super().nickname }
-      it { should eq 'jbloggs' }
-    end
-
-    describe '#image' do
-      subject { super().image }
-      it { should eq 'http://graph.facebook.com/1234567/picture?type=square' }
-    end
   end
 end

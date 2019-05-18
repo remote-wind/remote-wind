@@ -50,7 +50,6 @@ RSpec.configure do |config|
 
   # Setup authentication to use test mode
   config.before(:suite) do
-    OmniAuth.config.test_mode = true
     Warden.test_mode!
   end
 

@@ -19,8 +19,6 @@ gem 'simple_form', '~> 3.3.1' # Forms made easy for Rails!: https://github.com/p
 gem 'devise', '~> 4.2'
 gem 'devise_invitable', '~> 1.7'
 gem 'rolify', '~> 5.1.0'
-gem 'omniauth', '~> 1.3.1'
-gem 'omniauth-facebook', '~> 4.0'
 gem 'pundit', '~> 1.1'
 
 #= Geolocation =======================================================
