@@ -1,6 +1,6 @@
 # Represents an in-app notification message.
 class Notification < ActiveRecord::Base
-  belongs_to :user
+  belongs_to :user, required: true
 
   scope :since, -> (time) { where("created_at >= ?", time) }
 

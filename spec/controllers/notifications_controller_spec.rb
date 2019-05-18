@@ -31,19 +31,19 @@ describe NotificationsController, type: :controller do
     end
 
     it "does not allow user notifications which are not adressed to her" do
-      private = create(:notification, user_id: 9999)
+      private = create(:notification, user: create(:user))
       get :index, params
       expect(assigns(:notifications)).to_not include private
     end
 
     it "allows user to see notifications addressed to her" do
-      private = create(:notification, user_id: user.id)
+      private = create(:notification, user: user)
       get :index, params
       expect(assigns(:notifications)).to include private
     end
 
     it "sets notifications as read after render" do
-      create(:notification, user_id: user.id)
+      create(:notification, user: user)
       get :index, params
       expect(assigns(:notifications).first.read).to be_truthy
     end
@@ -104,7 +104,7 @@ describe NotificationsController, type: :controller do
     end
 
     it "should not change notifications that do not belong to current user" do
-      private = create(:notification, user_id: 999)
+      private = create(:notification, user: create(:user))
       patch :update_all, params
       expect(private.reload.read).to be_falsey
     end
@@ -180,7 +180,7 @@ describe NotificationsController, type: :controller do
     end
 
     it "should respect since conditions" do
-      create(:notification, user_id: user)
+      create(:notification, user: user)
       note.update_attribute(:created_at, 2.days.ago)
       expect {
         delete :destroy_all, params.merge( time_unit: "days", time: 1 )
