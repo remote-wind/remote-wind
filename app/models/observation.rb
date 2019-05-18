@@ -3,7 +3,6 @@
 class Observation < ActiveRecord::Base
 
   belongs_to :station,
-    dependent: :destroy,
     inverse_of: :observations,
     required: true
   attr_accessor :timezone
