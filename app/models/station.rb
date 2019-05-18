@@ -26,7 +26,6 @@ class Station < ActiveRecord::Base
   belongs_to :user, inverse_of: :stations, required: true
   has_many  :observations,
     inverse_of: :station,
-    counter_cache: true,
     after_add: ->(s,o) { s.store_latest_observation(o) }
   belongs_to :latest_observation, class_name: 'Observation', required: false
   has_many :recent_observations, -> { where('observations.created_at > ?', 24.hours.ago)}, class_name: 'Observation'

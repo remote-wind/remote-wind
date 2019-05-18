@@ -57,8 +57,7 @@ class ObservationsController < ApplicationController
   # DELETE /stations/:station_id/observations
   def clear
     authorize(@station, :update?)
-    # get station with Friendly Id, params[:id] can either be id or slug
-    Observation.delete_all("station_id = #{@station.id}")
+    Observation.where(station: @station).destroy_all
     respond_to do |format|
       format.html { redirect_to station_url(@station) }
       format.json { head :no_content }

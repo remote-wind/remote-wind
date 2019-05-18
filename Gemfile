@@ -64,6 +64,7 @@ end
 
 group :test do
   gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
+  gem 'rails-controller-testing' # adds removed assigns for legacy tests
   gem 'database_cleaner' # cleans test database between specs
   # factory_girl provides a framework and DSL for defining and using factories.
   gem 'factory_bot_rails', '~> 5.0', '>= 5.0.2'
