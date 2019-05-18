@@ -15,9 +15,9 @@ class ObservationsController < ApplicationController
     @observation = @station.observations.new(permitted_attributes(Observation))
     authorize @observation
     if @observation.save
-      render nothing: true, status: :ok
+      head :ok
     else
-      render nothing: true, status: :unprocessable_entity
+      head :unprocessable_entity
     end
   end
 
