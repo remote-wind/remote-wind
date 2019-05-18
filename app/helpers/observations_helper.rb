@@ -12,16 +12,16 @@ module ObservationsHelper
   end
 
   # Makes a formatted string for displaying wind speed.
-  # @param []
+  # @param observation [Observation]
   # @return [String]
   # @example speed_min_max( Observation.new(speed: 5, min: 2, max: 7) )
   #   => "5 (2-7)m/s"
   def speed_min_max(observation)
-    unless observation.is_a? Hash
-      observation = HashWithIndifferentAccess.new(observation.attributes)
-    end
-    if observation
-      "%{speed} (%{min_wind_speed}-%{max_wind_speed})m/s" % observation
+    hash = observation.attributes.symbolize_keys
+    if observation.min_wind_speed
+      "%{speed} (%{min_wind_speed}-%{max_wind_speed})m/s" % hash
+    else
+      "%{speed} (%{max_wind_speed})m/s" % hash
     end
   end
 
