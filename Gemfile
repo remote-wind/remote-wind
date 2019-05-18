@@ -50,7 +50,6 @@ group :development, :test do
   gem 'spring-commands-rspec'
   gem "dotenv-rails"  # load local config from .env file
   gem 'ffaker'
-  gem 'foreman' # launches server from procfile
   gem 'terminal-notifier', require: false
   # Show test status indicators on Mac OS X
   gem "terminal-notifier-guard", require: false
@@ -59,8 +58,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'better_errors' # better error pages
-  gem 'binding_of_caller' # REPL on error pages
   gem 'meta_request' # used for RailsPanel in Google Chrome
 end
 
