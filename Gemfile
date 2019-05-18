@@ -15,7 +15,7 @@ gem 'rickshaw_rails', '~> 1.4.5' # Javascript toolkit for graphs
 gem 'simple_form', '~> 3.5.1' # Forms made easy for Rails!: https://github.com/plataformatec/simple_form
 
 #= Authentication ====================================================
-gem 'devise', '~> 4.2'
+gem 'devise', '~> 4.6', '>= 4.6.2'
 gem 'devise_invitable', '~> 1.7'
 gem 'rolify', '~> 5.1.0'
 gem 'pundit', '~> 1.1'
