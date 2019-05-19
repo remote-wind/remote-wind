@@ -1,34 +1,32 @@
 source 'http://rubygems.org'
-ruby '2.3.1'
+ruby '2.6.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2.11'
+gem 'rails', '~> 5.2', '>= 5.2.3'
 gem 'puma'
+gem 'bootsnap'
 
 #= ASSETS ============================================================
-gem 'sass-rails', '~> 4.0.3' # Use SCSS for stylesheets
-gem 'uglifier', '~> 2.5.0' # Use Uglifier as compressor for JavaScript assets
-gem 'jquery-rails', '~> 3.1.0' # Use jquery as the JavaScript library
+gem 'sassc-rails', '~> 2.1', '>= 2.1.1'# Use SCSS for stylesheets
+gem 'jquery-rails', '~> 4.3', '>= 4.3.3' # Use jquery as the JavaScript library
 gem 'foundation-rails', '~> 5.4.5.0' # Responsive front-end framework
 gem 'rickshaw_rails', '~> 1.4.5' # Javascript toolkit for graphs
 
 #= Views  ============================================================
-gem 'simple_form', '~> 3.3.1' # Forms made easy for Rails!: https://github.com/plataformatec/simple_form
+gem 'simple_form', '~> 4.1' # Forms made easy for Rails!: https://github.com/plataformatec/simple_form
 
 #= Authentication ====================================================
-gem 'devise', '~> 4.2'
+gem 'devise', '~> 4.6', '>= 4.6.2'
 gem 'devise_invitable', '~> 1.7'
-gem 'rolify', '~> 5.1.0'
-gem 'omniauth', '~> 1.3.1'
-gem 'omniauth-facebook', '~> 4.0'
-gem 'pundit', '~> 1.1'
+gem 'rolify', '~> 5.2'
+gem 'pundit', '~> 2.0', '>= 2.0.1'
 
 #= Geolocation =======================================================
 gem 'geocoder', '~> 1.2.11' # https://github.com/alexreisner/geocoder
 
 #= Misc ===============================================================
-gem 'friendly_id', '~> 5.1.0' # Slugging
-gem 'will_paginate', '~> 3.0.7' #Pagination
+gem 'friendly_id', '~> 5.2', '>= 5.2.5' # Slugging
+gem 'will_paginate', '~> 3.1', '>= 3.1.7' #Pagination
 gem 'active_model_serializers', '~> 0.9.3' # object serialization
 
 #= Email ===============================================================
@@ -46,14 +44,13 @@ group :doc do
 end
 
 group :development, :test do
-  gem 'listen', '~> 3.0.5'
+  gem 'listen', '~> 3.1', '>= 3.1.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen', '~> 2.0', '>= 2.0.1'
   gem 'spring-commands-rspec'
   gem "dotenv-rails"  # load local config from .env file
   gem 'ffaker'
-  gem 'foreman' # launches server from procfile
   gem 'terminal-notifier', require: false
   # Show test status indicators on Mac OS X
   gem "terminal-notifier-guard", require: false
@@ -62,16 +59,15 @@ group :development, :test do
 end
 
 group :development do
-  gem 'better_errors' # better error pages
-  gem 'binding_of_caller' # REPL on error pages
   gem 'meta_request' # used for RailsPanel in Google Chrome
 end
 
 group :test do
-  gem 'rspec-rails', '~> 3.5'
+  gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
+  gem 'rails-controller-testing' # adds removed assigns for legacy tests
   gem 'database_cleaner' # cleans test database between specs
   # factory_girl provides a framework and DSL for defining and using factories.
-  gem "factory_girl_rails", "~> 4.7"
+  gem 'factory_bot_rails', '~> 5.0', '>= 5.0.2'
   # Matchers to make model specs easy on the fingers and eyes
   gem 'shoulda-matchers', '~> 3.1', '>= 3.1.1'
   gem "rspec-its"

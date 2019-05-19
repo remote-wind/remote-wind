@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Authentication' do
 
-  let (:user) { FactoryGirl.create(:user) }
+  let (:user) { FactoryBot.create(:user) }
 
   describe 'Signup' do
     scenario 'without all required fields, should display errors' do

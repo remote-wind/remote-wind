@@ -149,13 +149,14 @@ RSpec.feature "Stations" do
     end
   end
 
-  context "given a station with observations" do
+  context "given a station with observations", focus: true do
     let!(:station) { station = create(:station) }
     before { 3.times { station.observations.create(attributes_for(:observation)) } }
 
-    scenario "when I clear messures" do
+    scenario "when I clear the observations" do
       admin_session
-      visit station_path station
+      #byebug
+      visit station_path station.id
       click_link "Clear all observations for this station"
       expect(station.observations.count).to eq 0
     end

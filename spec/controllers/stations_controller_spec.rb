@@ -6,7 +6,7 @@ describe StationsController, type: :controller do
   # Station. As you add validations to Station, be sure to
   # adjust the attributes here as well.
 
-  let(:valid_params) { FactoryGirl.attributes_for(:station) }
+  let(:valid_params) { attributes_for(:station) }
   let(:invalid_params) { { name: 'foo' } }
   let(:station) { create(:station, slug: 'xxx', speed_calibration: 0.5) }
 
@@ -15,22 +15,27 @@ describe StationsController, type: :controller do
   end
 
   describe "GET index" do
+
+    def get_index(**kwargs)
+      get :index, params: {}.merge(kwargs)
+    end
+
     subject { response }
     describe "ETag" do
-      before { get :index, format: 'json' }
+      before { }
 
       it "should not use the same ETag for different content types" do
-        get :index, format: 'json'
+        get_index format: 'json'
         first_response = response.headers.clone
-        get :index, format: 'html'
+        get_index format: 'html'
         expect(first_response['ETag']).to_not eq (response.headers['ETag'])
       end
 
       it "takes the user into account" do
-        get :index
+        get_index
         first_response = response.headers.clone
         sign_in(create(:user))
-        get :index
+        get_index
         expect(first_response['ETag']).to_not eq (response.headers['ETag'])
       end
     end
@@ -39,7 +44,7 @@ describe StationsController, type: :controller do
       station
       station.observations.create(attributes_for(:observation, direction: 0))
       station.observations.create(attributes_for(:observation, direction: 90))
-      get :index
+      get_index
     end
 
     it "assigns all stations as @stations" do
@@ -61,7 +66,7 @@ describe StationsController, type: :controller do
 
     context 'http-caching' do
       subject(:last_response) do
-        get :index
+        get_index
         response
       end
       context "given a station" do
@@ -74,7 +79,7 @@ describe StationsController, type: :controller do
         context "on a subsequent request" do
 
           before do
-            get :index
+            get_index
             @etag = response.headers['ETag']
             @last_modified = response.headers['Last-Modified']
           end
@@ -103,14 +108,16 @@ describe StationsController, type: :controller do
   end
 
   describe "GET show" do
+    let(:action) { }
+
     it "assigns the requested station as @station" do
-      get :show, id: station.to_param
+      get :show, params: { id: station.to_param }
       expect(assigns(:station)).to eq(station)
     end
 
     it "enables CORS" do
       bypass_rescue
-      get :show, id: station.to_param
+      get :show, params: { id: station.to_param }
       expect(response.headers['Access-Control-Allow-Origin']).to eq "*"
     end
 
@@ -122,14 +129,14 @@ describe StationsController, type: :controller do
       end
 
       it "orders observations by creation in descending order" do
-        get :show, id: station.to_param
+        get :show, params: { id: station.to_param }
         expect(assigns(:observations).first.created_at).to be > assigns(:observations).last.created_at
       end
     end
 
     context 'http-caching' do
       subject(:last_response) do
-        get :show, id: station.to_param
+        get :show, params: { id: station.to_param }
         response
       end
 
@@ -140,7 +147,7 @@ describe StationsController, type: :controller do
       end
       context "on a subsequent request" do
         before do
-          get :show, id: station.to_param
+          get :show, params: { id: station.to_param }
           @etag = response.headers['ETag']
           @last_modified = response.headers['Last-Modified']
         end
@@ -156,7 +163,7 @@ describe StationsController, type: :controller do
             station.observations.create(attributes_for(:observation))
             request.env['HTTP_IF_NONE_MATCH'] = @etag
             request.env['HTTP_IF_MODIFIED_SINCE'] = @last_modified
-            get :show, id: station.to_param
+            get :show, params: { id: station.to_param }
           end
           it { should have_http_status :ok }
         end
@@ -171,14 +178,14 @@ describe StationsController, type: :controller do
 
       it "does not create station" do
         expect do
-          post :create, {station: valid_params}
+          post :create, params: { station: valid_params }
         end.to_not change(Station, :count)
       end
 
       it "should not allow stations to be created without authorization" do
         bypass_rescue
         expect do
-          post :create, {station: valid_params}
+          post :create, params: { station: valid_params }
         end.to raise_error Pundit::NotAuthorizedError
       end
     end
@@ -192,7 +199,7 @@ describe StationsController, type: :controller do
           valid_params.merge(example.metadata[:params] || {})
         }
         before do |example|
-          post :create, {station: params} unless example.metadata[:skip_request]
+          post :create, params: { station: params } unless example.metadata[:skip_request]
         end
 
         it "creates a new Station" do
@@ -212,14 +219,14 @@ describe StationsController, type: :controller do
         it "assigns a newly created but unsaved station as @station" do
           # Trigger the behavior that occurs when invalid params are submitted
           allow_any_instance_of(Station).to receive(:save).and_return(false)
-          post :create, {station: invalid_params}
+          post :create, params: { station: invalid_params }
           expect(assigns(:station)).to be_a_new(Station)
         end
 
         it "re-renders the 'new' template" do
           # Trigger the behavior that occurs when invalid params are submitted
           allow_any_instance_of(Station).to receive(:save).and_return(false)
-          post :create, {station: invalid_params}
+          post :create, params: { station: invalid_params }
           expect(assigns(:station)).to render_template("new")
         end
       end
@@ -233,14 +240,14 @@ describe StationsController, type: :controller do
       before { sign_in create(:user) }
 
       it "does not change station" do
-        put :update, {id: station.to_param, station: { "name" => "foo" }}
+        put :update, params: { id: station.to_param, station: { "name" => "foo" }}
         expect(station.reload.name).to_not eq "foo"
       end
 
       it "does not allow stations to be updated" do
         bypass_rescue
         expect do
-          put :update, {id: station.to_param, station: { "name" => "foo" }}
+          put :update, params: { id: station.to_param, station: { "name" => "foo" }}
         end.to raise_error Pundit::NotAuthorizedError
       end
     end
@@ -253,7 +260,7 @@ describe StationsController, type: :controller do
         let(:params) { |example| {id: station.to_param, station: { latitude: 999 }.merge(example.metadata[:params] || {}) }}
 
         before(:each) {
-          put :update, params
+          put :update, params: params
         }
 
         it "updates the requested station", params: { name: 'foo' } do
@@ -269,7 +276,7 @@ describe StationsController, type: :controller do
         end
 
         it "updates the slug", params: { slug: 'custom_slug' } do
-          get :show, id: 'custom_slug'
+          get :show, params: { id: 'custom_slug' }
           expect(response).to be_success
         end
       end
@@ -277,7 +284,7 @@ describe StationsController, type: :controller do
       describe "with invalid params, it" do
         before(:each) do
           allow_any_instance_of(Station).to receive(:save).and_return(false)
-          put :update, {id: station.to_param, station: invalid_params}
+          put :update, params: { id: station.to_param, station: invalid_params}
         end
 
         it "assigns the station as @station" do
@@ -300,12 +307,12 @@ describe StationsController, type: :controller do
       before { sign_in create(:user) }
 
       it "does not destroy station" do
-        expect { delete :destroy, {id: station.to_param} }.to_not change(Station, :count)
+        expect { delete :destroy, params: { id: station.to_param} }.to_not change(Station, :count)
       end
 
       it "should not allow stations to be destoyed" do
         bypass_rescue
-        expect { delete :destroy, {id: station.to_param} }.to raise_error Pundit::NotAuthorizedError
+        expect { delete :destroy, params: { id: station.to_param} }.to raise_error Pundit::NotAuthorizedError
       end
     end
 
@@ -313,11 +320,11 @@ describe StationsController, type: :controller do
       before(:each) { sign_in create(:admin) }
 
       it "destroys the requested station" do
-        expect { delete :destroy, {id: station.to_param} }.to change(Station, :count).by(-1)
+        expect { delete :destroy, params: { id: station.to_param} }.to change(Station, :count).by(-1)
       end
 
       it "redirects to the stations list" do
-        delete :destroy, {id: station.to_param}
+        delete :destroy, params: { id: station.to_param}
         expect(response).to redirect_to(stations_url)
       end
     end
@@ -329,30 +336,30 @@ describe StationsController, type: :controller do
     let!(:chernobyl)    { create(:station, name: 'Chernobyl',    lat:  51.38737,   lon: 30.094887) }
 
     it 'finds Machu Pichu given a position 20km away' do
-      get :search, lat: -13.10924, lon: -72.602146
+      get :search, params: {  lat: -13.10924, lon: -72.602146 }
       expect(assigns(:stations)[0].name).to eq 'Machu Pichu'
     end
 
     it 'takes a radius parameter' do
       # Minsk, Belarus, ca 700km from Moscow
-      get :search, lat: 53.884916, lon: 27.53088, radius: 1000
+      get :search, params: {  lat: 53.884916, lon: 27.53088, radius: 1000 }
       expect(assigns(:stations).count(:all)).to be > 0
     end
 
     it 'ranks stations by proximity' do
       # Minsk, Belarus, ca 700km from Moscow
-      get :search, lat: 53.884916, lon: 27.53088, radius: 1000
+      get :search, params: {  lat: 53.884916, lon: 27.53088, radius: 1000 }
       expect(assigns(:stations)[0].name).to eq 'Chernobyl'
     end
 
     it 'finds only stations within the radius' do
       # Ankor Wat in not whithin 1000 km of Moscow or Peru
-      get :search, lat: 13.412643, lon: 103.861782, radius: 1000
+      get :search, params: {  lat: 13.412643, lon: 103.861782, radius: 1000 }
       expect(assigns(:stations).count(:all)).to eq 0
     end
 
     it 'renders the correct template' do
-      get :search, lat: 53.884916, lon: 27.53088, radius: 1000
+      get :search, params: {  lat: 53.884916, lon: 27.53088, radius: 1000 }
       expect(response).to render_template :search
     end
   end
@@ -362,68 +369,65 @@ describe StationsController, type: :controller do
     let(:params) { { id: station.to_param } }
 
     it "returns http success" do
-      get :embed, params
+      get :embed, params: params
       expect(response).to be_success
     end
 
     it "assigns station as @station" do
-      get :embed, params
+      get :embed, params: params
       expect(assigns(:station)).to eq station
     end
 
     it "takes a css param" do
-      get :embed, params.merge!( css: "true" )
+      get :embed, params: params.merge!( css: "true" )
       expect(assigns(:embed_options)[:css]).to be_truthy
     end
 
     it "defaults to table type" do
-      get :embed, params
+      get :embed, params: params
       expect(assigns(:embed_options)[:type]).to eq "table"
     end
 
     it "takes a type param" do
-      get :embed, params.merge!( type: "chart" )
+      get :embed, params: params.merge!( type: "chart" )
       expect(assigns(:embed_options)[:type]).to eq "chart"
     end
 
     it "enforces validity of type param" do
-      get :embed, params.merge!(type: "gogeligook" )
+      get :embed, params: params.merge!(type: "gogeligook" )
       expect(response).to render_template "stations/embeds/error"
     end
 
     it "displays a message if the type is invalid" do
-      get :embed, params.merge!( type: "gogeligook" )
+      get :embed, params: params.merge!( type: "gogeligook" )
       expect(assigns(:message)).to match /Sorry buddy, I don´t know how to render "gogeligook"/i
     end
 
     it "takes a height param" do
-      get :embed, params.merge!( height: 300 )
+      get :embed, params: params.merge!( height: 300 )
       expect(assigns(:embed_options)[:height]).to eq "300"
     end
 
     it "takes a width param" do
-      get :embed, params.merge!( width: 250 )
+      get :embed, params: params.merge!( width: 250 )
       expect(assigns(:embed_options)[:width]).to eq "250"
     end
 
     it "sends X-Frame-Options header" do
-      get :embed, params.merge!( width: 250 )
+      get :embed, params: params.merge!( width: 250 )
       expect(response.headers['X-Frame-Options']).to eq 'ALLOW-FROM http://www.gotlandssurfcenter.se'
     end
 
   end
 
   describe "GET find" do
-
     let(:station) { create(:station, status: :not_initialized) }
     render_views
-
     let(:json) { JSON.parse(response.body) }
-
     before do |ex|
       station
       unless ex.metadata[:skip_request]
-        get :find, hw_id: station.hw_id, format: :json
+        get :find, params: { hw_id: station.hw_id, format: :json }
       end
     end
 
@@ -441,7 +445,7 @@ describe StationsController, type: :controller do
 
     it "changes the station status" do
       expect {
-        get :find, hw_id: station.hw_id, format: :json
+        get :find, params: { hw_id: station.hw_id, format: :json }
         station.reload
       }.to change(station, :status).from("not_initialized")
            .to("unresponsive")

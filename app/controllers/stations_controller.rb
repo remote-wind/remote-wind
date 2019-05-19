@@ -1,5 +1,5 @@
 class StationsController < ApplicationController
-  skip_before_filter :authenticate_user!,
+  skip_before_action :authenticate_user!,
     only: [
       :show, :index, :search, :embed, :find,
       :api_firmware_version, :update_balance
@@ -50,7 +50,9 @@ class StationsController < ApplicationController
   # POST /stations
   # POST /stations.json
   def create
-    @station = Station.new(station_params)
+    @station = Station.new(station_params) do |s|
+      s.user ||= current_user
+    end
     authorize(@station)
     respond_to do |format|
       if @station.save
@@ -92,12 +94,12 @@ class StationsController < ApplicationController
     @station.balance = sp[:b] if sp[:b].present?
     respond_to do |format|
       if @station.balance_changed? && @station.save
-        format.any { render nothing: true, status: :ok }
+        format.any { head :ok }
         # check station balance after reply has been sent
         @station.check_balance
       else
         logger.error( "Someone attemped to update #{@station.name} balance with invalid data ('#{params[:s][:b]}') from #{request.remote_ip}" )
-        format.any { render nothing: true, status: :unprocessable_entity }
+        format.any { head :unprocessable_entity }
       end
     end
   end

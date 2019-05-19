@@ -21,7 +21,7 @@ module Features
       return user
     end
 
-    def login (user = FactoryGirl.create(:user))
+    def login (user = FactoryBot.create(:user))
       login_as(user, scope: :user)
     end
 

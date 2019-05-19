@@ -2,7 +2,9 @@
 # Take extreme care when querying this table as it contrains a lot of rows!
 class Observation < ActiveRecord::Base
 
-  belongs_to :station, dependent: :destroy, inverse_of: :observations
+  belongs_to :station,
+    inverse_of: :observations,
+    required: true
   attr_accessor :timezone
 
   # constraints

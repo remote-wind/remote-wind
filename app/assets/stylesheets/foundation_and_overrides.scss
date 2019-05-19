@@ -1132,23 +1132,9 @@ $default-float: left;
 
 $tabs-navigation-bg-color: #efefef;
 
-
-.tabs  {
-
-  dd:not(:first-child) {
-    #margin-left: -1px;
-  }
-
-  dd {
-    #border: 1px gainsboro solid;
-    &.active {
-      #border-bottom-color: #fff;
-    }
-  }
-}
 .tabs-content {
 
-  #border: 1px gainsboro solid;
+  border: 1px gainsboro solid;
   table {
     border: none;
     padding: 0;

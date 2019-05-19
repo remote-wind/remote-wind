@@ -23,10 +23,10 @@ class Station < ActiveRecord::Base
   enum status: [:not_initialized, :deactivated, :unresponsive, :active]
 
   # relations
-  belongs_to :user, inverse_of: :stations
+  belongs_to :user, inverse_of: :stations, required: true
   has_many  :observations,
     inverse_of: :station,
-    counter_cache: true,
+    dependent: :destroy,
     after_add: ->(s,o) { s.store_latest_observation(o) }
   belongs_to :latest_observation, class_name: 'Observation', required: false
   has_many :recent_observations, -> { where('observations.created_at > ?', 24.hours.ago)}, class_name: 'Observation'
@@ -51,7 +51,7 @@ class Station < ActiveRecord::Base
   reverse_geocoded_by :latitude, :longitude
 
   #callbacks
-  after_save :calibrate_observations!, if: :speed_calibration_changed?
+  after_update :calibrate_observations!
 
   # Attribute aliases
   alias_attribute :lat, :latitude

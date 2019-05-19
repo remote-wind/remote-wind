@@ -1,6 +1,6 @@
 class ObservationsController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:create, :index] # Ardiuno needs to be able to post without auth.
+  skip_before_action :authenticate_user!, only: [:create, :index] # Ardiuno needs to be able to post without auth.
   protect_from_forgery        only: [:destroy, :clear]
   before_action :set_station, only: [:index, :clear, :create]
   before_action :make_public, only: [:index] # Sets CORS headers to allow cross-site sharing
@@ -15,9 +15,9 @@ class ObservationsController < ApplicationController
     @observation = @station.observations.new(permitted_attributes(Observation))
     authorize @observation
     if @observation.save
-      render nothing: true, status: :ok
+      head :ok
     else
-      render nothing: true, status: :unprocessable_entity
+      head :unprocessable_entity
     end
   end
 
@@ -57,8 +57,7 @@ class ObservationsController < ApplicationController
   # DELETE /stations/:station_id/observations
   def clear
     authorize(@station, :update?)
-    # get station with Friendly Id, params[:id] can either be id or slug
-    Observation.delete_all("station_id = #{@station.id}")
+    Observation.where(station: @station).destroy_all
     respond_to do |format|
       format.html { redirect_to station_url(@station) }
       format.json { head :no_content }

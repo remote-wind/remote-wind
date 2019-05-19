@@ -21,9 +21,9 @@ module Services
 
       # @param [Station] station
       # @return [Void]
-      def self.call(station)
+      def self.call(station, logger: Rails.logger)
         msg = self.message(station)
-        Rails.logger.info(msg)
+        logger.info(msg)
         notified = Notification
                        .where(message: msg)
                        .since(12.hours.ago)

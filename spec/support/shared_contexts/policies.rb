@@ -4,7 +4,7 @@ RSpec.shared_context "Policy" do
   let(:user) { User.new }
   let(:admin) do
     user = User.new
-    allow(user).to receive(:has_role?).with(:admin).and_return(:true)
+    allow(user).to receive(:has_role?).with(:admin).and_return(true)
     user
   end
   let(:permitted_attributes) { described_class.new(user, model_class).permitted_attributes }

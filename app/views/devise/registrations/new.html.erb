@@ -1,18 +1,8 @@
 <h2><%= t('.sign_up') %></h2>
 
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-
-    <%= devise_error_messages! %>
-
-    <fieldset>
-      <legend><%= t('.you_can_sign_up_with_oauth') %></legend>
-      <div class="auth-providers">
-        <%= render "devise/shared/auth_providers" %>
-      </div>
-    </fieldset>
-
+    <%= render 'devise/shared/error_messages', resource: resource  %>
     <fieldset class="form-inputs">
-
       <legend><%= t('.or_with_password') %></legend>
       <%= f.input :email, required: true, autofocus: true %>
       <%= f.input :nickname %>
@@ -22,7 +12,6 @@
         <%= f.button :submit, t('.sign_up') %>
       </div>
     </fieldset>
-
 <% end %>
 
 <%= render "devise/shared/links" %>
