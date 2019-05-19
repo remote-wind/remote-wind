@@ -26,7 +26,7 @@ gem 'geocoder', '~> 1.2.11' # https://github.com/alexreisner/geocoder
 
 #= Misc ===============================================================
 gem 'friendly_id', '~> 5.2', '>= 5.2.5' # Slugging
-gem 'will_paginate', '~> 3.0.7' #Pagination
+gem 'will_paginate', '~> 3.1', '>= 3.1.7' #Pagination
 gem 'active_model_serializers', '~> 0.9.3' # object serialization
 
 #= Email ===============================================================

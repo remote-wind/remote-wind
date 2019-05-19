@@ -51,7 +51,7 @@ class Station < ActiveRecord::Base
   reverse_geocoded_by :latitude, :longitude
 
   #callbacks
-  after_save :calibrate_observations!, if: :speed_calibration_changed?
+  after_update :calibrate_observations!
 
   # Attribute aliases
   alias_attribute :lat, :latitude
